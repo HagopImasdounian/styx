@@ -4,7 +4,7 @@ import {
   defer,
   type MetaArgs,
   type LoaderFunctionArgs,
-} from '@shopify/remix-oxygen';
+} from '@remix-run/node';
 import {useLoaderData, Await, useRouteLoaderData} from '@remix-run/react';
 import {
   getSeoMeta,

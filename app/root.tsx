@@ -4,7 +4,7 @@ import {
   type LoaderFunctionArgs,
   type AppLoadContext,
   type MetaArgs,
-} from '@shopify/remix-oxygen';
+} from '@remix-run/node';
 import {
   isRouteErrorResponse,
   Links,

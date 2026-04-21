@@ -3,7 +3,7 @@ import {
   createCookieSessionStorage,
   type SessionStorage,
   type Session,
-} from '@shopify/remix-oxygen';
+} from '@remix-run/node';
 
 /**
  * This is a custom session implementation for your Hydrogen shop.

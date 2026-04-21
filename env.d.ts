@@ -1,6 +1,5 @@
 /// <reference types="vite/client" />
-/// <reference types="@shopify/remix-oxygen" />
-/// <reference types="@shopify/oxygen-workers-types" />
+/// <reference types="@remix-run/node" />
 
 import type {
   WithCache,
@@ -12,12 +11,12 @@ import type {AppSession} from '~/lib/session.server';
 
 declare global {
   /**
-   * A global `process` object is only available during build to access NODE_ENV.
+   * A global `process` object is available at runtime on Vercel / Node.js.
    */
-  const process: {env: {NODE_ENV: 'production' | 'development'}};
+  const process: {env: Record<string, string | undefined> & {NODE_ENV: 'production' | 'development'}};
 
   /**
-   * Declare expected Env parameter in fetch handler.
+   * Declare expected environment variables.
    */
   interface Env {
     SESSION_SECRET: string;
@@ -32,12 +31,12 @@ declare global {
   }
 }
 
-declare module '@shopify/remix-oxygen' {
+declare module '@remix-run/node' {
   /**
    * Declare local additions to the Remix loader context.
    */
   export interface AppLoadContext {
-    waitUntil: ExecutionContext['waitUntil'];
+    waitUntil: (promise: Promise<unknown>) => void;
     session: AppSession;
     storefront: Storefront;
     customerAccount: CustomerAccount;

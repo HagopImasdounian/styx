@@ -1,4 +1,4 @@
-import {redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {redirect, type LoaderFunctionArgs} from '@remix-run/node';
 
 // fallback wild card for all unauthenticated routes in account section
 export async function loader({context, params}: LoaderFunctionArgs) {

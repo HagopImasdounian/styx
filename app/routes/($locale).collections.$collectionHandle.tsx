@@ -3,7 +3,7 @@ import {
   json,
   type MetaArgs,
   type LoaderFunctionArgs,
-} from '@shopify/remix-oxygen';
+} from '@remix-run/node';
 import {useLoaderData, useNavigate, useSearchParams} from '@remix-run/react';
 import {useInView} from 'react-intersection-observer';
 import type {

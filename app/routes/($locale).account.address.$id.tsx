@@ -3,7 +3,7 @@ import {
   redirect,
   type ActionFunction,
   type AppLoadContext,
-} from '@shopify/remix-oxygen';
+} from '@remix-run/node';
 import {
   Form,
   useActionData,

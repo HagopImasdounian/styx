@@ -1,4 +1,3 @@
 {
-  "buildCommand": "npx shopify hydrogen build --codegen",
-  "outputDirectory": "dist"
+  "framework": "remix"
 }
