@@ -1,3 +1,4 @@
+import {Link} from '@remix-run/react';
 import {STYX, FONT} from './constants';
 
 type Variant = 'primary' | 'ghost' | 'gold';
@@ -56,6 +57,14 @@ export function CTAButton({
   const s = {...variants[variant], ...style};
 
   if (href) {
+    // Use Remix Link for internal paths, <a> for external
+    if (href.startsWith('/')) {
+      return (
+        <Link to={href} style={s} prefetch="intent">
+          {children}
+        </Link>
+      );
+    }
     return (
       <a href={href} style={s}>
         {children}

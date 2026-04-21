@@ -10,6 +10,7 @@ const USPS = [
 export function CraftStrip() {
   return (
     <section
+      className="styx-craft"
       style={{
         background: STYX.parchment,
         borderTop: `1px solid ${STYX.line}`,
@@ -18,6 +19,7 @@ export function CraftStrip() {
       }}
     >
       <div
+        data-grid=""
         style={{
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
@@ -27,7 +29,7 @@ export function CraftStrip() {
       >
         {/* Left: text */}
         <div>
-          <StyxLabel>The Promise · III</StyxLabel>
+          <StyxLabel>The Promise · V</StyxLabel>
           <h2
             style={{
               fontFamily: FONT.cinzel,

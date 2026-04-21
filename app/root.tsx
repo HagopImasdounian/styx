@@ -125,7 +125,9 @@ async function loadCriticalData({request, context}: LoaderFunctionArgs) {
     layout,
     seo,
     goldData,
-    collections: collectionsData?.collections?.nodes || [],
+    collections: (collectionsData?.collections?.nodes || []).filter(
+      (c: any) => c.products?.nodes?.length > 0,
+    ),
     shop: getShopAnalytics({
       storefront,
       publicStorefrontId: env.PUBLIC_STOREFRONT_ID,
@@ -341,6 +343,11 @@ const ROOT_COLLECTIONS_QUERY = `#graphql
         id
         title
         handle
+        products(first: 1) {
+          nodes {
+            id
+          }
+        }
       }
     }
   }

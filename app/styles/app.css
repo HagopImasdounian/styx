@@ -190,6 +190,81 @@ shop-pay-button {
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   STYX Responsive Overrides
+   Inline styles have highest specificity — !important is required.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Tablet: ≤ 48em (768px) */
+@media (max-width: 48em) {
+  /* Nav */
+  .styx-nav nav { padding: 0 20px !important; }
+  .styx-nav-links { display: none !important; }
+  .styx-nav-hamburger { display: flex !important; }
+
+  /* Ticker */
+  .styx-ticker { padding: 8px 16px !important; gap: 16px !important; }
+  .styx-ticker [data-cell-extra] { display: none !important; }
+
+  /* Hero */
+  .styx-hero [data-grid] { grid-template-columns: 1fr !important; padding: 40px 20px !important; min-height: auto !important; }
+  .styx-hero h1 { font-size: 40px !important; }
+
+  /* Categories */
+  .styx-categories { padding: 60px 20px !important; }
+  .styx-categories > div:first-child { flex-direction: column !important; gap: 16px !important; }
+  .styx-categories [data-grid] { grid-template-columns: 1fr !important; }
+
+  /* Featured */
+  .styx-featured { padding: 60px 20px !important; }
+  .styx-featured [data-grid] { grid-template-columns: repeat(2, 1fr) !important; }
+
+  /* Lookbook */
+  .styx-lookbook { padding: 80px 0 80px !important; }
+  .styx-lookbook > div:nth-child(2) { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; padding: 0 20px !important; }
+  .styx-lookbook [data-grid] {
+    grid-template-columns: 1fr 1fr !important;
+    grid-template-rows: auto !important;
+    padding: 0 20px !important;
+  }
+  .styx-lookbook [data-grid] > * { grid-row: auto !important; grid-column: auto !important; }
+  .styx-lookbook h2 { font-size: 36px !important; }
+
+  /* Craft / Promise */
+  .styx-craft { padding: 60px 20px !important; }
+  .styx-craft [data-grid] { grid-template-columns: 1fr !important; gap: 40px !important; }
+
+  /* Newsletter */
+  .styx-newsletter { padding: 60px 20px !important; }
+
+  /* Footer */
+  .styx-footer { padding: 48px 20px 32px !important; }
+  .styx-footer [data-grid] { grid-template-columns: 1fr !important; gap: 32px !important; }
+
+  /* About page */
+  .styx-about-hero { grid-template-columns: 1fr !important; padding: 60px 20px 48px !important; gap: 32px !important; }
+  .styx-about-hero h1 { font-size: 42px !important; }
+  .styx-about-values { grid-template-columns: 1fr !important; }
+  .styx-about-story { padding: 60px 20px !important; }
+  .styx-about-story > div { grid-template-columns: 1fr !important; gap: 24px !important; }
+  .styx-about-problem { padding: 60px 20px !important; }
+  .styx-about-future { padding: 60px 20px !important; }
+  .styx-about-cta { flex-direction: column !important; padding: 48px 20px !important; text-align: center !important; }
+
+  /* Contact page */
+  .styx-contact-grid { grid-template-columns: 1fr !important; padding: 48px 20px 80px !important; gap: 48px !important; }
+}
+
+/* Small mobile: ≤ 32em (512px) */
+@media (max-width: 32em) {
+  .styx-hero h1 { font-size: 32px !important; }
+  .styx-hero [data-grid] { padding: 32px 16px !important; }
+  .styx-featured [data-grid] { grid-template-columns: 1fr !important; }
+  .styx-lookbook [data-grid] { grid-template-columns: 1fr !important; }
+  .styx-lookbook h2 { font-size: 28px !important; }
+  .styx-categories h2 { font-size: 28px !important; }
+}
+
 @layer utilities {
   .fadeIn {
     opacity: 0;

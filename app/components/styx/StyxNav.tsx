@@ -585,78 +585,154 @@ function ChainsMegaPanel() {
    COLLECTIONS mega-panel
    ═══════════════════════════════════════════════════════════════ */
 
+// Curated collection categories — shop by style/use, not by raw collection handle
+const COLLECTION_CATEGORIES = [
+  {
+    group: 'Shop by Style',
+    kicker: 'I',
+    items: [
+      {label: 'Thin & Delicate', sub: 'Everyday layering pieces', handle: 'thin'},
+      {label: 'Heavy & Bold', sub: 'Statement weight', handle: 'heavy'},
+      {label: 'Pendant Chains', sub: 'Built to carry a pendant', handle: 'pendant-chain'},
+    ],
+  },
+  {
+    group: 'Shop by Occasion',
+    kicker: 'II',
+    items: [
+      {label: 'On Sale', sub: 'Current markdowns', handle: 'on-sale'},
+      {label: 'New Arrivals', sub: 'Latest from the foundry', handle: 'new-arrivals'},
+      {label: 'Best Sellers', sub: 'Most carried pieces', handle: 'best-sellers'},
+    ],
+  },
+];
+
 function CollectionsMegaPanel() {
   const existingHandles = useContext(ExistingHandlesContext);
 
-  // Show all existing collections (excluding frontpage), dynamically
-  const collectionsToShow = Array.from(existingHandles)
-    .filter((h) => h !== 'frontpage')
-    .map((handle) => ({handle, name: handle.replace(/-/g, ' ')}));
+  // Filter categories to only show collections that exist
+  const filteredCategories = COLLECTION_CATEGORIES.map((cat) => ({
+    ...cat,
+    items: cat.items.filter((item) => existingHandles.has(item.handle)),
+  }));
 
-  if (collectionsToShow.length === 0) {
-    return (
-      <div style={{padding: '44px 56px 48px'}}>
+  const hasAnything = filteredCategories.some((c) => c.items.length > 0);
+
+  return (
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: hasAnything ? '1fr 1fr 1.2fr' : '1fr',
+        gap: 44,
+        padding: '44px 56px 48px',
+      }}
+    >
+      {/* Curated categories */}
+      {filteredCategories.map((cat) =>
+        cat.items.length > 0 ? (
+          <div key={cat.group}>
+            <MenuColumnHeader kicker={cat.kicker} title={cat.group} />
+            {cat.items.map((item) => (
+              <MegaLink
+                key={item.handle}
+                to={`/collections/${item.handle}`}
+                prefetch="intent"
+                style={{
+                  display: 'block',
+                  padding: '12px 0',
+                  textDecoration: 'none',
+                  borderBottom: `1px solid ${STYX.lineSoft}`,
+                }}
+              >
+                <div
+                  style={{
+                    fontFamily: FONT.cinzel,
+                    fontSize: 13,
+                    letterSpacing: '0.08em',
+                    color: STYX.ink,
+                    textTransform: 'uppercase',
+                    marginBottom: 2,
+                  }}
+                >
+                  {item.label}
+                </div>
+                <div
+                  style={{
+                    fontFamily: FONT.cormorant,
+                    fontSize: 13,
+                    fontStyle: 'italic',
+                    color: STYX.silt,
+                  }}
+                >
+                  {item.sub}
+                </div>
+              </MegaLink>
+            ))}
+          </div>
+        ) : null,
+      )}
+
+      {/* Right column — promo + browse all */}
+      <div
+        style={{
+          background: STYX.parchment,
+          padding: '28px 24px',
+          border: `1px solid ${STYX.line}`,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 16,
+        }}
+      >
+        <div
+          style={{
+            fontFamily: FONT.cinzel,
+            fontSize: 10,
+            letterSpacing: '0.25em',
+            textTransform: 'uppercase',
+            color: STYX.gold,
+            marginBottom: 4,
+          }}
+        >
+          Browse
+        </div>
+        <div
+          style={{
+            fontFamily: FONT.cinzel,
+            fontSize: 18,
+            letterSpacing: '0.02em',
+            color: STYX.ink,
+            textTransform: 'uppercase',
+            lineHeight: 1.2,
+          }}
+        >
+          All Collections
+        </div>
+        <div
+          style={{
+            fontFamily: FONT.cormorant,
+            fontSize: 14,
+            fontStyle: 'italic',
+            color: STYX.graphite,
+            lineHeight: 1.5,
+          }}
+        >
+          Browse every collection — by metal, karat, chain type, and more.
+        </div>
         <MegaLink
           to="/collections"
           prefetch="intent"
           style={{
             fontFamily: FONT.cinzel,
-            fontSize: 14,
-            letterSpacing: '0.1em',
-            color: STYX.ink,
+            fontSize: 10,
+            letterSpacing: '0.25em',
+            color: STYX.gold,
+            textTransform: 'uppercase',
             textDecoration: 'none',
+            marginTop: 'auto',
           }}
         >
-          Shop All Collections →
+          View all collections →
         </MegaLink>
-      </div>
-    );
-  }
-
-  return (
-    <div style={{padding: '44px 56px 48px'}}>
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: `repeat(${Math.min(collectionsToShow.length, 3)}, 1fr)`,
-          gap: 2,
-          background: STYX.line,
-        }}
-      >
-        {collectionsToShow.map((c) => (
-          <MegaLink
-            key={c.handle}
-            to={`/collections/${c.handle}`}
-            prefetch="intent"
-            style={{
-              background: STYX.bone,
-              padding: '28px 28px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 8,
-              textDecoration: 'none',
-              transition: 'background 0.2s',
-            }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.background = STYX.paper)
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.background = STYX.bone)
-            }
-          >
-            <div
-              style={{
-                fontFamily: FONT.cinzel,
-                fontSize: 16,
-                letterSpacing: '0.04em',
-                color: STYX.ink,
-                textTransform: 'uppercase',
-              }}
-            >
-              {c.name}
-            </div>
-          </MegaLink>
-        ))}
       </div>
     </div>
   );
@@ -860,6 +936,16 @@ const NAV_ITEMS: NavItem[] = [
    Main Nav export
    ═══════════════════════════════════════════════════════════════ */
 
+function HamburgerIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <line x1="3" y1="6" x2="21" y2="6" />
+      <line x1="3" y1="12" x2="21" y2="12" />
+      <line x1="3" y1="18" x2="21" y2="18" />
+    </svg>
+  );
+}
+
 export function StyxNav({collections: collectionsProp}: {collections?: CollectionNode[]}) {
   // Build a set of existing collection handles for dynamic menu filtering
   const rootData2 = useRouteLoaderData<RootLoader>('root');
@@ -871,6 +957,12 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
     isOpen: isCartOpen,
     openDrawer: openCart,
     closeDrawer: closeCart,
+  } = useDrawer();
+
+  const {
+    isOpen: isMobileMenuOpen,
+    openDrawer: openMobileMenu,
+    closeDrawer: closeMobileMenu,
   } = useDrawer();
 
   const addToCartFetchers = useCartFetchers(CartForm.ACTIONS.LinesAdd);
@@ -925,7 +1017,56 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
         </div>
       </Drawer>
 
-      <div style={{position: 'sticky', top: 0, background: STYX.bone, zIndex: 40}}>
+      {/* Mobile Menu Drawer */}
+      <Drawer
+        open={isMobileMenuOpen}
+        onClose={closeMobileMenu}
+        heading="Menu"
+        openFrom="left"
+      >
+        <div style={{padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 0}}>
+          {NAV_ITEMS.map((item) => (
+            <Link
+              key={item.label}
+              to={item.to}
+              prefetch="intent"
+              onClick={closeMobileMenu}
+              style={{
+                fontFamily: FONT.cinzel,
+                fontSize: 14,
+                letterSpacing: '0.15em',
+                textTransform: 'uppercase',
+                color: STYX.ink,
+                textDecoration: 'none',
+                padding: '18px 0',
+                borderBottom: `1px solid ${STYX.line}`,
+                display: 'block',
+              }}
+            >
+              {item.label}
+            </Link>
+          ))}
+          <Link
+            to="/account"
+            onClick={closeMobileMenu}
+            style={{
+              fontFamily: FONT.cinzel,
+              fontSize: 14,
+              letterSpacing: '0.15em',
+              textTransform: 'uppercase',
+              color: STYX.silt,
+              textDecoration: 'none',
+              padding: '18px 0',
+              borderBottom: `1px solid ${STYX.line}`,
+              display: 'block',
+            }}
+          >
+            Account
+          </Link>
+        </div>
+      </Drawer>
+
+      <div className="styx-nav" style={{position: 'sticky', top: 0, background: STYX.bone, zIndex: 40}}>
         {/* ── Top bar ── */}
         <nav
           style={{
@@ -939,8 +1080,25 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
             zIndex: 2,
           }}
         >
+          {/* Mobile hamburger */}
+          <button
+            className="styx-nav-hamburger"
+            onClick={openMobileMenu}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: 4,
+              color: STYX.ink,
+              display: 'none',
+            }}
+          >
+            <HamburgerIcon />
+          </button>
+
           {/* Left: shop links */}
           <div
+            className="styx-nav-links"
             style={{
               display: 'flex',
               gap: 32,

@@ -1290,8 +1290,8 @@ export default function Product() {
                     gap: 24,
                   }}
                 >
-                  {products.nodes.slice(0, 4).map((product: any) => (
-                    <StyxProductCard key={product.id} product={product} />
+                  {products.nodes.slice(0, 4).map((product: any, i: number) => (
+                    <StyxProductCard key={product.id} product={product} index={i} />
                   ))}
                 </div>
               </section>

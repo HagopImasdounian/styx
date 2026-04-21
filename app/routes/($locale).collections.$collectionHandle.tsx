@@ -1033,11 +1033,12 @@ function ProductsLoadedOnScroll({
       }}
       data-test="product-grid"
     >
-      {cards.map(({product, variantIndex, key}) => (
+      {cards.map(({product, variantIndex, key}, i) => (
         <StyxProductCard
           key={key}
           product={product}
           variantIndex={variantIndex}
+          index={i}
         />
       ))}
     </div>

@@ -31,12 +31,13 @@ type ProductNode = {
 export function FeaturedRow({products}: {products: ProductNode[]}) {
   return (
     <section
+      className="styx-featured"
       style={{
         background: STYX.bone,
         padding: '96px 56px',
       }}
     >
-      <StyxLabel>Featured · IV</StyxLabel>
+      <StyxLabel>Featured · III</StyxLabel>
       <h2
         style={{
           fontFamily: FONT.cinzel,
@@ -52,14 +53,15 @@ export function FeaturedRow({products}: {products: ProductNode[]}) {
       </h2>
 
       <div
+        data-grid=""
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(4, 1fr)',
           gap: 24,
         }}
       >
-        {products.slice(0, 4).map((product) => (
-          <StyxProductCard key={product.id} product={product} />
+        {products.slice(0, 4).map((product, i) => (
+          <StyxProductCard key={product.id} product={product} index={i} />
         ))}
       </div>
     </section>

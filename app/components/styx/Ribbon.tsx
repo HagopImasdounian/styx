@@ -14,6 +14,7 @@ const TRIPLE = [...ITEMS, ...ITEMS, ...ITEMS];
 export function Ribbon() {
   return (
     <div
+      className="styx-ribbon"
       style={{
         background: STYX.parchment,
         borderTop: `1px solid ${STYX.line}`,

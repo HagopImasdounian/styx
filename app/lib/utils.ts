@@ -299,7 +299,9 @@ export function useIsStyxPath() {
   return (
     p === '/' ||
     p.startsWith('/collections/') ||
-    p.startsWith('/products/')
+    p.startsWith('/products/') ||
+    p === '/about' ||
+    p === '/contact'
   );
 }
 

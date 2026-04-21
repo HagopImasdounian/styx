@@ -1,7 +1,9 @@
+import {useState, useCallback} from 'react';
 import {Image, Money} from '@shopify/hydrogen';
 import {Link} from '@remix-run/react';
 import {STYX, FONT} from './constants';
 import {PlaceholderImage} from './PlaceholderImage';
+import {Obol} from './Obol';
 
 type VariantNode = {
   id: string;
@@ -66,11 +68,15 @@ function toGrams(weight: number, unit?: string | null): number {
 export function StyxProductCard({
   product,
   variantIndex = 0,
+  index = 0,
 }: {
   product: ProductNode;
   variantIndex?: number;
+  index?: number;
 }) {
   const variant = product.variants.nodes[variantIndex] ?? product.variants.nodes[0];
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const onImageLoad = useCallback(() => setImageLoaded(true), []);
   if (!variant) return null;
 
   // Detect karat from the displayed variant's selected options
@@ -139,14 +145,43 @@ export function StyxProductCard({
           position: 'relative',
           overflow: 'hidden',
           aspectRatio: '4/5',
+          background: STYX.parchment,
         }}
       >
+        {/* Obol coin-flip loader — visible until image loads */}
+        {variant.image && !imageLoaded && (
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 1,
+            }}
+          >
+            <Obol
+              size={48}
+              color={STYX.gold}
+              speed={3}
+              flyIn
+              delay={index * 150}
+            />
+          </div>
+        )}
         {variant.image ? (
           <Image
             data={variant.image}
             aspectRatio="4/5"
             sizes="(min-width: 1200px) 25vw, 50vw"
-            style={{width: '100%', height: '100%', objectFit: 'cover'}}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              opacity: imageLoaded ? 1 : 0,
+              transition: 'opacity 0.4s ease',
+            }}
+            onLoad={onImageLoad}
           />
         ) : (
           <PlaceholderImage

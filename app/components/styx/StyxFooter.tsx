@@ -1,3 +1,4 @@
+import {Link} from '@remix-run/react';
 import {STYX, FONT, type CollectionNode} from './constants';
 
 export function StyxFooter({collections = []}: {collections?: CollectionNode[]}) {
@@ -46,12 +47,14 @@ export function StyxFooter({collections = []}: {collections?: CollectionNode[]})
 
   return (
     <footer
+      className="styx-footer"
       style={{
         background: STYX.graphite,
         padding: '64px 56px 40px',
       }}
     >
       <div
+        data-grid=""
         style={{
           display: 'grid',
           gridTemplateColumns: '1.5fr 1fr 1fr 1fr',
@@ -103,9 +106,10 @@ export function StyxFooter({collections = []}: {collections?: CollectionNode[]})
               {col.heading}
             </div>
             {col.links.map((link) => (
-              <a
+              <Link
                 key={link.label}
-                href={link.to}
+                to={link.to}
+                prefetch="intent"
                 style={linkStyle}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.color = 'rgba(255,255,255,0.8)';
@@ -115,7 +119,7 @@ export function StyxFooter({collections = []}: {collections?: CollectionNode[]})
                 }}
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
           </div>
         ))}

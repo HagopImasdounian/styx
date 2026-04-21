@@ -62,7 +62,9 @@ async function loadCriticalData({context, request}: LoaderFunctionArgs) {
   return {
     shop,
     allProducts: products?.nodes || [],
-    collections: collections?.nodes || [],
+    collections: (collections?.nodes || []).filter(
+      (c: any) => c.products?.nodes?.length > 0,
+    ),
     seo: seoPayload.home({url: request.url}),
   };
 }
@@ -161,6 +163,11 @@ const STYX_COLLECTIONS_QUERY = `#graphql
           altText
           width
           height
+        }
+        products(first: 1) {
+          nodes {
+            id
+          }
         }
       }
     }

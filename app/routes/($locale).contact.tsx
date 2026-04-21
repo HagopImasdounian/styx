@@ -57,6 +57,7 @@ export default function Contact() {
 
       {/* Main Content */}
       <div
+        className="styx-contact-grid"
         style={{
           maxWidth: 1440,
           margin: '0 auto',

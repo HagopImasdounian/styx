@@ -22,6 +22,7 @@ type LookbookProduct = {
 export function Lookbook({products = []}: {products?: LookbookProduct[]}) {
   return (
     <section
+      className="styx-lookbook"
       style={{
         background: STYX.taupe,
         color: STYX.bone,
@@ -53,7 +54,7 @@ export function Lookbook({products = []}: {products?: LookbookProduct[]}) {
         }}
       >
         <div>
-          <StyxLabel>The Lookbook · III</StyxLabel>
+          <StyxLabel>The Lookbook · IV</StyxLabel>
           <h2
             style={{
               fontFamily: FONT.cinzel,
@@ -90,10 +91,11 @@ export function Lookbook({products = []}: {products?: LookbookProduct[]}) {
 
       {/* Grid — use real products if available, otherwise placeholders */}
       <div
+        data-grid=""
         style={{
           display: 'grid',
           gridTemplateColumns: '1.6fr 1fr 1.2fr',
-          gridTemplateRows: '320px 220px 280px',
+          gridTemplateRows: 'minmax(220px, auto) minmax(220px, auto) minmax(220px, auto)',
           gap: 4,
           padding: '0 56px',
         }}

@@ -13,6 +13,7 @@ export function Obol({
   speed = 4,
   spin = true,
   flyIn = false,
+  delay = 0,
   style,
 }: {
   size?: number;
@@ -20,6 +21,7 @@ export function Obol({
   speed?: number;
   spin?: boolean;
   flyIn?: boolean;
+  delay?: number;
   style?: React.CSSProperties;
 }) {
   const id = useId();
@@ -121,17 +123,17 @@ export function Obol({
     const FLYIN_MS = 2200;
     return (
       <div style={{width: size, height: size, display: 'inline-block', perspective: `${size * 8}px`, isolation: 'isolate' as const, ...style}}>
-        {/* Outer: one-shot fly-in */}
+        {/* Outer: one-shot fly-in with optional stagger delay */}
         <div style={{
           width: '100%', height: '100%',
           transformStyle: 'preserve-3d' as const,
-          animation: `styx-coin-flyin ${FLYIN_MS}ms cubic-bezier(.2,.7,.25,1) both`,
+          animation: `styx-coin-flyin ${FLYIN_MS}ms cubic-bezier(.2,.7,.25,1) ${delay}ms both`,
         }}>
           {/* Inner: continuous flip after fly-in */}
           <div style={{
             width: '100%', height: '100%',
             transformStyle: 'preserve-3d' as const,
-            animation: spin ? `styx-coinflip ${speed}s linear ${FLYIN_MS}ms infinite` : 'none',
+            animation: spin ? `styx-coinflip ${speed}s linear ${FLYIN_MS + delay}ms infinite` : 'none',
           }}>
             {coinInternals}
           </div>

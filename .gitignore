@@ -7,3 +7,17 @@ node_modules
 .env
 .shopify
 .react-router
+.DS_Store
+
+# Data import files & scripts (not part of the app)
+*.csv
+*.xlsx
+*.log
+*.py
+/scripts/
+/delete-all-products.mjs
+/fetch-chains.mjs
+/fetch-chains-shopify.mjs
+/woo-weights.json
+METAFIELDS.md
+TODO_FIXES.md

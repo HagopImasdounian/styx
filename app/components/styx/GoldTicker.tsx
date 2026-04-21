@@ -67,6 +67,7 @@ export function GoldTicker() {
 
   return (
     <div
+      className="styx-ticker"
       style={{
         background: STYX.ink,
         color: STYX.bone,
@@ -126,18 +127,19 @@ export function GoldTicker() {
             {change.toFixed(2)} ({pct}%)
           </span>
         </div>
-        <div style={cell}>
+        <div style={cell} data-cell-extra="">
           <span style={lbl}>10k / g</span>
           <span style={val}>${fmt(per10k)}</span>
         </div>
-        <div style={cell}>
+        <div style={cell} data-cell-extra="">
           <span style={lbl}>14k / g</span>
           <span style={val}>${fmt(per14k)}</span>
         </div>
       </div>
 
       {/* Right link */}
-      <span
+      <Link
+        to="/about"
         style={{
           fontFamily: FONT.cinzel,
           fontSize: 10,
@@ -146,10 +148,11 @@ export function GoldTicker() {
           textTransform: 'uppercase',
           flex: '0 0 auto',
           cursor: 'pointer',
+          textDecoration: 'none',
         }}
       >
         Why we show this
-      </span>
+      </Link>
     </div>
   );
 }

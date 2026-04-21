@@ -20,7 +20,7 @@ export function CategoryTiles({
   if (cats.length === 0) return null;
 
   return (
-    <section style={{background: STYX.paper, padding: '100px 56px'}}>
+    <section className="styx-categories" style={{background: STYX.paper, padding: '100px 56px'}}>
       <div
         style={{
           display: 'flex',
@@ -72,6 +72,7 @@ export function CategoryTiles({
         </div>
       </div>
       <div
+        data-grid=""
         style={{
           display: 'grid',
           gridTemplateColumns: `repeat(${Math.min(cats.length, 3)}, 1fr)`,

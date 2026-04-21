@@ -3,12 +3,15 @@ import {STYX} from './constants';
 export function StoneBg({
   children,
   style,
+  className,
 }: {
   children: React.ReactNode;
   style?: React.CSSProperties;
+  className?: string;
 }) {
   return (
     <div
+      className={className}
       style={{
         position: 'relative',
         background: STYX.bone,

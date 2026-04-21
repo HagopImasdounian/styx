@@ -14,6 +14,7 @@ export function Newsletter() {
 
   return (
     <section
+      className="styx-newsletter"
       style={{
         background: STYX.bone,
         padding: '96px 56px',
