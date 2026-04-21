@@ -53,7 +53,7 @@ export default function CollectionsIndex() {
       c.handle !== 'frontpage' &&
       c.handle !== 'hydrogen' &&
       c.handle !== 'automated-collection' &&
-      (c.productsCount?.count ?? c.productsCount ?? 0) > 0,
+      (c.products?.nodes?.length ?? 0) > 0,
   );
 
   // Split into "chain type" collections and "filter" collections (metal, karat, etc.)
@@ -160,7 +160,7 @@ export default function CollectionsIndex() {
                 color: STYX.gold,
               }}
             >
-              {allChains.productsCount?.count ?? allChains.productsCount} pieces
+              {allChains.products?.nodes?.length ?? 0} pieces
             </span>
           </div>
           <span
@@ -279,7 +279,7 @@ export default function CollectionsIndex() {
                     color: STYX.gold,
                   }}
                 >
-                  {c.productsCount?.count ?? c.productsCount} pieces
+                  {c.products?.nodes?.length ?? 0} pieces
                 </div>
               </Link>
             ))}
@@ -370,7 +370,7 @@ function CollectionTile({
             letterSpacing: '0.05em',
           }}
         >
-          {collection.productsCount?.count ?? collection.productsCount}
+          {collection.products?.nodes?.length ?? 0}
         </div>
       </div>
 
@@ -423,8 +423,10 @@ const COLLECTIONS_QUERY = `#graphql
         title
         handle
         description
-        productsCount {
-          count
+        products(first: 1) {
+          nodes {
+            id
+          }
         }
         image {
           url
