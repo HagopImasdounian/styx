@@ -1,5 +1,5 @@
 {
-  "name": "demo-store",
+  "name": "styx",
   "private": true,
   "sideEffects": false,
   "version": "2.1.6",
@@ -8,9 +8,7 @@
     "dev": "shopify hydrogen dev --codegen",
     "build": "shopify hydrogen build --codegen",
     "preview": "npm run build && shopify hydrogen preview",
-    "e2e": "npx playwright test",
-    "e2e:ui": "npx playwright test --ui",
-    "lint": "eslint --no-error-on-unmatched-pattern --ext .js,.ts,.jsx,.tsx .",
+"lint": "eslint --no-error-on-unmatched-pattern --ext .js,.ts,.jsx,.tsx .",
     "format": "prettier --write --ignore-unknown .",
     "format:check": "prettier --check --ignore-unknown .",
     "typecheck": "tsc --noEmit"
@@ -28,7 +26,6 @@
     "@shopify/hydrogen": "^2025.1.1",
     "@shopify/remix-oxygen": "^2.0.10",
     "clsx": "^1.2.1",
-    "cross-env": "^7.0.3",
     "graphql": "^16.6.0",
     "graphql-tag": "^2.12.6",
     "isbot": "^3.8.0",
@@ -42,8 +39,7 @@
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^5.0.2",
-    "@playwright/test": "^1.48.2",
-    "@remix-run/dev": "^2.17.4",
+"@remix-run/dev": "^2.17.4",
     "@remix-run/eslint-config": "^2.15.3",
     "@shopify/eslint-plugin": "^42.0.1",
     "@shopify/hydrogen-codegen": "^0.3.2",

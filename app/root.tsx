@@ -33,6 +33,7 @@ import {seoPayload} from '~/lib/seo.server';
 import styles from '~/styles/app.css?url';
 
 import {DEFAULT_LOCALE, parseMenu} from './lib/utils';
+import {getGoldData} from './lib/gold.server';
 
 export type RootLoader = typeof loader;
 
@@ -74,6 +75,15 @@ export const links: LinksFunction = () => {
       rel: 'preconnect',
       href: 'https://shop.app',
     },
+    {
+      rel: 'preconnect',
+      href: 'https://fonts.googleapis.com',
+    },
+    {
+      rel: 'preconnect',
+      href: 'https://fonts.gstatic.com',
+      crossOrigin: 'anonymous' as const,
+    },
     {rel: 'icon', type: 'image/svg+xml', href: favicon},
   ];
 };
@@ -96,9 +106,15 @@ export async function loader(args: LoaderFunctionArgs) {
  * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
  */
 async function loadCriticalData({request, context}: LoaderFunctionArgs) {
-  const [layout] = await Promise.all([
+  const [layout, goldData, collectionsData] = await Promise.all([
     getLayoutData(context),
-    // Add other queries here, so that they are loaded in parallel
+    getGoldData(),
+    context.storefront.query(ROOT_COLLECTIONS_QUERY, {
+      variables: {
+        country: context.storefront.i18n.country,
+        language: context.storefront.i18n.language,
+      },
+    }),
   ]);
 
   const seo = seoPayload.root({shop: layout.shop, url: request.url});
@@ -108,6 +124,8 @@ async function loadCriticalData({request, context}: LoaderFunctionArgs) {
   return {
     layout,
     seo,
+    goldData,
+    collections: collectionsData?.collections?.nodes || [],
     shop: getShopAnalytics({
       storefront,
       publicStorefrontId: env.PUBLIC_STOREFRONT_ID,
@@ -314,3 +332,16 @@ async function getLayoutData({storefront, env}: AppLoadContext) {
 
   return {shop: data.shop, headerMenu, footerMenu};
 }
+
+const ROOT_COLLECTIONS_QUERY = `#graphql
+  query rootCollections($country: CountryCode, $language: LanguageCode)
+  @inContext(country: $country, language: $language) {
+    collections(first: 100, sortKey: TITLE) {
+      nodes {
+        id
+        title
+        handle
+      }
+    }
+  }
+` as const;

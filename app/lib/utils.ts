@@ -286,6 +286,23 @@ export function useIsHomePath() {
   return strippedPathname === '/';
 }
 
+/**
+ * Returns true for routes that use the Styx design system
+ * (their own nav/footer/ticker). PageLayout skips the default
+ * header and footer for these.
+ */
+export function useIsStyxPath() {
+  const {pathname} = useLocation();
+  const rootData = useRouteLoaderData<RootLoader>('root');
+  const selectedLocale = rootData?.selectedLocale ?? DEFAULT_LOCALE;
+  const p = pathname.replace(selectedLocale.pathPrefix, '');
+  return (
+    p === '/' ||
+    p.startsWith('/collections/') ||
+    p.startsWith('/products/')
+  );
+}
+
 export function parseAsCurrency(value: number, locale: I18nLocale) {
   return new Intl.NumberFormat(locale.language + '-' + locale.country, {
     style: 'currency',

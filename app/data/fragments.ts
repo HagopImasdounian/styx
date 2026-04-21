@@ -44,7 +44,9 @@ export const PRODUCT_CARD_FRAGMENT = `#graphql
     publishedAt
     handle
     vendor
-    variants(first: 1) {
+    productType
+    tags
+    variants(first: 100) {
       nodes {
         id
         availableForSale
@@ -66,6 +68,8 @@ export const PRODUCT_CARD_FRAGMENT = `#graphql
           name
           value
         }
+        weight
+        weightUnit
         product {
           handle
           title

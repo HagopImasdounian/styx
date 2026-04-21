@@ -24,7 +24,9 @@ import {
   type EnhancedMenu,
   type ChildEnhancedMenuItem,
   useIsHomePath,
+  useIsStyxPath,
 } from '~/lib/utils';
+import {STYX, FONT, GoldTicker, StyxNav, StyxFooter} from '~/components/styx';
 import {useIsHydrated} from '~/hooks/useIsHydrated';
 import {useCartFetchers} from '~/hooks/useCartFetchers';
 import type {RootLoader} from '~/root';
@@ -39,22 +41,53 @@ type LayoutProps = {
 
 export function PageLayout({children, layout}: LayoutProps) {
   const {headerMenu, footerMenu} = layout || {};
+  const isStyxPage = useIsStyxPath();
+
+  // Styx pages (home, collections, products) handle their own
+  // GoldTicker + StyxNav + StyxFooter — skip the default chrome.
+  if (isStyxPage) {
+    return (
+      <>
+        <div className="flex flex-col min-h-screen">
+          <div className="">
+            <a href="#mainContent" className="sr-only">
+              Skip to content
+            </a>
+          </div>
+          <main role="main" id="mainContent" className="flex-grow">
+            {children}
+          </main>
+        </div>
+      </>
+    );
+  }
+
+  // All other pages: wrap with Styx chrome (ticker + nav + footer)
+  // and a contained content area with the bone background.
   return (
     <>
-      <div className="flex flex-col min-h-screen">
-        <div className="">
-          <a href="#mainContent" className="sr-only">
-            Skip to content
-          </a>
-        </div>
-        {headerMenu && layout?.shop.name && (
-          <Header title={layout.shop.name} menu={headerMenu} />
-        )}
-        <main role="main" id="mainContent" className="flex-grow">
+      <div style={{background: STYX.bone, minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
+        <a href="#mainContent" className="sr-only">
+          Skip to content
+        </a>
+        <GoldTicker />
+        <StyxNav />
+        <main
+          role="main"
+          id="mainContent"
+          style={{
+            flex: 1,
+            maxWidth: 1440,
+            margin: '0 auto',
+            padding: '48px 56px',
+            width: '100%',
+            boxSizing: 'border-box',
+          }}
+        >
           {children}
         </main>
+        <StyxFooter />
       </div>
-      {footerMenu && <Footer menu={footerMenu} />}
     </>
   );
 }
