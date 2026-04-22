@@ -14,10 +14,20 @@ export default function handleRequest(
   remixContext: EntryContext,
   context: AppLoadContext,
 ) {
+  // Read from context.env if available, fall back to process.env
+  const checkoutDomain =
+    context?.env?.PUBLIC_CHECKOUT_DOMAIN ||
+    process.env.PUBLIC_CHECKOUT_DOMAIN ||
+    '';
+  const storeDomain =
+    context?.env?.PUBLIC_STORE_DOMAIN ||
+    process.env.PUBLIC_STORE_DOMAIN ||
+    '';
+
   const {nonce, header, NonceProvider} = createContentSecurityPolicy({
     shop: {
-      checkoutDomain: context.env.PUBLIC_CHECKOUT_DOMAIN,
-      storeDomain: context.env.PUBLIC_STORE_DOMAIN,
+      checkoutDomain,
+      storeDomain,
     },
     scriptSrc: [
       'self',
