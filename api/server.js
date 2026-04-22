@@ -6,8 +6,16 @@ import {
   createStorefrontClient,
   storefrontRedirect,
   createCustomerAccountClient,
-  getStorefrontHeaders,
 } from '@shopify/hydrogen';
+
+function getStorefrontHeaders(request) {
+  return {
+    requestGroupId: request.headers.get('request-id') || '',
+    buyerIp: request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || '',
+    cookie: request.headers.get('cookie') || '',
+    purpose: request.headers.get('purpose') || request.headers.get('x-purpose') || '',
+  };
+}
 
 const build = await import('../build/server/index.js');
 
