@@ -1,4 +1,4 @@
-import {type MetaFunction} from '@remix-run/node';
+import {type MetaFunction} from '@shopify/remix-oxygen';
 import {Link} from '@remix-run/react';
 import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel, Obol} from '~/components/styx';
 

@@ -6,9 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "shopify hydrogen dev --codegen",
-    "build": "remix vite:build",
-    "preview": "npm run build && remix-serve build/server/index.js",
-    "codegen": "shopify hydrogen codegen",
+    "build": "shopify hydrogen build --codegen",
+    "preview": "npm run build && shopify hydrogen preview",
 "lint": "eslint --no-error-on-unmatched-pattern --ext .js,.ts,.jsx,.tsx .",
     "format": "prettier --write --ignore-unknown .",
     "format:check": "prettier --check --ignore-unknown .",

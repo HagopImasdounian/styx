@@ -1,4 +1,4 @@
-import {json, type LoaderFunctionArgs} from '@remix-run/node';
+import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {ProductSortKeys} from '@shopify/hydrogen/storefront-api-types';
 import {flattenConnection} from '@shopify/hydrogen';
 import invariant from 'tiny-invariant';

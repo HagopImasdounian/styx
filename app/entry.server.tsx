@@ -1,33 +1,20 @@
-import type {AppLoadContext, EntryContext} from '@remix-run/node';
+import type {AppLoadContext, EntryContext} from '@shopify/remix-oxygen';
 import {RemixServer} from '@remix-run/react';
 import isbot from 'isbot';
-import {renderToPipeableStream} from 'react-dom/server';
+import {renderToReadableStream} from 'react-dom/server';
 import {createContentSecurityPolicy} from '@shopify/hydrogen';
-import {PassThrough} from 'node:stream';
 
-const ABORT_DELAY = 5000;
-
-export default function handleRequest(
+export default async function handleRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
   remixContext: EntryContext,
   context: AppLoadContext,
 ) {
-  // Read from context.env if available, fall back to process.env
-  const checkoutDomain =
-    context?.env?.PUBLIC_CHECKOUT_DOMAIN ||
-    process.env.PUBLIC_CHECKOUT_DOMAIN ||
-    '';
-  const storeDomain =
-    context?.env?.PUBLIC_STORE_DOMAIN ||
-    process.env.PUBLIC_STORE_DOMAIN ||
-    '';
-
   const {nonce, header, NonceProvider} = createContentSecurityPolicy({
     shop: {
-      checkoutDomain,
-      storeDomain,
+      checkoutDomain: context.env.PUBLIC_CHECKOUT_DOMAIN,
+      storeDomain: context.env.PUBLIC_STORE_DOMAIN,
     },
     scriptSrc: [
       'self',
@@ -39,47 +26,29 @@ export default function handleRequest(
     ],
   });
 
-  const callbackName = isbot(request.headers.get('user-agent'))
-    ? 'onAllReady'
-    : 'onShellReady';
-
-  return new Promise((resolve, reject) => {
-    let shellRendered = false;
-
-    const {pipe, abort} = renderToPipeableStream(
-      <NonceProvider>
-        <RemixServer context={remixContext} url={request.url} nonce={nonce} />
-      </NonceProvider>,
-      {
-        nonce,
-        [callbackName]() {
-          shellRendered = true;
-          const body = new PassThrough();
-
-          responseHeaders.set('Content-Type', 'text/html');
-          responseHeaders.set('Content-Security-Policy', header);
-
-          resolve(
-            new Response(body as unknown as ReadableStream, {
-              headers: responseHeaders,
-              status: responseStatusCode,
-            }),
-          );
-
-          pipe(body);
-        },
-        onShellError(error: unknown) {
-          reject(error);
-        },
-        onError(error: unknown) {
-          responseStatusCode = 500;
-          if (shellRendered) {
-            console.error(error);
-          }
-        },
+  const body = await renderToReadableStream(
+    <NonceProvider>
+      <RemixServer context={remixContext} url={request.url} />
+    </NonceProvider>,
+    {
+      nonce,
+      signal: request.signal,
+      onError(error) {
+        // eslint-disable-next-line no-console
+        console.error(error);
+        responseStatusCode = 500;
       },
-    );
+    },
+  );
 
-    setTimeout(abort, ABORT_DELAY);
+  if (isbot(request.headers.get('user-agent'))) {
+    await body.allReady;
+  }
+
+  responseHeaders.set('Content-Type', 'text/html');
+  responseHeaders.set('Content-Security-Policy', header);
+  return new Response(body, {
+    headers: responseHeaders,
+    status: responseStatusCode,
   });
 }

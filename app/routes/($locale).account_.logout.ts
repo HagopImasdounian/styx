@@ -4,7 +4,7 @@ import {
   type AppLoadContext,
   type LoaderFunctionArgs,
   type ActionFunctionArgs,
-} from '@remix-run/node';
+} from '@shopify/remix-oxygen';
 
 export async function doLogout(context: AppLoadContext) {
   return context.customerAccount.logout();

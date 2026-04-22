@@ -2,7 +2,7 @@ import {
   defer,
   type MetaArgs,
   type LoaderFunctionArgs,
-} from '@remix-run/node';
+} from '@shopify/remix-oxygen';
 import {Suspense} from 'react';
 import {Await, useLoaderData} from '@remix-run/react';
 import {getSeoMeta} from '@shopify/hydrogen';

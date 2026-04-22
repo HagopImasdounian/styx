@@ -4,7 +4,7 @@ import {
   type LoaderFunctionArgs,
   type ActionFunctionArgs,
   json,
-} from '@remix-run/node';
+} from '@shopify/remix-oxygen';
 import {CartForm, type CartQueryDataReturn, Analytics} from '@shopify/hydrogen';
 
 import {isLocalPath} from '~/lib/utils';

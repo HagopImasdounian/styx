@@ -2,7 +2,7 @@ import {
   json,
   type MetaArgs,
   type LoaderFunctionArgs,
-} from '@remix-run/node';
+} from '@shopify/remix-oxygen';
 import {useLoaderData, Link} from '@remix-run/react';
 import {Image, getSeoMeta} from '@shopify/hydrogen';
 import {seoPayload} from '~/lib/seo.server';

@@ -1,4 +1,4 @@
-import {redirect, type LoaderFunctionArgs} from '@remix-run/node';
+import {redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import invariant from 'tiny-invariant';
 
 import {Button} from '~/components/Button';

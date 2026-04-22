@@ -1,7 +1,10 @@
 // @ts-ignore
 // Virtual entry point for the app
 import * as remixBuild from 'virtual:remix/server-build';
-import {createRequestHandler} from '@remix-run/node';
+import {
+  createRequestHandler,
+  getStorefrontHeaders,
+} from '@shopify/remix-oxygen';
 import {
   cartGetIdDefault,
   cartSetIdDefault,
@@ -9,51 +12,39 @@ import {
   createStorefrontClient,
   storefrontRedirect,
   createCustomerAccountClient,
-  getStorefrontHeaders,
 } from '@shopify/hydrogen';
 
 import {AppSession} from '~/lib/session.server';
 import {getLocaleFromRequest} from '~/lib/utils';
 
 /**
- * Node.js-compatible request handler for Vercel deployment.
+ * Export a fetch handler in module format.
  */
 export default {
-  async fetch(request: Request): Promise<Response> {
+  async fetch(
+    request: Request,
+    env: Env,
+    executionContext: ExecutionContext,
+  ): Promise<Response> {
     try {
-      const env: Env = {
-        SESSION_SECRET: process.env.SESSION_SECRET!,
-        PUBLIC_STOREFRONT_API_TOKEN:
-          process.env.PUBLIC_STOREFRONT_API_TOKEN!,
-        PRIVATE_STOREFRONT_API_TOKEN:
-          process.env.PRIVATE_STOREFRONT_API_TOKEN ?? '',
-        PUBLIC_STORE_DOMAIN: process.env.PUBLIC_STORE_DOMAIN!,
-        PUBLIC_STOREFRONT_ID: process.env.PUBLIC_STOREFRONT_ID ?? '',
-        PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID:
-          process.env.PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID ?? '',
-        PUBLIC_CUSTOMER_ACCOUNT_API_URL:
-          process.env.PUBLIC_CUSTOMER_ACCOUNT_API_URL ?? '',
-        PUBLIC_CHECKOUT_DOMAIN:
-          process.env.PUBLIC_CHECKOUT_DOMAIN ?? '',
-        SHOP_ID: process.env.SHOP_ID ?? '',
-      };
-
-      if (!env.SESSION_SECRET) {
+      /**
+       * Open a cache instance in the worker and a custom session instance.
+       */
+      if (!env?.SESSION_SECRET) {
         throw new Error('SESSION_SECRET environment variable is not set');
       }
 
-      const waitUntil = (promise: Promise<unknown>) => {
-        // On Vercel serverless, background work isn't guaranteed.
-        // We catch errors to prevent unhandled rejections.
-        promise.catch(() => {});
-      };
-
-      const session = await AppSession.init(request, [env.SESSION_SECRET]);
+      const waitUntil = executionContext.waitUntil.bind(executionContext);
+      const [cache, session] = await Promise.all([
+        caches.open('hydrogen'),
+        AppSession.init(request, [env.SESSION_SECRET]),
+      ]);
 
       /**
        * Create Hydrogen's Storefront client.
        */
       const {storefront} = createStorefrontClient({
+        cache,
         waitUntil,
         i18n: getLocaleFromRequest(request),
         publicStorefrontToken: env.PUBLIC_STOREFRONT_API_TOKEN,
@@ -85,27 +76,37 @@ export default {
        * Create a Remix request handler and pass
        * Hydrogen's Storefront client to the loader context.
        */
-      const handleRequest = createRequestHandler(remixBuild, process.env.NODE_ENV);
-
-      const response = await handleRequest(request, {
-        session,
-        waitUntil,
-        storefront,
-        customerAccount,
-        cart,
-        env,
+      const handleRequest = createRequestHandler({
+        build: remixBuild,
+        mode: process.env.NODE_ENV,
+        getLoadContext: () => ({
+          session,
+          waitUntil,
+          storefront,
+          customerAccount,
+          cart,
+          env,
+        }),
       });
+
+      const response = await handleRequest(request);
 
       if (session.isPending) {
         response.headers.set('Set-Cookie', await session.commit());
       }
 
       if (response.status === 404) {
+        /**
+         * Check for redirects only when there's a 404 from the app.
+         * If the redirect doesn't exist, then `storefrontRedirect`
+         * will pass through the 404 response.
+         */
         return storefrontRedirect({request, response, storefront});
       }
 
       return response;
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error(error);
       return new Response('An unexpected error occurred', {status: 500});
     }
