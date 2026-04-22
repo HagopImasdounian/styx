@@ -22,6 +22,11 @@ export default defineConfig({
     optimizeDeps: {
       include: ['typographic-base'],
     },
+    noExternal: [
+      'react-use',
+      'react-intersection-observer',
+      'typographic-base',
+    ],
   },
   optimizeDeps: {
     include: [
