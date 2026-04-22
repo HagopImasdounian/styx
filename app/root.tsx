@@ -84,6 +84,10 @@ export const links: LinksFunction = () => {
       href: 'https://fonts.gstatic.com',
       crossOrigin: 'anonymous' as const,
     },
+    {
+      rel: 'stylesheet',
+      href: 'https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap',
+    },
     {rel: 'icon', type: 'image/svg+xml', href: favicon},
   ];
 };

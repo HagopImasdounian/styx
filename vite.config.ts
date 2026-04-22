@@ -21,7 +21,7 @@ export default defineConfig({
   ],
   ssr: {
     optimizeDeps: {
-      include: ['@remix-run/node', 'typographic-base'],
+      include: ['typographic-base'],
     },
   },
   optimizeDeps: {

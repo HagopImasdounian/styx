@@ -31,9 +31,12 @@ function root({
 }): SeoConfig {
   return {
     title: shop?.name,
-    titleTemplate: '%s | Hydrogen Demo Store',
-    description: truncate(shop?.description ?? ''),
-    handle: '@shopify',
+    titleTemplate: '%s | STYX Gold',
+    description: truncate(
+      shop?.description ??
+        'Solid gold chains — 10K & 14K — priced transparently from the London fix. No markup mystery.',
+    ),
+    handle: '@styxgold',
     url,
     robots: {
       noIndex: false,
@@ -41,17 +44,16 @@ function root({
     },
     jsonLd: {
       '@context': 'https://schema.org',
-      '@type': 'Organization',
-      name: shop.name,
+      '@type': 'JewelryStore',
+      name: 'STYX Gold',
       logo: shop.brand?.logo?.image?.url,
+      description:
+        'Solid gold chains priced transparently from the London fix. Three generations in the gold trade.',
       sameAs: [
-        'https://twitter.com/shopify',
-        'https://facebook.com/shopify',
-        'https://instagram.com/shopify',
-        'https://youtube.com/shopify',
-        'https://tiktok.com/@shopify',
+        'https://instagram.com/styxgold',
       ],
       url,
+      priceRange: '$$$',
       potentialAction: {
         '@type': 'SearchAction',
         target: `${url}search?q={search_term}`,
@@ -63,19 +65,35 @@ function root({
 
 function home({url}: {url: Request['url']}): SeoConfig {
   return {
-    title: 'Home',
-    titleTemplate: '%s | Hydrogen Demo Store',
-    description: 'The best place to buy snowboarding products',
+    title: 'Solid Gold Chains — Priced Honestly',
+    titleTemplate: '%s | STYX Gold',
+    description:
+      'Solid gold chains — 10K & 14K — weighed, tested, and priced from the London fix. No markup mystery. Three generations in the gold trade.',
     url,
     robots: {
       noIndex: false,
       noFollow: false,
     },
-    jsonLd: {
-      '@context': 'https://schema.org',
-      '@type': 'WebPage',
-      name: 'Home page',
-    },
+    jsonLd: [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'WebPage',
+        name: 'STYX Gold — Solid Gold Chains',
+        description:
+          'Solid gold chains priced transparently from the London fix.',
+        url,
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'JewelryStore',
+        name: 'STYX Gold',
+        description:
+          'Three generations in the gold trade. Solid gold chains — 10K & 14K — priced from the London fix.',
+        url,
+        priceRange: '$$$',
+        currenciesAccepted: 'USD, CAD',
+      },
+    ],
   };
 }
 
@@ -157,6 +175,7 @@ function productJsonLd({
       name: product.title,
       offers,
       sku: selectedVariant?.sku ?? '',
+      material: 'Gold',
       url,
     },
   ];
@@ -258,7 +277,7 @@ function collection({
     description: truncate(
       collection?.seo?.description ?? collection?.description ?? '',
     ),
-    titleTemplate: '%s | Collection',
+    titleTemplate: '%s | STYX Gold',
     url,
     media: {
       type: 'image',
@@ -314,8 +333,8 @@ function listCollections({
 }): SeoConfig {
   return {
     title: 'Collections',
-    titleTemplate: '%s | Collections',
-    description: 'All hydrogen collections',
+    titleTemplate: '%s | STYX Gold',
+    description: 'Browse all solid gold chain collections — by style, weight, karat, and metal.',
     url,
     jsonLd: collectionsJsonLd({collections, url}),
   };
@@ -339,7 +358,7 @@ function article({
   return {
     title: article?.seo?.title ?? article?.title,
     description: truncate(article?.seo?.description ?? ''),
-    titleTemplate: '%s | Journal',
+    titleTemplate: '%s | STYX Gold',
     url,
     media: {
       type: 'image',
@@ -374,7 +393,7 @@ function blog({
   return {
     title: blog?.seo?.title,
     description: truncate(blog?.seo?.description || ''),
-    titleTemplate: '%s | Blog',
+    titleTemplate: '%s | STYX Gold',
     url,
     jsonLd: {
       '@context': 'https://schema.org',
@@ -396,7 +415,7 @@ function page({
   return {
     description: truncate(page?.seo?.description || ''),
     title: page?.seo?.title ?? page?.title,
-    titleTemplate: '%s | Page',
+    titleTemplate: '%s | STYX Gold',
     url,
     jsonLd: {
       '@context': 'https://schema.org',
@@ -416,7 +435,7 @@ function policy({
   return {
     description: truncate(policy?.body ?? ''),
     title: policy?.title,
-    titleTemplate: '%s | Policy',
+    titleTemplate: '%s | STYX Gold',
     url,
   };
 }
@@ -441,8 +460,8 @@ function policies({
     });
   return {
     title: 'Policies',
-    titleTemplate: '%s | Policies',
-    description: 'Hydroge store policies',
+    titleTemplate: '%s | STYX Gold',
+    description: 'STYX Gold store policies',
     jsonLd: [
       {
         '@context': 'https://schema.org',
@@ -452,7 +471,7 @@ function policies({
       {
         '@context': 'https://schema.org',
         '@type': 'WebPage',
-        description: 'Hydrogen store policies',
+        description: 'STYX Gold store policies',
         name: 'Policies',
         url,
       },
