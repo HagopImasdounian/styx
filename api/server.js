@@ -1,4 +1,4 @@
-import {createRequestHandler} from '@remix-run/node';
+import {createRequestHandler, createCookieSessionStorage} from '@remix-run/node';
 import {
   cartGetIdDefault,
   cartSetIdDefault,
@@ -7,7 +7,6 @@ import {
   storefrontRedirect,
   createCustomerAccountClient,
   getStorefrontHeaders,
-  createCookieSessionStorage,
 } from '@shopify/hydrogen';
 
 const build = await import('../build/server/index.js');
@@ -30,9 +29,7 @@ const handler = createRequestHandler(build, process.env.NODE_ENV);
 
 export default async function (req) {
   const env = getEnv();
-  const {createCookieSessionStorage: createSession} = await import('@remix-run/node');
-
-  const sessionStorage = createSession({
+  const sessionStorage = createCookieSessionStorage({
     cookie: {
       name: 'session',
       httpOnly: true,
