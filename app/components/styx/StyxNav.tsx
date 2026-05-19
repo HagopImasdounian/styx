@@ -89,23 +89,28 @@ const CHAIN_IMAGE_MAP: Record<string, string> = {
 
 const CHAIN_TAXONOMY: ChainGroup[] = [
   {
-    group: 'Classic Curb Weaves',
-    kicker: 'I',
+    group: 'Interlocking',
+    kicker: 'Links thread through each other',
     chains: [
-      {name: 'Cuban Link', handle: 'cuban', popular: true},
+      {name: 'Cuban Link', handle: 'cuban'},
       {name: 'Curb Chain', handle: 'curb'},
-      {name: 'Figaro Chain', handle: 'figaro', popular: true},
-      {name: 'Franco Chain', handle: 'franco'},
+      {name: 'Figaro Chain', handle: 'figaro'},
       {name: 'Mariner Chain', handle: 'mariner'},
       {name: 'Gucci Link', handle: 'gucci'},
       {name: 'Panther Link', handle: 'panther'},
+      {name: 'Rolo Chain', handle: 'rolo'},
+      {name: 'Cable Chain', handle: 'cable'},
+      {name: 'Ball Chain', handle: 'ball'},
+      {name: 'Satellite Chain', handle: 'satellite'},
+      {name: 'Rosary Chain', handle: 'rosary'},
     ],
   },
   {
-    group: 'Woven & Braided',
-    kicker: 'II',
+    group: 'Woven',
+    kicker: 'Links weave or braid together',
     chains: [
-      {name: 'Rope Chain', handle: 'rope', popular: true},
+      {name: 'Franco Chain', handle: 'franco'},
+      {name: 'Rope Chain', handle: 'rope'},
       {name: 'Wheat Chain', handle: 'wheat'},
       {name: 'Byzantine Chain', handle: 'byzantine'},
       {name: 'Foxtail Chain', handle: 'foxtail'},
@@ -113,24 +118,13 @@ const CHAIN_TAXONOMY: ChainGroup[] = [
       {name: 'San Marco Chain', handle: 'san-marco'},
       {name: 'Criss-Cross Chain', handle: 'criss-cross'},
       {name: 'Forsantina Chain', handle: 'forsantina'},
-    ],
-  },
-  {
-    group: 'Round & Rolling',
-    kicker: 'III',
-    chains: [
-      {name: 'Rolo Chain', handle: 'rolo'},
-      {name: 'Cable Chain', handle: 'cable'},
-      {name: 'Ball Chain', handle: 'ball'},
-      {name: 'Popcorn Chain', handle: 'popcorn'},
       {name: 'Singapore Chain', handle: 'singapore'},
-      {name: 'Satellite Chain', handle: 'satellite'},
-      {name: 'Rosary Chain', handle: 'rosary'},
+      {name: 'Popcorn Chain', handle: 'popcorn'},
     ],
   },
   {
-    group: 'Flat & Architectural',
-    kicker: 'IV',
+    group: 'Flat & Pressed',
+    kicker: 'Stamped or flattened profiles',
     chains: [
       {name: 'Herringbone Chain', handle: 'herringbone'},
       {name: 'Snake Chain', handle: 'snake'},
@@ -145,8 +139,8 @@ const CHAIN_TAXONOMY: ChainGroup[] = [
     ],
   },
   {
-    group: 'Figural & Decorative',
-    kicker: 'V',
+    group: 'Decorative',
+    kicker: 'Figural and ornamental shapes',
     chains: [
       {name: 'Heart Chain', handle: 'heart'},
       {name: 'Tulip Chain', handle: 'tulip'},
@@ -154,7 +148,7 @@ const CHAIN_TAXONOMY: ChainGroup[] = [
       {name: 'Valentino Chain', handle: 'valentino'},
       {name: 'Scroll Chain', handle: 'scroll'},
       {name: 'S-Link Chain', handle: 's-link'},
-      {name: 'Tennis Chain', handle: 'tennis', popular: true},
+      {name: 'Tennis Chain', handle: 'tennis'},
     ],
   },
 ];
@@ -943,13 +937,10 @@ function MobileMenu({
   existingHandles: Set<string>;
 }) {
   const [section, setSection] = useState<'Chains' | 'Collections' | null>(null);
-  const [chainsTab, setChainsTab] = useState<'weave' | 'metal' | 'price'>('weave');
-
   useEffect(() => {
     if (!open) {
       const t = setTimeout(() => {
         setSection(null);
-        setChainsTab('weave');
       }, 350);
       return () => clearTimeout(t);
     }
@@ -964,18 +955,12 @@ function MobileMenu({
   const borderLine = `1px solid ${STYX.line}`;
 
   const ROOT_LINKS: {numeral: string; label: string; drillTo?: 'Chains' | 'Collections'; to?: string}[] = [
-    {numeral: 'I', label: 'Chains', drillTo: 'Chains'},
+    {numeral: 'I', label: 'Gold Chains', drillTo: 'Chains'},
     {numeral: 'II', label: 'Collections', drillTo: 'Collections'},
     {numeral: 'III', label: 'Customize', to: '/customize'},
     {numeral: 'IV', label: 'About', to: '/about'},
     {numeral: 'V', label: 'Journal', to: '/journal'},
     {numeral: 'VI', label: 'Contact', to: '/contact'},
-  ];
-
-  const CHAINS_TABS: {key: 'weave' | 'metal' | 'price'; label: string}[] = [
-    {key: 'weave', label: 'Weave'},
-    {key: 'metal', label: 'Metal \u00b7 Karat'},
-    {key: 'price', label: 'Price'},
   ];
 
   const METAL_SWATCHES = [
@@ -1059,17 +1044,11 @@ function MobileMenu({
               <span style={{fontSize: 18, lineHeight: 1}}>&larr;</span> All
             </button>
           )}
-          <span
-            style={{
-              fontFamily: FONT.cinzel,
-              fontSize: 16,
-              letterSpacing: '0.35em',
-              color: STYX.gold,
-              textTransform: 'uppercase',
-            }}
-          >
-            STYX
-          </span>
+          <img
+            src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-styx-logo.png?v=1779151809"
+            alt="STYX"
+            style={{height: 28, width: 'auto'}}
+          />
           <button
             onClick={onClose}
             style={{
@@ -1221,52 +1200,25 @@ function MobileMenu({
                 Section &middot; I
               </div>
               <div style={{fontFamily: FONT.cinzel, fontSize: 40, letterSpacing: '0.06em', color: STYX.ink, textTransform: 'uppercase', lineHeight: 1.1}}>
-                Chains
+                Gold Chains
               </div>
               <div style={{fontFamily: FONT.cormorant, fontSize: 16, fontStyle: 'italic', color: STYX.silt2, marginTop: 8, lineHeight: 1.4}}>
-                40 weaves, three metals, every weight in the open.
+                Three metals, every weight in the open.
               </div>
             </div>
 
-            {/* Segmented tabs */}
-            <div style={{display: 'flex', padding: '0 24px', gap: 0, borderBottom: borderLine}}>
-              {CHAINS_TABS.map((tab) => (
-                <button
-                  key={tab.key}
-                  onClick={() => setChainsTab(tab.key)}
-                  style={{
-                    flex: 1,
-                    background: 'none',
-                    border: 'none',
-                    borderBottom: chainsTab === tab.key ? `2px solid ${STYX.gold}` : '2px solid transparent',
-                    cursor: 'pointer',
-                    padding: '14px 4px',
-                    fontFamily: FONT.mono,
-                    fontSize: 12,
-                    letterSpacing: '0.1em',
-                    textTransform: 'uppercase',
-                    color: chainsTab === tab.key ? STYX.gold : STYX.silt,
-                    transition: 'color 0.2s, border-color 0.2s',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-
-            {/* Weave tab */}
-            {chainsTab === 'weave' && (
-              <div style={{padding: '16px 0'}}>
+            <div style={{paddingBottom: 24}}>
                 <Link
                   to="/collections/chains"
                   prefetch="intent"
                   onClick={onClose}
                   style={{
-                    display: 'block',
-                    padding: '14px 24px',
-                    fontFamily: FONT.cinzel,
-                    fontSize: 13,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '16px 24px',
+                    fontFamily: FONT.mono,
+                    fontSize: 10,
                     letterSpacing: '0.2em',
                     textTransform: 'uppercase',
                     color: STYX.gold,
@@ -1274,13 +1226,20 @@ function MobileMenu({
                     borderBottom: borderLine,
                   }}
                 >
-                  Shop All Chains
+                  <span>Shop All Chains</span>
+                  <span style={{fontSize: 14, lineHeight: 1}}>→</span>
                 </Link>
                 {filteredTaxonomy.map((group) => (
-                  <div key={group.group} style={{marginTop: 16}}>
-                    <div style={{padding: '0 24px 12px', display: 'flex', alignItems: 'baseline', gap: 10}}>
-                      <span style={{fontFamily: FONT.cinzel, fontSize: 15, color: STYX.gold, letterSpacing: '0.1em'}}>{group.kicker}</span>
-                      <span style={{fontFamily: FONT.mono, fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: STYX.silt}}>{group.group}</span>
+                  <div key={group.group}>
+                    {/* Group divider */}
+                    <div
+                      style={{
+                        padding: '14px 24px 4px',
+                      }}
+                    >
+                      <div style={{fontFamily: FONT.cinzel, fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase', color: STYX.ink}}>{group.group}</div>
+                      <div style={{fontFamily: FONT.cormorant, fontSize: 13, fontStyle: 'italic', color: STYX.silt2, marginTop: 2}}>{group.kicker}</div>
+                      <div style={{height: 1, background: STYX.line, marginTop: 10}} />
                     </div>
                     {group.chains.map((chain) => (
                       <Link
@@ -1291,127 +1250,47 @@ function MobileMenu({
                         style={{
                           display: 'flex',
                           alignItems: 'center',
-                          gap: 16,
-                          padding: '16px 24px 16px 28px',
-                          fontFamily: FONT.cormorant,
-                          fontSize: 22,
-                          color: STYX.ink,
+                          gap: 0,
+                          padding: '0 0 0 24px',
                           textDecoration: 'none',
-                          minHeight: 72,
+                          borderBottom: `1px solid ${STYX.lineSoft}`,
+                          minHeight: 52,
+                          overflow: 'hidden',
                         }}
                       >
-                        {CHAIN_IMAGE_MAP[chain.handle] && (
+                        <span
+                          style={{
+                            fontFamily: FONT.cormorant,
+                            fontSize: 26,
+                            color: STYX.ink,
+                            flex: 1,
+                            letterSpacing: '0.01em',
+                          }}
+                        >
+                          {chain.name}
+                        </span>
+                        {CHAIN_IMAGE_MAP[chain.handle] ? (
                           <img
                             src={CHAIN_IMAGE_MAP[chain.handle]}
                             alt=""
-                            style={{width: 88, height: 88, objectFit: 'contain', flexShrink: 0}}
-                          />
-                        )}
-                        <span style={{flex: 1}}>{chain.name}</span>
-                        {chain.popular && (
-                          <span
                             style={{
-                              fontFamily: FONT.mono,
-                              fontSize: 9,
-                              letterSpacing: '0.15em',
-                              color: STYX.gold,
-                              border: `1px solid ${STYX.gold}`,
-                              padding: '3px 8px',
-                              textTransform: 'uppercase',
+                              width: 130,
+                              height: 46,
+                              objectFit: 'contain',
+                              objectPosition: 'center',
+                              flexShrink: 0,
+                              opacity: 0.85,
+                              marginRight: -8,
                             }}
-                          >
-                            Popular
-                          </span>
+                          />
+                        ) : (
+                          <div style={{width: 130, height: 46, flexShrink: 0}} />
                         )}
                       </Link>
                     ))}
                   </div>
                 ))}
               </div>
-            )}
-
-            {/* Metal / Karat tab */}
-            {chainsTab === 'metal' && (
-              <div style={{padding: '24px'}}>
-                <div style={{display: 'flex', flexDirection: 'column', gap: 12}}>
-                  {METAL_SWATCHES.map((m) => (
-                    <button
-                      key={m.label}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 16,
-                        padding: '16px 20px',
-                        background: 'rgba(26,24,21,0.04)',
-                        border: borderLine,
-                        borderRadius: 0,
-                        cursor: 'pointer',
-                        width: '100%',
-                        textAlign: 'left',
-                      }}
-                    >
-                      <span style={{width: 28, height: 28, borderRadius: '50%', background: m.hex, flexShrink: 0, border: '2px solid rgba(26,24,21,0.12)'}} />
-                      <div>
-                        <div style={{fontFamily: FONT.cinzel, fontSize: 14, color: STYX.ink, letterSpacing: '0.08em', textTransform: 'uppercase'}}>{m.label}</div>
-                        <div style={{fontFamily: FONT.cormorant, fontSize: 14, fontStyle: 'italic', color: STYX.silt2, marginTop: 2}}>{m.sub}</div>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-
-                <div style={{marginTop: 32, paddingTop: 20, borderTop: borderLine}}>
-                  <div style={{fontFamily: FONT.mono, fontSize: 9, letterSpacing: '0.25em', textTransform: 'uppercase', color: STYX.silt, marginBottom: 14}}>Karat</div>
-                  {[
-                    {label: '10K Gold', handle: '10k-gold'},
-                    {label: '14K Gold', handle: '14k-gold'},
-                  ]
-                    .filter((k) => existingHandles.has(k.handle))
-                    .map((k) => (
-                      <Link
-                        key={k.handle}
-                        to={`/collections/${k.handle}`}
-                        prefetch="intent"
-                        onClick={onClose}
-                        style={{
-                          display: 'block',
-                          padding: '14px 0',
-                          fontFamily: FONT.cinzel,
-                          fontSize: 16,
-                          letterSpacing: '0.1em',
-                          color: STYX.ink,
-                          textDecoration: 'none',
-                          borderBottom: borderLine,
-                        }}
-                      >
-                        {k.label}
-                      </Link>
-                    ))}
-                </div>
-              </div>
-            )}
-
-            {/* Price tab */}
-            {chainsTab === 'price' && (
-              <div style={{padding: '24px', display: 'flex', flexDirection: 'column', gap: 12}}>
-                {PRICE_BUCKETS.map((tier) => (
-                  <div
-                    key={tier.label}
-                    style={{
-                      padding: '20px',
-                      background: 'rgba(26,24,21,0.04)',
-                      border: borderLine,
-                      cursor: 'pointer',
-                    }}
-                  >
-                    <div style={{fontFamily: FONT.cinzel, fontSize: 18, color: STYX.ink, letterSpacing: '0.06em'}}>{tier.label}</div>
-                    <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: 6}}>
-                      <span style={{fontFamily: FONT.cormorant, fontSize: 14, fontStyle: 'italic', color: STYX.silt2}}>{tier.sub}</span>
-                      <span style={{fontFamily: FONT.mono, fontSize: 10, color: STYX.silt, letterSpacing: '0.1em'}}>{tier.count} items</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
 
           {/* ── Collections detail pane ── */}
@@ -1435,33 +1314,123 @@ function MobileMenu({
             </div>
 
             <div style={{padding: '0 24px'}}>
-              {[
-                {label: 'All Collections', to: '/collections'},
-                {label: '10K Gold', to: '/collections/10k-gold', handle: '10k-gold'},
-                {label: '14K Gold', to: '/collections/14k-gold', handle: '14k-gold'},
-              ]
-                .filter((c) => !c.handle || existingHandles.has(c.handle))
-                .map((c) => (
-                  <Link
-                    key={c.label}
-                    to={c.to}
-                    prefetch="intent"
-                    onClick={onClose}
-                    style={{
-                      display: 'block',
-                      padding: '20px 0',
-                      fontFamily: FONT.cinzel,
-                      fontSize: 18,
-                      letterSpacing: '0.1em',
-                      textTransform: 'uppercase',
-                      color: STYX.ink,
-                      textDecoration: 'none',
-                      borderBottom: borderLine,
-                    }}
-                  >
-                    {c.label}
-                  </Link>
-                ))}
+              <Link
+                to="/collections"
+                prefetch="intent"
+                onClick={onClose}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '16px 0',
+                  fontFamily: FONT.mono,
+                  fontSize: 10,
+                  letterSpacing: '0.2em',
+                  textTransform: 'uppercase',
+                  color: STYX.gold,
+                  textDecoration: 'none',
+                  borderBottom: borderLine,
+                }}
+              >
+                <span>All Collections</span>
+                <span style={{fontSize: 14, lineHeight: 1}}>→</span>
+              </Link>
+
+              {/* Metal */}
+              <div style={{marginTop: 24}}>
+                <div style={{fontFamily: FONT.mono, fontSize: 9, letterSpacing: '0.25em', textTransform: 'uppercase', color: STYX.silt, marginBottom: 14}}>Metal</div>
+                <div style={{display: 'flex', flexDirection: 'column', gap: 10}}>
+                  {METAL_SWATCHES.map((m) => (
+                    <div
+                      key={m.label}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 14,
+                        padding: '12px 0',
+                        borderBottom: `1px solid ${STYX.lineSoft}`,
+                      }}
+                    >
+                      <span style={{width: 22, height: 22, borderRadius: '50%', background: m.hex, flexShrink: 0, border: '2px solid rgba(26,24,21,0.1)'}} />
+                      <span style={{fontFamily: FONT.cormorant, fontSize: 20, color: STYX.ink}}>{m.label}</span>
+                      <span style={{fontFamily: FONT.cormorant, fontSize: 14, fontStyle: 'italic', color: STYX.silt2, marginLeft: 'auto'}}>{m.sub}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Karat / Purity */}
+              <div style={{marginTop: 28}}>
+                <div style={{fontFamily: FONT.mono, fontSize: 9, letterSpacing: '0.25em', textTransform: 'uppercase', color: STYX.silt, marginBottom: 16}}>Purity</div>
+                <div style={{display: 'flex', flexDirection: 'column', gap: 20}}>
+                  {[
+                    {label: '10K', purity: 41.7, handle: '10k-gold'},
+                    {label: '14K', purity: 58.3, handle: '14k-gold'},
+                    {label: '18K', purity: 75.0, handle: '18k-gold'},
+                    {label: '24K', purity: 100, handle: '24k-gold'},
+                  ]
+                    .filter((k) => k.purity === 100 || existingHandles.has(k.handle))
+                    .map((k) => {
+                      const isLink = existingHandles.has(k.handle);
+                      const inner = (
+                        <div>
+                          <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 6}}>
+                            <span style={{fontFamily: FONT.cinzel, fontSize: 15, color: STYX.ink, letterSpacing: '0.08em'}}>{k.label}</span>
+                            <span style={{fontFamily: FONT.mono, fontSize: 10, color: STYX.silt2, letterSpacing: '0.05em'}}>{k.purity}%</span>
+                          </div>
+                          <div style={{width: '100%', height: 3, background: STYX.line, position: 'relative'}}>
+                            <div style={{
+                              position: 'absolute',
+                              left: 0,
+                              top: 0,
+                              height: '100%',
+                              width: `${k.purity}%`,
+                              background: `linear-gradient(90deg, ${STYX.goldDeep}, ${STYX.gold})`,
+                            }} />
+                          </div>
+                        </div>
+                      );
+                      return isLink ? (
+                        <Link
+                          key={k.handle}
+                          to={`/collections/${k.handle}`}
+                          prefetch="intent"
+                          onClick={onClose}
+                          style={{textDecoration: 'none', color: 'inherit'}}
+                        >
+                          {inner}
+                        </Link>
+                      ) : (
+                        <div key={k.handle} style={{opacity: 0.4}}>
+                          {inner}
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+
+              {/* Price */}
+              <div style={{marginTop: 28}}>
+                <div style={{fontFamily: FONT.mono, fontSize: 9, letterSpacing: '0.25em', textTransform: 'uppercase', color: STYX.silt, marginBottom: 14}}>Price</div>
+                <div style={{display: 'flex', flexDirection: 'column', gap: 10}}>
+                  {PRICE_BUCKETS.map((tier) => (
+                    <div
+                      key={tier.label}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'baseline',
+                        justifyContent: 'space-between',
+                        padding: '12px 0',
+                        borderBottom: `1px solid ${STYX.lineSoft}`,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <span style={{fontFamily: FONT.cormorant, fontSize: 20, color: STYX.ink}}>{tier.label}</span>
+                      <span style={{fontFamily: FONT.cormorant, fontSize: 14, fontStyle: 'italic', color: STYX.silt2}}>{tier.sub}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
 
@@ -1579,6 +1548,89 @@ function StyxCartDrawer({open, onClose}: {open: boolean; onClose: () => void}) {
   );
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   Auto-hide header hook — hides on scroll down, shows on scroll up (mobile only)
+   ═══════════════════════════════════════════════════════════════ */
+function useAutoHideHeader() {
+  const [hidden, setHidden] = useState(false);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    // Only activate on mobile-width screens
+    const mq = window.matchMedia('(max-width: 767px)');
+    if (!mq.matches) return;
+
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        // Only hide after scrolling past 120px (past the announcement bar + header)
+        if (y > 120 && y > lastScrollY.current + 5) {
+          setHidden(true);
+        } else if (y < lastScrollY.current - 5) {
+          setHidden(false);
+        }
+        lastScrollY.current = y;
+        ticking = false;
+      });
+    };
+    window.addEventListener('scroll', onScroll, {passive: true});
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  return hidden;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Announcement Bar
+   ═══════════════════════════════════════════════════════════════ */
+function AnnouncementBar() {
+  const [dismissed, setDismissed] = useState(false);
+  if (dismissed) return null;
+
+  return (
+    <div
+      style={{
+        background: STYX.ink,
+        color: STYX.gold,
+        fontFamily: FONT.cinzel,
+        fontSize: 11,
+        letterSpacing: '0.18em',
+        textTransform: 'uppercase',
+        textAlign: 'center',
+        padding: '10px 48px',
+        position: 'relative',
+        lineHeight: 1.4,
+      }}
+    >
+      <span style={{opacity: 0.5, marginRight: 10}}>&mdash;</span>
+      Launch Offer: Free 1g of 24K Gold with Every Order Over $1,500
+      <span style={{opacity: 0.5, marginLeft: 10}}>&mdash;</span>
+      <button
+        onClick={() => setDismissed(true)}
+        aria-label="Dismiss"
+        style={{
+          position: 'absolute',
+          right: 16,
+          top: '50%',
+          transform: 'translateY(-50%)',
+          background: 'none',
+          border: 'none',
+          color: STYX.silt,
+          cursor: 'pointer',
+          padding: 4,
+          fontSize: 14,
+          lineHeight: 1,
+        }}
+      >
+        &times;
+      </button>
+    </div>
+  );
+}
+
 export function StyxNav({collections: collectionsProp}: {collections?: CollectionNode[]}) {
   // Build a set of existing collection handles for dynamic menu filtering
   const rootData2 = useRouteLoaderData<RootLoader>('root');
@@ -1609,6 +1661,7 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
   const [hoverLink, setHoverLink] = useState<string | null>(null);
   const [openMenu, setOpenMenu] = useState<MenuKey | null>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const headerHidden = useAutoHideHeader();
 
   // Gold data for footer strip
   const rootData = useRouteLoaderData<RootLoader>('root');
@@ -1642,7 +1695,19 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
         existingHandles={existingHandles}
       />
 
-      <div className="styx-nav" style={{position: 'sticky', top: 0, background: STYX.bone, zIndex: 40}}>
+      <div
+        className="styx-nav"
+        style={{
+          position: 'sticky',
+          top: 0,
+          background: STYX.bone,
+          zIndex: 40,
+          transform: headerHidden ? 'translateY(-100%)' : 'translateY(0)',
+          transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+        }}
+      >
+        {/* ── Announcement Bar ── */}
+        <AnnouncementBar />
         {/* ── Top bar ── */}
         <nav
           style={{
@@ -1656,22 +1721,6 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
             zIndex: 2,
           }}
         >
-          {/* Mobile hamburger */}
-          <button
-            className="styx-nav-hamburger"
-            onClick={openMobileMenu}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: 4,
-              color: STYX.ink,
-              display: 'none',
-            }}
-          >
-            <HamburgerIcon />
-          </button>
-
           {/* Left: shop links */}
           <div
             className="styx-nav-links"
@@ -1813,6 +1862,21 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
               </button>
             </Form>
             <CartCount openCart={openCart} />
+            {/* Mobile hamburger — hidden on desktop via CSS */}
+            <button
+              className="styx-nav-hamburger"
+              onClick={openMobileMenu}
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: 4,
+                color: STYX.ink,
+                display: 'none',
+              }}
+            >
+              <HamburgerIcon />
+            </button>
           </div>
         </nav>
 

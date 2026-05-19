@@ -207,9 +207,12 @@ shop-pay-button {
   /* Nav */
   .styx-nav nav { padding: 0 20px !important; }
   .styx-nav-links { display: none !important; }
-  .styx-nav-hamburger { display: flex !important; order: 99; margin-left: 16px; }
-  .styx-nav-right { flex: 0 0 auto !important; }
+  .styx-nav-hamburger { display: flex !important; }
+  .styx-nav-right { flex: 0 0 auto !important; gap: 18px !important; margin-left: auto !important; }
   .styx-nav-right a[href*="contact"] { display: none !important; }
+
+  /* Sticky mobile ATC — visible on mobile only */
+  .styx-sticky-atc { display: flex !important; }
 
   /* Ticker */
   .styx-ticker { padding: 8px 16px !important; gap: 16px !important; }

@@ -989,6 +989,65 @@ export default function Product() {
                   Make an Offer
                 </button>
               )}
+
+              {/* ── Trust Signals ── */}
+              <div
+                style={{
+                  marginTop: 24,
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: '12px 16px',
+                }}
+              >
+                {[
+                  {icon: '✦', text: `Authentic ${karat}K Gold`},
+                  {icon: '◇', text: 'Free Insured Shipping'},
+                  {icon: '↩', text: '14-Day Returns'},
+                  {icon: '⬡', text: 'Hallmarked & Tested'},
+                ].map((t) => (
+                  <div
+                    key={t.text}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 8,
+                      fontFamily: FONT.inter,
+                      fontSize: 11,
+                      color: STYX.silt,
+                      letterSpacing: '0.02em',
+                    }}
+                  >
+                    <span style={{color: STYX.gold, fontSize: 10, flexShrink: 0}}>{t.icon}</span>
+                    {t.text}
+                  </div>
+                ))}
+              </div>
+
+              {/* Payment methods */}
+              <div
+                style={{
+                  marginTop: 16,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  fontFamily: FONT.mono,
+                  fontSize: 9,
+                  color: STYX.silt2,
+                  letterSpacing: '0.08em',
+                }}
+              >
+                <span>VISA</span>
+                <span style={{opacity: 0.3}}>·</span>
+                <span>MC</span>
+                <span style={{opacity: 0.3}}>·</span>
+                <span>AMEX</span>
+                <span style={{opacity: 0.3}}>·</span>
+                <span>APPLE PAY</span>
+                <span style={{opacity: 0.3}}>·</span>
+                <span>SHOP PAY</span>
+                <span style={{opacity: 0.3}}>·</span>
+                <span>WIRE</span>
+              </div>
             </div>
           )}
 
@@ -1834,7 +1893,118 @@ export default function Product() {
         }}
       />
 
+      {/* ── Sticky Mobile ATC Bar ── */}
+      {selectedVariant && !isOutOfStock && (
+        <StickyMobileATC
+          variant={selectedVariant}
+          productId={product.id}
+          productTitle={product.title}
+        />
+      )}
+
       <StyxFooter />
+    </div>
+  );
+}
+
+/* ─────────────────────────── Sticky Mobile ATC ─────────────────────────── */
+
+function StickyMobileATC({
+  variant,
+  productId,
+  productTitle,
+}: {
+  variant: any;
+  productId: string;
+  productTitle: string;
+}) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const atcButton = document.querySelector('.styx-add-to-cart');
+    if (!atcButton) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setVisible(!entry.isIntersecting),
+      {threshold: 0},
+    );
+    observer.observe(atcButton);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      className="styx-sticky-atc"
+      style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: 39,
+        background: STYX.bone,
+        borderTop: `1px solid ${STYX.line}`,
+        padding: '12px 20px',
+        paddingBottom: 'max(12px, env(safe-area-inset-bottom))',
+        display: 'none',
+        alignItems: 'center',
+        gap: 12,
+        transform: visible ? 'translateY(0)' : 'translateY(100%)',
+        transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+      }}
+    >
+      <div style={{flex: 1, minWidth: 0}}>
+        <div
+          style={{
+            fontFamily: FONT.cinzel,
+            fontSize: 12,
+            letterSpacing: '0.06em',
+            color: STYX.ink,
+            textTransform: 'uppercase',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {productTitle}
+        </div>
+        <Money
+          data={variant.price!}
+          as="div"
+          style={{
+            fontFamily: FONT.mono,
+            fontSize: 13,
+            color: STYX.gold,
+            letterSpacing: '0.05em',
+            marginTop: 2,
+          }}
+        />
+      </div>
+      <AddToCartButton
+        lines={[{merchandiseId: variant.id!, quantity: 1}]}
+        analytics={{
+          id: productId,
+          title: productTitle,
+          price: variant.price?.amount || '0',
+          quantity: 1,
+          variantTitle: variant.title,
+        }}
+        variant="primary"
+        style={{
+          padding: '14px 28px',
+          background: STYX.ink,
+          color: STYX.bone,
+          fontFamily: FONT.cinzel,
+          fontSize: 11,
+          letterSpacing: '0.2em',
+          textTransform: 'uppercase',
+          border: 'none',
+          cursor: 'pointer',
+          whiteSpace: 'nowrap',
+          flexShrink: 0,
+        }}
+      >
+        Add to Cart
+      </AddToCartButton>
     </div>
   );
 }
