@@ -1,10 +1,9 @@
 import {
-  defer,
-  type LinksFunction,
+    type LinksFunction,
   type LoaderFunctionArgs,
   type AppLoadContext,
   type MetaArgs,
-} from '@shopify/remix-oxygen';
+} from 'react-router';
 import {
   isRouteErrorResponse,
   Links,
@@ -15,7 +14,7 @@ import {
   useRouteLoaderData,
   useRouteError,
   type ShouldRevalidateFunction,
-} from '@remix-run/react';
+} from 'react-router';
 import {
   useNonce,
   Analytics,
@@ -28,6 +27,7 @@ import invariant from 'tiny-invariant';
 import {PageLayout} from '~/components/PageLayout';
 import {GenericError} from '~/components/GenericError';
 import {NotFound} from '~/components/NotFound';
+import {GTMPageView} from '~/components/GTMDataLayer';
 import favicon from '~/assets/favicon.svg';
 import {seoPayload} from '~/lib/seo.server';
 import styles from '~/styles/app.css?url';
@@ -99,7 +99,7 @@ export async function loader(args: LoaderFunctionArgs) {
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
 
-  return defer({
+  return ({
     ...deferredData,
     ...criticalData,
   });
@@ -154,7 +154,7 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
   const {cart, customerAccount} = context;
 
   return {
-    isLoggedIn: customerAccount.isLoggedIn(),
+    isLoggedIn: customerAccount?.isLoggedIn() ?? Promise.resolve(false),
     cart: cart.get(),
   };
 }
@@ -185,6 +185,7 @@ function Layout({children}: {children?: React.ReactNode}) {
             shop={data.shop}
             consent={data.consent}
           >
+            <GTMPageView />
             <PageLayout
               key={`${locale.language}-${locale.country}`}
               layout={data.layout}

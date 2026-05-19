@@ -5,9 +5,9 @@ import {
   useLoaderData,
   useMatches,
   useOutlet,
-} from '@remix-run/react';
+} from 'react-router';
 import {Suspense} from 'react';
-import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {type LoaderFunctionArgs} from 'react-router';
 import {flattenConnection} from '@shopify/hydrogen';
 
 import type {
@@ -54,18 +54,11 @@ export async function loader({request, context, params}: LoaderFunctionArgs) {
       : `Welcome to your account.`
     : 'Account Details';
 
-  return defer(
-    {
-      customer,
-      heading,
-      featuredDataPromise: getFeaturedData(context.storefront),
-    },
-    {
-      headers: {
-        'Cache-Control': CACHE_NONE,
-      },
-    },
-  );
+  return {
+    customer,
+    heading,
+    featuredDataPromise: getFeaturedData(context.storefront),
+  };
 }
 
 export default function Authenticated() {

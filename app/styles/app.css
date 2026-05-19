@@ -49,6 +49,11 @@
   }
 }
 
+@keyframes styx-shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
 /* STYX Selection Colors */
 ::selection {
   background: #B8924A;
@@ -189,6 +194,9 @@ shop-pay-button {
   }
 }
 
+.styx-hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+.styx-hide-scrollbar::-webkit-scrollbar { display: none; }
+
 /* ═══════════════════════════════════════════════════════════════
    STYX Responsive Overrides
    Inline styles have highest specificity — !important is required.
@@ -199,34 +207,62 @@ shop-pay-button {
   /* Nav */
   .styx-nav nav { padding: 0 20px !important; }
   .styx-nav-links { display: none !important; }
-  .styx-nav-hamburger { display: flex !important; }
+  .styx-nav-hamburger { display: flex !important; order: 99; margin-left: 16px; }
+  .styx-nav-right { flex: 0 0 auto !important; }
+  .styx-nav-right a[href*="contact"] { display: none !important; }
 
   /* Ticker */
   .styx-ticker { padding: 8px 16px !important; gap: 16px !important; }
   .styx-ticker [data-cell-extra] { display: none !important; }
 
-  /* Hero */
-  .styx-hero [data-grid] { grid-template-columns: 1fr !important; padding: 40px 20px !important; min-height: auto !important; }
-  .styx-hero h1 { font-size: 40px !important; }
+  /* Hero — full-bleed background */
+  .styx-hero { min-height: 65vh !important; }
+  .styx-hero-content { padding: 100px 24px 60px !important; max-width: 100% !important; }
+  .styx-hero h1 { font-size: 44px !important; }
 
   /* Categories */
   .styx-categories { padding: 60px 20px !important; }
   .styx-categories > div:first-child { flex-direction: column !important; gap: 16px !important; }
-  .styx-categories [data-grid] { grid-template-columns: 1fr !important; }
+  .styx-categories-grid {
+    display: flex !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    gap: 16px !important;
+    padding-bottom: 8px !important;
+  }
+  .styx-categories-grid::-webkit-scrollbar { display: none; }
+  .styx-categories-grid { scrollbar-width: none; }
+  .styx-categories-grid > * {
+    flex: 0 0 75vw !important;
+    max-width: 300px;
+    scroll-snap-align: start;
+  }
 
   /* Featured */
   .styx-featured { padding: 60px 20px !important; }
-  .styx-featured [data-grid] { grid-template-columns: repeat(2, 1fr) !important; }
+  .styx-featured h2 { font-size: 28px !important; margin-bottom: 28px !important; }
+  .styx-featured-grid {
+    display: flex !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    gap: 14px !important;
+    padding-bottom: 8px !important;
+  }
+  .styx-featured-grid::-webkit-scrollbar { display: none; }
+  .styx-featured-grid { scrollbar-width: none; }
+  .styx-featured-grid > * {
+    flex: 0 0 60vw !important;
+    max-width: 240px;
+    scroll-snap-align: start;
+  }
 
   /* Lookbook */
   .styx-lookbook { padding: 80px 0 80px !important; }
-  .styx-lookbook > div:nth-child(2) { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; padding: 0 20px !important; }
-  .styx-lookbook [data-grid] {
-    grid-template-columns: 1fr 1fr !important;
-    grid-template-rows: auto !important;
-    padding: 0 20px !important;
-  }
-  .styx-lookbook [data-grid] > * { grid-row: auto !important; grid-column: auto !important; }
+  .styx-lookbook > div:first-child { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; padding: 0 20px !important; }
+  .styx-lookbook .styx-hide-scrollbar { padding: 0 20px !important; }
+  .styx-lookbook .styx-hide-scrollbar > * { flex: 0 0 55vw !important; min-width: 180px !important; }
   .styx-lookbook h2 { font-size: 36px !important; }
 
   /* Craft / Promise */
@@ -252,16 +288,148 @@ shop-pay-button {
 
   /* Contact page */
   .styx-contact-grid { grid-template-columns: 1fr !important; padding: 48px 20px 80px !important; gap: 48px !important; }
+
+  /* ── Product page ── */
+  .styx-product-breadcrumb { padding: 12px 20px !important; }
+  .styx-product-grid { grid-template-columns: 1fr !important; gap: 32px !important; padding: 40px 20px 60px !important; }
+  .styx-product-grid h1 { font-size: 32px !important; }
+  .styx-product-info { position: static !important; }
+  .styx-product-price { font-size: 32px !important; }
+  /* Product details grid — 2 col on tablet */
+  .styx-product-specs-grid { grid-template-columns: 1fr !important; gap: 48px !important; padding: 60px 20px !important; }
+  /* Honest ledger — 2x2 */
+  .styx-product-ledger { grid-template-columns: repeat(2, 1fr) !important; }
+  .styx-product-ledger > div { padding: 24px 16px !important; }
+  /* Transparency section */
+  .styx-product-transparency { padding: 60px 20px !important; }
+  .styx-product-transparency h2 { font-size: 32px !important; }
+  /* Related products */
+  .styx-product-related { padding: 48px 20px !important; }
+  .styx-product-related h2 { font-size: 28px !important; }
+  .styx-product-related-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 16px !important; }
+
+  /* ── Collection page ── */
+  .styx-collection-hero { padding: 40px 20px 32px !important; grid-template-columns: 1fr !important; }
+  .styx-collection-hero h1 { font-size: clamp(32px, 10vw, 80px) !important; }
+  .styx-collection-hero img { height: 48px !important; }
+  .styx-collection-intro { padding: 24px 20px !important; flex-direction: column !important; gap: 16px !important; }
+  .styx-collection-intro a { white-space: normal !important; }
+  /* Toolbar: stack count/sort vertically */
+  .styx-collection-toolbar { padding: 12px 16px !important; }
+  .styx-collection-toolbar > div:first-child { flex-direction: column !important; align-items: flex-start !important; gap: 10px !important; }
+  .styx-collection-sort { flex-wrap: wrap !important; }
+  .styx-collection-sort button { font-size: 9px !important; padding: 6px 10px !important; }
+  /* Filters: horizontal scroll on mobile */
+  .styx-collection-filters {
+    flex-wrap: nowrap !important;
+    gap: 12px !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 4px !important;
+  }
+  .styx-collection-filters::-webkit-scrollbar { display: none; }
+  .styx-collection-filters > div { flex-shrink: 0 !important; }
+  .styx-collection-products { padding: 32px 16px 80px !important; }
+  .styx-collection-product-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
+  .styx-collection-story { padding: 60px 20px !important; }
+  .styx-collection-story h2 { font-size: 32px !important; }
+  .styx-collection-story [data-grid] { grid-template-columns: 1fr !important; }
+
+  /* ── Journal article page ── */
+  .styx-journal-hero { padding: 24px 20px 20px !important; }
+  .styx-journal-title-grid { grid-template-columns: 1fr !important; }
+  .styx-journal-title-grid h1 { font-size: 32px !important; }
+  .styx-journal-meta-col { flex-direction: row !important; flex-wrap: wrap !important; gap: 12px !important; }
+  .styx-journal-hero-img { padding: 0 20px !important; }
+  .styx-journal-body { padding: 48px 20px !important; }
+  .styx-journal-body img { max-width: 100% !important; height: auto !important; }
+  .styx-journal-shop { padding: 48px 20px !important; }
+  .styx-journal-shop-header { flex-direction: column !important; gap: 12px !important; align-items: flex-start !important; }
+  .styx-journal-shop-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 16px !important; }
+  .styx-journal-chapters { padding: 48px 20px !important; }
+  .styx-journal-chapters-header { flex-direction: column !important; gap: 12px !important; align-items: flex-start !important; }
+  .styx-journal-chapter-row { grid-template-columns: 40px 1fr !important; gap: 8px 12px !important; }
+  .styx-journal-chapter-row > *:nth-child(3),
+  .styx-journal-chapter-row > *:nth-child(4) { grid-column: 2 !important; font-size: 11px !important; }
+
+  /* ── Collections index ── */
+  .styx-ci-hero { padding: 60px 20px 40px !important; }
+  .styx-ci-hero h1 { font-size: 36px !important; }
+  .styx-ci-hero > div { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; }
+  .styx-ci-banner { padding: 20px !important; }
+  .styx-ci-families { padding: 48px 20px !important; }
+  .styx-ci-families h2 { font-size: 28px !important; }
+  .styx-ci-families-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
+  .styx-ci-karat { padding: 48px 20px !important; }
+  .styx-ci-karat-grid { grid-template-columns: 1fr !important; }
+
+  /* ── Journal index ── */
+  .styx-ja-masthead { padding: 48px 20px 32px !important; }
+  .styx-ja-title-grid { grid-template-columns: 1fr !important; }
+  .styx-ja-title-grid h1 { font-size: 36px !important; }
+  .styx-ja-filters { padding: 16px 20px !important; }
+  .styx-ja-filters-inner { flex-wrap: nowrap !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .styx-ja-filters-inner::-webkit-scrollbar { display: none; }
+  .styx-ja-featured { padding: 48px 20px 40px !important; }
+  .styx-ja-featured-grid { grid-template-columns: 1fr !important; }
+  .styx-ja-grid-section { padding: 24px 20px 60px !important; }
+  .styx-ja-grid { grid-template-columns: 1fr !important; }
+
+  /* Footer bottom bar */
+  .styx-footer-bottom { flex-direction: column !important; gap: 16px !important; text-align: center !important; }
 }
 
 /* Small mobile: ≤ 32em (512px) */
 @media (max-width: 32em) {
-  .styx-hero h1 { font-size: 32px !important; }
-  .styx-hero [data-grid] { padding: 32px 16px !important; }
-  .styx-featured [data-grid] { grid-template-columns: 1fr !important; }
-  .styx-lookbook [data-grid] { grid-template-columns: 1fr !important; }
+  /* Hero */
+  .styx-hero { min-height: 60vh !important; }
+  .styx-hero-content { padding: 80px 16px 48px !important; }
+  .styx-hero h1 { font-size: 36px !important; }
+  .styx-hero p { font-size: 17px !important; }
+
+  /* Homepage sections */
+  .styx-featured-grid > * { flex: 0 0 70vw !important; }
+  .styx-lookbook .styx-hide-scrollbar > * { flex: 0 0 60vw !important; }
   .styx-lookbook h2 { font-size: 28px !important; }
   .styx-categories h2 { font-size: 28px !important; }
+
+  /* Product page */
+  .styx-product-grid { padding: 24px 16px 48px !important; }
+  .styx-product-grid h1 { font-size: 28px !important; }
+  .styx-product-breadcrumb { padding: 10px 16px !important; }
+  .styx-product-ledger { grid-template-columns: 1fr 1fr !important; }
+  .styx-product-ledger > div { padding: 20px 12px !important; }
+  .styx-product-transparency { padding: 40px 16px !important; }
+  .styx-product-transparency h2 { font-size: 26px !important; }
+  .styx-product-related { padding: 40px 16px !important; }
+  .styx-product-related-grid { grid-template-columns: 1fr !important; }
+  .styx-product-specs-grid { padding: 40px 16px !important; }
+
+  /* Collection page */
+  .styx-collection-product-grid { grid-template-columns: 1fr !important; }
+  .styx-collection-toolbar { padding: 10px 16px !important; }
+
+  /* Journal article */
+  .styx-journal-shop-grid { grid-template-columns: 1fr !important; }
+  .styx-journal-hero { padding: 16px 16px !important; }
+  .styx-journal-title-grid h1 { font-size: 26px !important; }
+  .styx-journal-body { padding: 32px 16px !important; }
+  .styx-journal-shop { padding: 32px 16px !important; }
+  .styx-journal-chapters { padding: 32px 16px !important; }
+
+  /* Collections index */
+  .styx-ci-hero { padding: 48px 16px 32px !important; }
+  .styx-ci-hero h1 { font-size: 28px !important; }
+  .styx-ci-families { padding: 40px 16px !important; }
+  .styx-ci-families-grid { grid-template-columns: 1fr !important; }
+  .styx-ci-karat { padding: 40px 16px !important; }
+
+  /* Journal index */
+  .styx-ja-masthead { padding: 40px 16px 24px !important; }
+  .styx-ja-title-grid h1 { font-size: 28px !important; }
+  .styx-ja-featured { padding: 32px 16px !important; }
+  .styx-ja-grid-section { padding: 16px 16px 48px !important; }
 }
 
 @layer utilities {

@@ -1,64 +1,62 @@
-import {useState} from 'react';
-import {Link} from '@remix-run/react';
-import {Image} from '@shopify/hydrogen';
-import {STYX, FONT} from './constants';
+import {Link} from 'react-router';
+import {STYX, FONT, type CollectionNode} from './constants';
 import {StyxLabel} from './StyxLabel';
 import {CTAButton} from './CTAButton';
 import {Obol} from './Obol';
-import {PlaceholderImage} from './PlaceholderImage';
 
-type LookbookProduct = {
-  id: string;
-  title: string;
-  handle: string;
-  variants: {
-    nodes: Array<{
-      id: string;
-      image?: {url: string; altText?: string | null; width?: number | null; height?: number | null} | null;
-    }>;
-  };
+// Collection images — same map as CategoryTiles and collections index
+const COLLECTION_IMAGES: Record<string, {src: string; alt: string}> = {
+  'cuban': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-cuban-link.jpg?v=1779151358', alt: 'Cuban link chain on Ocean Drive, Miami'},
+  'curb': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-curb-chain.png?v=1779151362', alt: 'Curb chain on a foggy London street'},
+  'box': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-box-chain.png?v=1779151351', alt: 'Box chain in Venice with canal and gondola'},
+  'rope': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-rope-chain.png?v=1779151380', alt: 'Rope chain at Mediterranean harbor'},
+  'cable': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-cable-chain.png?v=1779151355', alt: 'Cable chain at Mesopotamian ruins'},
+  'figaro': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-figaro-chain.png?v=1779151369', alt: 'Figaro chain in Vicenza, Italy'},
+  'wheat': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-wheat-chain.png?v=1779151386', alt: 'Wheat chain in Tuscan vineyard'},
+  'rolo': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-rolo-chain.png?v=1779151375', alt: 'Rolo chain in Victorian London'},
+  'singapore': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-singapore-chain.png?v=1779151383', alt: 'Singapore chain at Asian waterfront'},
 };
 
-export function Lookbook({products = []}: {products?: LookbookProduct[]}) {
+const COLLECTION_ORDER = ['cuban', 'curb', 'rope', 'box', 'figaro', 'cable', 'wheat', 'rolo', 'singapore'];
+
+export function Lookbook({collections = []}: {collections?: CollectionNode[]}) {
+  // Match collections to our ordered list
+  const matched = COLLECTION_ORDER
+    .map((handle) => {
+      const coll = collections.find((c) => c.handle === handle);
+      const img = COLLECTION_IMAGES[handle];
+      if (!coll || !img) return null;
+      return {handle, title: coll.title, ...img};
+    })
+    .filter(Boolean) as Array<{handle: string; title: string; src: string; alt: string}>;
+
+  if (matched.length === 0) return null;
+
   return (
     <section
       className="styx-lookbook"
       style={{
-        background: STYX.taupe,
+        background: STYX.ink,
         color: STYX.bone,
-        padding: '140px 0 140px',
+        padding: '120px 0',
         position: 'relative',
       }}
     >
-      {/* Radial overlays */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          pointerEvents: 'none',
-          background: `
-            radial-gradient(ellipse 60% 40% at 20% 20%, rgba(255,250,238,0.12), transparent 60%),
-            radial-gradient(ellipse 50% 50% at 85% 80%, rgba(0,0,0,0.2), transparent 60%)
-          `,
-        }}
-      />
-
       <div
         style={{
           padding: '0 56px',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'flex-end',
-          marginBottom: 72,
-          position: 'relative',
+          marginBottom: 64,
         }}
       >
         <div>
-          <StyxLabel>The Lookbook · IV</StyxLabel>
+          <StyxLabel>The Collection · IV</StyxLabel>
           <h2
             style={{
               fontFamily: FONT.cinzel,
-              fontSize: 60,
+              fontSize: 52,
               fontWeight: 500,
               letterSpacing: '0.02em',
               lineHeight: 1,
@@ -67,8 +65,7 @@ export function Lookbook({products = []}: {products?: LookbookProduct[]}) {
               textTransform: 'uppercase',
             }}
           >
-            Worn, not
-            <br />
+            {matched.length} weaves,{' '}
             <span
               style={{
                 fontFamily: FONT.cormorant,
@@ -79,161 +76,127 @@ export function Lookbook({products = []}: {products?: LookbookProduct[]}) {
                 color: STYX.gold,
               }}
             >
-              displayed.
+              one metal.
             </span>
           </h2>
         </div>
         <div style={{display: 'flex', alignItems: 'center', gap: 20}}>
-          <StyxLabel>Spring MMXXVI · shot in Brooklyn</StyxLabel>
-          <Obol size={40} color={STYX.gold} speed={14} />
+          <StyxLabel>Each worn where it was born</StyxLabel>
         </div>
       </div>
 
-      {/* Grid — use real products if available, otherwise placeholders */}
+      {/* Horizontal scroll row */}
       <div
-        data-grid=""
         style={{
-          display: 'grid',
-          gridTemplateColumns: '1.6fr 1fr 1.2fr',
-          gridTemplateRows: 'minmax(220px, auto) minmax(220px, auto) minmax(220px, auto)',
+          display: 'flex',
           gap: 4,
           padding: '0 56px',
+          overflowX: 'auto',
+          scrollSnapType: 'x mandatory',
+          WebkitOverflowScrolling: 'touch',
+          scrollbarWidth: 'none',
         }}
+        className="styx-hide-scrollbar"
       >
-        {/* Position 1 — tall left, rows 1-2 */}
-        <div style={{gridRow: 'span 2', position: 'relative'}}>
-          <LookCell product={products[0]} index={1} />
-        </div>
-        {/* Position 2 — col 2, row 1 */}
-        <div style={{position: 'relative'}}>
-          <LookCell product={products[1]} index={2} />
-        </div>
-        {/* Position 3 — col 3, rows 1-3 (full height right) */}
-        <div style={{gridRow: 'span 3', position: 'relative'}}>
-          <LookCell product={products[2]} index={3} />
-        </div>
-        {/* Position 4 — col 2, row 2 */}
-        <div style={{position: 'relative'}}>
-          <LookCell product={products[3]} index={4} />
-        </div>
-        {/* Position 5 — col 1, row 3 */}
-        <div style={{position: 'relative'}}>
-          <LookCell product={products[4]} index={5} />
-        </div>
-        {/* Position 6 — col 2, row 3 */}
-        <div style={{position: 'relative'}}>
-          <LookCell product={products[5]} index={6} />
-        </div>
+        {matched.map((item, i) => (
+          <Link
+            key={item.handle}
+            to={`/collections/${item.handle}`}
+            prefetch="intent"
+            style={{
+              display: 'block',
+              position: 'relative',
+              overflow: 'hidden',
+              textDecoration: 'none',
+              flex: '0 0 calc(25% - 3px)',
+              minWidth: 220,
+              scrollSnapAlign: 'start',
+            }}
+            onMouseEnter={(e) => {
+              const img = e.currentTarget.querySelector('img') as HTMLElement;
+              const overlay = e.currentTarget.querySelector('[data-overlay]') as HTMLElement;
+              if (img) img.style.transform = 'scale(1.05)';
+              if (overlay) overlay.style.opacity = '1';
+            }}
+            onMouseLeave={(e) => {
+              const img = e.currentTarget.querySelector('img') as HTMLElement;
+              const overlay = e.currentTarget.querySelector('[data-overlay]') as HTMLElement;
+              if (img) img.style.transform = 'scale(1)';
+              if (overlay) overlay.style.opacity = '0.7';
+            }}
+          >
+            <div style={{aspectRatio: '3/4', position: 'relative', overflow: 'hidden'}}>
+              <img
+                src={item.src}
+                alt={item.alt}
+                loading="lazy"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  transition: 'transform 0.5s ease',
+                }}
+              />
+              {/* Gradient overlay */}
+              <div
+                data-overlay
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: 'linear-gradient(transparent 50%, rgba(26,24,21,0.75))',
+                  opacity: 0.7,
+                  transition: 'opacity 0.3s',
+                  pointerEvents: 'none',
+                }}
+              />
+              {/* Title */}
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  padding: 24,
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-end',
+                }}
+              >
+                <div>
+                  <div
+                    style={{
+                      fontFamily: FONT.cinzel,
+                      fontSize: 22,
+                      color: STYX.bone,
+                      fontWeight: 500,
+                      letterSpacing: '0.1em',
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    {item.title}
+                  </div>
+                </div>
+                <div
+                  style={{
+                    fontFamily: FONT.mono,
+                    fontSize: 10,
+                    color: STYX.gold,
+                    letterSpacing: '0.1em',
+                  }}
+                >
+                  0{i + 1}
+                </div>
+              </div>
+            </div>
+          </Link>
+        ))}
       </div>
 
-      <div style={{padding: '56px 56px 0', display: 'flex', justifyContent: 'center'}}>
+      <div style={{padding: '48px 56px 0', display: 'flex', justifyContent: 'center'}}>
         <CTAButton variant="gold" href="/collections">
-          Open the Lookbook
+          Browse All Collections
         </CTAButton>
       </div>
     </section>
-  );
-}
-
-function LookCell({product, index}: {product?: LookbookProduct; index: number}) {
-  const [hovered, setHovered] = useState(false);
-
-  if (!product) {
-    return (
-      <div style={{width: '100%', height: '100%', position: 'relative'}}>
-        <PlaceholderImage
-          aspect="auto"
-          label={`Look 0${index}`}
-          tone="dark"
-          style={{height: '100%', aspectRatio: 'unset'}}
-        />
-        <LookTag>Look 0{index}</LookTag>
-      </div>
-    );
-  }
-
-  const img1 = product.variants.nodes[0]?.image;
-  const img2 = product.variants.nodes[1]?.image || product.variants.nodes[0]?.image;
-
-  return (
-    <Link
-      to={`/products/${product.handle}`}
-      prefetch="intent"
-      style={{
-        display: 'block',
-        width: '100%',
-        height: '100%',
-        position: 'relative',
-        overflow: 'hidden',
-        textDecoration: 'none',
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      {img1 ? (
-        <>
-          <Image
-            data={img1}
-            sizes="(min-width: 1200px) 40vw, 60vw"
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              position: 'absolute',
-              inset: 0,
-              opacity: hovered && img2 && img2.url !== img1.url ? 0 : 1,
-              transition: 'opacity 0.4s ease',
-            }}
-          />
-          {img2 && img2.url !== img1.url && (
-            <Image
-              data={img2}
-              sizes="(min-width: 1200px) 40vw, 60vw"
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                position: 'absolute',
-                inset: 0,
-                opacity: hovered ? 1 : 0,
-                transition: 'opacity 0.4s ease',
-              }}
-            />
-          )}
-        </>
-      ) : (
-        <PlaceholderImage
-          aspect="auto"
-          label={product.title}
-          tone="dark"
-          style={{height: '100%', aspectRatio: 'unset'}}
-        />
-      )}
-      <LookTag>Look 0{index}</LookTag>
-    </Link>
-  );
-}
-
-function LookTag({children}: {children: React.ReactNode}) {
-  return (
-    <div
-      style={{
-        position: 'absolute',
-        top: 16,
-        left: 16,
-        fontFamily: FONT.cinzel,
-        fontSize: 10,
-        letterSpacing: '0.3em',
-        color: STYX.ink,
-        textTransform: 'uppercase',
-        padding: '6px 10px',
-        border: '1px solid rgba(26,24,21,0.3)',
-        background: 'rgba(239,234,224,0.5)',
-        backdropFilter: 'blur(4px)',
-        zIndex: 2,
-      }}
-    >
-      {children}
-    </div>
   );
 }

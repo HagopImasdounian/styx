@@ -1,5 +1,4 @@
 import {Button} from './Button';
-import {FeaturedSection} from './FeaturedSection';
 import {PageHeader, Text} from './Text';
 
 export function GenericError({
@@ -10,10 +9,8 @@ export function GenericError({
   const heading = `Something’s wrong here.`;
   let description = `We found an error while loading this page.`;
 
-  // TODO hide error in prod?
   if (error) {
     description += `\n${error.message}`;
-    // eslint-disable-next-line no-console
     console.error(error);
   }
 
@@ -41,7 +38,6 @@ export function GenericError({
           Take me to the home page
         </Button>
       </PageHeader>
-      <FeaturedSection />
     </>
   );
 }

@@ -8,7 +8,6 @@ import {Link} from '~/components/Link';
 import {Button} from '~/components/Button';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {isDiscounted, isNewArrival} from '~/lib/utils';
-import {getProductPlaceholder} from '~/lib/placeholders';
 
 export function ProductCard({
   product,
@@ -27,9 +26,7 @@ export function ProductCard({
 }) {
   let cardLabel;
 
-  const cardProduct: Product = product?.variants
-    ? (product as Product)
-    : getProductPlaceholder();
+  const cardProduct = product as Product;
   if (!cardProduct?.variants?.nodes?.length) return null;
 
   const firstVariant = flattenConnection(cardProduct.variants)[0];
@@ -81,7 +78,7 @@ export function ProductCard({
             </Text>
             <div className="flex gap-4">
               <Text className="flex gap-4">
-                <Money withoutTrailingZeros data={price!} />
+                <Money data={price!} />
                 {isDiscounted(price as MoneyV2, compareAtPrice as MoneyV2) && (
                   <CompareAtPrice
                     className={'opacity-50'}

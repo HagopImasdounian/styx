@@ -1,6 +1,6 @@
 // @ts-ignore
 // Virtual entry point for the app
-import * as remixBuild from 'virtual:remix/server-build';
+import * as remixBuild from 'virtual:react-router/server-build';
 import {
   createRequestHandler,
   getStorefrontHeaders,
@@ -55,19 +55,21 @@ export default {
       });
 
       /**
-       * Create a client for Customer Account API.
+       * Create a client for Customer Account API (optional).
        */
-      const customerAccount = createCustomerAccountClient({
-        waitUntil,
-        request,
-        session,
-        customerAccountId: env.PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID,
-        shopId: env.SHOP_ID,
-      });
+      const customerAccount = env.PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID && env.SHOP_ID
+        ? createCustomerAccountClient({
+            waitUntil,
+            request,
+            session,
+            customerAccountId: env.PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID,
+            shopId: env.SHOP_ID,
+          })
+        : undefined;
 
       const cart = createCartHandler({
         storefront,
-        customerAccount,
+        ...(customerAccount ? {customerAccount} : {}),
         getCartId: cartGetIdDefault(request.headers),
         setCartId: cartSetIdDefault(),
       });

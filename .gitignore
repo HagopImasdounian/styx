@@ -22,3 +22,6 @@ node_modules
 /woo-weights.json
 METAFIELDS.md
 TODO_FIXES.md
+
+# Images served from Shopify CDN — do not commit to git
+/public/images/

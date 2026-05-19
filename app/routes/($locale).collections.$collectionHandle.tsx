@@ -1,10 +1,9 @@
 import {useEffect, useState, useMemo} from 'react';
 import {
-  json,
-  type MetaArgs,
+    type MetaArgs,
   type LoaderFunctionArgs,
-} from '@shopify/remix-oxygen';
-import {useLoaderData, useNavigate, useSearchParams} from '@remix-run/react';
+} from 'react-router';
+import {data, useLoaderData, useNavigate, useSearchParams} from 'react-router';
 import {useInView} from 'react-intersection-observer';
 import type {
   Filter,
@@ -21,7 +20,68 @@ import {
 import invariant from 'tiny-invariant';
 
 import {Image} from '@shopify/hydrogen';
+import {Link} from '~/components/Link';
 import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel, StyxProductCard, Obol} from '~/components/styx';
+import {trackCollectionView} from '~/components/GTMDataLayer';
+
+/* ─── Chain type intros + journal links ─── */
+const CHAIN_INTROS: Record<string, {intro: string; journal: string; journalTitle: string}> = {
+  cuban: {
+    intro: 'The Cuban Link is the undisputed heavyweight of gold chains. Born in Miami in the 1970s, its flat-filed interlocking links create a mirror-smooth surface that catches light from every angle. Solid, dense, and engineered to lay flat against the chest — this is the chain that built a culture.',
+    journal: 'history-of-the-cuban-link',
+    journalTitle: 'Read: The History of the Cuban Link →',
+  },
+  curb: {
+    intro: 'The Curb Chain is the oldest and most universal chain design in existence, dating back to 2600 BC in ancient Sumer. Its flat, twisted links were inspired by horse curb bits — the same geometry that controls a stallion now adorns the neck. From Victorian pocket watches to modern streetwear, the curb has never gone out of style.',
+    journal: 'history-of-the-curb-chain',
+    journalTitle: 'Read: The History of the Curb Chain →',
+  },
+  box: {
+    intro: 'The Box Chain originated in 6th-century Venice, where goldsmiths discovered that square links interlocked at 90-degree angles create a chain with perfect geometric precision. Clean, architectural, and virtually kink-proof — the box chain is the engineer\'s choice.',
+    journal: 'history-of-the-box-chain',
+    journalTitle: 'Read: The History of the Box Chain →',
+  },
+  rope: {
+    intro: 'The Rope Chain traces its origins to ancient Egypt, circa 2500 BCE, where artisans twisted gold wire into helical spirals that mimicked the hemp ropes of Nile river boats. Its signature twist catches light in a continuous sparkle that no flat chain can replicate. From pharaohs to hip-hop, the rope endures.',
+    journal: 'history-of-the-rope-chain',
+    journalTitle: 'Read: The History of the Rope Chain →',
+  },
+  cable: {
+    intro: 'The Cable Chain is the DNA of all chain designs — simple interlocking oval links, unchanged since the Royal Tombs of Ur. Its strength lies in its simplicity: lightweight, versatile, and nearly indestructible. The cable chain is the foundation upon which every other weave was built.',
+    journal: 'history-of-the-cable-chain',
+    journalTitle: 'Read: The History of the Cable Chain →',
+  },
+  figaro: {
+    intro: 'The Figaro Chain was born in the goldsmithing workshops of Vicenza, Italy, around 1885. Its distinctive pattern — three small links followed by one elongated link — creates a visual rhythm unlike any other chain. Named after the clever barber of Seville, the Figaro is Italian craftsmanship at its most playful.',
+    journal: 'history-of-the-figaro-chain',
+    journalTitle: 'Read: The History of the Figaro Chain →',
+  },
+  wheat: {
+    intro: 'The Wheat Chain, known in Italy as the Spiga, mimics the overlapping husks of a wheat ear — four strands of oval links woven into a tight, flexible tube. Born during the Renaissance in Vicenza, it is one of the strongest chain weaves per gram. Substantial enough to carry a heavy pendant, elegant enough to wear alone.',
+    journal: 'history-of-the-wheat-chain',
+    journalTitle: 'Read: The History of the Wheat Chain →',
+  },
+  rolo: {
+    intro: 'The Rolo Chain emerged in Victorian London around 1850 — perfectly round, symmetrical links that interlock in a clean, modern pattern. Heavier and more substantial than a cable chain, the rolo carries a satisfying weight that you feel against your chest. Minimal, bold, timeless.',
+    journal: 'history-of-the-rolo-chain',
+    journalTitle: 'Read: The History of the Rolo Chain →',
+  },
+  singapore: {
+    intro: 'The Singapore Chain was developed by Italian chain-makers in the 1970s and named for its popularity in Southeast Asian gold markets. Its twisted, braided links create a diamond-cut surface that shimmers with every movement — a chain that sparkles like no other, even in the thinnest widths.',
+    journal: 'history-of-the-singapore-chain',
+    journalTitle: 'Read: The History of the Singapore Chain →',
+  },
+  '10k-gold': {
+    intro: '10K gold is 41.7% pure gold alloyed with copper, silver, and zinc — making it the most durable karat we carry. Its hardness means thinner chains hold up to daily wear without stretching or deforming. The color is a refined, pale champagne-gold. For everyday chains, 10K is the workhorse: real gold, built to last, priced honestly.',
+    journal: 'understanding-gold-karats',
+    journalTitle: 'Read: Understanding Gold Karats — 10K to 24K →',
+  },
+  '14k-gold': {
+    intro: '14K gold is 58.3% pure gold — the American standard for fine jewelry. Richer and warmer in color than 10K, with enough alloy to remain durable for daily wear. This is the sweet spot: unmistakably gold, strong enough for any chain style, and the most popular karat in the United States for good reason.',
+    journal: 'understanding-gold-karats',
+    journalTitle: 'Read: Understanding Gold Karats — 10K to 24K →',
+  },
+};
 import {type SortParam} from '~/components/SortFilter';
 import {PRODUCT_CARD_FRAGMENT} from '~/data/fragments';
 import {routeHeaders} from '~/data/cache';
@@ -43,7 +103,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   const searchParams = new URL(request.url).searchParams;
 
   const {sortKey, reverse} = getSortValuesFromParam(
-    searchParams.get('sort') as SortParam,
+    (searchParams.get('sort') as SortParam) || 'price-low-high',
   );
   const filters = [...searchParams.entries()].reduce(
     (filters, [key, value]) => {
@@ -126,7 +186,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     })
     .filter((filter): filter is NonNullable<typeof filter> => filter !== null);
 
-  return json({
+  return data({
     collection,
     appliedFilters,
     collections: flattenConnection(collections),
@@ -139,11 +199,10 @@ export const meta = ({matches}: MetaArgs<typeof loader>) => {
 };
 
 const SORT_OPTIONS: {label: string; value: SortParam | 'default'}[] = [
-  {label: 'Featured', value: 'featured'},
+  {label: 'Price ↑', value: 'price-low-high'},
+  {label: 'Price ↓', value: 'price-high-low'},
   {label: 'Newest', value: 'newest'},
-  {label: 'Best Selling', value: 'best-selling'},
-  {label: 'Price: Low - High', value: 'price-low-high'},
-  {label: 'Price: High - Low', value: 'price-high-low'},
+  {label: 'Popular', value: 'best-selling'},
 ];
 
 /* ═══════════════════════════════════════════════════════════════
@@ -156,10 +215,25 @@ const COLOR_HEX: Record<string, string> = {
   'White Gold': '#D4D2CC',
 };
 
+// Thickness ranges for filter pills
+const THICKNESS_RANGES = [
+  {label: 'Under 1mm', min: 0, max: 1},
+  {label: '1–2mm', min: 1, max: 2},
+  {label: '2–3mm', min: 2, max: 3},
+  {label: '3–5mm', min: 3, max: 5},
+  {label: '5–8mm', min: 5, max: 8},
+  {label: '8mm+', min: 8, max: 999},
+];
+
+function getThicknessMm(title: string): number | null {
+  const m = title?.match(/(\d+(?:\.\d+)?)\s*mm/i);
+  return m ? parseFloat(m[1]) : null;
+}
+
 function extractFilters(cards: ReturnType<typeof explodeByColor>) {
   const colors = new Set<string>();
   const karats = new Set<string>();
-  const thicknesses = new Set<string>();
+  const thicknessRangesPresent = new Set<string>();
   const constructions = new Set<string>();
 
   for (const {product, variantIndex} of cards) {
@@ -171,46 +245,36 @@ function extractFilters(cards: ReturnType<typeof explodeByColor>) {
       if (opt.name === 'Karat') karats.add(opt.value);
     }
 
-    // Extract thickness from product title (e.g. "Cuban Link Chain 3mm")
-    const thicknessMatch = product.title?.match(/(\d+(?:\.\d+)?mm)/);
-    if (thicknessMatch) thicknesses.add(thicknessMatch[1]);
+    // Map thickness to range bucket
+    const mm = getThicknessMm(product.title || '');
+    if (mm !== null) {
+      for (const range of THICKNESS_RANGES) {
+        if (mm >= range.min && mm < range.max) {
+          thicknessRangesPresent.add(range.label);
+          break;
+        }
+      }
+    }
 
-    // Extract construction (hollow/solid) from title, tags, or product type
-    const titleLower = (product.title || '').toLowerCase();
-    const productType = (product.productType || '').toLowerCase();
-    const tags = ((product.tags || []) as string[]).map((t: string) => t.toLowerCase());
-    if (
-      titleLower.includes('hollow') ||
-      productType.includes('hollow') ||
-      tags.includes('hollow')
-    ) {
-      constructions.add('Hollow');
-    }
-    if (
-      titleLower.includes('solid') ||
-      productType.includes('solid') ||
-      tags.includes('solid')
-    ) {
-      constructions.add('Solid');
-    }
-    // If neither is explicitly set, default to Solid
-    if (
-      !titleLower.includes('hollow') &&
-      !titleLower.includes('solid') &&
-      !tags.includes('hollow') &&
-      !tags.includes('solid') &&
-      !productType.includes('hollow')
-    ) {
-      constructions.add('Solid');
+    // Extract construction from metafield (falls back to title parsing)
+    const constructionMeta = product.chain_construction?.value;
+    if (constructionMeta) {
+      constructions.add(constructionMeta);
+    } else {
+      const titleLower = (product.title || '').toLowerCase();
+      constructions.add(titleLower.includes('hollow') ? 'Hollow' : 'Solid');
     }
   }
+
+  // Return thickness ranges in order, only those that have products
+  const thicknesses = THICKNESS_RANGES
+    .filter((r) => thicknessRangesPresent.has(r.label))
+    .map((r) => r.label);
 
   return {
     colors: [...colors].sort(),
     karats: [...karats].sort((a, b) => parseInt(a) - parseInt(b)),
-    thicknesses: [...thicknesses].sort(
-      (a, b) => parseFloat(a) - parseFloat(b),
-    ),
+    thicknesses,
     constructions: [...constructions].sort(),
   };
 }
@@ -250,30 +314,17 @@ function applyFilters(
     }
 
     if (filters.thickness) {
-      const thicknessMatch = product.title?.match(/(\d+(?:\.\d+)?mm)/);
-      if (!thicknessMatch || thicknessMatch[1] !== filters.thickness)
-        return false;
+      const mm = getThicknessMm(product.title || '');
+      if (mm === null) return false;
+      const range = THICKNESS_RANGES.find((r) => r.label === filters.thickness);
+      if (!range || mm < range.min || mm >= range.max) return false;
     }
 
     if (filters.construction) {
-      const titleLower = (product.title || '').toLowerCase();
-      const productType = (product.productType || '').toLowerCase();
-      const tags = ((product.tags || []) as string[]).map((t: string) => t.toLowerCase());
-      const target = filters.construction.toLowerCase();
-
-      if (target === 'hollow') {
-        const isHollow =
-          titleLower.includes('hollow') ||
-          productType.includes('hollow') ||
-          tags.includes('hollow');
-        if (!isHollow) return false;
-      } else if (target === 'solid') {
-        const isHollow =
-          titleLower.includes('hollow') ||
-          productType.includes('hollow') ||
-          tags.includes('hollow');
-        if (isHollow) return false;
-      }
+      const constructionMeta = product.chain_construction?.value;
+      const constructionVal = constructionMeta
+        || (/hollow/i.test(product.title || '') ? 'Hollow' : 'Solid');
+      if (constructionVal.toLowerCase() !== filters.construction.toLowerCase()) return false;
     }
 
     return true;
@@ -343,13 +394,15 @@ export default function Collection() {
 
   const {ref, inView} = useInView();
   const [searchParams, setSearchParams] = useSearchParams();
-  const currentSort = searchParams.get('sort') || 'featured';
+  const currentSort = searchParams.get('sort') || 'price-low-high';
 
   // Client-side filters
   const [filterColor, setFilterColor] = useState<string | null>(null);
   const [filterKarat, setFilterKarat] = useState<string | null>(null);
   const [filterThickness, setFilterThickness] = useState<string | null>(null);
-  const [filterConstruction, setFilterConstruction] = useState<string | null>(null);
+  const [filterConstruction, setFilterConstruction] = useState<string | null>(
+    searchParams.get('construction') || null,
+  );
 
   const allCards = useMemo(
     () => explodeByColor(collection.products.nodes),
@@ -375,6 +428,34 @@ export default function Collection() {
     (filterThickness ? 1 : 0) +
     (filterConstruction ? 1 : 0);
 
+  // Chain close-up image (transparent PNG) for the hero
+  const CHAIN_HERO_IMAGE: Record<string, string> = {
+    cuban: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-cuban.png?v=1779151408',
+    curb: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-curb.png?v=1779151414',
+    box: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-box.png?v=1779151394',
+    rope: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-rope.png?v=1779151436',
+    cable: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-cable.png?v=1779151401',
+    figaro: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-figaro.png?v=1779151422',
+    wheat: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-wheat.png?v=1779151450',
+    rolo: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-rolo.png?v=1779151429',
+    singapore: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-singapore.png?v=1779151442',
+  };
+  const heroChainImage = CHAIN_HERO_IMAGE[collection.handle] ?? null;
+
+  // Track collection view in data layer
+  useEffect(() => {
+    const products = collection.products?.nodes ?? [];
+    trackCollectionView({
+      id: collection.id,
+      title: collection.title,
+      products: products.slice(0, 20).map((p: any) => ({
+        id: p.id,
+        title: p.title,
+        price: p.variants?.nodes?.[0]?.price?.amount || '0',
+      })),
+    });
+  }, [collection.id]);
+
   // Collection metafields
   const c = collection as any;
   const storyHeading = c.story_heading?.value || null;
@@ -395,6 +476,7 @@ export default function Collection() {
         }}
       >
         <div
+          className="styx-collection-hero"
           style={{
             maxWidth: 1440,
             margin: '0 auto',
@@ -407,7 +489,13 @@ export default function Collection() {
         >
           {/* Left */}
           <div>
-            <StyxLabel>The Archive &middot; II</StyxLabel>
+            {heroChainImage && (
+              <img
+                src={heroChainImage}
+                alt={`${collection.title} close-up`}
+                style={{height: 80, width: 'auto', display: 'block', marginBottom: 20}}
+              />
+            )}
             <h1
               style={{
                 fontFamily: FONT.cinzel,
@@ -421,40 +509,61 @@ export default function Collection() {
               }}
             >
               {collection.title}
-              <br />
-              <span
-                style={{
-                  fontFamily: FONT.cormorant,
-                  fontStyle: 'italic',
-                  fontWeight: 400,
-                  textTransform: 'none',
-                  letterSpacing: 0,
-                  fontSize: '0.55em',
-                  color: STYX.silt,
-                }}
-              >
-                from the archive.
-              </span>
             </h1>
           </div>
 
-          {/* Right */}
-          {collection.description && (
-            <div
-              style={{
-                fontFamily: FONT.cormorant,
-                fontStyle: 'italic',
-                fontSize: 17,
-                color: STYX.silt,
-                lineHeight: 1.6,
-                maxWidth: 420,
-              }}
-            >
-              {collection.description}
-            </div>
-          )}
         </div>
       </div>
+
+      {/* ── Chain Intro + Journal Link ── */}
+      {(() => {
+        const handle = (collection as any).handle;
+        const info = CHAIN_INTROS[handle];
+        if (!info) return null;
+        return (
+          <div
+            className="styx-collection-intro"
+            style={{
+              maxWidth: 1440,
+              margin: '0 auto',
+              padding: '40px 56px',
+              display: 'flex',
+              gap: 32,
+              alignItems: 'baseline',
+              borderBottom: `1px solid ${STYX.line}`,
+            }}
+          >
+            <p
+              style={{
+                fontFamily: FONT.cormorant,
+                fontSize: 18,
+                lineHeight: 1.7,
+                color: STYX.silt,
+                margin: 0,
+                flex: 1,
+              }}
+            >
+              {info.intro}
+            </p>
+            <Link
+              to={`/journal/${info.journal}`}
+              style={{
+                fontFamily: FONT.cinzel,
+                fontSize: 11,
+                letterSpacing: '0.12em',
+                color: STYX.gold,
+                textDecoration: 'none',
+                whiteSpace: 'nowrap',
+                flexShrink: 0,
+                borderBottom: `1px solid ${STYX.gold}`,
+                paddingBottom: 2,
+              }}
+            >
+              {info.journalTitle}
+            </Link>
+          </div>
+        );
+      })()}
 
       {/* ── Sticky Filter Toolbar ── */}
       <div
@@ -467,6 +576,7 @@ export default function Collection() {
         }}
       >
         <div
+          className="styx-collection-toolbar"
           style={{
             maxWidth: 1440,
             margin: '0 auto',
@@ -525,43 +635,46 @@ export default function Collection() {
               )}
             </div>
 
-            <select
-              value={currentSort}
-              onChange={(e) => {
-                const params = new URLSearchParams(searchParams);
-                if (e.target.value === 'featured') {
-                  params.delete('sort');
-                } else {
-                  params.set('sort', e.target.value);
-                }
-                setSearchParams(params, {preventScrollReset: true});
-              }}
-              style={{
-                fontFamily: FONT.inter,
-                fontSize: 12,
-                fontWeight: 500,
-                color: STYX.ink,
-                background: 'transparent',
-                border: `1px solid ${STYX.line}`,
-                borderRadius: 4,
-                padding: '6px 28px 6px 12px',
-                cursor: 'pointer',
-                appearance: 'none',
-                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%231A1815'/%3E%3C/svg%3E")`,
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'right 10px center',
-              }}
-            >
-              {SORT_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
+            <div className="styx-collection-sort" style={{display: 'flex', alignItems: 'center', gap: 0}}>
+              {SORT_OPTIONS.map((opt, i) => {
+                const isActive = currentSort === opt.value;
+                return (
+                  <button
+                    key={opt.value}
+                    onClick={() => {
+                      const params = new URLSearchParams(searchParams);
+                      if (opt.value === 'price-low-high') {
+                        params.delete('sort');
+                      } else {
+                        params.set('sort', opt.value);
+                      }
+                      setSearchParams(params, {preventScrollReset: true});
+                    }}
+                    style={{
+                      fontFamily: FONT.inter,
+                      fontSize: 10,
+                      fontWeight: isActive ? 600 : 400,
+                      letterSpacing: '0.06em',
+                      textTransform: 'uppercase',
+                      color: isActive ? STYX.bone : STYX.silt,
+                      background: isActive ? STYX.ink : 'transparent',
+                      border: `1px solid ${isActive ? STYX.ink : STYX.line}`,
+                      borderRight: i < SORT_OPTIONS.length - 1 ? 'none' : undefined,
+                      padding: '7px 14px',
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease',
+                    }}
+                  >
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {/* Row 2: Filter pills */}
           <div
+            className="styx-collection-filters"
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -700,7 +813,7 @@ export default function Collection() {
           hasNextPage,
           state,
         }) => (
-          <div style={{maxWidth: 1440, margin: '0 auto', padding: '48px 56px 120px'}}>
+          <div className="styx-collection-products" style={{maxWidth: 1440, margin: '0 auto', padding: '48px 56px 120px'}}>
             <div
               style={{
                 display: 'flex',
@@ -1026,6 +1139,7 @@ function ProductsLoadedOnScroll({
 
   return (
     <div
+      className="styx-collection-product-grid"
       style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(3, 1fr)',

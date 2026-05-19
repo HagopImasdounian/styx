@@ -47,13 +47,24 @@ export function FeaturedRow({products}: {products: ProductNode[]}) {
           margin: '0 0 48px',
           textTransform: 'uppercase',
           letterSpacing: '0.04em',
+          lineHeight: 1.05,
         }}
       >
-        Four pieces worth carrying.
+        Best value,{' '}
+        <span style={{
+          fontFamily: FONT.cormorant,
+          fontStyle: 'italic',
+          fontWeight: 400,
+          textTransform: 'none',
+          letterSpacing: 0,
+        }}>
+          by the gram.
+        </span>
       </h2>
 
       <div
         data-grid=""
+        className="styx-featured-grid"
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(4, 1fr)',

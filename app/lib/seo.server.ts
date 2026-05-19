@@ -190,12 +190,23 @@ function product({
   selectedVariant: SelectedVariantRequiredFields;
   url: Request['url'];
 }): SeoConfig {
+  const variantTitle = selectedVariant?.title && selectedVariant.title !== 'Default Title' 
+    ? ` - ${selectedVariant.title}` 
+    : '';
+  
+  const title = (product?.seo?.title ?? product?.title) + variantTitle;
+  
   const description = truncate(
     product?.seo?.description ?? product?.description ?? '',
   );
+
+  const variantDescription = selectedVariant?.title && selectedVariant.title !== 'Default Title'
+    ? `Shop the ${product.title} in ${selectedVariant.title}. Solid 10k or 14k gold chains priced transparently. ${description}`
+    : description;
+
   return {
-    title: product?.seo?.title ?? product?.title,
-    description,
+    title,
+    description: variantDescription,
     url,
     media: selectedVariant?.image,
     jsonLd: productJsonLd({product, selectedVariant, url}),

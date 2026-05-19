@@ -1,7 +1,8 @@
 import {CartForm, type OptimisticCartLineInput} from '@shopify/hydrogen';
-import type {FetcherWithComponents} from '@remix-run/react';
+import type {FetcherWithComponents} from 'react-router';
 
 import {Button} from '~/components/Button';
+import {trackAddToCart} from '~/components/GTMDataLayer';
 
 export function AddToCartButton({
   children,
@@ -10,6 +11,7 @@ export function AddToCartButton({
   variant = 'primary',
   width = 'full',
   disabled,
+  analytics,
   ...props
 }: {
   children: React.ReactNode;
@@ -18,6 +20,13 @@ export function AddToCartButton({
   variant?: 'primary' | 'secondary' | 'inline';
   width?: 'auto' | 'full';
   disabled?: boolean;
+  analytics?: {
+    id: string;
+    title: string;
+    price: string;
+    quantity: number;
+    variantTitle?: string;
+  };
   [key: string]: any;
 }) {
   return (
@@ -38,6 +47,11 @@ export function AddToCartButton({
               variant={variant}
               className={className}
               disabled={disabled ?? fetcher.state !== 'idle'}
+              onClick={() => {
+                if (analytics) {
+                  trackAddToCart(analytics);
+                }
+              }}
               {...props}
             >
               {children}

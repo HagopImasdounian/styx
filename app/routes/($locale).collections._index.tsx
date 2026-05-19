@@ -1,9 +1,8 @@
 import {
-  json,
-  type MetaArgs,
+    type MetaArgs,
   type LoaderFunctionArgs,
-} from '@shopify/remix-oxygen';
-import {useLoaderData, Link} from '@remix-run/react';
+} from 'react-router';
+import {useLoaderData, Link} from 'react-router';
 import {Image, getSeoMeta} from '@shopify/hydrogen';
 import {seoPayload} from '~/lib/seo.server';
 import {routeHeaders} from '~/data/cache';
@@ -37,7 +36,7 @@ export const loader = async ({
     url: request.url,
   });
 
-  return json({collections: collections.nodes as any[], seo});
+  return {collections: collections.nodes as any[], seo};
 };
 
 export const meta = ({matches}: MetaArgs<typeof loader>) => {
@@ -56,15 +55,19 @@ export default function CollectionsIndex() {
       (c.products?.nodes?.length ?? 0) > 0,
   );
 
-  // Split into "chain type" collections and "filter" collections (metal, karat, etc.)
+  // Split into "chain type" collections and "filter" collections (metal, karat, thickness, etc.)
+  const filterHandles = new Set([
+    'yellow-gold', 'white-gold', 'rose-gold',
+    '10k-gold', '14k-gold', '18k-gold',
+    'chains', 'classic-curb', 'woven-braided', 'round-rolling', 'flat-architectural', 'figural-decorative',
+  ]);
+  const isThickness = (handle: string) => handle.startsWith('thickness-');
+
   const chainTypes = live.filter(
-    (c: any) =>
-      !['yellow-gold', 'white-gold', 'rose-gold', '14k-gold', '10k-gold', 'chains'].includes(
-        c.handle,
-      ),
+    (c: any) => !filterHandles.has(c.handle) && !isThickness(c.handle),
   );
   const filterCollections = live.filter((c: any) =>
-    ['yellow-gold', 'white-gold', 'rose-gold', '14k-gold', '10k-gold'].includes(c.handle),
+    ['yellow-gold', 'white-gold', 'rose-gold', '10k-gold', '14k-gold', '18k-gold'].includes(c.handle),
   );
   const allChains = live.find((c: any) => c.handle === 'chains');
 
@@ -75,6 +78,7 @@ export default function CollectionsIndex() {
 
       {/* Hero */}
       <section
+        className="styx-ci-hero"
         style={{
           background: STYX.bone,
           padding: '96px 56px 64px',
@@ -131,6 +135,7 @@ export default function CollectionsIndex() {
         <Link
           to={`/collections/${allChains.handle}`}
           prefetch="intent"
+          className="styx-ci-banner"
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -178,7 +183,7 @@ export default function CollectionsIndex() {
       )}
 
       {/* Chain families grid */}
-      <section style={{padding: '80px 56px'}}>
+      <section className="styx-ci-families" style={{padding: '80px 56px'}}>
         <StyxLabel>By Chain Family</StyxLabel>
         <h2
           style={{
@@ -195,6 +200,7 @@ export default function CollectionsIndex() {
         </h2>
 
         <div
+          className="styx-ci-families-grid"
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(4, 1fr)',
@@ -214,6 +220,7 @@ export default function CollectionsIndex() {
       {/* Filter collections (metal, karat) */}
       {filterCollections.length > 0 && (
         <section
+          className="styx-ci-karat"
           style={{
             padding: '64px 56px 80px',
             background: STYX.bone,
@@ -235,6 +242,7 @@ export default function CollectionsIndex() {
             Shop by material.
           </h2>
           <div
+            className="styx-ci-karat-grid"
             style={{
               display: 'grid',
               gridTemplateColumns: `repeat(${Math.min(filterCollections.length, 5)}, 1fr)`,
@@ -292,7 +300,20 @@ export default function CollectionsIndex() {
   );
 }
 
-/* ─── Collection tile ─── */
+/* ─── Static lifestyle images for collection tiles ─── */
+const COLLECTION_IMAGES: Record<string, {src: string; alt: string}> = {
+  'cuban': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-cuban-link.jpg?v=1779151358', alt: 'Man wearing Cuban link chain on Ocean Drive, Miami'},
+  'curb': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-curb-chain.png?v=1779151362', alt: 'Man wearing curb chain on a foggy London street'},
+  'box': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-box-chain.png?v=1779151351', alt: 'Man wearing box chain in Venice with canal backdrop'},
+  'rope': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-rope-chain.png?v=1779151380', alt: 'Man wearing rope chain at Mediterranean harbor'},
+  'cable': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-cable-chain.png?v=1779151355', alt: 'Man wearing cable chain at Mesopotamian ruins'},
+  'figaro': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-figaro-chain.png?v=1779151369', alt: 'Man wearing Figaro chain in Vicenza, Italy'},
+  'wheat': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-wheat-chain.png?v=1779151386', alt: 'Man wearing wheat chain in Tuscan vineyard'},
+  'rolo': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-rolo-chain.png?v=1779151375', alt: 'Man wearing rolo chain in Victorian London'},
+  'singapore': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-singapore-chain.png?v=1779151383', alt: 'Man wearing Singapore chain at Asian waterfront'},
+  '10k-gold': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-cuban-link.jpg?v=1779151358', alt: '10K Gold chains collection'},
+  '14k-gold': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-curb-chain.png?v=1779151362', alt: '14K Gold chains collection'},
+};
 
 function CollectionTile({
   collection,
@@ -301,6 +322,7 @@ function CollectionTile({
   collection: any;
   index: number;
 }) {
+  const staticImg = COLLECTION_IMAGES[collection.handle];
   return (
     <Link
       to={`/collections/${collection.handle}`}
@@ -326,7 +348,14 @@ function CollectionTile({
     >
       {/* Image */}
       <div style={{aspectRatio: '4/5', position: 'relative', overflow: 'hidden'}}>
-        {collection.image ? (
+        {staticImg ? (
+          <img
+            src={staticImg.src}
+            alt={staticImg.alt}
+            loading="lazy"
+            style={{width: '100%', height: '100%', objectFit: 'cover'}}
+          />
+        ) : collection.image ? (
           <Image
             data={collection.image}
             aspectRatio="4/5"

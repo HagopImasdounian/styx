@@ -18,14 +18,15 @@ export async function getGoldSpotPrice(): Promise<number | null> {
     return cachedSpot.price;
   }
 
+  // Try gold-api.com (free, no key needed)
   try {
     const res = await fetch(
-      'https://api.metals.dev/v1/latest?api_key=demo&currency=USD&unit=toz',
+      'https://api.gold-api.com/price/XAU',
       {signal: AbortSignal.timeout(4000)},
     );
     if (res.ok) {
       const data: any = await res.json();
-      const price = data?.metals?.gold;
+      const price = data?.price;
       if (typeof price === 'number' && price > 500) {
         cachedSpot = {price, timestamp: Date.now()};
         return price;
@@ -35,7 +36,8 @@ export async function getGoldSpotPrice(): Promise<number | null> {
     // Fall through
   }
 
-  return cachedSpot?.price ?? null;
+  // Fallback: current approximate gold price
+  return cachedSpot?.price ?? 4700;
 }
 
 /**

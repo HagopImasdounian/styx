@@ -1,193 +1,65 @@
 import {
-  json,
-  type MetaArgs,
+    type MetaArgs,
   type LoaderFunctionArgs,
-} from '@shopify/remix-oxygen';
-import {useLoaderData} from '@remix-run/react';
+} from 'react-router';
+import {data, useLoaderData, useParams, useRouteLoaderData} from 'react-router';
 import {getSeoMeta, Image} from '@shopify/hydrogen';
 import invariant from 'tiny-invariant';
 
+import type {RootLoader} from '~/root';
 import {Link} from '~/components/Link';
 import {seoPayload} from '~/lib/seo.server';
-import {routeHeaders} from '~/data/cache';
-import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel} from '~/components/styx';
+import {KARAT_PURITY} from '~/lib/gold';
+import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel, CTAButton, StyxProductCard} from '~/components/styx';
+import {PLACEHOLDER_ARTICLES} from '~/data/journal-articles';
 
 const BLOG_HANDLE = 'journal';
 
-export const headers = routeHeaders;
+/* ─── All journal entries for the "Other chapters" index ─── */
+const JOURNAL_ENTRIES = [
+  {handle: 'history-of-gold-chains', title: 'A Brief History of Gold Chains', subtitle: 'From Mesopotamia to Miami', readTime: '10 min', vol: 'The Almanac'},
+  {handle: 'sizing-guide', title: 'On Proportion & Stature', subtitle: 'The Definitive Sizing Guide', readTime: '8 min', vol: 'The Almanac'},
+  {handle: 'history-of-the-cuban-link', title: 'The Cuban Link', subtitle: 'Miami, 1974', readTime: '6 min', vol: 'Vol I'},
+  {handle: 'history-of-the-franco-chain', title: 'The Franco', subtitle: "Milan's Strongest Weave", readTime: '4 min', vol: 'Vol I'},
+  {handle: 'history-of-the-curb-chain', title: 'The Curb Link', subtitle: 'Ancient Sumer, 2600 BC', readTime: '5 min', vol: 'Vol I'},
+  {handle: 'history-of-the-figaro-chain', title: 'The Figaro', subtitle: 'Vicenza, 1885', readTime: '5 min', vol: 'Vol I'},
+  {handle: 'history-of-the-mariner-chain', title: 'The Mariner', subtitle: 'Anchored in History', readTime: '4 min', vol: 'Vol I'},
+  {handle: 'history-of-the-rope-chain', title: 'The Rope Chain', subtitle: 'A Twist Through Time', readTime: '4 min', vol: 'Vol II'},
+  {handle: 'history-of-the-wheat-chain', title: 'The Wheat (Spiga)', subtitle: 'Vicenza, The Renaissance', readTime: '5 min', vol: 'Vol II'},
+  {handle: 'history-of-the-herringbone-chain', title: 'The Herringbone', subtitle: 'Flat Luxury', readTime: '4 min', vol: 'Vol IV'},
+  {handle: 'history-of-the-snake-chain', title: 'The Snake Chain', subtitle: 'Victorian Era', readTime: '4 min', vol: 'Vol IV'},
+  {handle: 'history-of-the-box-chain', title: 'The Box Chain', subtitle: 'Venice, 6th Century', readTime: '4 min', vol: 'Vol IV'},
+  {handle: 'history-of-the-paperclip-chain', title: 'The Paperclip', subtitle: 'Oslo, 1940', readTime: '4 min', vol: 'Vol IV'},
+  {handle: 'history-of-the-tennis-chain', title: 'The Tennis Chain', subtitle: 'Forest Hills, 1978', readTime: '5 min', vol: 'Vol V'},
+];
 
-/* ─────────────────────────── Placeholder content ─────────────────────────── */
-
-const PLACEHOLDER_ARTICLES: Record<string, {
-  title: string;
-  category: string;
-  vol: string;
-  readTime: string;
-  content: string;
-}> = {
-  'history-of-the-cuban-link': {
-    title: 'On the Cuban Link — Miami, 1974',
-    category: 'The Weaves',
-    vol: 'I',
-    readTime: '6 min',
-    content: `
-      <p>The Miami Cuban link chain didn't come from Cuba — not directly, anyway. It was born in the jewelry workshops of Miami's downtown district in the early 1970s, created by Cuban-American jewelers who adapted traditional curb chain techniques into something bolder, flatter, and more interlocking than anything that came before.</p>
-
-      <h3>The Mechanics</h3>
-      <p>What makes a Cuban link different from a standard curb chain? It comes down to the interlock. Each link is cut from round wire, flattened, and then twisted so it lies perfectly flat against the next. The result is a chain that looks like it's been woven rather than assembled — smooth to the touch but with visible definition between every link.</p>
-
-      <p>The links are typically oval-shaped with a slight curve, and they connect in a way that distributes weight evenly across the chain. That's why a heavy Cuban doesn't feel like a weight around your neck — it drapes, it moves, it settles.</p>
-
-      <h3>Miami in the '70s</h3>
-      <p>By the mid-1970s, the Cuban link had become the chain of choice in Miami's growing hip-hop and Latin music scenes. It was big, it was gold, and it was unmistakable. Jewelers on NE 1st Avenue were making them by hand — each chain could take days to assemble, link by link.</p>
-
-      <p>The chain crossed over into mainstream fashion in the 1980s and never left. Rappers wore them. Athletes wore them. Eventually everyone wore them — or wanted to. The Cuban link became shorthand for "real gold chain."</p>
-
-      <h3>How It's Made Today</h3>
-      <p>Modern Cuban links are still made using the same fundamental technique: wire is drawn, links are formed, they're assembled and soldered one by one. The best ones are hand-finished — machine-made versions exist, but they lack the weight distribution and the buttery drape of a handcrafted chain.</p>
-
-      <p>At Styx, every Cuban link starts as raw gold wire and ends as a chain that's been inspected, weighed, and hallmarked. No shortcuts. No hollow links. Just solid gold, linked the way it's been done for fifty years.</p>
-    `,
-  },
-  'history-of-the-figaro-chain': {
-    title: 'On the Figaro — Vicenza, 1885',
-    category: 'The Weaves',
-    vol: 'I',
-    readTime: '5 min',
-    content: `
-      <p>The Figaro chain takes its name from the character in Beaumarchais' play <em>The Barber of Seville</em> — a man of many talents, always adapting, never boring. The chain follows the same principle: it alternates between short and long links in a repeating pattern, usually three small round links followed by one elongated oval.</p>
-
-      <h3>Italian Origins</h3>
-      <p>The Figaro was born in the goldsmithing capital of Italy — Vicenza, in the Veneto region. Italian jewelers had been perfecting flat-link chains since the Renaissance, and by the late 19th century, the Figaro pattern had emerged as one of the most popular designs coming out of the region.</p>
-
-      <p>Vicenza remains one of the world's great jewelry cities. The annual VicenzaOro fair draws goldsmiths from around the globe, and the Figaro is still one of the patterns most associated with Italian craftsmanship.</p>
-
-      <h3>The Pattern</h3>
-      <p>The classic Figaro pattern is 3:1 — three small links, one long link, repeat. But variations exist: 2:1, 4:1, even 5:1 patterns have been produced over the years. The ratio affects the visual rhythm of the chain and how it catches light.</p>
-
-      <p>Because the links alternate in size, the Figaro has a distinctive visual texture that sets it apart from uniform chains like the curb or rope. It's structured but not symmetrical — orderly but interesting.</p>
-
-      <h3>Wearing It</h3>
-      <p>The Figaro is one of the most versatile chain styles. It works at every width, from delicate 2mm necklaces to bold 7mm+ bracelets. The alternating pattern means it lies flat against the skin and doesn't twist or tangle as easily as some other styles. It's a chain you can put on in the morning and forget about — it just works.</p>
-    `,
-  },
-  'history-of-the-rope-chain': {
-    title: 'On the Rope Chain — A Twist Through Time',
-    category: 'The Weaves',
-    vol: 'I',
-    readTime: '4 min',
-    content: `
-      <p>The rope chain is exactly what it sounds like — gold links twisted together to resemble a length of rope. But what sounds simple is actually one of the more complex chain constructions. Each "strand" is made up of small links that are intertwined in a spiral pattern, creating a chain that captures and scatters light like no other.</p>
-
-      <h3>The Engineering</h3>
-      <p>A rope chain is essentially two or more strands of metal links twisted together and then soldered at regular intervals to hold the spiral shape. The tighter the twist, the more the chain sparkles — light bounces off each tiny facet created by the individual links.</p>
-
-      <p>This construction also makes the rope chain one of the most durable styles. The interlocking spiral distributes stress across multiple points, so it's harder to break than chains that rely on single-point connections between links.</p>
-
-      <h3>A Chain for All Occasions</h3>
-      <p>The rope chain has been a staple in jewelry for centuries. It's been found in archaeological sites dating back to ancient Egypt and Mesopotamia, though those early versions were simpler than the precision-twisted chains we make today.</p>
-
-      <p>What makes the rope endure is its versatility. Thin rope chains are elegant enough for formal wear. Thick rope chains make a statement. It works with pendants or on its own. There's a reason it's been in continuous production for thousands of years.</p>
-    `,
-  },
-  'history-of-the-franco-chain': {
-    title: 'On the Franco — Milan\'s Strongest Weave',
-    category: 'The Weaves',
-    vol: 'I',
-    readTime: '4 min',
-    content: `
-      <p>The Franco chain is the workhorse of Italian chain design. Four rows of V-shaped links interlock at angles, creating a square cross-section that's remarkably strong for its weight. It's the chain you choose when you want something that can take a beating and still look sharp.</p>
-
-      <h3>Construction</h3>
-      <p>Unlike flat chains like the curb or herringbone, the Franco has depth. Its links connect in a three-dimensional weave that creates a slightly squared profile. This gives it a distinct feel on the skin — substantial but not heavy, textured but smooth.</p>
-
-      <p>The V-shaped links are arranged so that each one cups into the next, creating a continuous surface with no gaps or weak points. This interlocking structure is what gives the Franco its legendary strength — it flexes in all directions without stressing any single link.</p>
-
-      <h3>The Modern Franco</h3>
-      <p>Today the Franco is particularly popular in the hip-hop and streetwear communities, where its clean lines and strength make it ideal for heavy pendant wear. A solid Franco can support a substantial pendant without stretching or deforming over time.</p>
-
-      <p>It's also one of the few chain styles that looks as good at 2mm as it does at 5mm+. The geometric precision of the weave scales beautifully — it just gets more impressive as it gets thicker.</p>
-    `,
-  },
-  'history-of-the-byzantine-chain': {
-    title: 'On the Byzantine — Constantinople, 500 AD',
-    category: 'The Weaves',
-    vol: 'I',
-    readTime: '5 min',
-    content: `
-      <p>The Byzantine chain is one of the oldest continuously produced chain patterns in the world. Its interlocking, woven appearance dates back to the Eastern Roman Empire — Byzantium — where goldsmiths developed it as both jewelry and currency.</p>
-
-      <h3>Ancient Engineering</h3>
-      <p>The Byzantine weave uses a series of connected oval links that fold back on themselves, creating a dense, textured surface. When you look at a Byzantine chain, it appears almost organic — like vines wrapping around each other. The pattern is complex enough that it took skilled artisans to produce, which made it a status symbol in the ancient world.</p>
-
-      <p>In Constantinople, gold chains served a dual purpose. They were worn as adornment, but they were also a portable form of wealth. A gold chain could be cut and traded by weight — the links themselves were the currency.</p>
-
-      <h3>Timeless Appeal</h3>
-      <p>What's remarkable about the Byzantine is how modern it looks. Despite being over 1,500 years old as a design, it doesn't feel dated. The interlocking pattern creates a visual rhythm that catches light beautifully, and the overall form is clean and contemporary.</p>
-
-      <p>It's surprisingly light for how substantial it looks. The woven structure creates visual density without excess weight, making it comfortable for all-day wear even in thicker widths.</p>
-    `,
-  },
-  'history-of-the-herringbone-chain': {
-    title: 'On the Herringbone — Flat Luxury',
-    category: 'The Weaves',
-    vol: 'II',
-    readTime: '4 min',
-    content: `
-      <p>The herringbone chain is named for its resemblance to the skeleton of a herring fish — rows of flat, slanted links that lie in opposing directions, creating a V-shaped pattern that looks almost like liquid gold when it catches the light.</p>
-
-      <h3>How It's Built</h3>
-      <p>Unlike most chains, which have visible gaps between links, the herringbone is constructed so that each link lies flush against its neighbor. The result is a flat, smooth surface that bends and flexes like a ribbon. It's one of the few chains that can genuinely be described as silky.</p>
-
-      <p>This construction is also what makes the herringbone delicate. Because the links lie flat and parallel, the chain can kink if it's bent sharply or twisted. A kinked herringbone is very difficult to repair — the flat structure doesn't forgive abuse the way a curb or rope chain might.</p>
-
-      <h3>Wearing It Right</h3>
-      <p>The herringbone is a chain that rewards careful wear. It should lie flat against the skin, untwisted. It's not a chain for pendants — the flat surface doesn't accommodate hanging weight well. But worn on its own, a herringbone is one of the most striking chains you can put on. The way it catches and reflects light is unlike anything else in the chain world.</p>
-
-      <p>Wider herringbones (5mm+) create a bold, almost architectural look. Narrower ones are subtle and elegant. Either way, it's a chain that gets noticed.</p>
-    `,
-  },
-  'history-of-the-mariner-chain': {
-    title: 'On the Mariner — Anchored in History',
-    category: 'The Weaves',
-    vol: 'II',
-    readTime: '4 min',
-    content: `
-      <p>The Mariner chain — also called the anchor chain — gets its name from the chains used to anchor ships. Each oval link has a bar running through its center, mimicking the design of nautical chains that needed to be strong enough to hold vessels in place.</p>
-
-      <h3>Nautical Roots</h3>
-      <p>Sailors and maritime communities were among the first to wear chains as jewelry. A gold chain was portable wealth that could survive a shipwreck, and the mariner pattern was a natural choice for men who spent their lives at sea. The bar through each link wasn't just decorative — in actual ship chains, it prevented the links from collapsing under pressure.</p>
-
-      <h3>The Design</h3>
-      <p>The center bar gives the Mariner a distinctive look that's immediately recognizable. It also adds structural integrity — the bar acts as a brace, making each link stronger than a simple oval. This means Mariner chains can be made with thinner wire while still maintaining strength.</p>
-
-      <p>The flat, oval links lie nicely against the skin, and the bar detail adds visual interest without making the chain look busy. It's one of those designs that's both simple and sophisticated — easy to understand at a glance but refined enough for any occasion.</p>
-    `,
-  },
-  'history-of-gold-chains': {
-    title: 'A Brief History of Gold Chains',
-    category: 'The Almanac',
-    vol: 'IV',
-    readTime: '8 min',
-    content: `
-      <p>Humans have been wearing gold chains for at least 5,000 years. The earliest known examples come from ancient Mesopotamia — modern-day Iraq — where gold was hammered into thin sheets, cut into strips, and twisted into simple link chains around 2500 BCE.</p>
-
-      <h3>Ancient Civilizations</h3>
-      <p>The Egyptians elevated chain-making to an art form. Pharaohs were buried with elaborate gold chains, and the collar-style necklaces depicted in tomb paintings show sophisticated link patterns that wouldn't look out of place in a modern jewelry store.</p>
-
-      <p>The Greeks and Romans continued the tradition, developing new weave patterns and techniques. The Byzantine weave — still popular today — dates from this period. Roman soldiers sometimes received gold chains as military decorations, establishing an early connection between gold chains and status.</p>
-
-      <h3>The Italian Renaissance</h3>
-      <p>Italy became the center of gold chain production during the Renaissance, a position it still holds today. Cities like Florence, Vicenza, and Arezzo developed specialized guilds of goldsmiths who perfected techniques for drawing wire, forming links, and soldering them into chains.</p>
-
-      <p>Many of the chain patterns we know today — the Figaro, the herringbone, the San Marco — were developed by Italian craftsmen during this period and the centuries that followed.</p>
-
-      <h3>Modern Chains</h3>
-      <p>The 20th century brought machine-made chains, which dramatically reduced costs and made gold chains accessible to everyone. But the best chains are still finished by hand — machines can form links, but human hands give a chain its final polish, its perfect drape, its weight distribution.</p>
-
-      <p>Today, gold chains are worn everywhere in the world, in every culture, by every kind of person. The Cuban link dominates street style. The herringbone whispers quiet luxury. The rope chain catches light in a boardroom. Five thousand years in, and we're still finding new reasons to put gold around our necks.</p>
-    `,
-  },
+/* ─── Chain → collection mapping (handles match Shopify collection handles) ─── */
+const COLLECTION_MAP: Record<string, {name: string; handle: string}> = {
+  'history-of-the-cuban-link': {name: 'Cuban Link', handle: 'cuban'},
+  'history-of-the-figaro-chain': {name: 'Figaro', handle: 'figaro'},
+  'history-of-the-franco-chain': {name: 'Franco', handle: 'franco'},
+  'history-of-the-curb-chain': {name: 'Curb', handle: 'curb'},
+  'history-of-the-mariner-chain': {name: 'Mariner', handle: 'mariner'},
+  'history-of-the-rope-chain': {name: 'Rope', handle: 'rope'},
+  'history-of-the-wheat-chain': {name: 'Wheat', handle: 'wheat'},
+  'history-of-the-box-chain': {name: 'Box', handle: 'box'},
+  'history-of-the-cable-chain': {name: 'Cable', handle: 'cable'},
+  'history-of-the-rolo-chain': {name: 'Rolo', handle: 'rolo'},
+  'history-of-the-singapore-chain': {name: 'Singapore', handle: 'singapore'},
+  'history-of-the-herringbone-chain': {name: 'Herringbone', handle: 'herringbone'},
+  'history-of-the-snake-chain': {name: 'Snake', handle: 'snake'},
+  'history-of-the-paperclip-chain': {name: 'Paperclip', handle: 'paperclip'},
+  'history-of-the-tennis-chain': {name: 'Tennis', handle: 'tennis'},
+  'history-of-the-byzantine-chain': {name: 'Byzantine', handle: 'byzantine'},
+  'history-of-the-ball-chain': {name: 'Ball', handle: 'ball'},
+  'history-of-the-heart-chain': {name: 'Heart', handle: 'heart'},
+  'history-of-the-valentino-chain': {name: 'Valentino', handle: 'valentino'},
+  'history-of-the-tulip-chain': {name: 'Tulip', handle: 'tulip'},
+  'history-of-the-peanut-chain': {name: 'Peanut', handle: 'peanut'},
+  'history-of-the-scroll-chain': {name: 'Scroll', handle: 'scroll'},
+  'history-of-the-s-link-chain': {name: 'S-Link', handle: 's-link'},
+  'history-of-the-criss-cross-chain': {name: 'Criss-Cross', handle: 'criss-cross'},
+  'history-of-the-forsantina-chain': {name: 'Forsantina', handle: 'forsantina'},
 };
 
 export async function loader({request, params, context}: LoaderFunctionArgs) {
@@ -195,14 +67,31 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
 
   invariant(params.journalHandle, 'Missing journal handle');
 
-  // Try to fetch from Shopify first
-  const {blog} = await context.storefront.query(ARTICLE_QUERY, {
-    variables: {
-      blogHandle: BLOG_HANDLE,
-      articleHandle: params.journalHandle,
-      language,
-    },
-  });
+  // Fetch article + related collection products in parallel
+  const collectionMapping = COLLECTION_MAP[params.journalHandle];
+  const collectionHandle = collectionMapping?.handle;
+
+  const [articleResult, collectionResult] = await Promise.all([
+    context.storefront.query(ARTICLE_QUERY, {
+      variables: {
+        blogHandle: BLOG_HANDLE,
+        articleHandle: params.journalHandle,
+        language,
+      },
+    }),
+    collectionHandle
+      ? context.storefront.query(SHOP_COLLECTION_QUERY, {
+          variables: {
+            handle: collectionHandle,
+            country: context.storefront.i18n.country,
+            language,
+          },
+        }).catch(() => null)
+      : Promise.resolve(null),
+  ]);
+
+  const {blog} = articleResult;
+  const shopProducts = collectionResult?.collection?.products?.nodes ?? [];
 
   if (blog?.articleByHandle) {
     const article = blog.articleByHandle;
@@ -214,21 +103,20 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
 
     const seo = seoPayload.article({article, url: request.url});
 
-    return json({article, formattedDate, seo, isPlaceholder: false});
+    return data({article, formattedDate, seo, isPlaceholder: false, shopProducts});
   }
 
-  // Fall back to placeholder content
   const placeholder = PLACEHOLDER_ARTICLES[params.journalHandle];
   if (!placeholder) {
     throw new Response(null, {status: 404});
   }
 
-  return json({
+  return data({
     article: {
       title: placeholder.title,
       contentHtml: placeholder.content,
-      image: null,
-      author: {name: 'Styx'},
+      image: placeholder.image ? {url: placeholder.image.url, altText: placeholder.image.altText} : null,
+      author: {name: 'The Ferryman'},
     },
     formattedDate: placeholder.readTime,
     seo: {
@@ -238,6 +126,7 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
     isPlaceholder: true,
     category: placeholder.category,
     vol: placeholder.vol,
+    shopProducts,
   });
 }
 
@@ -247,168 +136,785 @@ export const meta = ({matches}: MetaArgs<typeof loader>) => {
 
 export default function Article() {
   const data = useLoaderData<typeof loader>();
+  const {journalHandle} = useParams();
   const {article, formattedDate, isPlaceholder} = data;
+  const shopProducts = (data as any).shopProducts ?? [];
   const category = (data as any).category;
-  const vol = (data as any).vol;
 
   const {title, image, contentHtml, author} = article as any;
+  const target = journalHandle ? COLLECTION_MAP[journalHandle] : null;
+
+  // Gold data from root loader
+  const rootData = useRouteLoaderData<RootLoader>('root');
+  const goldData = (rootData as any)?.goldData;
+  const spotPerOz = goldData?.spotPerOz ?? 4700;
+  const TROY_OZ_GRAMS = 31.1035;
+
+  // Find current entry + other chapters
+  const currentEntry = JOURNAL_ENTRIES.find((e) => e.handle === journalHandle);
+  const otherChapters = JOURNAL_ENTRIES.filter((e) => e.handle !== journalHandle).slice(0, 6);
 
   return (
-    <div style={{background: STYX.bone, minHeight: '100vh'}}>
+    <div style={{background: STYX.bone, minHeight: '100vh'}} className="styx-journal-page">
       <GoldTicker />
       <StyxNav />
 
-      {/* Article Header */}
-      <div
+      {/* ─── Editorial Masthead ─────────────────────────────── */}
+      <section
         style={{
+          background: STYX.bone,
+          padding: '40px 56px 36px',
           borderBottom: `1px solid ${STYX.line}`,
+          position: 'relative',
         }}
+        className="styx-journal-hero"
       >
-        <div
-          style={{
-            maxWidth: 800,
-            margin: '0 auto',
-            padding: '80px 56px 48px',
-          }}
-        >
-          {/* Breadcrumb */}
-          <nav
-            style={{
-              fontFamily: FONT.cinzel,
-              fontSize: 10,
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              color: STYX.silt,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              marginBottom: 32,
-            }}
-          >
-            <Link to="/" style={{color: STYX.silt, textDecoration: 'none'}}>
-              Home
-            </Link>
-            <span style={{opacity: 0.4}}>/</span>
-            <Link to="/journal" style={{color: STYX.silt, textDecoration: 'none'}}>
-              Journal
-            </Link>
-            {isPlaceholder && (category as any) && (
-              <>
-                <span style={{opacity: 0.4}}>/</span>
-                <span style={{color: STYX.gold}}>{category as string} &middot; {vol as string}</span>
-              </>
-            )}
-          </nav>
-
-          <h1
-            style={{
-              fontFamily: FONT.cinzel,
-              fontSize: 44,
-              fontWeight: 400,
-              textTransform: 'uppercase',
-              letterSpacing: '0.02em',
-              lineHeight: 1.1,
-              color: STYX.ink,
-              margin: 0,
-            }}
-          >
-            {title}
-          </h1>
+        <div style={{maxWidth: 1280, margin: '0 auto'}}>
+          {/* Top bar: back + volume label */}
           <div
             style={{
               display: 'flex',
+              justifyContent: 'space-between',
               alignItems: 'center',
-              gap: 16,
-              marginTop: 20,
-              fontFamily: FONT.cormorant,
-              fontSize: 16,
-              fontStyle: 'italic',
-              color: STYX.silt,
+              marginBottom: 24,
             }}
+            className="styx-journal-topbar"
           >
-            {author?.name && <span>By {author.name}</span>}
-            {author?.name && formattedDate && <span style={{opacity: 0.4}}>&middot;</span>}
-            {formattedDate && <span>{formattedDate}</span>}
+            <Link
+              to="/journal"
+              style={{
+                background: 'transparent',
+                border: 'none',
+                fontFamily: FONT.cinzel,
+                fontSize: 11,
+                letterSpacing: '0.25em',
+                color: STYX.silt,
+                textTransform: 'uppercase' as const,
+                textDecoration: 'none',
+              }}
+            >
+              &larr; Back to the Journal
+            </Link>
+            <div
+              style={{
+                fontFamily: FONT.cinzel,
+                fontSize: 11,
+                letterSpacing: '0.25em',
+                color: STYX.silt,
+                textTransform: 'uppercase',
+              }}
+            >
+              The Styx Journal{currentEntry ? ` · ${currentEntry.vol}` : ''}
+            </div>
           </div>
-        </div>
-      </div>
 
-      {/* Hero Image */}
+          {/* Massive title */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr auto',
+              gap: 40,
+              alignItems: 'end',
+            }}
+            className="styx-journal-title-grid"
+          >
+            <div>
+              <StyxLabel>
+                {isPlaceholder && category
+                  ? `${category} · ${currentEntry?.readTime || formattedDate} read`
+                  : `${formattedDate}`}
+              </StyxLabel>
+              <h1
+                style={{
+                  fontFamily: FONT.cinzel,
+                  fontSize: 'clamp(28px, 4.5vw, 52px)',
+                  fontWeight: 400,
+                  letterSpacing: '0.02em',
+                  lineHeight: 1,
+                  color: STYX.ink,
+                  textTransform: 'uppercase',
+                  margin: '16px 0 0',
+                }}
+              >
+                {title}
+              </h1>
+              {currentEntry?.subtitle && (
+                <div
+                  style={{
+                    fontFamily: FONT.cormorant,
+                    fontSize: 'clamp(20px, 2.5vw, 32px)',
+                    fontStyle: 'italic',
+                    fontWeight: 400,
+                    lineHeight: 1,
+                    color: STYX.ink,
+                    letterSpacing: '-0.01em',
+                    marginTop: 8,
+                    opacity: 0.7,
+                  }}
+                >
+                  {currentEntry.subtitle}
+                </div>
+              )}
+            </div>
+
+            {/* Author + meta column */}
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-end',
+                gap: 8,
+                paddingBottom: 12,
+              }}
+              className="styx-journal-meta-col"
+            >
+              <div
+                style={{
+                  fontFamily: FONT.cormorant,
+                  fontSize: 16,
+                  fontStyle: 'italic',
+                  color: STYX.silt,
+                }}
+              >
+                By The Ferryman
+              </div>
+              {!isPlaceholder && formattedDate && (
+                <div
+                  style={{
+                    fontFamily: FONT.mono,
+                    fontSize: 11,
+                    letterSpacing: '0.08em',
+                    color: STYX.silt2,
+                  }}
+                >
+                  {formattedDate}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Sub-header: intro line + divider */}
+          {image && (
+            <div
+              style={{
+                marginTop: 56,
+                borderTop: `1px solid ${STYX.line}`,
+                paddingTop: 40,
+              }}
+            />
+          )}
+        </div>
+      </section>
+
+      {/* ─── Hero Image ─────────────────────────────────────── */}
       {image && (
-        <div style={{maxWidth: 1000, margin: '0 auto', padding: '40px 56px 0'}}>
-          <Image
-            data={image}
-            sizes="90vw"
-            loading="eager"
-            style={{width: '100%', height: 'auto', display: 'block'}}
-          />
+        <div
+          style={{
+            maxWidth: 1280,
+            margin: '0 auto',
+            padding: '0 56px',
+          }}
+          className="styx-journal-hero-img"
+        >
+          {isPlaceholder ? (
+            <div
+              style={{
+                aspectRatio: '21/9',
+                overflow: 'hidden',
+                border: `1px solid ${STYX.line}`,
+              }}
+            >
+              <img
+                src={image.url}
+                alt={image.altText || title}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  display: 'block',
+                }}
+              />
+            </div>
+          ) : (
+            <Image
+              data={image}
+              sizes="90vw"
+              loading="eager"
+              style={{width: '100%', height: 'auto', display: 'block'}}
+            />
+          )}
         </div>
       )}
 
-      {/* Article Body */}
-      <div
+      {/* ─── Article Body ───────────────────────────────────── */}
+      <section
         style={{
-          maxWidth: 700,
-          margin: '0 auto',
-          padding: '56px 56px 120px',
+          background: STYX.paper,
+          padding: '96px 56px',
         }}
+        className="styx-journal-body"
       >
         <div
-          dangerouslySetInnerHTML={{__html: contentHtml}}
           style={{
-            fontFamily: FONT.cormorant,
-            fontSize: 20,
-            lineHeight: 1.8,
-            color: STYX.graphite,
-          }}
-          className="journal-article"
-        />
-
-        {/* Back to Journal */}
-        <div
-          style={{
-            marginTop: 64,
-            paddingTop: 32,
-            borderTop: `1px solid ${STYX.line}`,
+            maxWidth: 760,
+            margin: '0 auto',
           }}
         >
-          <Link
-            to="/journal"
+          <div
+            dangerouslySetInnerHTML={{__html: processArticleHtml(contentHtml, spotPerOz)}}
             style={{
-              fontFamily: FONT.cinzel,
-              fontSize: 11,
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              color: STYX.gold,
-              textDecoration: 'none',
+              fontFamily: FONT.cormorant,
+              fontSize: 20,
+              lineHeight: 1.8,
+              color: STYX.graphite,
             }}
-          >
-            ← Back to the Journal
-          </Link>
+            className="journal-article"
+          />
         </div>
-      </div>
+      </section>
 
-      {/* Inline styles for article HTML */}
-      <style dangerouslySetInnerHTML={{__html: `
+      {/* ─── Shop the Collection ───────────── */}
+      {target && shopProducts.length > 0 && (
+        <section
+          style={{
+            background: STYX.bone,
+            padding: '72px 56px 80px',
+            borderTop: `1px solid ${STYX.line}`,
+          }}
+          className="styx-journal-shop"
+        >
+          <div style={{maxWidth: 1280, margin: '0 auto'}}>
+            {/* Header */}
+            <div
+              className="styx-journal-shop-header"
+              style={{
+                display: 'flex',
+                alignItems: 'flex-end',
+                justifyContent: 'space-between',
+                paddingBottom: 16,
+                borderBottom: `1px solid ${STYX.ink}`,
+                marginBottom: 32,
+              }}
+            >
+              <div>
+                <div
+                  style={{
+                    fontFamily: FONT.mono,
+                    fontSize: 10,
+                    letterSpacing: '0.3em',
+                    textTransform: 'uppercase',
+                    color: STYX.gold,
+                    marginBottom: 8,
+                  }}
+                >
+                  From the Vault
+                </div>
+                <h3
+                  style={{
+                    fontFamily: FONT.cinzel,
+                    fontSize: 24,
+                    fontWeight: 400,
+                    color: STYX.ink,
+                    margin: 0,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.04em',
+                  }}
+                >
+                  Shop the {target.name}
+                </h3>
+              </div>
+              <Link
+                to={`/collections/${target.handle}`}
+                style={{
+                  fontFamily: FONT.cinzel,
+                  fontSize: 10,
+                  letterSpacing: '0.2em',
+                  color: STYX.gold,
+                  textTransform: 'uppercase',
+                  textDecoration: 'none',
+                  borderBottom: `1px solid ${STYX.gold}`,
+                  paddingBottom: 2,
+                }}
+              >
+                View all {target.name} &rarr;
+              </Link>
+            </div>
+
+            <div
+              className="styx-journal-shop-grid"
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(4, 1fr)',
+                gap: 24,
+              }}
+            >
+              {shopProducts.slice(0, 8).map((product: any, i: number) => (
+                <StyxProductCard key={product.id} product={product} index={i} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ─── Other Chapters — index ─────────────────────────── */}
+      <section
+        style={{
+          padding: '96px 56px',
+          background: STYX.bone,
+          borderTop: `1px solid ${STYX.line}`,
+        }}
+        className="styx-journal-chapters"
+      >
+        <div style={{maxWidth: 1080, margin: '0 auto'}}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'baseline',
+              marginBottom: 40,
+            }}
+            className="styx-journal-chapters-header"
+          >
+            <div>
+              <StyxLabel>The Styx Journal</StyxLabel>
+              <h2
+                style={{
+                  fontFamily: FONT.cinzel,
+                  fontSize: 40,
+                  fontWeight: 400,
+                  letterSpacing: '0.02em',
+                  margin: '14px 0 0',
+                  color: STYX.ink,
+                  textTransform: 'uppercase',
+                }}
+              >
+                Other{' '}
+                <span
+                  style={{
+                    fontFamily: FONT.cormorant,
+                    fontStyle: 'italic',
+                    fontWeight: 400,
+                    textTransform: 'none' as const,
+                    letterSpacing: 0,
+                  }}
+                >
+                  chapters.
+                </span>
+              </h2>
+            </div>
+            <Link
+              to="/journal"
+              style={{
+                fontFamily: FONT.cinzel,
+                fontSize: 11,
+                letterSpacing: '0.25em',
+                color: STYX.silt,
+                textTransform: 'uppercase' as const,
+                textDecoration: 'none',
+              }}
+            >
+              Browse all &rarr;
+            </Link>
+          </div>
+
+          <div>
+            {otherChapters.map((chapter, i) => (
+              <Link
+                key={chapter.handle}
+                to={`/journal/${chapter.handle}`}
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '60px 1fr 160px 80px',
+                  gap: 24,
+                  padding: '24px 0',
+                  cursor: 'pointer',
+                  borderTop:
+                    i === 0
+                      ? `1px solid ${STYX.ink}`
+                      : `1px solid ${STYX.line}`,
+                  borderBottom:
+                    i === otherChapters.length - 1
+                      ? `1px solid ${STYX.ink}`
+                      : 'none',
+                  alignItems: 'center',
+                  textDecoration: 'none',
+                  color: 'inherit',
+                }}
+                className="styx-journal-chapter-row"
+              >
+                <div
+                  style={{
+                    fontFamily: FONT.mono,
+                    fontSize: 13,
+                    color: STYX.gold,
+                  }}
+                >
+                  {String(i + 1).padStart(2, '0')}
+                </div>
+                <div>
+                  <div
+                    style={{
+                      fontFamily: FONT.cinzel,
+                      fontSize: 18,
+                      letterSpacing: '0.04em',
+                      color: STYX.ink,
+                      textTransform: 'uppercase',
+                      marginBottom: 4,
+                    }}
+                  >
+                    {chapter.title}
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: FONT.cormorant,
+                      fontSize: 15,
+                      fontStyle: 'italic',
+                      color: STYX.silt,
+                    }}
+                  >
+                    {chapter.subtitle}
+                  </div>
+                </div>
+                <div
+                  style={{
+                    fontFamily: FONT.mono,
+                    fontSize: 11,
+                    color: STYX.silt2,
+                    letterSpacing: '0.05em',
+                  }}
+                >
+                  {chapter.vol} &middot; {chapter.readTime}
+                </div>
+                <div
+                  style={{
+                    fontFamily: FONT.cinzel,
+                    fontSize: 11,
+                    letterSpacing: '0.2em',
+                    color: STYX.gold,
+                    textAlign: 'right' as const,
+                  }}
+                >
+                  READ &rarr;
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+
+      {/* ─── Article content styles ─────────────────────────── */}
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+        /* ── Typography ── */
+        .journal-article h2 {
+          font-family: ${FONT.cinzel};
+          font-size: 24px;
+          font-weight: 400;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          color: ${STYX.ink};
+          margin: 64px 0 20px;
+          padding-bottom: 16px;
+          border-bottom: 1px solid ${STYX.line};
+        }
         .journal-article h3 {
           font-family: ${FONT.cinzel};
           font-size: 18px;
           font-weight: 500;
-          letter-spacing: 0.06em;
+          letter-spacing: 0.08em;
           text-transform: uppercase;
-          color: ${STYX.ink};
+          color: ${STYX.gold};
           margin: 48px 0 16px;
+          padding-bottom: 12px;
+          border-bottom: 1px solid ${STYX.line};
+        }
+        .journal-article h4 {
+          font-family: ${FONT.cinzel};
+          font-size: 14px;
+          font-weight: 500;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: ${STYX.silt};
+          margin: 32px 0 12px;
         }
         .journal-article p {
-          margin: 0 0 24px;
+          margin: 0 0 28px;
+        }
+        .journal-article p:first-of-type::first-letter {
+          font-family: ${FONT.cinzel};
+          font-size: 3.2em;
+          float: left;
+          line-height: 0.85;
+          margin: 2px 6px 0 0;
+          color: ${STYX.gold};
         }
         .journal-article em {
           font-style: italic;
         }
-      `}} />
+        .journal-article strong {
+          font-weight: 600;
+          color: ${STYX.ink};
+        }
+        .journal-article a {
+          color: ${STYX.gold};
+          text-decoration: none;
+          border-bottom: 1px solid ${STYX.goldLight};
+          transition: border-color 0.2s;
+        }
+        .journal-article a:hover {
+          border-color: ${STYX.gold};
+        }
+        .journal-article hr {
+          border: none;
+          height: 1px;
+          background: ${STYX.line};
+          margin: 56px 0;
+        }
+        .journal-article blockquote {
+          font-family: ${FONT.cormorant};
+          font-size: 28px;
+          font-style: italic;
+          line-height: 1.35;
+          color: ${STYX.ink};
+          margin: 56px 0;
+          padding: 40px;
+          background: ${STYX.parchment};
+          border-left: 3px solid ${STYX.gold};
+          position: relative;
+        }
+        .journal-article blockquote::before {
+          content: '\\201C';
+          font-family: ${FONT.cinzel};
+          font-size: 72px;
+          color: ${STYX.goldLight};
+          position: absolute;
+          top: 8px;
+          left: 16px;
+          line-height: 1;
+          opacity: 0.4;
+        }
+        .journal-article blockquote p {
+          margin: 0;
+        }
+        .journal-article blockquote p::first-letter {
+          font-size: inherit;
+          float: none;
+          margin: 0;
+          color: inherit;
+        }
+
+        /* ── Tables — ledger style ── */
+        .journal-article table {
+          width: 100%;
+          border-collapse: collapse;
+          margin: 48px 0;
+          font-family: ${FONT.cinzel};
+          font-size: 14px;
+        }
+        .journal-article thead {
+          border-bottom: 2px solid ${STYX.ink};
+        }
+        .journal-article th {
+          text-align: left;
+          padding: 14px 16px;
+          color: ${STYX.silt};
+          text-transform: uppercase;
+          letter-spacing: 0.15em;
+          font-size: 10px;
+          font-weight: 500;
+        }
+        .journal-article td {
+          padding: 14px 16px;
+          border-bottom: 1px solid ${STYX.line};
+          color: ${STYX.ink};
+          font-family: 'Inter', sans-serif;
+          font-size: 14px;
+        }
+        .journal-article tr:last-child td {
+          border-bottom: 2px solid ${STYX.ink};
+        }
+
+        /* ── Lists ── */
+        .journal-article ul,
+        .journal-article ol {
+          margin: 0 0 28px 0;
+          padding-left: 24px;
+        }
+        .journal-article li {
+          margin-bottom: 14px;
+          color: ${STYX.graphite};
+          line-height: 1.7;
+        }
+        .journal-article ul li {
+          list-style-type: none;
+          position: relative;
+          padding-left: 20px;
+        }
+        .journal-article ul li::before {
+          content: '·';
+          position: absolute;
+          left: 0;
+          color: ${STYX.gold};
+          font-weight: 700;
+          font-size: 24px;
+          line-height: 1.2;
+        }
+        .journal-article ol li {
+          list-style-type: decimal;
+        }
+        .journal-article ol li::marker {
+          color: ${STYX.gold};
+          font-family: ${FONT.cinzel};
+          font-size: 14px;
+        }
+
+        /* ── Images inside article ── */
+        .journal-article img {
+          max-width: 100%;
+          height: auto;
+          margin: 40px 0;
+          display: block;
+        }
+
+        /* ── GEO takeaway boxes (from article HTML) ── */
+        .journal-article .geo-takeaways {
+          background: ${STYX.bone} !important;
+          border-color: ${STYX.line} !important;
+          padding: 32px !important;
+        }
+
+        /* ── Chapter row hover ── */
+        .styx-journal-chapter-row:hover {
+          background: ${STYX.paper};
+        }
+
+        /* ═══════ Responsive: Tablet ≤ 768px ═══════ */
+        @media (max-width: 48em) {
+          .styx-journal-hero {
+            padding: 48px 20px 32px !important;
+          }
+          .styx-journal-topbar {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 12px !important;
+            margin-bottom: 32px !important;
+          }
+          .styx-journal-title-grid {
+            grid-template-columns: 1fr !important;
+            gap: 24px !important;
+          }
+          .styx-journal-meta-col {
+            align-items: flex-start !important;
+            flex-direction: row !important;
+            gap: 16px !important;
+          }
+          .styx-journal-hero-img {
+            padding: 0 20px !important;
+          }
+          .styx-journal-body {
+            padding: 60px 20px !important;
+          }
+          .styx-journal-shop {
+            padding: 60px 20px !important;
+          }
+          .styx-journal-chapters {
+            padding: 60px 20px !important;
+          }
+          .styx-journal-chapters-header {
+            flex-direction: column !important;
+            gap: 16px !important;
+          }
+          .styx-journal-chapter-row {
+            grid-template-columns: 40px 1fr 60px !important;
+          }
+          .styx-journal-chapter-row > *:nth-child(3) {
+            display: none !important;
+          }
+        }
+
+        /* ═══════ Responsive: Small mobile ≤ 512px ═══════ */
+        @media (max-width: 32em) {
+          .styx-journal-chapter-row {
+            grid-template-columns: 1fr 60px !important;
+            gap: 12px !important;
+          }
+          .styx-journal-chapter-row > *:nth-child(1) {
+            display: none !important;
+          }
+          .journal-article h2 {
+            font-size: 20px !important;
+          }
+          .journal-article blockquote {
+            font-size: 22px !important;
+            padding: 28px !important;
+          }
+        }
+      `,
+        }}
+      />
 
       <StyxFooter />
     </div>
+  );
+}
+
+/**
+ * Process article HTML: replace gold-weight-visual widget markers
+ * with live-computed values from the gold spot price API.
+ */
+function processArticleHtml(html: string, spotPerOz: number): string {
+  const TROY_OZ_GRAMS = 31.1035;
+
+  return html.replace(
+    /<div data-styx-widget="gold-weight-visual"([^>]*)><\/div>/g,
+    (_match, attrs) => {
+      const getAttr = (name: string) => {
+        const m = attrs.match(new RegExp(`data-${name}="([^"]*)"`));
+        return m ? m[1] : null;
+      };
+      const width = getAttr('width') || '5';
+      const length = getAttr('length') || '22';
+      const karat = parseInt(getAttr('karat') || '14', 10);
+      const weight = parseFloat(getAttr('weight') || '34');
+
+      const purity = (KARAT_PURITY as any)[karat] ?? 0.585;
+      const goldPerGram = (spotPerOz / TROY_OZ_GRAMS) * purity;
+      const rawMaterialValue = goldPerGram * weight;
+      const troyOzValue = spotPerOz * purity;
+
+      const fmt = (n: number) =>
+        n >= 1000
+          ? `$${Math.round(n).toLocaleString('en-US')}`
+          : `$${Math.round(n)}`;
+
+      return `
+        <div style="background: #1A1815; color: #EFEAE0; padding: 48px; margin: 48px 0; position: relative;">
+          <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(ellipse 70% 50% at 50% 50%, rgba(184,146,74,0.08), transparent 70%); pointer-events: none;"></div>
+          <div style="position: relative;">
+            <div style="font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.3em; color: #B8924A; text-transform: uppercase; margin-bottom: 24px;">The Weight, Visualized &middot; Live from the London Fix</div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; text-align: center;">
+              <div>
+                <div style="font-family: 'Cinzel', serif; font-size: 36px; color: #B8924A; font-weight: 500;">31.1g</div>
+                <div style="font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.2em; color: rgba(239,234,224,0.5); text-transform: uppercase; margin-top: 8px;">One Troy Ounce</div>
+                <div style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: rgba(239,234,224,0.7); margin-top: 4px;">Six quarters in your palm</div>
+              </div>
+              <div>
+                <div style="font-family: 'Cinzel', serif; font-size: 36px; color: #EFEAE0; font-weight: 500;">~${weight}g</div>
+                <div style="font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.2em; color: rgba(239,234,224,0.5); text-transform: uppercase; margin-top: 8px;">${length}&Prime; Cuban &middot; ${width}mm &middot; ${karat}k</div>
+                <div style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: rgba(239,234,224,0.7); margin-top: 4px;">More than a full troy ounce</div>
+              </div>
+              <div>
+                <div style="font-family: 'Cinzel', serif; font-size: 36px; color: #B8924A; font-weight: 500;">${fmt(rawMaterialValue)}</div>
+                <div style="font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.2em; color: rgba(239,234,224,0.5); text-transform: uppercase; margin-top: 8px;">Raw Material Value</div>
+                <div style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: rgba(239,234,224,0.7); margin-top: 4px;">At today&rsquo;s ${fmt(spotPerOz)}/oz spot</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    },
   );
 }
 
@@ -436,6 +942,51 @@ const ARTICLE_QUERY = `#graphql
         seo {
           description
           title
+        }
+      }
+    }
+  }
+`;
+
+const SHOP_COLLECTION_QUERY = `#graphql
+  query ShopCollection(
+    $handle: String!
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    collection(handle: $handle) {
+      products(first: 8, sortKey: PRICE) {
+        nodes {
+          id
+          title
+          handle
+          vendor
+          variants(first: 10) {
+            nodes {
+              id
+              availableForSale
+              image {
+                url
+                altText
+                width
+                height
+              }
+              price {
+                amount
+                currencyCode
+              }
+              compareAtPrice {
+                amount
+                currencyCode
+              }
+              selectedOptions {
+                name
+                value
+              }
+              weight
+              weightUnit
+            }
+          }
         }
       }
     }

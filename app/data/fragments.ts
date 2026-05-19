@@ -76,6 +76,9 @@ export const PRODUCT_CARD_FRAGMENT = `#graphql
         }
       }
     }
+    chain_construction: metafield(namespace: "chain", key: "construction") {
+      value
+    }
   }
 `;
 

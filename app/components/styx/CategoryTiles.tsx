@@ -1,7 +1,20 @@
-import {Link} from '@remix-run/react';
+import {Link} from 'react-router';
 import {Image} from '@shopify/hydrogen';
 import {STYX, FONT, type CollectionNode} from './constants';
 import {StyxLabel} from './StyxLabel';
+
+// Static lifestyle images for category tiles — keyed by collection handle
+const CATEGORY_IMAGES: Record<string, {src: string; alt: string}> = {
+  'cuban': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-cuban-link.jpg?v=1779151358', alt: 'Cuban link chain on Ocean Drive, Miami'},
+  'curb': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-curb-chain.png?v=1779151362', alt: 'Curb chain on a foggy London street at dusk'},
+  'box': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-box-chain.png?v=1779151351', alt: 'Box chain in Venice with canal and gondola'},
+  'rope': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-rope-chain.png?v=1779151380', alt: 'Rope chain at a Mediterranean harbor at golden hour'},
+  'cable': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-cable-chain.png?v=1779151355', alt: 'Cable chain at ancient Mesopotamian ruins'},
+  'figaro': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-figaro-chain.png?v=1779151369', alt: 'Figaro chain in Vicenza, Italy at golden hour'},
+  'wheat': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-wheat-chain.png?v=1779151386', alt: 'Wheat chain in Tuscan vineyard at sunset'},
+  'rolo': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-rolo-chain.png?v=1779151375', alt: 'Rolo chain in Victorian London'},
+  'singapore': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-singapore-chain.png?v=1779151383', alt: 'Singapore chain at Southeast Asian waterfront'},
+};
 
 export function CategoryTiles({
   collections = [],
@@ -11,11 +24,10 @@ export function CategoryTiles({
   products?: any[];
 }) {
   // Show the three hero chain families
-  const desired = ['cuban-link', 'rope-chain', 'figaro-chain', 'franco-chain', 'herringbone-chain', 'box-chain'];
+  const desired = ['cuban', 'curb', 'rope', 'box', 'figaro', 'cable', 'wheat', 'rolo', 'singapore'];
   const cats = desired
     .map((h) => collections.find((c) => c.handle === h))
-    .filter((c): c is CollectionNode => Boolean(c))
-    .slice(0, 3);
+    .filter((c): c is CollectionNode => Boolean(c));
 
   if (cats.length === 0) return null;
 
@@ -67,15 +79,16 @@ export function CategoryTiles({
             fontStyle: 'italic',
           }}
         >
-          Solid gold chains — 10K and 14K. Every piece weighed, tested, and
-          priced transparently from the London fix.
+          Solid and hollow gold chains — 10K and 14K. Every piece weighed, tested, and
+          priced transparently from live gold markets.
         </div>
       </div>
       <div
         data-grid=""
+        className="styx-categories-grid"
         style={{
           display: 'grid',
-          gridTemplateColumns: `repeat(${Math.min(cats.length, 3)}, 1fr)`,
+          gridTemplateColumns: 'repeat(3, 1fr)',
           gap: 24,
         }}
       >
@@ -101,26 +114,9 @@ function CategoryCard({
   index: number;
   products?: any[];
 }) {
-  // Try collection image first, then fall back to first product image matching this collection
-  let imageData = collection.image;
-
-  if (!imageData && products.length > 0) {
-    // Find a product that might belong to this collection (by title/tag match)
-    const collHandle = collection.handle.toLowerCase();
-    const collTitle = collection.title.toLowerCase();
-    const matchedProduct = products.find((p: any) => {
-      const pTitle = (p.title || '').toLowerCase();
-      const pTags = (p.tags || []).join(' ').toLowerCase();
-      return pTitle.includes(collTitle) || pTags.includes(collHandle) || pTags.includes(collTitle);
-    });
-
-    if (matchedProduct?.images?.edges?.[0]?.node) {
-      imageData = matchedProduct.images.edges[0].node;
-    } else if (products[index - 1]?.images?.edges?.[0]?.node) {
-      // Fallback: just use product at this index
-      imageData = products[index - 1].images.edges[0].node;
-    }
-  }
+  // Use static lifestyle image if available, otherwise fall back to Shopify data
+  const staticImg = CATEGORY_IMAGES[collection.handle];
+  const imageData = collection.image;
 
   return (
     <Link
@@ -153,7 +149,14 @@ function CategoryCard({
       }}
     >
       <div style={{position: 'relative', overflow: 'hidden', aspectRatio: '4/5'}}>
-        {imageData ? (
+        {staticImg ? (
+          <img
+            src={staticImg.src}
+            alt={staticImg.alt}
+            loading="lazy"
+            style={{width: '100%', height: '100%', objectFit: 'cover'}}
+          />
+        ) : imageData ? (
           <Image
             data={imageData}
             aspectRatio="4/5"

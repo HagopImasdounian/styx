@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import {useRouteLoaderData, Link} from '@remix-run/react';
+import {useRouteLoaderData, Link} from 'react-router';
 import {STYX, FONT} from './constants';
 import type {RootLoader} from '~/root';
 

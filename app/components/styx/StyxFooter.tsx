@@ -1,4 +1,4 @@
-import {Link} from '@remix-run/react';
+import {Link} from 'react-router';
 import {STYX, FONT, type CollectionNode} from './constants';
 
 export function StyxFooter({collections = []}: {collections?: CollectionNode[]}) {
@@ -21,17 +21,17 @@ export function StyxFooter({collections = []}: {collections?: CollectionNode[]})
       links: [
         {label: 'Our Story', to: '/about'},
         {label: 'The Journal', to: '/journal'},
-        {label: 'Lookbook', to: '/lookbook'},
+        {label: 'Customize', to: '/customize'},
       ],
     },
     {
       heading: 'Service',
       links: [
-        {label: 'Size Guide', to: '/pages/size-guide'},
-        {label: 'Care & Repair', to: '/pages/care'},
-        {label: 'Shipping', to: '/pages/shipping'},
-        {label: 'Returns', to: '/pages/returns'},
+        {label: 'FAQ', to: '/faq'},
+        {label: 'Shipping & Returns', to: '/shipping'},
         {label: 'Contact', to: '/contact'},
+        {label: 'Terms & Conditions', to: '/terms'},
+        {label: 'Privacy Policy', to: '/privacy'},
       ],
     },
   ];
@@ -127,6 +127,7 @@ export function StyxFooter({collections = []}: {collections?: CollectionNode[]})
 
       {/* Bottom bar */}
       <div
+        className="styx-footer-bottom"
         style={{
           borderTop: '1px solid rgba(255,255,255,0.08)',
           paddingTop: 24,

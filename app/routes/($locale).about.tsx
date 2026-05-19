@@ -1,5 +1,5 @@
-import {type MetaFunction} from '@shopify/remix-oxygen';
-import {Link} from '@remix-run/react';
+import {type MetaFunction} from 'react-router';
+import {Link} from 'react-router';
 import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel, Obol} from '~/components/styx';
 
 export const meta: MetaFunction = () => {
@@ -180,11 +180,11 @@ export default function About() {
             }}
           >
             <p style={{margin: 0}}>
-              Gold is a commodity. It's priced openly in London twice a day. There's
-              nothing mysterious about what it costs. And yet the jewelry industry
-              has been built on that mystery — hiding margins behind "retail price"
-              and hoping you don't ask questions. The typical markup? Eight to twelve
-              times what the gold is worth.
+              Gold is a commodity. It trades around the clock on live markets, and
+              there's nothing mysterious about what it costs. And yet the jewelry
+              industry has been built on that mystery — hiding margins behind "retail
+              price" and hoping you don't ask questions. The typical markup? Eight to
+              twelve times what the gold is worth.
             </p>
             <p style={{margin: 0}}>
               We've consulted for some of the biggest names in hip-hop jewelry.
@@ -239,22 +239,22 @@ export default function About() {
               {
                 num: 'I',
                 title: 'Radical Transparency',
-                body: 'Every piece shows its full price breakdown. Gold cost, labor, margin — nothing hidden. We show you the London fix and our math.',
+                body: 'We show you the weight, the karat, and how our pricing works. No hidden margins, no mystery markups. You see what you\'re paying for.',
               },
               {
                 num: 'II',
-                title: 'Solid Gold Only',
-                body: "No hollow chains. No gold-fill. No plating. Every piece is solid karat gold, through and through. We don't sell decoration.",
+                title: 'Solid & Hollow Gold',
+                body: "Solid for investment and longevity. Hollow for lighter everyday wear. Both are real karat gold — no plating, no gold-fill, no imitations. Choose the construction that suits you.",
               },
               {
                 num: 'III',
-                title: 'Live Pricing',
-                body: "Our prices move with the London gold fix. When gold goes down, so do our prices. When it goes up, we don't pretend otherwise.",
+                title: 'Wholesale Pricing',
+                body: "We price based on our wholesale cost — not retail markups. Our family buys gold at prices most brands can't access. That advantage goes directly to you.",
               },
               {
                 num: 'IV',
                 title: 'Wholesale Heritage',
-                body: "Fifty years of wholesale relationships mean we buy gold at prices most brands can't access. That advantage goes to you.",
+                body: "Fifty years of wholesale relationships built on trust and volume. The same supply chain that serves retailers now serves you.",
               },
               {
                 num: 'V',

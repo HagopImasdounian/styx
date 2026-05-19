@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {type MetaFunction} from '@shopify/remix-oxygen';
+import {type MetaFunction} from 'react-router';
 import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel} from '~/components/styx';
 
 export const meta: MetaFunction = () => {

@@ -1,9 +1,8 @@
 import {
-  defer,
-  type MetaArgs,
+    type MetaArgs,
   type LoaderFunctionArgs,
-} from '@shopify/remix-oxygen';
-import {Await, Form, useLoaderData} from '@remix-run/react';
+} from 'react-router';
+import {Await, Form, useLoaderData} from 'react-router';
 import {Suspense} from 'react';
 import {
   Pagination,
@@ -13,6 +12,7 @@ import {
 } from '@shopify/hydrogen';
 
 import {Heading, PageHeader, Section, Text} from '~/components/Text';
+import {trackSearch} from '~/components/GTMDataLayer';
 import {Input} from '~/components/Input';
 import {Grid} from '~/components/Grid';
 import {ProductCard} from '~/components/ProductCard';
@@ -64,7 +64,7 @@ export async function loader({
     },
   });
 
-  return defer({
+  return ({
     seo,
     searchTerm,
     products,
@@ -82,6 +82,11 @@ export default function Search() {
   const {searchTerm, products, noResultRecommendations} =
     useLoaderData<typeof loader>();
   const noResults = products?.nodes?.length === 0;
+
+  // Track search in data layer
+  if (typeof window !== 'undefined' && searchTerm) {
+    trackSearch(searchTerm);
+  }
 
   return (
     <>

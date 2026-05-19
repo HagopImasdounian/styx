@@ -1,16 +1,15 @@
 import {
-  json,
-  redirect,
+    redirect,
   type ActionFunction,
   type AppLoadContext,
-} from '@shopify/remix-oxygen';
+} from 'react-router';
 import {
   Form,
   useActionData,
   useOutletContext,
   useParams,
   useNavigation,
-} from '@remix-run/react';
+} from 'react-router';
 import {flattenConnection} from '@shopify/hydrogen';
 import type {CustomerAddressInput} from '@shopify/hydrogen/customer-account-api-types';
 import invariant from 'tiny-invariant';
@@ -66,7 +65,7 @@ export const action: ActionFunction = async ({request, context, params}) => {
         params?.locale ? `${params?.locale}/account` : '/account',
       );
     } catch (error: any) {
-      return json(
+      return data(
         {formError: error.message},
         {
           status: 400,
@@ -124,7 +123,7 @@ export const action: ActionFunction = async ({request, context, params}) => {
         params?.locale ? `${params?.locale}/account` : '/account',
       );
     } catch (error: any) {
-      return json(
+      return data(
         {formError: error.message},
         {
           status: 400,
@@ -155,7 +154,7 @@ export const action: ActionFunction = async ({request, context, params}) => {
         params?.locale ? `${params?.locale}/account` : '/account',
       );
     } catch (error: any) {
-      return json(
+      return data(
         {formError: error.message},
         {
           status: 400,
