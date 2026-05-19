@@ -1240,10 +1240,10 @@ function MobileMenu({
                     border: 'none',
                     borderBottom: chainsTab === tab.key ? `2px solid ${STYX.gold}` : '2px solid transparent',
                     cursor: 'pointer',
-                    padding: '12px 4px',
+                    padding: '14px 4px',
                     fontFamily: FONT.mono,
-                    fontSize: 10,
-                    letterSpacing: '0.12em',
+                    fontSize: 12,
+                    letterSpacing: '0.1em',
                     textTransform: 'uppercase',
                     color: chainsTab === tab.key ? STYX.gold : STYX.silt,
                     transition: 'color 0.2s, border-color 0.2s',
@@ -1278,9 +1278,9 @@ function MobileMenu({
                 </Link>
                 {filteredTaxonomy.map((group) => (
                   <div key={group.group} style={{marginTop: 16}}>
-                    <div style={{padding: '0 24px 10px', display: 'flex', alignItems: 'baseline', gap: 10}}>
-                      <span style={{fontFamily: FONT.cinzel, fontSize: 12, color: STYX.gold, letterSpacing: '0.1em'}}>{group.kicker}</span>
-                      <span style={{fontFamily: FONT.mono, fontSize: 9, letterSpacing: '0.25em', textTransform: 'uppercase', color: STYX.silt}}>{group.group}</span>
+                    <div style={{padding: '0 24px 12px', display: 'flex', alignItems: 'baseline', gap: 10}}>
+                      <span style={{fontFamily: FONT.cinzel, fontSize: 15, color: STYX.gold, letterSpacing: '0.1em'}}>{group.kicker}</span>
+                      <span style={{fontFamily: FONT.mono, fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: STYX.silt}}>{group.group}</span>
                     </div>
                     {group.chains.map((chain) => (
                       <Link
@@ -1292,18 +1292,19 @@ function MobileMenu({
                           display: 'flex',
                           alignItems: 'center',
                           gap: 16,
-                          padding: '14px 24px 14px 36px',
+                          padding: '16px 24px 16px 28px',
                           fontFamily: FONT.cormorant,
-                          fontSize: 18,
+                          fontSize: 22,
                           color: STYX.ink,
                           textDecoration: 'none',
+                          minHeight: 72,
                         }}
                       >
                         {CHAIN_IMAGE_MAP[chain.handle] && (
                           <img
                             src={CHAIN_IMAGE_MAP[chain.handle]}
                             alt=""
-                            style={{width: 64, height: 64, objectFit: 'contain'}}
+                            style={{width: 88, height: 88, objectFit: 'contain', flexShrink: 0}}
                           />
                         )}
                         <span style={{flex: 1}}>{chain.name}</span>
@@ -1311,11 +1312,11 @@ function MobileMenu({
                           <span
                             style={{
                               fontFamily: FONT.mono,
-                              fontSize: 8,
+                              fontSize: 9,
                               letterSpacing: '0.15em',
                               color: STYX.gold,
                               border: `1px solid ${STYX.gold}`,
-                              padding: '2px 6px',
+                              padding: '3px 8px',
                               textTransform: 'uppercase',
                             }}
                           >
