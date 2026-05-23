@@ -211,6 +211,15 @@ shop-pay-button {
   .styx-nav-right { flex: 0 0 auto !important; gap: 18px !important; margin-left: auto !important; }
   .styx-nav-right a[href*="contact"] { display: none !important; }
 
+  /* Chain length guide — stack on mobile */
+  .styx-chain-guide-layout {
+    grid-template-columns: 1fr !important;
+    padding: 0 !important;
+  }
+  .styx-chain-guide-layout > div:first-child { min-height: 400px !important; }
+  .styx-chain-guide-layout > div:last-child { border-left: none !important; border-top: 1px solid #e2ded6 !important; padding: 24px 20px !important; }
+  .styx-chain-ref-grid { grid-template-columns: repeat(2, 1fr) !important; }
+
   /* Sticky mobile ATC — visible on mobile only */
   .styx-sticky-atc { display: flex !important; }
 
@@ -367,6 +376,19 @@ shop-pay-button {
   .styx-ci-karat { padding: 48px 20px !important; }
   .styx-ci-karat-grid { grid-template-columns: 1fr !important; }
 
+  /* Chains pages */
+  .styx-chains-hero { padding: 60px 20px 40px !important; }
+  .styx-chains-hero h1 { font-size: 36px !important; }
+  .styx-chains-hero > div { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; }
+  .styx-chains-grid { padding: 48px 20px !important; }
+  .styx-chains-category-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
+  .styx-chain-cat-hero { padding: 60px 20px 40px !important; }
+  .styx-chain-cat-hero h1 { font-size: 36px !important; }
+  .styx-chain-cat-hero > div { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; }
+  .styx-chain-filters { padding: 16px 20px !important; }
+  .styx-chain-grid { padding: 32px 20px 60px !important; }
+  .styx-chain-product-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 16px !important; }
+
   /* ── Journal index ── */
   .styx-ja-masthead { padding: 48px 20px 32px !important; }
   .styx-ja-title-grid { grid-template-columns: 1fr !important; }
@@ -427,6 +449,17 @@ shop-pay-button {
   .styx-ci-families { padding: 40px 16px !important; }
   .styx-ci-families-grid { grid-template-columns: 1fr !important; }
   .styx-ci-karat { padding: 40px 16px !important; }
+
+  /* Chains pages */
+  .styx-chains-hero { padding: 48px 16px 32px !important; }
+  .styx-chains-hero h1 { font-size: 28px !important; }
+  .styx-chains-grid { padding: 40px 16px !important; }
+  .styx-chains-category-grid { grid-template-columns: 1fr !important; }
+  .styx-chain-cat-hero { padding: 48px 16px 32px !important; }
+  .styx-chain-cat-hero h1 { font-size: 28px !important; }
+  .styx-chain-filters { padding: 12px 16px !important; flex-direction: column !important; }
+  .styx-chain-grid { padding: 24px 16px 48px !important; }
+  .styx-chain-product-grid { grid-template-columns: 1fr !important; }
 
   /* Journal index */
   .styx-ja-masthead { padding: 40px 16px 24px !important; }

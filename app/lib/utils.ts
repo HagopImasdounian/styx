@@ -305,7 +305,11 @@ export function useIsStyxPath() {
     p === '/contact' ||
     p === '/customize' ||
     p === '/journal' ||
-    p.startsWith('/journal/')
+    p.startsWith('/journal/') ||
+    p === '/shipping' ||
+    p === '/privacy' ||
+    p === '/terms' ||
+    p === '/faq'
   );
 }
 

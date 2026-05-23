@@ -212,22 +212,14 @@ export default function Product() {
   const specCast = p.spec_cast?.value || null;
   const hasSpecs = specWeave || specProfile || specClasp || specCast;
 
-  // Use variant weight if available (from Shopify variant grams), else metafield, else fake
+  // Use variant weight if available (from Shopify variant grams), else metafield
   const variantWeight = (selectedVariant as any)?.weight
     ? parseFloat((selectedVariant as any).weight)
     : null;
 
-  const fakeWeight = (() => {
-    if (weightGrams || variantWeight) return weightGrams || variantWeight!;
-    let hash = 0;
-    for (let i = 0; i < title.length; i++) {
-      hash = ((hash << 5) - hash + title.charCodeAt(i)) | 0;
-    }
-    return Math.round(((Math.abs(hash) % 390) + 30) / 10 * 10) / 10;
-  })();
-
-  // Variant weight takes priority (changes with length), then metafield, then fake
-  const displayWeight = variantWeight || weightGrams || fakeWeight;
+  // Variant weight takes priority (changes with length), then metafield
+  // No fake weights — only show transparency when we have real data
+  const displayWeight = variantWeight || weightGrams || null;
 
   // Detect karat from selected variant options (e.g. "14k" → 14)
   const karatOption = selectedVariant?.selectedOptions?.find(
@@ -481,7 +473,7 @@ export default function Product() {
               const currencyCode = selectedVariant.price.currencyCode;
               const fmt = (n: number) =>
                 new Intl.NumberFormat('en-US', {style: 'currency', currency: currencyCode, minimumFractionDigits: 2, maximumFractionDigits: 2}).format(n);
-              const pureGoldWeight = +(displayWeight * selectedPurity).toFixed(1);
+              const pureGoldWeight = displayWeight ? +(displayWeight * selectedPurity).toFixed(1) : null;
               return (
                 <>
                   <div
@@ -578,6 +570,7 @@ export default function Product() {
                   </div>
 
                   {/* Weight row: Gold weight + Total weight */}
+                  {displayWeight && pureGoldWeight && (
                   <div
                     style={{
                       display: 'flex',
@@ -595,6 +588,7 @@ export default function Product() {
                     <span style={{color: STYX.line}}>|</span>
                     <span>{displayWeight}g total</span>
                   </div>
+                  )}
                 </>
               );
             })()}
@@ -1357,8 +1351,8 @@ export default function Product() {
             </div>
           </div>
 
-          {/* ── Transparency Receipt (below cart) ── */}
-          {selectedVariant?.price && (
+          {/* ── Transparency Receipt (below cart) — only with real weight data ── */}
+          {selectedVariant?.price && displayWeight && (
             <div
               style={{
                 marginTop: 40,
@@ -1483,7 +1477,8 @@ export default function Product() {
         </div>
       </div>
 
-      {/* ── Transparency Narrative Section ── */}
+      {/* ── Transparency Narrative Section — only with real weight data ── */}
+      {displayWeight && (
       <section
         style={{
           background: STYX.paper,
@@ -1649,6 +1644,7 @@ export default function Product() {
         </div>
         </div>
       </section>
+      )}
 
       {/* ── Specifications + Pull Quote ── */}
       {(hasSpecs || pullQuote) && (
@@ -1690,7 +1686,7 @@ export default function Product() {
                     ['Origin', chainOrigin],
                     ['Year', yearInvented],
                     ['Karat', `${karat}k (${(selectedPurity * 100).toFixed(1)}% pure)`],
-                    ['Weight', `${displayWeight}g`],
+                    ['Weight', displayWeight ? `${displayWeight}g` : null],
                   ] as const).filter(([, v]) => v).map(([k, v], i, arr) => (
                     <div
                       key={k}

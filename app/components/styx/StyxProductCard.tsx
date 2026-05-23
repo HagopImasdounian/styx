@@ -1,9 +1,8 @@
-import {useState, useCallback} from 'react';
+import {useState} from 'react';
 import {Image} from '@shopify/hydrogen';
 import {Link} from 'react-router';
 import {STYX, FONT} from './constants';
 import {PlaceholderImage} from './PlaceholderImage';
-import {Obol} from './Obol';
 
 type VariantNode = {
   id: string;
@@ -79,11 +78,7 @@ export function StyxProductCard({
   index?: number;
 }) {
   const variant = product.variants.nodes[variantIndex] ?? product.variants.nodes[0];
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [hoverImageLoaded, setHoverImageLoaded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const onImageLoad = useCallback(() => setImageLoaded(true), []);
-  const onHoverImageLoad = useCallback(() => setHoverImageLoaded(true), []);
   if (!variant) return null;
 
   // Hover image from a different variant
@@ -174,22 +169,6 @@ export function StyxProductCard({
           background: '#FFFFFF',
         }}
       >
-        {/* Loader */}
-        {variant.image && !imageLoaded && (
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              zIndex: 1,
-            }}
-          >
-            <Obol size={40} color={STYX.gold} speed={3} flyIn delay={index * 120} />
-          </div>
-        )}
-
         {variant.image ? (
           <Image
             data={variant.image}
@@ -203,10 +182,7 @@ export function StyxProductCard({
                 variant.image.width / variant.image.height > 2.5
                   ? 'contain'
                   : 'cover',
-              opacity: imageLoaded ? 1 : 0,
-              transition: 'opacity 0.4s ease',
             }}
-            onLoad={onImageLoad}
           />
         ) : (
           <PlaceholderImage
@@ -231,11 +207,10 @@ export function StyxProductCard({
                 hoverImage.width / hoverImage.height > 2.5
                   ? 'contain'
                   : 'cover',
-              opacity: isHovered && hoverImageLoaded ? 1 : 0,
+              opacity: isHovered ? 1 : 0,
               transition: 'opacity 0.4s ease',
               pointerEvents: 'none',
             }}
-            onLoad={onHoverImageLoad}
           />
         )}
 

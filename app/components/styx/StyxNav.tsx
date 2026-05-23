@@ -332,9 +332,100 @@ function MenuLink({
    CHAINS mega-panel — the main event
    ═══════════════════════════════════════════════════════════════ */
 
+function ChainCard({chain}: {chain: ChainItem}) {
+  const [hover, setHover] = useState(false);
+  const hasImage = !!CHAIN_IMAGE_MAP[chain.handle];
+  const closeMenu = useContext(CloseMenuContext);
+
+  // Strip "Chain" / "Link" suffix for cleaner label
+  const label = chain.name.replace(/\s+(Chain|Link)$/i, '');
+
+  return (
+    <Link
+      to={`/collections/${chain.handle}`}
+      prefetch="intent"
+      onClick={() => closeMenu?.()}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        textDecoration: 'none',
+        gap: 0,
+        cursor: 'pointer',
+      }}
+    >
+      {hasImage ? (
+        <div
+          style={{
+            width: '100%',
+            aspectRatio: '1',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            overflow: 'hidden',
+            transform: hover ? 'scale(1.06)' : 'scale(1)',
+            transition: 'transform 0.3s cubic-bezier(.2,.8,.2,1)',
+          }}
+        >
+          <img
+            src={CHAIN_IMAGE_MAP[chain.handle]}
+            alt={chain.name}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'contain',
+              filter: hover ? 'brightness(1.08)' : 'none',
+              transition: 'filter 0.3s',
+            }}
+          />
+        </div>
+      ) : (
+        <div
+          style={{
+            width: '100%',
+            aspectRatio: '1',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: `linear-gradient(135deg, ${STYX.parchment}, ${STYX.bone})`,
+            border: `1px solid ${STYX.lineSoft}`,
+          }}
+        >
+          <span style={{
+            fontFamily: FONT.cinzel,
+            fontSize: 22,
+            color: STYX.gold,
+            opacity: 0.4,
+            letterSpacing: '0.05em',
+          }}>
+            {label.charAt(0)}
+          </span>
+        </div>
+      )}
+      <div
+        style={{
+          fontFamily: FONT.cinzel,
+          fontSize: 12,
+          letterSpacing: '0.12em',
+          textTransform: 'uppercase',
+          color: hover ? STYX.gold : STYX.ink,
+          textAlign: 'center',
+          lineHeight: 1.2,
+          marginTop: 6,
+          transition: 'color 0.2s',
+          fontWeight: 500,
+        }}
+      >
+        {label}
+      </div>
+    </Link>
+  );
+}
+
 function ChainsMegaPanel() {
   const existingHandles = useContext(ExistingHandlesContext);
-  const [hoveredChain, setHoveredChain] = useState<string | null>(null);
 
   // Filter each taxonomy group to only show chains that exist as collections
   const filteredGroups = CHAIN_TAXONOMY.map((group) => ({
@@ -344,24 +435,10 @@ function ChainsMegaPanel() {
     ),
   })).filter((g) => g.chains.length > 0);
 
-  // Filter metals, karats, thickness, price tiers to existing handles
-  const filteredMetals = METALS.filter((m) => existingHandles.has(m.handle));
-  const filteredKarats = KARATS.filter((k) => existingHandles.has(k.handle));
-  const filteredThickness = THICKNESS_TIERS.filter((t) =>
-    existingHandles.has(t.handle),
-  );
-
-  // Collect all chain links into a single flat list for dynamic layout
-  const allChainLinks = filteredGroups.flatMap((g) =>
-    g.chains.map((c) => ({...c, group: g.group, kicker: g.kicker})),
-  );
+  const allChains = filteredGroups.flatMap((g) => g.chains);
 
   // If nothing exists at all, show a simple "Shop All" link
-  if (
-    allChainLinks.length === 0 &&
-    filteredMetals.length === 0 &&
-    filteredKarats.length === 0
-  ) {
+  if (allChains.length === 0) {
     return (
       <div style={{padding: '44px 56px 48px'}}>
         <MegaLink
@@ -381,119 +458,62 @@ function ChainsMegaPanel() {
     );
   }
 
-  // Determine grid columns based on content
-  const hasChains = allChainLinks.length > 0;
-
-  // Resolve the hovered image
-  const hoveredImage = hoveredChain ? CHAIN_IMAGE_MAP[hoveredChain] : null;
-
   return (
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: hasChains ? '1fr 1fr 1.5fr' : '1fr',
-        gap: 44,
-        padding: '44px 56px 48px',
-      }}
-    >
-      {/* Chain links by group */}
-      {hasChains && (
-        <>
-          {/* Split chains into two columns */}
-          <div>
-            {filteredGroups.slice(0, Math.ceil(filteredGroups.length / 2)).map((g) => (
-              <div key={g.group} style={{marginBottom: 28}}>
-                <MenuColumnHeader kicker={g.kicker} title={g.group} />
-                {g.chains.map((c) => (
-                    <MenuLink
-                      key={c.name}
-                      popular={c.popular}
-                      to={`/collections/${c.handle}`}
-                      onHover={(h) => setHoveredChain(h ? c.handle : null)}
-                    >
-                      {c.name}
-                    </MenuLink>
-                ))}
-              </div>
-            ))}
-          </div>
-          <div>
-            {filteredGroups.slice(Math.ceil(filteredGroups.length / 2)).map((g) => (
-              <div key={g.group} style={{marginBottom: 28}}>
-                <MenuColumnHeader kicker={g.kicker} title={g.group} />
-                {g.chains.map((c) => (
-                    <MenuLink
-                      key={c.name}
-                      popular={c.popular}
-                      to={`/collections/${c.handle}`}
-                      onHover={(h) => setHoveredChain(h ? c.handle : null)}
-                    >
-                      {c.name}
-                    </MenuLink>
-                ))}
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-
-      {/* Hover image preview column */}
-      {hasChains && (
-        <div
+    <div style={{padding: '40px 56px 44px'}}>
+      {/* Section header */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'baseline',
+        justifyContent: 'space-between',
+        marginBottom: 32,
+      }}>
+        <div style={{display: 'flex', alignItems: 'baseline', gap: 16}}>
+          <span style={{
+            fontFamily: FONT.mono,
+            fontSize: 9,
+            letterSpacing: '0.2em',
+            color: STYX.gold,
+            textTransform: 'uppercase',
+          }}>
+            Shop by Weave
+          </span>
+          <span style={{
+            fontFamily: FONT.cormorant,
+            fontSize: 15,
+            fontStyle: 'italic',
+            color: STYX.silt2,
+          }}>
+            {allChains.length} styles
+          </span>
+        </div>
+        <MegaLink
+          to="/collections/chains"
+          prefetch="intent"
           style={{
-            overflow: 'hidden',
-            background: 'transparent',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            alignSelf: 'center',
+            fontFamily: FONT.cinzel,
+            fontSize: 10,
+            letterSpacing: '0.2em',
+            color: STYX.gold,
+            textTransform: 'uppercase',
+            textDecoration: 'none',
           }}
         >
-          {hoveredImage ? (
-            <img
-              key={hoveredChain}
-              src={hoveredImage}
-              alt={hoveredChain?.replace(/-/g, ' ') ?? ''}
-              style={{
-                width: '100%',
-                height: 'auto',
-                display: 'block',
-                animation: 'fadeInAnimation 0.2s ease',
-              }}
-            />
-          ) : (
-            <div
-              style={{
-                textAlign: 'center',
-                padding: '40px 24px',
-              }}
-            >
-              <div
-                style={{
-                  fontFamily: FONT.cinzel,
-                  fontSize: 10,
-                  letterSpacing: '0.25em',
-                  textTransform: 'uppercase',
-                  color: STYX.silt,
-                  marginBottom: 8,
-                }}
-              >
-                Preview
-              </div>
-              <div
-                style={{
-                  fontFamily: FONT.cormorant,
-                  fontSize: 14,
-                  fontStyle: 'italic',
-                  color: STYX.silt2,
-                }}
-              >
-                Hover a chain to see it
-              </div>
-            </div>
-          )}
-        </div>
-      )}
+          View All →
+        </MegaLink>
+      </div>
+
+      {/* Chain grid — 9 columns for the 9 chain types */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: `repeat(${Math.min(allChains.length, 9)}, 1fr)`,
+          gap: '0 20px',
+        }}
+      >
+        {allChains.map((c) => (
+          <ChainCard key={c.handle} chain={c} />
+        ))}
+      </div>
     </div>
   );
 }
@@ -517,6 +537,85 @@ const isFilterCollection = (handle: string) =>
 const isChainType = (handle: string) =>
   handle.endsWith('-chain') || handle.endsWith('-link');
 
+function CollectionCategoryLink({
+  to,
+  title,
+  subtitle,
+  swatch,
+}: {
+  to: string;
+  title: string;
+  subtitle: string;
+  swatch?: string;
+}) {
+  const [hover, setHover] = useState(false);
+  const closeMenu = useContext(CloseMenuContext);
+  return (
+    <Link
+      to={to}
+      prefetch="intent"
+      onClick={() => closeMenu?.()}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 16,
+        padding: '14px 0',
+        textDecoration: 'none',
+        borderBottom: `1px solid ${STYX.lineSoft}`,
+        transition: 'border-color 0.2s',
+        ...(hover ? {borderBottomColor: STYX.gold} : {}),
+      }}
+    >
+      {swatch && (
+        <span
+          style={{
+            width: 32,
+            height: 32,
+            borderRadius: '50%',
+            background: `radial-gradient(circle at 30% 30%, rgba(255,255,255,0.35) 0%, transparent 50%), ${swatch}`,
+            boxShadow: `inset 0 0 0 1px rgba(26,24,21,0.12), 0 2px 8px -2px rgba(26,24,21,0.15)`,
+            flexShrink: 0,
+          }}
+        />
+      )}
+      <span style={{flex: 1}}>
+        <div style={{
+          fontFamily: FONT.cinzel,
+          fontSize: 15,
+          letterSpacing: '0.08em',
+          color: hover ? STYX.gold : STYX.ink,
+          textTransform: 'uppercase',
+          fontWeight: 500,
+          transition: 'color 0.2s',
+          lineHeight: 1.3,
+        }}>
+          {title}
+        </div>
+        <div style={{
+          fontFamily: FONT.cormorant,
+          fontSize: 14,
+          fontStyle: 'italic',
+          color: STYX.silt2,
+          marginTop: 2,
+        }}>
+          {subtitle}
+        </div>
+      </span>
+      <span style={{
+        fontFamily: FONT.cinzel,
+        fontSize: 11,
+        color: hover ? STYX.gold : 'transparent',
+        transition: 'color 0.2s',
+        flexShrink: 0,
+      }}>
+        →
+      </span>
+    </Link>
+  );
+}
+
 function CollectionsMegaPanel() {
   const existingHandles = useContext(ExistingHandlesContext);
 
@@ -527,188 +626,189 @@ function CollectionsMegaPanel() {
     <div
       style={{
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr 1.2fr',
-        gap: 44,
-        padding: '44px 56px 48px',
+        gridTemplateColumns: '1.1fr 1fr 1fr 0.9fr',
+        gap: 48,
+        padding: '40px 56px 44px',
       }}
     >
-      {/* By Karat */}
+      {/* By Type */}
       <div>
-        <MenuColumnHeader kicker="I" title="By Karat" />
-        {filteredKarats.map((k) => (
-          <MegaLink
-            key={k.label}
-            to={`/collections/${k.handle}`}
-            prefetch="intent"
-            style={{
-              padding: '8px 0',
-              textDecoration: 'none',
-              borderBottom: `1px solid ${STYX.lineSoft}`,
-            }}
-          >
-            <div style={{fontFamily: FONT.cinzel, fontSize: 13, letterSpacing: '0.08em', color: STYX.ink, fontWeight: 500}}>
-              {k.label}
-            </div>
-            <div style={{fontFamily: FONT.cormorant, fontSize: 13, fontStyle: 'italic', color: STYX.silt}}>
-              {k.detail}
-            </div>
-          </MegaLink>
-        ))}
-
-        {/* All chains link */}
+        <div style={{
+          fontFamily: FONT.mono,
+          fontSize: 9,
+          letterSpacing: '0.25em',
+          color: STYX.gold,
+          textTransform: 'uppercase',
+          marginBottom: 6,
+        }}>I</div>
+        <div style={{
+          fontFamily: FONT.cinzel,
+          fontSize: 13,
+          letterSpacing: '0.25em',
+          textTransform: 'uppercase',
+          color: STYX.silt,
+          fontWeight: 500,
+          paddingBottom: 16,
+          marginBottom: 4,
+          borderBottom: `1px solid ${STYX.line}`,
+        }}>By Type</div>
+        <CollectionCategoryLink to="/collections/necklaces" title="Necklaces" subtitle="Chains · 16″ – 30″" />
+        <CollectionCategoryLink to="/collections/bracelets" title="Bracelets" subtitle="Wrist chains · 7″ – 9″" />
         <MegaLink
           to="/collections/chains"
           prefetch="intent"
           style={{
             display: 'block',
-            padding: '12px 0',
+            padding: '16px 0 0',
             textDecoration: 'none',
             fontFamily: FONT.cinzel,
             fontSize: 11,
-            letterSpacing: '0.15em',
+            letterSpacing: '0.2em',
             color: STYX.gold,
             textTransform: 'uppercase',
-            marginTop: 8,
           }}
         >
-          All Chains &rarr;
+          All Chains →
         </MegaLink>
+      </div>
+
+      {/* By Karat */}
+      <div>
+        <div style={{
+          fontFamily: FONT.mono,
+          fontSize: 9,
+          letterSpacing: '0.25em',
+          color: STYX.gold,
+          textTransform: 'uppercase',
+          marginBottom: 6,
+        }}>II</div>
+        <div style={{
+          fontFamily: FONT.cinzel,
+          fontSize: 13,
+          letterSpacing: '0.25em',
+          textTransform: 'uppercase',
+          color: STYX.silt,
+          fontWeight: 500,
+          paddingBottom: 16,
+          marginBottom: 4,
+          borderBottom: `1px solid ${STYX.line}`,
+        }}>By Karat</div>
+        {filteredKarats.map((k) => (
+          <CollectionCategoryLink
+            key={k.label}
+            to={`/collections/${k.handle}`}
+            title={k.label}
+            subtitle={k.detail}
+          />
+        ))}
       </div>
 
       {/* By Metal */}
       <div>
-        <MenuColumnHeader kicker="II" title="By Metal" />
-        <div style={{display: 'flex', flexDirection: 'column', gap: 12}}>
-          {filteredMetals.map((m) => (
-            <MegaLink
-              key={m.label}
-              to={`/collections/${m.handle}`}
-              prefetch="intent"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 14,
-                padding: '6px 0',
-                textDecoration: 'none',
-              }}
-            >
-              <span
-                style={{
-                  width: 28,
-                  height: 28,
-                  borderRadius: '50%',
-                  background: `radial-gradient(circle at 30% 30%, #fff6 0%, transparent 40%), ${m.hex}`,
-                  boxShadow: 'inset 0 0 0 1px rgba(26,24,21,0.15)',
-                  flexShrink: 0,
-                }}
-              />
-              <span>
-                <div style={{fontFamily: FONT.cinzel, fontSize: 12, letterSpacing: '0.1em', color: STYX.ink, textTransform: 'uppercase'}}>
-                  {m.label}
-                </div>
-                <div style={{fontFamily: FONT.cormorant, fontSize: 12, fontStyle: 'italic', color: STYX.silt}}>
-                  {m.sub}
-                </div>
-              </span>
-            </MegaLink>
-          ))}
-        </div>
-
-        {/* By Build */}
-        <div style={{marginTop: 28}}>
-          <MenuColumnHeader kicker="III" title="By Build" />
-          <div style={{display: 'flex', flexDirection: 'column', gap: 12}}>
-            {[
-              {label: 'Solid', sub: 'Dense · investment-grade'},
-              {label: 'Hollow', sub: 'Lighter · everyday wear'},
-            ].map((b) => (
-              <MegaLink
-                key={b.label}
-                to={`/collections/chains?construction=${b.label}`}
-                prefetch="intent"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 14,
-                  padding: '6px 0',
-                  textDecoration: 'none',
-                }}
-              >
-                <span>
-                  <div style={{fontFamily: FONT.cinzel, fontSize: 12, letterSpacing: '0.1em', color: STYX.ink, textTransform: 'uppercase'}}>
-                    {b.label}
-                  </div>
-                  <div style={{fontFamily: FONT.cormorant, fontSize: 12, fontStyle: 'italic', color: STYX.silt}}>
-                    {b.sub}
-                  </div>
-                </span>
-              </MegaLink>
-            ))}
-          </div>
-        </div>
+        <div style={{
+          fontFamily: FONT.mono,
+          fontSize: 9,
+          letterSpacing: '0.25em',
+          color: STYX.gold,
+          textTransform: 'uppercase',
+          marginBottom: 6,
+        }}>III</div>
+        <div style={{
+          fontFamily: FONT.cinzel,
+          fontSize: 13,
+          letterSpacing: '0.25em',
+          textTransform: 'uppercase',
+          color: STYX.silt,
+          fontWeight: 500,
+          paddingBottom: 16,
+          marginBottom: 4,
+          borderBottom: `1px solid ${STYX.line}`,
+        }}>By Metal</div>
+        {filteredMetals.map((m) => (
+          <CollectionCategoryLink
+            key={m.label}
+            to={`/collections/${m.handle}`}
+            title={m.label}
+            subtitle={m.sub}
+            swatch={m.hex}
+          />
+        ))}
       </div>
 
-      {/* Right column — browse all */}
-      <div
-        style={{
-          background: STYX.parchment,
-          padding: '28px 24px',
-          border: `1px solid ${STYX.line}`,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 16,
-        }}
-      >
+      {/* By Build + Browse All */}
+      <div style={{display: 'flex', flexDirection: 'column'}}>
+        <div style={{
+          fontFamily: FONT.mono,
+          fontSize: 9,
+          letterSpacing: '0.25em',
+          color: STYX.gold,
+          textTransform: 'uppercase',
+          marginBottom: 6,
+        }}>IV</div>
+        <div style={{
+          fontFamily: FONT.cinzel,
+          fontSize: 13,
+          letterSpacing: '0.25em',
+          textTransform: 'uppercase',
+          color: STYX.silt,
+          fontWeight: 500,
+          paddingBottom: 16,
+          marginBottom: 4,
+          borderBottom: `1px solid ${STYX.line}`,
+        }}>By Build</div>
+        <CollectionCategoryLink to="/collections/chains?construction=Solid" title="Solid" subtitle="Dense · investment-grade" />
+        <CollectionCategoryLink to="/collections/chains?construction=Hollow" title="Hollow" subtitle="Lighter · everyday wear" />
+
+        {/* Browse all card */}
         <div
           style={{
-            fontFamily: FONT.cinzel,
-            fontSize: 10,
-            letterSpacing: '0.25em',
-            textTransform: 'uppercase',
-            color: STYX.gold,
-            marginBottom: 4,
-          }}
-        >
-          Browse
-        </div>
-        <div
-          style={{
-            fontFamily: FONT.cinzel,
-            fontSize: 18,
-            letterSpacing: '0.02em',
-            color: STYX.ink,
-            textTransform: 'uppercase',
-            lineHeight: 1.2,
-          }}
-        >
-          All Collections
-        </div>
-        <div
-          style={{
-            fontFamily: FONT.cormorant,
-            fontSize: 14,
-            fontStyle: 'italic',
-            color: STYX.graphite,
-            lineHeight: 1.5,
-          }}
-        >
-          Browse every collection — by metal, karat, chain type, and more.
-        </div>
-        <MegaLink
-          to="/collections"
-          prefetch="intent"
-          style={{
-            fontFamily: FONT.cinzel,
-            fontSize: 10,
-            letterSpacing: '0.25em',
-            color: STYX.gold,
-            textTransform: 'uppercase',
-            textDecoration: 'none',
             marginTop: 'auto',
+            paddingTop: 24,
           }}
         >
-          View all collections →
-        </MegaLink>
+          <MegaLink
+            to="/collections"
+            prefetch="intent"
+            style={{
+              display: 'block',
+              background: STYX.parchment,
+              padding: '20px 20px',
+              border: `1px solid ${STYX.line}`,
+              textDecoration: 'none',
+            }}
+          >
+            <div style={{
+              fontFamily: FONT.cinzel,
+              fontSize: 14,
+              letterSpacing: '0.06em',
+              color: STYX.ink,
+              textTransform: 'uppercase',
+              lineHeight: 1.3,
+              marginBottom: 6,
+            }}>
+              All Collections
+            </div>
+            <div style={{
+              fontFamily: FONT.cormorant,
+              fontSize: 14,
+              fontStyle: 'italic',
+              color: STYX.silt2,
+              lineHeight: 1.4,
+              marginBottom: 12,
+            }}>
+              Browse everything
+            </div>
+            <div style={{
+              fontFamily: FONT.cinzel,
+              fontSize: 10,
+              letterSpacing: '0.2em',
+              color: STYX.gold,
+              textTransform: 'uppercase',
+            }}>
+              View All →
+            </div>
+          </MegaLink>
+        </div>
       </div>
     </div>
   );
@@ -1335,6 +1435,36 @@ function MobileMenu({
                 <span>All Collections</span>
                 <span style={{fontSize: 14, lineHeight: 1}}>→</span>
               </Link>
+
+              {/* By Type */}
+              <div style={{marginTop: 24}}>
+                <div style={{fontFamily: FONT.mono, fontSize: 9, letterSpacing: '0.25em', textTransform: 'uppercase', color: STYX.silt, marginBottom: 14}}>Type</div>
+                <div style={{display: 'flex', flexDirection: 'column', gap: 0}}>
+                  {[
+                    {label: 'Necklaces', sub: 'Chains · 16″ – 30″', handle: 'necklaces'},
+                    {label: 'Bracelets', sub: 'Wrist chains · 7″ – 9″', handle: 'bracelets'},
+                  ].map((t) => (
+                    <Link
+                      key={t.handle}
+                      to={`/collections/${t.handle}`}
+                      prefetch="intent"
+                      onClick={onClose}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '12px 0',
+                        borderBottom: `1px solid ${STYX.lineSoft}`,
+                        textDecoration: 'none',
+                        color: 'inherit',
+                      }}
+                    >
+                      <span style={{fontFamily: FONT.cormorant, fontSize: 20, color: STYX.ink}}>{t.label}</span>
+                      <span style={{fontFamily: FONT.cormorant, fontSize: 14, fontStyle: 'italic', color: STYX.silt2}}>{t.sub}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
 
               {/* Metal */}
               <div style={{marginTop: 24}}>

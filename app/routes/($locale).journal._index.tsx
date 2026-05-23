@@ -38,6 +38,7 @@ const HERO_IMAGES: Record<string, string> = {
   'history-of-the-heart-chain': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-heart-chain-hero.jpg?v=1779151611',
   'history-of-the-peanut-chain': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-peanut-chain-hero.jpg?v=1779151671',
   'history-of-the-scroll-chain': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-scroll-chain-hero.png?v=1779151714',
+  'understanding-gold-karats': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-gold-chains-history-hero.jpg?v=1779151607',
   'sizing-guide': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-size-guide.jpg?v=1779151801',
 };
 

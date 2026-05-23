@@ -7,6 +7,7 @@ export {Ribbon} from './Ribbon';
 export {CategoryTiles} from './CategoryTiles';
 export {FeaturedRow} from './FeaturedRow';
 export {StyxProductCard} from './StyxProductCard';
+export {ChainProductCard} from './ChainProductCard';
 export {Lookbook} from './Lookbook';
 export {CraftStrip} from './CraftStrip';
 export {Newsletter} from './Newsletter';
