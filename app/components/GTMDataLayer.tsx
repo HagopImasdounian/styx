@@ -214,6 +214,53 @@ export function trackBeginCheckout(cart: {
 }
 
 /**
+ * Push a select_item event when a product variant is selected.
+ */
+export function trackVariantSelect(item: {
+  id: string;
+  title: string;
+  price: string;
+  variantTitle?: string;
+  optionName?: string;
+  optionValue?: string;
+  currency?: string;
+}) {
+  push('select_item', {
+    ecommerce: {
+      currency: item.currency || 'USD',
+      items: [
+        {
+          item_id: item.id,
+          item_name: item.title,
+          item_variant: item.variantTitle,
+          price: parseFloat(item.price),
+          quantity: 1,
+        },
+      ],
+    },
+    option_name: item.optionName,
+    option_value: item.optionValue,
+  });
+}
+
+/**
+ * Push a generate_lead / form_submit event for form fills.
+ */
+export function trackFormSubmit(form: {
+  formId: string;
+  formName: string;
+  email?: string;
+  name?: string;
+}) {
+  push('generate_lead', {
+    form_id: form.formId,
+    form_name: form.formName,
+    contact_email: form.email,
+    contact_name: form.name,
+  });
+}
+
+/**
  * Push a search event.
  */
 export function trackSearch(searchTerm: string) {
