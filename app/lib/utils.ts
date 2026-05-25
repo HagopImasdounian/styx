@@ -309,7 +309,9 @@ export function useIsStyxPath() {
     p === '/shipping' ||
     p === '/privacy' ||
     p === '/terms' ||
-    p === '/faq'
+    p === '/faq' ||
+    p === '/compare' ||
+    p.startsWith('/compare/')
   );
 }
 

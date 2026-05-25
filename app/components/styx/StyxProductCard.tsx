@@ -3,6 +3,7 @@ import {Image} from '@shopify/hydrogen';
 import {Link} from 'react-router';
 import {STYX, FONT} from './constants';
 import {PlaceholderImage} from './PlaceholderImage';
+import {CompareButton} from './CompareButton';
 
 type VariantNode = {
   id: string;
@@ -288,6 +289,19 @@ export function StyxProductCard({
             pointerEvents: 'none',
           }}
         />
+
+        {/* Compare button — top right */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 8,
+            right: 8,
+            opacity: isHovered ? 1 : 0.6,
+            transition: 'opacity 0.3s ease',
+          }}
+        >
+          <CompareButton handle={product.handle} compact />
+        </div>
       </div>
 
       {/* ── Info Block ── */}

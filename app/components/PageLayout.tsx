@@ -27,6 +27,8 @@ import {
   useIsStyxPath,
 } from '~/lib/utils';
 import {STYX, FONT, GoldTicker, StyxNav, StyxFooter} from '~/components/styx';
+import {CompareProvider} from '~/context/CompareContext';
+import {CompareBar} from '~/components/styx/CompareBar';
 import {useIsHydrated} from '~/hooks/useIsHydrated';
 import {useCartFetchers} from '~/hooks/useCartFetchers';
 import type {RootLoader} from '~/root';
@@ -47,7 +49,7 @@ export function PageLayout({children, layout}: LayoutProps) {
   // GoldTicker + StyxNav + StyxFooter — skip the default chrome.
   if (isStyxPage) {
     return (
-      <>
+      <CompareProvider>
         <div className="flex flex-col min-h-screen">
           <div className="">
             <a href="#mainContent" className="sr-only">
@@ -58,14 +60,15 @@ export function PageLayout({children, layout}: LayoutProps) {
             {children}
           </main>
         </div>
-      </>
+        <CompareBar />
+      </CompareProvider>
     );
   }
 
   // All other pages: wrap with Styx chrome (ticker + nav + footer)
   // and a contained content area with the bone background.
   return (
-    <>
+    <CompareProvider>
       <div style={{background: STYX.bone, minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
         <a href="#mainContent" className="sr-only">
           Skip to content
@@ -88,7 +91,8 @@ export function PageLayout({children, layout}: LayoutProps) {
         </main>
         <StyxFooter />
       </div>
-    </>
+      <CompareBar />
+    </CompareProvider>
   );
 }
 

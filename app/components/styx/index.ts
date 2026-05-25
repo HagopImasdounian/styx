@@ -16,3 +16,5 @@ export {StyxLabel} from './StyxLabel';
 export {CTAButton} from './CTAButton';
 export {PlaceholderImage} from './PlaceholderImage';
 export {StoneBg} from './StoneBg';
+export {CompareButton} from './CompareButton';
+export {CompareBar} from './CompareBar';

@@ -34,7 +34,7 @@ import {getExcerpt} from '~/lib/utils';
 import {seoPayload} from '~/lib/seo.server';
 import {computeGoldPrice, KARAT_PURITY} from '~/lib/gold';
 import type {Storefront} from '~/lib/type';
-import {trackProductView} from '~/components/GTMDataLayer';
+import {trackProductView, trackVariantSelect} from '~/components/GTMDataLayer';
 import {routeHeaders} from '~/data/cache';
 import {MEDIA_FRAGMENT, PRODUCT_CARD_FRAGMENT} from '~/data/fragments';
 import {
@@ -48,6 +48,7 @@ import {
   StyxProductCard,
   Obol,
 } from '~/components/styx';
+import {CompareButton} from '~/components/styx/CompareButton';
 
 export const headers = routeHeaders;
 
@@ -170,6 +171,21 @@ export default function Product() {
       variantTitle: selectedVariant?.title,
     });
   }, [product.id, selectedVariant?.id]);
+
+  // Track variant selection (skip initial load)
+  const initialVariantRef = useRef(selectedVariant?.id);
+  useEffect(() => {
+    if (selectedVariant?.id && selectedVariant.id !== initialVariantRef.current) {
+      trackVariantSelect({
+        id: product.id,
+        title: product.title,
+        price: selectedVariant?.price?.amount || '0',
+        variantTitle: selectedVariant?.title,
+        optionName: selectedVariant?.selectedOptions?.[0]?.name,
+        optionValue: selectedVariant?.selectedOptions?.[0]?.value,
+      });
+    }
+  }, [selectedVariant?.id]);
 
   // Get the product options array
   const productOptions = getProductOptions({
@@ -983,6 +999,11 @@ export default function Product() {
                   Make an Offer
                 </button>
               )}
+
+              {/* Compare Button */}
+              <div style={{marginTop: 16}}>
+                <CompareButton handle={product.handle} />
+              </div>
 
               {/* ── Trust Signals ── */}
               <div
