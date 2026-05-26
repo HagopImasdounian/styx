@@ -11,6 +11,7 @@ import {
   StyxFooter,
 } from '~/components/styx';
 import {CompareButton} from '~/components/styx/CompareButton';
+import {WeighIn, type WeighInChain} from '~/components/styx/WeighIn';
 import {KARAT_PURITY} from '~/lib/gold';
 import {CURATED_COMPARISONS} from '~/data/comparisons';
 import type {RootLoader} from '~/root';
@@ -324,7 +325,19 @@ export default function ComparePage() {
           {/* Show custom entries if added (no products yet) */}
           {customSpecs.length > 0 && (
             <div style={{marginTop: 48}}>
-              <ComparisonTable specs={customSpecs} spotPerGram={spotPerGram} onRemoveCustom={removeCustomEntry} />
+              <WeighIn
+                chains={customSpecs.map((s): WeighInChain => ({
+                  type: s.type, handle: s.handle, title: s.title, image: s.image,
+                  karat: s.karat, weight: s.weight, pureGold: s.pureGold, meltValue: s.meltValue,
+                  pricePerPureGram: s.pricePerPureGram, valueScore: s.valueScore,
+                  minPrice: s.minPrice, maxPrice: s.maxPrice, thickness: s.thickness,
+                  construction: s.construction, origin: s.origin, weightPerInch: s.weightPerInch,
+                  goldPerInch: s.goldPerInch, pricePerInch: s.pricePerInch,
+                  premiumOverMelt: s.premiumOverMelt, lengths: s.lengths, colors: s.colors,
+                }))}
+                spotPerOz={spotPerOz}
+                onRemoveCustom={removeCustomEntry}
+              />
             </div>
           )}
 
@@ -432,8 +445,34 @@ export default function ComparePage() {
           </div>
         )}
 
-        {/* Comparison Table — always shown */}
-        <ComparisonTable specs={allSpecs} spotPerGram={spotPerGram} onRemoveCustom={removeCustomEntry} />
+        {/* WeighIn Ledger */}
+        <WeighIn
+          chains={allSpecs.map((s): WeighInChain => ({
+            type: s.type,
+            handle: s.handle,
+            title: s.title,
+            image: s.image,
+            karat: s.karat,
+            weight: s.weight,
+            pureGold: s.pureGold,
+            meltValue: s.meltValue,
+            pricePerPureGram: s.pricePerPureGram,
+            valueScore: s.valueScore,
+            minPrice: s.minPrice,
+            maxPrice: s.maxPrice,
+            thickness: s.thickness,
+            construction: s.construction,
+            origin: s.origin,
+            weightPerInch: s.weightPerInch,
+            goldPerInch: s.goldPerInch,
+            pricePerInch: s.pricePerInch,
+            premiumOverMelt: s.premiumOverMelt,
+            lengths: s.lengths,
+            colors: s.colors,
+          }))}
+          spotPerOz={spotPerOz}
+          onRemoveCustom={removeCustomEntry}
+        />
       </div>
 
       <StyxFooter />

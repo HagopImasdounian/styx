@@ -9,7 +9,7 @@ import {
   StyxNav,
   StyxFooter,
 } from '~/components/styx';
-import {WeighIn} from '~/components/styx/WeighIn';
+import {WeighIn, type WeighInChain} from '~/components/styx/WeighIn';
 import {KARAT_PURITY} from '~/lib/gold';
 import {getComparisonBySlug, getRelatedComparisons} from '~/data/comparisons';
 import type {RootLoader} from '~/root';
@@ -172,34 +172,15 @@ export default function CuratedComparePage() {
         {specs.length >= 2 && (
           <div style={{marginBottom: 56}}>
             <WeighIn
-              chainA={{
-                handle: specs[0].handle,
-                title: specs[0].title,
-                image: specs[0].image,
-                karat: specs[0].karat,
-                weight: specs[0].weight,
-                pureGold: specs[0].pureGold,
-                meltValue: specs[0].meltValue,
-                pricePerPureGram: specs[0].pricePerPureGram,
-                minPrice: specs[0].minPrice,
-                thickness: specs[0].thickness,
-                construction: specs[0].construction,
-                origin: specs[0].origin,
-              }}
-              chainB={{
-                handle: specs[1].handle,
-                title: specs[1].title,
-                image: specs[1].image,
-                karat: specs[1].karat,
-                weight: specs[1].weight,
-                pureGold: specs[1].pureGold,
-                meltValue: specs[1].meltValue,
-                pricePerPureGram: specs[1].pricePerPureGram,
-                minPrice: specs[1].minPrice,
-                thickness: specs[1].thickness,
-                construction: specs[1].construction,
-                origin: specs[1].origin,
-              }}
+              chains={specs.map((s: any): WeighInChain => ({
+                type: 'product', handle: s.handle, title: s.title, image: s.image,
+                karat: s.karat, weight: s.weight, pureGold: s.pureGold, meltValue: s.meltValue,
+                pricePerPureGram: s.pricePerPureGram, valueScore: s.valueScore,
+                minPrice: s.minPrice, maxPrice: s.maxPrice, thickness: s.thickness,
+                construction: s.construction, origin: s.origin, weightPerInch: s.weightPerInch,
+                goldPerInch: s.goldPerInch, pricePerInch: s.pricePerInch,
+                premiumOverMelt: s.premiumOverMelt, lengths: s.lengths, colors: s.colors,
+              }))}
               spotPerOz={spotPerOz}
             />
           </div>
