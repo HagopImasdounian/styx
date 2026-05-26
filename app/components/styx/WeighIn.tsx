@@ -34,14 +34,30 @@ export function WeighIn({
   const purityA = KARAT_PURITY[A.karat] ?? 10 / 24;
   const purityB = KARAT_PURITY[B.karat] ?? 10 / 24;
 
+  // Short names — extract chain style from title (e.g. "10K Gold 1.5mm Curb Chain" → "Curb")
+  const CHAIN_STYLES = ['Cuban Link', 'Cuban', 'Curb', 'Box', 'Rope', 'Cable', 'Figaro', 'Wheat', 'Rolo', 'Singapore', 'Franco', 'Herringbone', 'Paperclip', 'Snake', 'Byzantine', 'Mariner'];
+  const extractShort = (title: string) => {
+    for (const style of CHAIN_STYLES) {
+      if (title.toLowerCase().includes(style.toLowerCase())) return style;
+    }
+    // Fallback: remove karat prefix and "Chain" suffix
+    return title.replace(/^\d+k\s+gold\s+/i, '').replace(/\s+chain$/i, '').trim();
+  };
+  const shortA = extractShort(A.title);
+  const shortB = extractShort(B.title);
+
   // Verdict
   const heavier = (A.weight || 0) > (B.weight || 0) ? A : (B.weight || 0) > (A.weight || 0) ? B : null;
   const lighter = heavier === A ? B : heavier === B ? A : null;
   const weightDelta = heavier && lighter ? ((heavier.weight || 0) - (lighter.weight || 0)).toFixed(1) : '0';
   const goldDelta = heavier && lighter ? ((heavier.pureGold || 0) - (lighter.pureGold || 0)).toFixed(1) : '0';
-  const valueWinner = (A.pricePerPureGram || Infinity) < (B.pricePerPureGram || Infinity) ? A
-    : (B.pricePerPureGram || Infinity) < (A.pricePerPureGram || Infinity) ? B : null;
+  // Value tolerance: if $/g difference < $2, consider equal
+  const ppgA = A.pricePerPureGram || Infinity;
+  const ppgB = B.pricePerPureGram || Infinity;
+  const valueDiff = Math.abs(ppgA - ppgB);
+  const valueWinner = valueDiff > 2 ? (ppgA < ppgB ? A : B) : null;
   const sameKarat = A.karat === B.karat;
+  const shortFor = (c: ChainData) => c === A ? shortA : shortB;
 
   return (
     <div className="weighin-root">
@@ -82,6 +98,7 @@ export function WeighIn({
           aWin={A.minPrice < B.minPrice}
           bWin={B.minPrice < A.minPrice}
           winTag="less"
+          aLabel={shortA} bLabel={shortB}
         />
         <CompareRow
           num="II"
@@ -89,9 +106,10 @@ export function WeighIn({
           sub="dollars per gram of pure gold"
           aVal={A.pricePerPureGram ? `$${A.pricePerPureGram.toFixed(0)}/g` : '—'}
           bVal={B.pricePerPureGram ? `$${B.pricePerPureGram.toFixed(0)}/g` : '—'}
-          aWin={(A.pricePerPureGram || Infinity) < (B.pricePerPureGram || Infinity)}
-          bWin={(B.pricePerPureGram || Infinity) < (A.pricePerPureGram || Infinity)}
+          aWin={valueDiff > 2 && ppgA < ppgB}
+          bWin={valueDiff > 2 && ppgB < ppgA}
           winTag="better value"
+          aLabel={shortA} bLabel={shortB}
         />
         <CompareRow
           num="III"
@@ -102,6 +120,7 @@ export function WeighIn({
           aWin={A.karat > B.karat}
           bWin={B.karat > A.karat}
           winTag="purer"
+          aLabel={shortA} bLabel={shortB}
         />
         <CompareRow
           num="IV"
@@ -112,6 +131,7 @@ export function WeighIn({
           aWin={(A.weight || 0) > (B.weight || 0)}
           bWin={(B.weight || 0) > (A.weight || 0)}
           winTag="heavier"
+          aLabel={shortA} bLabel={shortB}
         />
         <CompareRow
           num="V"
@@ -122,6 +142,7 @@ export function WeighIn({
           aWin={(A.pureGold || 0) > (B.pureGold || 0)}
           bWin={(B.pureGold || 0) > (A.pureGold || 0)}
           winTag="more gold"
+          aLabel={shortA} bLabel={shortB}
           last
         />
       </div>
@@ -136,18 +157,22 @@ export function WeighIn({
           <div style={{fontFamily: FONT.cormorant, fontSize: 17, fontStyle: 'italic', lineHeight: 1.55, color: 'rgba(239,234,224,0.92)'}}>
             {heavier && lighter ? (
               <>
-                The <strong style={{fontWeight: 600}}>{heavier.title}</strong> carries{' '}
+                The <strong style={{fontWeight: 600}}>{shortFor(heavier)}</strong> carries{' '}
                 <NumInline>{weightDelta}g</NumInline> more metal and{' '}
                 <NumInline>{goldDelta}g</NumInline> more pure gold than the{' '}
-                {lighter.title}.{' '}
+                {shortFor(lighter)}.{' '}
               </>
             ) : (
               <>Both pieces hit the scale at the same mass. </>
             )}
             {valueWinner ? (
               <>
-                The <strong style={{fontWeight: 600}}>{valueWinner.title}</strong> is the better value at{' '}
+                The <strong style={{fontWeight: 600}}>{shortFor(valueWinner)}</strong> is the better value at{' '}
                 <NumInline>${valueWinner.pricePerPureGram?.toFixed(0)}/g</NumInline> of pure gold.{' '}
+              </>
+            ) : ppgA !== Infinity && ppgB !== Infinity ? (
+              <>
+                Both come in at <NumInline>${Math.round((ppgA + ppgB) / 2)}/g</NumInline> of pure gold — equal value.{' '}
               </>
             ) : null}
             {sameKarat
@@ -160,13 +185,13 @@ export function WeighIn({
             to={`/products/${A.handle}`}
             style={{padding: '14px 22px', fontFamily: FONT.cinzel, fontSize: 11, letterSpacing: '0.25em', textTransform: 'uppercase', background: STYX.gold, color: STYX.ink, border: 'none', textDecoration: 'none', whiteSpace: 'nowrap', textAlign: 'center'}}
           >
-            View {A.title.split(' ').slice(0, 3).join(' ')}
+            View the {shortA} →
           </Link>
           <Link
             to={`/products/${B.handle}`}
-            style={{padding: '14px 22px', fontFamily: FONT.cinzel, fontSize: 11, letterSpacing: '0.25em', textTransform: 'uppercase', background: 'transparent', color: STYX.bone, border: `1px solid rgba(239,234,224,0.4)`, textDecoration: 'none', whiteSpace: 'nowrap', textAlign: 'center'}}
+            style={{padding: '14px 22px', fontFamily: FONT.cinzel, fontSize: 11, letterSpacing: '0.25em', textTransform: 'uppercase', background: 'transparent', color: STYX.bone, border: `1px solid rgba(239,234,224,0.7)`, textDecoration: 'none', whiteSpace: 'nowrap', textAlign: 'center'}}
           >
-            View {B.title.split(' ').slice(0, 3).join(' ')}
+            View the {shortB} →
           </Link>
         </div>
       </div>
@@ -219,7 +244,7 @@ function ChainColumn({chain, purity}: {chain: ChainData; purity: number}) {
       </div>
       <div style={{padding: '18px 22px'}}>
         <Link to={`/products/${chain.handle}`} style={{textDecoration: 'none'}}>
-          <div style={{fontFamily: FONT.cinzel, fontSize: 18, letterSpacing: '0.06em', color: STYX.ink, textTransform: 'uppercase', marginBottom: 4}}>
+          <div style={{fontFamily: FONT.cinzel, fontSize: 13, letterSpacing: '0.1em', color: STYX.ink, textTransform: 'uppercase', marginBottom: 4, fontWeight: 500}}>
             {chain.title}
           </div>
         </Link>
@@ -245,10 +270,11 @@ function LedgerHeader() {
   );
 }
 
-function CompareRow({num, k, sub, aVal, bVal, aWin, bWin, winTag, last}: {
+function CompareRow({num, k, sub, aVal, bVal, aWin, bWin, winTag, aLabel, bLabel, last}: {
   num: string; k: string; sub: string;
   aVal: React.ReactNode; bVal: React.ReactNode;
-  aWin: boolean; bWin: boolean; winTag: string; last?: boolean;
+  aWin: boolean; bWin: boolean; winTag: string;
+  aLabel: string; bLabel: string; last?: boolean;
 }) {
   return (
     <div className="weighin-row" style={{borderBottom: last ? 'none' : `1px solid ${STYX.line}`}}>
@@ -263,15 +289,16 @@ function CompareRow({num, k, sub, aVal, bVal, aWin, bWin, winTag, last}: {
           {sub}
         </div>
       </div>
-      <LedgerCell value={aVal} win={aWin} winTag={winTag} />
-      <LedgerCell value={bVal} win={bWin} winTag={winTag} />
+      <LedgerCell value={aVal} win={aWin} winTag={winTag} mobileLabel={aLabel} />
+      <LedgerCell value={bVal} win={bWin} winTag={winTag} mobileLabel={bLabel} />
     </div>
   );
 }
 
-function LedgerCell({value, win, winTag}: {value: React.ReactNode; win: boolean; winTag: string}) {
+function LedgerCell({value, win, winTag, mobileLabel}: {value: React.ReactNode; win: boolean; winTag: string; mobileLabel?: string}) {
   return (
     <div style={{paddingRight: 12}}>
+      {mobileLabel && <div className="weighin-mobile-label">{mobileLabel}</div>}
       <div style={{display: 'flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap'}}>
         {typeof value === 'string' ? (
           <div style={{fontFamily: FONT.cinzel, fontSize: 24, color: STYX.ink, fontVariantNumeric: 'tabular-nums', fontWeight: 600}}>
@@ -298,7 +325,7 @@ function KaratStamp({karat, purity}: {karat: number; purity: number}) {
         <div style={{fontFamily: FONT.mono, fontSize: 9, color: STYX.silt, letterSpacing: '0.1em', marginBottom: 3}}>
           {(purity * 100).toFixed(1)}% pure
         </div>
-        <div style={{height: 5, background: STYX.parchment, position: 'relative', overflow: 'hidden'}}>
+        <div style={{height: 8, background: STYX.parchment, position: 'relative', overflow: 'hidden'}}>
           <div style={{position: 'absolute', inset: 0, width: `${purity * 100}%`, background: STYX.gold}} />
         </div>
       </div>
@@ -314,8 +341,8 @@ function WeightBar({weight, max, purity}: {weight: number; max: number; purity: 
       <div style={{fontFamily: FONT.cinzel, fontSize: 24, color: STYX.ink, fontVariantNumeric: 'tabular-nums', fontWeight: 600, minWidth: 60}}>
         {weight}<span style={{fontSize: 12, color: STYX.silt}}>g</span>
       </div>
-      <div style={{flex: 1, maxWidth: 180}}>
-        <div style={{height: 10, background: STYX.parchment, border: `1px solid ${STYX.line}`, position: 'relative', overflow: 'hidden'}}>
+      <div className="weighin-bar-track" style={{flex: 1, maxWidth: 180}}>
+        <div style={{height: 16, background: STYX.parchment, border: `1px solid ${STYX.line}`, position: 'relative', overflow: 'hidden'}}>
           <div style={{position: 'absolute', top: 0, bottom: 0, left: 0, width: `${pct}%`, background: `repeating-linear-gradient(45deg, ${STYX.silt} 0 5px, ${STYX.silt2} 5px 6px)`}} />
           <div style={{position: 'absolute', top: 0, bottom: 0, left: 0, width: `${purePct}%`, background: STYX.gold}} />
         </div>
@@ -335,8 +362,8 @@ function PureGoldBar({pure, max, weight}: {pure: number; max: number; weight: nu
       <div style={{fontFamily: FONT.cinzel, fontSize: 24, color: STYX.ink, fontVariantNumeric: 'tabular-nums', fontWeight: 600, minWidth: 60}}>
         {pure.toFixed(1)}<span style={{fontSize: 12, color: STYX.silt}}>g</span>
       </div>
-      <div style={{flex: 1, maxWidth: 180}}>
-        <div style={{height: 10, background: STYX.parchment, border: `1px solid ${STYX.line}`, position: 'relative', overflow: 'hidden'}}>
+      <div className="weighin-bar-track" style={{flex: 1, maxWidth: 180}}>
+        <div style={{height: 16, background: STYX.parchment, border: `1px solid ${STYX.line}`, position: 'relative', overflow: 'hidden'}}>
           <div style={{position: 'absolute', top: 0, bottom: 0, left: 0, width: `${purePct}%`, background: `linear-gradient(180deg, ${STYX.goldLight} 0%, ${STYX.gold} 50%, ${STYX.goldDeep} 100%)`, boxShadow: 'inset 0 0 0 1px rgba(26,24,21,0.1)'}} />
         </div>
         <div style={{marginTop: 4, fontFamily: FONT.mono, fontSize: 8, letterSpacing: '0.1em', color: STYX.silt}}>
@@ -381,8 +408,8 @@ const WEIGHIN_CSS = `
 }
 .weighin-columns {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 16px;
+  grid-template-columns: 1fr 60px 1fr;
+  gap: 8px;
   align-items: stretch;
   margin-bottom: 4px;
 }
@@ -391,12 +418,23 @@ const WEIGHIN_CSS = `
   align-items: center;
   justify-content: center;
   font-family: ${FONT.cinzel};
-  font-size: 14px;
+  font-size: 18px;
   letter-spacing: 0.3em;
   color: ${STYX.gold};
   text-transform: uppercase;
-  padding: 0 8px;
+  padding: 0;
+  position: relative;
 }
+.weighin-vs::before,
+.weighin-vs::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  width: 1px;
+  background: ${STYX.line};
+}
+.weighin-vs::before { top: 0; height: 30%; }
+.weighin-vs::after { bottom: 0; height: 30%; }
 .weighin-chain-col {
   background: ${STYX.paper};
   border: 1px solid ${STYX.line};
@@ -405,7 +443,7 @@ const WEIGHIN_CSS = `
 .weighin-ledger {
   background: ${STYX.paper};
   border: 1px solid ${STYX.line};
-  margin-top: 20px;
+  margin-top: 24px;
 }
 .weighin-ledger-header {
   display: grid;
@@ -422,22 +460,22 @@ const WEIGHIN_CSS = `
 .weighin-row {
   display: grid;
   grid-template-columns: 50px 1fr 1.2fr 1.2fr;
-  padding: 20px 24px;
+  padding: 22px 24px;
   align-items: center;
   gap: 0;
 }
 .weighin-bar-wrap {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 .weighin-verdict {
   margin-top: 28px;
-  padding: 24px 28px;
+  padding: 28px 32px;
   background: ${STYX.ink};
   color: ${STYX.bone};
   display: flex;
-  gap: 24px;
+  gap: 28px;
   align-items: center;
 }
 .weighin-verdict-ctas {
@@ -458,53 +496,68 @@ const WEIGHIN_CSS = `
   text-transform: uppercase;
   flex-wrap: wrap;
 }
+/* Mobile chain label in ledger */
+.weighin-mobile-label {
+  display: none;
+}
 
 /* ─── MOBILE ─── */
 @media (max-width: 768px) {
   .weighin-root {
-    padding: 40px 16px 60px;
+    padding: 32px 16px 48px;
   }
   .weighin-header {
     grid-template-columns: 1fr;
-    gap: 20px;
-    margin-bottom: 32px;
+    gap: 16px;
+    margin-bottom: 28px;
   }
   .weighin-title {
-    font-size: 32px;
+    font-size: 28px;
   }
   .weighin-subtitle {
     max-width: 100%;
+    font-size: 15px;
   }
   .weighin-columns {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 0;
   }
   .weighin-vs {
-    padding: 8px 0;
-    font-size: 12px;
+    padding: 10px 0;
+    font-size: 13px;
+  }
+  .weighin-vs::before,
+  .weighin-vs::after {
+    display: none;
   }
   .weighin-ledger-header {
-    grid-template-columns: 32px 1fr;
-    padding: 12px 16px;
-  }
-  .weighin-ledger-header-a,
-  .weighin-ledger-header-b {
     display: none;
   }
   .weighin-row {
     grid-template-columns: 1fr;
-    padding: 16px;
-    gap: 12px;
+    padding: 20px 16px;
+    gap: 16px;
   }
   .weighin-row > div:first-child {
     display: none;
+  }
+  .weighin-mobile-label {
+    display: block;
+    font-family: ${FONT.cinzel};
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: ${STYX.silt};
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid ${STYX.lineSoft};
   }
   .weighin-bar-wrap {
     flex-direction: column;
     align-items: flex-start;
     gap: 6px;
   }
-  .weighin-bar-wrap > div:last-child {
+  .weighin-bar-track {
     max-width: 100% !important;
     width: 100%;
   }

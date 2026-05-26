@@ -9,7 +9,6 @@ import {
   getSeoMeta,
   Money,
   Image,
-  ShopPayButton,
   getSelectedProductOptions,
   Analytics,
   useOptimisticVariant,
@@ -139,7 +138,7 @@ export const meta = ({matches}: MetaArgs<typeof loader>) => {
 /* ─────────────────────────── Main Product Page ─────────────────────────── */
 
 export default function Product() {
-  const {product, shop, recommended, variants, storeDomain} =
+  const {product, shop, recommended, variants} =
     useLoaderData<typeof loader>();
   const {media, title, vendor, descriptionHtml} = product;
   const {shippingPolicy, refundPolicy} = shop;
@@ -451,6 +450,11 @@ export default function Product() {
             </div>
           )}
 
+          {/* Compare Button */}
+          <div style={{marginBottom: 16}}>
+            <CompareButton handle={product.handle} />
+          </div>
+
           {/* Title */}
           <h1
             style={{
@@ -701,7 +705,7 @@ export default function Product() {
                         )}
                       </div>
                     ) : isColor ? (
-                      /* Color: text pills with small swatch dot */
+                      /* Color: outline pills with swatch dot, gold accent when selected */
                       <div style={{display: 'flex', width: '100%', border: `1px solid ${STYX.line}`}}>
                         {option.optionValues.map(
                           ({isDifferentProduct, name, variantUriQuery, handle, selected, available}) => (
@@ -721,8 +725,8 @@ export default function Product() {
                                 textDecoration: 'none',
                                 padding: '14px 0',
                                 textAlign: 'center',
-                                background: selected ? STYX.ink : 'transparent',
-                                color: selected ? STYX.bone : STYX.ink,
+                                background: selected ? STYX.paper : 'transparent',
+                                color: selected ? STYX.ink : STYX.silt,
                                 borderRight: `1px solid ${STYX.line}`,
                                 cursor: 'pointer',
                                 opacity: available ? 1 : 0.35,
@@ -740,9 +744,7 @@ export default function Product() {
                                   height: 10,
                                   borderRadius: '50%',
                                   background: colorSwatches[name] || STYX.silt2,
-                                  boxShadow: selected
-                                    ? 'inset 0 0 0 1px rgba(239,234,224,0.3)'
-                                    : 'inset 0 0 0 1px rgba(26,24,21,0.12)',
+                                  boxShadow: 'inset 0 0 0 1px rgba(26,24,21,0.12)',
                                   flexShrink: 0,
                                 }}
                               />
@@ -758,7 +760,7 @@ export default function Product() {
                         )}
                       </div>
                     ) : (
-                      /* Default: pill buttons */
+                      /* Default: outline pill buttons, gold underline when selected */
                       option.optionValues.map(
                         ({isDifferentProduct, name, variantUriQuery, handle, selected, available, swatch}) => (
                           <Link
@@ -775,9 +777,10 @@ export default function Product() {
                               textTransform: 'uppercase',
                               textDecoration: 'none',
                               padding: '12px 24px',
-                              background: selected ? STYX.ink : 'transparent',
-                              color: selected ? STYX.bone : STYX.ink,
-                              border: `1px solid ${selected ? STYX.ink : STYX.line}`,
+                              background: selected ? STYX.paper : 'transparent',
+                              color: selected ? STYX.ink : STYX.silt,
+                              border: `1px solid ${selected ? STYX.graphite : STYX.line}`,
+                              borderBottom: selected ? `2px solid ${STYX.gold}` : `1px solid ${STYX.line}`,
                               cursor: 'pointer',
                               opacity: available ? 1 : 0.35,
                               transition: 'all 0.2s ease',
@@ -965,17 +968,6 @@ export default function Product() {
                 </button>
               </div>
 
-              {/* ShopPay */}
-              {!isOutOfStock && (
-                <div style={{marginTop: 12}}>
-                  <ShopPayButton
-                    width="100%"
-                    variantIds={[selectedVariant.id!]}
-                    storeDomain={storeDomain}
-                  />
-                </div>
-              )}
-
               {/* Make an Offer */}
               {!isOutOfStock && (
                 <button
@@ -1000,15 +992,12 @@ export default function Product() {
                 </button>
               )}
 
-              {/* Compare Button */}
-              <div style={{marginTop: 16}}>
-                <CompareButton handle={product.handle} />
-              </div>
+              {/* ── Divider ── */}
+              <div style={{marginTop: 24, borderTop: `1px solid ${STYX.line}`, paddingTop: 20}} />
 
               {/* ── Trust Signals ── */}
               <div
                 style={{
-                  marginTop: 24,
                   display: 'grid',
                   gridTemplateColumns: '1fr 1fr',
                   gap: '12px 16px',

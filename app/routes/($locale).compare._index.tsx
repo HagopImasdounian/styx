@@ -365,52 +365,56 @@ export default function ComparePage() {
       <GoldTicker />
       <StyxNav />
 
-      <div style={{maxWidth: 1440, margin: '0 auto', padding: '48px 24px 120px'}}>
-        {/* Header */}
-        <div style={{marginBottom: 40, textAlign: 'center'}}>
-          <h1 style={{fontFamily: FONT.cinzel, fontSize: 28, fontWeight: 500, letterSpacing: '0.08em', color: STYX.ink, marginBottom: 8}}>
-            Chain Comparison
-          </h1>
-          <p style={{fontFamily: FONT.mono, fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: STYX.silt}}>
-            {allSpecs.length} chain{allSpecs.length !== 1 ? 's' : ''} compared
-          </p>
-        </div>
+      <div style={{maxWidth: 1440, margin: '0 auto', padding: productSpecs.length === 2 && customEntries.length === 0 ? '0 0 120px' : '48px 24px 120px'}}>
+        {/* Header — only show when NOT in WeighIn mode */}
+        {!(productSpecs.length === 2 && customEntries.length === 0) && (
+          <>
+            <div style={{marginBottom: 40, textAlign: 'center'}}>
+              <h1 style={{fontFamily: FONT.cinzel, fontSize: 28, fontWeight: 500, letterSpacing: '0.08em', color: STYX.ink, marginBottom: 8}}>
+                Chain Comparison
+              </h1>
+              <p style={{fontFamily: FONT.mono, fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: STYX.silt}}>
+                {allSpecs.length} chain{allSpecs.length !== 1 ? 's' : ''} compared
+              </p>
+            </div>
 
-        {/* Add more controls */}
-        {canAddMore && (
-          <div style={{display: 'flex', gap: 12, justifyContent: 'center', marginBottom: 40, flexWrap: 'wrap'}}>
-            <Link
-              to="/collections/chains"
-              style={{
-                padding: '10px 20px',
-                border: `1px solid ${STYX.line}`,
-                fontFamily: FONT.mono,
-                fontSize: 10,
-                letterSpacing: '0.1em',
-                textTransform: 'uppercase',
-                color: STYX.silt,
-                textDecoration: 'none',
-              }}
-            >
-              + Add from catalog
-            </Link>
-            <button
-              onClick={() => setShowCustomForm(true)}
-              style={{
-                padding: '10px 20px',
-                border: `1px solid ${STYX.line}`,
-                background: 'transparent',
-                fontFamily: FONT.mono,
-                fontSize: 10,
-                letterSpacing: '0.1em',
-                textTransform: 'uppercase',
-                color: STYX.silt,
-                cursor: 'pointer',
-              }}
-            >
-              + Add custom chain
-            </button>
-          </div>
+            {/* Add more controls */}
+            {canAddMore && (
+              <div style={{display: 'flex', gap: 12, justifyContent: 'center', marginBottom: 40, flexWrap: 'wrap'}}>
+                <Link
+                  to="/collections/chains"
+                  style={{
+                    padding: '10px 20px',
+                    border: `1px solid ${STYX.line}`,
+                    fontFamily: FONT.mono,
+                    fontSize: 10,
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                    color: STYX.silt,
+                    textDecoration: 'none',
+                  }}
+                >
+                  + Add from catalog
+                </Link>
+                <button
+                  onClick={() => setShowCustomForm(true)}
+                  style={{
+                    padding: '10px 20px',
+                    border: `1px solid ${STYX.line}`,
+                    background: 'transparent',
+                    fontFamily: FONT.mono,
+                    fontSize: 10,
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                    color: STYX.silt,
+                    cursor: 'pointer',
+                  }}
+                >
+                  + Add custom chain
+                </button>
+              </div>
+            )}
+          </>
         )}
 
         {/* Custom entry form */}
