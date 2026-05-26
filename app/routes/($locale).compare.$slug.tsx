@@ -1,6 +1,6 @@
 import {type LoaderFunctionArgs, type MetaArgs} from 'react-router';
 import {useLoaderData, useRouteLoaderData} from 'react-router';
-import {getSeoMeta, Image} from '@shopify/hydrogen';
+import {getSeoMeta} from '@shopify/hydrogen';
 import {Link} from '~/components/Link';
 import {
   STYX,
@@ -9,7 +9,7 @@ import {
   StyxNav,
   StyxFooter,
 } from '~/components/styx';
-import {CompareButton} from '~/components/styx/CompareButton';
+import {WeighIn} from '~/components/styx/WeighIn';
 import {KARAT_PURITY} from '~/lib/gold';
 import {getComparisonBySlug, getRelatedComparisons} from '~/data/comparisons';
 import type {RootLoader} from '~/root';
@@ -143,39 +143,6 @@ export default function CuratedComparePage() {
     };
   });
 
-  const ROWS: Array<{label: string; render: (s: any) => string; alwaysShow?: boolean}> = [
-    {label: 'Price', render: (s) => s.minPrice === s.maxPrice ? `$${s.minPrice.toFixed(2)}` : `$${s.minPrice.toFixed(2)} – $${s.maxPrice.toFixed(2)}`, alwaysShow: true},
-    {label: 'Karat', render: (s) => `${s.karat}K`, alwaysShow: true},
-    {label: 'Total Weight', render: (s) => s.weight ? `${s.weight}g` : '—', alwaysShow: true},
-    {label: 'Pure Gold', render: (s) => s.pureGold ? `${s.pureGold.toFixed(2)}g` : '—', alwaysShow: true},
-    {label: 'Melt Value', render: (s) => s.meltValue ? `$${s.meltValue.toFixed(2)}` : '—', alwaysShow: true},
-    {label: 'Value %', render: (s) => s.valueScore ? `${s.valueScore.toFixed(0)}%` : '—', alwaysShow: true},
-    // Per-inch
-    {label: 'Weight/Inch', render: (s) => s.weightPerInch ? `${s.weightPerInch.toFixed(3)}g` : '—', alwaysShow: true},
-    {label: 'Gold/Inch', render: (s) => s.goldPerInch ? `${s.goldPerInch.toFixed(3)}g` : '—', alwaysShow: true},
-    {label: 'Price/Inch', render: (s) => s.pricePerInch ? `$${s.pricePerInch.toFixed(2)}` : '—', alwaysShow: true},
-    // Cost analysis
-    {label: 'Premium Over Melt', render: (s) => s.premiumOverMelt != null ? `$${s.premiumOverMelt.toFixed(2)}` : '—', alwaysShow: true},
-    {label: '$/g Pure Gold', render: (s) => s.pricePerPureGram ? `$${s.pricePerPureGram.toFixed(2)}` : '—', alwaysShow: true},
-    // Specs
-    {label: 'Thickness', render: (s) => s.thickness || '—'},
-    {label: 'Style', render: (s) => s.chainStyle || '—'},
-    {label: 'Construction', render: (s) => s.construction},
-    {label: 'Clasp', render: (s) => s.specClasp || '—'},
-    {label: 'Weave', render: (s) => s.specWeave || '—'},
-    {label: 'Profile', render: (s) => s.specProfile || '—'},
-    {label: 'Origin', render: (s) => s.origin || '—'},
-    {label: 'Lengths', render: (s) => s.lengths.length > 0 ? s.lengths.join(', ') : '—'},
-    {label: 'Colors', render: (s) => s.colors.length > 0 ? s.colors.join(', ') : '—'},
-  ];
-
-  const activeRows = ROWS.filter((row) =>
-    row.alwaysShow || specs.some((s: any) => row.render(s) !== '—'),
-  );
-
-  const valueScores = specs.map((s: any) => s.valueScore ?? 0);
-  const bestValueIdx = valueScores.indexOf(Math.max(...valueScores));
-
   return (
     <div style={{background: STYX.bone, minHeight: '100vh'}}>
       <GoldTicker />
@@ -201,75 +168,42 @@ export default function CuratedComparePage() {
           </p>
         </header>
 
-        {/* Comparison Table */}
-        <div style={{overflowX: 'auto', marginBottom: 56}}>
-          <table style={{width: '100%', borderCollapse: 'collapse'}}>
-            <thead>
-              <tr>
-                <th style={{width: 130}} />
-                {specs.map((s: any, idx: number) => (
-                  <th key={s.handle} style={{padding: '0 16px 24px', verticalAlign: 'bottom', textAlign: 'center'}}>
-                    {s.image && (
-                      <Link to={`/products/${s.handle}`} style={{textDecoration: 'none'}}>
-                        <div style={{width: '100%', maxWidth: 200, aspectRatio: '4/5', margin: '0 auto 16px', background: '#fff', overflow: 'hidden'}}>
-                          <Image data={s.image} aspectRatio="4/5" sizes="200px" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
-                        </div>
-                      </Link>
-                    )}
-                    <Link to={`/products/${s.handle}`} style={{textDecoration: 'none', fontFamily: FONT.cinzel, fontSize: 12, fontWeight: 500, letterSpacing: '0.06em', textTransform: 'uppercase', color: STYX.ink, display: 'block', marginBottom: 8}}>
-                      {s.title}
-                    </Link>
-
-                    {idx === bestValueIdx && specs.length > 1 && (
-                      <div style={{display: 'inline-block', padding: '4px 10px', background: 'rgba(184,146,74,0.12)', border: `1px solid ${STYX.gold}`, fontFamily: FONT.mono, fontSize: 8, letterSpacing: '0.12em', textTransform: 'uppercase', color: STYX.goldDeep, marginBottom: 8}}>
-                        Best Value
-                      </div>
-                    )}
-
-                    <div style={{marginTop: 4}}>
-                      <CompareButton handle={s.handle} compact />
-                    </div>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {activeRows.map((row, i) => (
-                <tr key={row.label} style={{background: i % 2 === 0 ? 'transparent' : 'rgba(26,24,21,0.02)'}}>
-                  <td style={{padding: '13px 16px', fontFamily: FONT.mono, fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: STYX.silt, whiteSpace: 'nowrap', borderBottom: `1px solid ${STYX.lineSoft}`}}>
-                    {row.label}
-                  </td>
-                  {specs.map((s: any, idx: number) => {
-                    const val = row.render(s);
-                    const allVals = specs.map((sp: any) => row.render(sp));
-                    const allSame = allVals.every((v: string) => v === allVals[0]);
-                    const isBest = row.label === 'Value Score' && idx === bestValueIdx && specs.length > 1;
-                    return (
-                      <td key={s.handle} style={{padding: '13px 16px', textAlign: 'center', fontFamily: FONT.inter, fontSize: 13, color: isBest ? STYX.goldDeep : val === '—' ? STYX.silt : STYX.ink, fontWeight: isBest ? 600 : !allSame && val !== '—' ? 500 : 400, borderBottom: `1px solid ${STYX.lineSoft}`}}>
-                        {val}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Value explanation */}
-        <div style={{padding: '20px 24px', border: `1px solid ${STYX.lineSoft}`, background: STYX.paper, marginBottom: 56}}>
-          <div style={{fontFamily: FONT.mono, fontSize: 9, letterSpacing: '0.1em', textTransform: 'uppercase', color: STYX.silt, marginBottom: 8}}>
-            How we calculate value
+        {/* WeighIn Component */}
+        {specs.length >= 2 && (
+          <div style={{marginBottom: 56}}>
+            <WeighIn
+              chainA={{
+                handle: specs[0].handle,
+                title: specs[0].title,
+                image: specs[0].image,
+                karat: specs[0].karat,
+                weight: specs[0].weight,
+                pureGold: specs[0].pureGold,
+                meltValue: specs[0].meltValue,
+                pricePerPureGram: specs[0].pricePerPureGram,
+                minPrice: specs[0].minPrice,
+                thickness: specs[0].thickness,
+                construction: specs[0].construction,
+                origin: specs[0].origin,
+              }}
+              chainB={{
+                handle: specs[1].handle,
+                title: specs[1].title,
+                image: specs[1].image,
+                karat: specs[1].karat,
+                weight: specs[1].weight,
+                pureGold: specs[1].pureGold,
+                meltValue: specs[1].meltValue,
+                pricePerPureGram: specs[1].pricePerPureGram,
+                minPrice: specs[1].minPrice,
+                thickness: specs[1].thickness,
+                construction: specs[1].construction,
+                origin: specs[1].origin,
+              }}
+              spotPerOz={spotPerOz}
+            />
           </div>
-          <div style={{fontFamily: FONT.inter, fontSize: 12, color: STYX.silt, lineHeight: 1.9}}>
-            <strong>Pure Gold</strong> = total weight x karat purity ({specs[0] && `${specs[0].karat}K = ${((KARAT_PURITY[specs[0].karat] ?? 0.417) * 100).toFixed(1)}% pure`}) &nbsp;|&nbsp;
-            <strong>Melt Value</strong> = pure gold x live spot price (${spotPerGram.toFixed(2)}/g today) &nbsp;|&nbsp;
-            <strong>Value %</strong> = melt value / price (higher = more gold for your money)<br/>
-            <strong>Gold/Inch</strong> = pure gold per inch of chain &nbsp;|&nbsp;
-            <strong>Weight/Inch</strong> = total weight per inch &nbsp;|&nbsp;
-            <strong>Premium</strong> = what you pay above raw gold value (craftsmanship + margin)
-          </div>
-        </div>
+        )}
 
         {/* FAQs with Schema */}
         {comparison.faqs.length > 0 && (

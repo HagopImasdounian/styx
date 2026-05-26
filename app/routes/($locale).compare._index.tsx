@@ -11,6 +11,7 @@ import {
   StyxFooter,
 } from '~/components/styx';
 import {CompareButton} from '~/components/styx/CompareButton';
+import {WeighIn} from '~/components/styx/WeighIn';
 import {KARAT_PURITY} from '~/lib/gold';
 import {CURATED_COMPARISONS} from '~/data/comparisons';
 import type {RootLoader} from '~/root';
@@ -432,8 +433,47 @@ export default function ComparePage() {
           </div>
         )}
 
-        {/* Comparison Table */}
-        <ComparisonTable specs={allSpecs} spotPerGram={spotPerGram} onRemoveCustom={removeCustomEntry} />
+        {/* WeighIn visual (2 products, no custom entries) */}
+        {productSpecs.length === 2 && customEntries.length === 0 && (
+          <div style={{marginBottom: 48}}>
+            <WeighIn
+              chainA={{
+                handle: productSpecs[0].handle!,
+                title: productSpecs[0].title,
+                image: productSpecs[0].image,
+                karat: productSpecs[0].karat,
+                weight: productSpecs[0].weight,
+                pureGold: productSpecs[0].pureGold,
+                meltValue: productSpecs[0].meltValue,
+                pricePerPureGram: productSpecs[0].pricePerPureGram,
+                minPrice: productSpecs[0].minPrice,
+                thickness: productSpecs[0].thickness,
+                construction: productSpecs[0].construction,
+                origin: productSpecs[0].origin,
+              }}
+              chainB={{
+                handle: productSpecs[1].handle!,
+                title: productSpecs[1].title,
+                image: productSpecs[1].image,
+                karat: productSpecs[1].karat,
+                weight: productSpecs[1].weight,
+                pureGold: productSpecs[1].pureGold,
+                meltValue: productSpecs[1].meltValue,
+                pricePerPureGram: productSpecs[1].pricePerPureGram,
+                minPrice: productSpecs[1].minPrice,
+                thickness: productSpecs[1].thickness,
+                construction: productSpecs[1].construction,
+                origin: productSpecs[1].origin,
+              }}
+              spotPerOz={spotPerOz}
+            />
+          </div>
+        )}
+
+        {/* Comparison Table (shown for 3-4 chains, or when custom entries mixed in) */}
+        {(allSpecs.length > 2 || customEntries.length > 0) && (
+          <ComparisonTable specs={allSpecs} spotPerGram={spotPerGram} onRemoveCustom={removeCustomEntry} />
+        )}
       </div>
 
       <StyxFooter />
