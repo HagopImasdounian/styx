@@ -11,7 +11,6 @@ import {
   StyxFooter,
 } from '~/components/styx';
 import {CompareButton} from '~/components/styx/CompareButton';
-import {WeighIn} from '~/components/styx/WeighIn';
 import {KARAT_PURITY} from '~/lib/gold';
 import {CURATED_COMPARISONS} from '~/data/comparisons';
 import type {RootLoader} from '~/root';
@@ -365,57 +364,53 @@ export default function ComparePage() {
       <GoldTicker />
       <StyxNav />
 
-      <div style={{maxWidth: 1440, margin: '0 auto', padding: productSpecs.length === 2 && customEntries.length === 0 ? '0 0 120px' : '48px 24px 120px'}}>
-        {/* Header — only show when NOT in WeighIn mode */}
-        {!(productSpecs.length === 2 && customEntries.length === 0) && (
-          <>
-            <div style={{marginBottom: 40, textAlign: 'center'}}>
-              <h1 style={{fontFamily: FONT.cinzel, fontSize: 28, fontWeight: 500, letterSpacing: '0.08em', color: STYX.ink, marginBottom: 8}}>
-                Chain Comparison
-              </h1>
-              <p style={{fontFamily: FONT.mono, fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: STYX.silt}}>
-                {allSpecs.length} chain{allSpecs.length !== 1 ? 's' : ''} compared
-              </p>
-            </div>
+      <div style={{maxWidth: 1440, margin: '0 auto', padding: '48px 24px 120px'}}>
+        {/* Header */}
+        <div style={{marginBottom: 40, textAlign: 'center'}}>
+          <h1 style={{fontFamily: FONT.cinzel, fontSize: 28, fontWeight: 500, letterSpacing: '0.08em', color: STYX.ink, marginBottom: 8}}>
+            Chain Comparison
+          </h1>
+          <p style={{fontFamily: FONT.mono, fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: STYX.silt}}>
+            {allSpecs.length} chain{allSpecs.length !== 1 ? 's' : ''} compared
+          </p>
+        </div>
 
-            {/* Add more controls */}
-            {canAddMore && (
-              <div style={{display: 'flex', gap: 12, justifyContent: 'center', marginBottom: 40, flexWrap: 'wrap'}}>
-                <Link
-                  to="/collections/chains"
-                  style={{
-                    padding: '10px 20px',
-                    border: `1px solid ${STYX.line}`,
-                    fontFamily: FONT.mono,
-                    fontSize: 10,
-                    letterSpacing: '0.1em',
-                    textTransform: 'uppercase',
-                    color: STYX.silt,
-                    textDecoration: 'none',
-                  }}
-                >
-                  + Add from catalog
-                </Link>
-                <button
-                  onClick={() => setShowCustomForm(true)}
-                  style={{
-                    padding: '10px 20px',
-                    border: `1px solid ${STYX.line}`,
-                    background: 'transparent',
-                    fontFamily: FONT.mono,
-                    fontSize: 10,
-                    letterSpacing: '0.1em',
-                    textTransform: 'uppercase',
-                    color: STYX.silt,
-                    cursor: 'pointer',
-                  }}
-                >
-                  + Add custom chain
+        {/* Add more controls */}
+        {canAddMore && (
+          <div style={{display: 'flex', gap: 12, justifyContent: 'center', marginBottom: 40, flexWrap: 'wrap'}}>
+            <Link
+              to="/collections/chains"
+              style={{
+                padding: '10px 20px',
+                border: `1px solid ${STYX.line}`,
+                fontFamily: FONT.mono,
+                fontSize: 10,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                color: STYX.silt,
+                textDecoration: 'none',
+              }}
+            >
+              + Add from catalog
+            </Link>
+            <button
+              onClick={() => setShowCustomForm(true)}
+              style={{
+                padding: '10px 20px',
+                border: `1px solid ${STYX.line}`,
+                background: 'transparent',
+                fontFamily: FONT.mono,
+                fontSize: 10,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                color: STYX.silt,
+                cursor: 'pointer',
+              }}
+            >
+              + Add custom chain
                 </button>
               </div>
             )}
-          </>
-        )}
 
         {/* Custom entry form */}
         {showCustomForm && (
@@ -437,47 +432,8 @@ export default function ComparePage() {
           </div>
         )}
 
-        {/* WeighIn visual (2 products, no custom entries) */}
-        {productSpecs.length === 2 && customEntries.length === 0 && (
-          <div style={{marginBottom: 48}}>
-            <WeighIn
-              chainA={{
-                handle: productSpecs[0].handle!,
-                title: productSpecs[0].title,
-                image: productSpecs[0].image,
-                karat: productSpecs[0].karat,
-                weight: productSpecs[0].weight,
-                pureGold: productSpecs[0].pureGold,
-                meltValue: productSpecs[0].meltValue,
-                pricePerPureGram: productSpecs[0].pricePerPureGram,
-                minPrice: productSpecs[0].minPrice,
-                thickness: productSpecs[0].thickness,
-                construction: productSpecs[0].construction,
-                origin: productSpecs[0].origin,
-              }}
-              chainB={{
-                handle: productSpecs[1].handle!,
-                title: productSpecs[1].title,
-                image: productSpecs[1].image,
-                karat: productSpecs[1].karat,
-                weight: productSpecs[1].weight,
-                pureGold: productSpecs[1].pureGold,
-                meltValue: productSpecs[1].meltValue,
-                pricePerPureGram: productSpecs[1].pricePerPureGram,
-                minPrice: productSpecs[1].minPrice,
-                thickness: productSpecs[1].thickness,
-                construction: productSpecs[1].construction,
-                origin: productSpecs[1].origin,
-              }}
-              spotPerOz={spotPerOz}
-            />
-          </div>
-        )}
-
-        {/* Comparison Table (shown for 3-4 chains, or when custom entries mixed in) */}
-        {(allSpecs.length > 2 || customEntries.length > 0) && (
-          <ComparisonTable specs={allSpecs} spotPerGram={spotPerGram} onRemoveCustom={removeCustomEntry} />
-        )}
+        {/* Comparison Table — always shown */}
+        <ComparisonTable specs={allSpecs} spotPerGram={spotPerGram} onRemoveCustom={removeCustomEntry} />
       </div>
 
       <StyxFooter />
