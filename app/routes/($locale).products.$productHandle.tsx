@@ -450,11 +450,6 @@ export default function Product() {
             </div>
           )}
 
-          {/* Compare Button */}
-          <div style={{marginBottom: 16}}>
-            <CompareButton handle={product.handle} />
-          </div>
-
           {/* Title */}
           <h1
             style={{
@@ -991,6 +986,11 @@ export default function Product() {
                   Make an Offer
                 </button>
               )}
+
+              {/* Compare Button */}
+              <div style={{marginTop: 16}}>
+                <CompareButton handle={product.handle} />
+              </div>
 
               {/* ── Divider ── */}
               <div style={{marginTop: 24, borderTop: `1px solid ${STYX.line}`, paddingTop: 20}} />
