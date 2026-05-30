@@ -312,7 +312,8 @@ export function useIsStyxPath() {
     p === '/faq' ||
     p === '/compare' ||
     p.startsWith('/compare/') ||
-    p === '/print-list'
+    p === '/print-list' ||
+    p === '/wishlist'
   );
 }
 

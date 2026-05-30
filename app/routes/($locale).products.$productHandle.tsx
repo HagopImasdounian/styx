@@ -49,6 +49,7 @@ import {
 } from '~/components/styx';
 import {CompareButton} from '~/components/styx/CompareButton';
 import {PrintListButton} from '~/components/styx/PrintListButton';
+import {useWishlist} from '~/context/WishlistContext';
 
 export const headers = routeHeaders;
 
@@ -144,6 +145,8 @@ export default function Product() {
   const {media, title, vendor, descriptionHtml} = product;
   const {shippingPolicy, refundPolicy} = shop;
   const [offerOpen, setOfferOpen] = useState(false);
+  const wishlist = useWishlist();
+  const wished = wishlist.has(product.handle);
 
   // Gold data from root loader
   const rootData = useRouteLoaderData<RootLoader>('root');
@@ -944,10 +947,12 @@ export default function Product() {
                 )}
                 {/* Wishlist Heart */}
                 <button
+                  type="button"
+                  onClick={() => wishlist.toggle(product.handle)}
                   style={{
                     width: 64,
-                    border: `1px solid ${STYX.line}`,
-                    background: 'transparent',
+                    border: `1px solid ${wished ? STYX.gold : STYX.line}`,
+                    background: wished ? 'rgba(184,146,74,0.10)' : 'transparent',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
@@ -955,14 +960,15 @@ export default function Product() {
                     flexShrink: 0,
                     transition: 'all 0.25s ease',
                   }}
-                  aria-label="Add to wishlist"
+                  aria-label={wished ? 'Remove from wishlist' : 'Add to wishlist'}
+                  title={wished ? 'Saved to wishlist' : 'Save to wishlist'}
                 >
                   <svg
                     width="22"
                     height="20"
                     viewBox="0 0 22 20"
-                    fill="none"
-                    stroke={STYX.ink}
+                    fill={wished ? STYX.gold : 'none'}
+                    stroke={wished ? STYX.gold : STYX.ink}
                     strokeWidth="1.5"
                   >
                     <path d="M11 18.5C11 18.5 1.5 13 1.5 6.5C1.5 3.46 3.96 1 7 1C8.8 1 10.37 1.89 11 3.18C11.63 1.89 13.2 1 15 1C18.04 1 20.5 3.46 20.5 6.5C20.5 13 11 18.5 11 18.5Z" />
@@ -1078,7 +1084,20 @@ export default function Product() {
               }}
               onClick={(e) => { if (e.target === e.currentTarget) setOfferOpen(false); }}
             >
+              <style dangerouslySetInnerHTML={{__html: `
+                @media (max-width: 600px) {
+                  .offer-card { padding: 20px 18px !important; max-height: 88vh !important; width: 94vw !important; }
+                  .offer-eyebrow { margin-bottom: 4px !important; }
+                  .offer-title { font-size: 15px !important; }
+                  .offer-head { margin-bottom: 14px !important; }
+                  .offer-details { padding: 11px 14px !important; margin-bottom: 14px !important; gap: 3px !important; }
+                  .offer-rules { font-size: 12px !important; margin-bottom: 14px !important; padding-bottom: 12px !important; }
+                  .offer-form { gap: 12px !important; }
+                  .offer-form input, .offer-form textarea { font-size: 16px !important; }
+                }
+              `}} />
               <div
+                className="offer-card"
                 style={{
                   background: STYX.bone,
                   maxWidth: 520,
@@ -1089,12 +1108,12 @@ export default function Product() {
                 }}
               >
                 {/* Header */}
-                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24}}>
+                <div className="offer-head" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24}}>
                   <div>
-                    <div style={{fontFamily: FONT.cinzel, fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: STYX.gold, marginBottom: 8}}>
+                    <div className="offer-eyebrow" style={{fontFamily: FONT.cinzel, fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: STYX.gold, marginBottom: 8}}>
                       Make an Offer
                     </div>
-                    <div style={{fontFamily: FONT.cinzel, fontSize: 20, fontWeight: 400, textTransform: 'uppercase', letterSpacing: '0.04em', color: STYX.ink}}>
+                    <div className="offer-title" style={{fontFamily: FONT.cinzel, fontSize: 20, fontWeight: 400, textTransform: 'uppercase', letterSpacing: '0.04em', color: STYX.ink}}>
                       {title}
                     </div>
                   </div>
@@ -1111,6 +1130,7 @@ export default function Product() {
 
                 {/* Product details (auto-filled) */}
                 <div
+                  className="offer-details"
                   style={{
                     background: STYX.paper,
                     padding: '16px 20px',
@@ -1136,6 +1156,7 @@ export default function Product() {
 
                 {/* Rules */}
                 <div
+                  className="offer-rules"
                   style={{
                     fontFamily: FONT.cormorant,
                     fontSize: 14,
@@ -1172,6 +1193,7 @@ export default function Product() {
                     alert('Your offer has been submitted. We will respond within 24 hours.');
                     setOfferOpen(false);
                   }}
+                  className="offer-form"
                   style={{display: 'flex', flexDirection: 'column', gap: 16}}
                 >
                   <div>

@@ -1,4 +1,4 @@
-import {createContext, useContext, useState, useEffect, useCallback} from 'react';
+import {createContext, useContext, useState, useEffect, useCallback, useRef} from 'react';
 
 const MAX_COMPARE = 4;
 const STORAGE_KEY = 'styx-compare';
@@ -35,8 +35,14 @@ export function CompareProvider({children}: {children: React.ReactNode}) {
     } catch {}
   }, []);
 
-  // Persist to localStorage on change
+  // Persist to localStorage on change. Skip the first run so the initial empty
+  // state doesn't clobber stored data before hydration completes.
+  const firstRun = useRef(true);
   useEffect(() => {
+    if (firstRun.current) {
+      firstRun.current = false;
+      return;
+    }
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(handles));
     } catch {}

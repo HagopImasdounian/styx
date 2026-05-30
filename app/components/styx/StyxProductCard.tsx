@@ -5,6 +5,7 @@ import {STYX, FONT} from './constants';
 import {PlaceholderImage} from './PlaceholderImage';
 import {CompareButton} from './CompareButton';
 import {PrintListButton} from './PrintListButton';
+import {WishlistButton} from './WishlistButton';
 
 type VariantNode = {
   id: string;
@@ -305,6 +306,7 @@ export function StyxProductCard({
         >
           <CompareButton handle={product.handle} compact />
           <PrintListButton handle={product.handle} compact />
+          <WishlistButton handle={product.handle} compact />
         </div>
       </div>
 

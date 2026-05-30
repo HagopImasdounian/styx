@@ -2,7 +2,7 @@ import {Link} from 'react-router';
 import {STYX, FONT, type CollectionNode} from './constants';
 
 /** Small inline icon for the Compare / Print footer links. */
-function FooterToolIcon({kind}: {kind: 'scale' | 'ruler'}) {
+function FooterToolIcon({kind}: {kind: 'scale' | 'ruler' | 'heart'}) {
   return (
     <svg
       width="14"
@@ -23,11 +23,13 @@ function FooterToolIcon({kind}: {kind: 'scale' | 'ruler'}) {
           <path d="M19 7l-3 9h6l-3-9z" />
           <path d="M5 7h14" />
         </>
-      ) : (
+      ) : kind === 'ruler' ? (
         <>
           <rect x="2" y="8" width="20" height="8" rx="1" />
           <path d="M6 8v3M10 8v4M14 8v3M18 8v4" />
         </>
+      ) : (
+        <path d="M12 20.5C12 20.5 3 14.5 3 8.2C3 5.3 5.3 3 8.1 3C9.8 3 11.3 3.9 12 5.2C12.7 3.9 14.2 3 15.9 3C18.7 3 21 5.3 21 8.2C21 14.5 12 20.5 12 20.5Z" />
       )}
     </svg>
   );
@@ -48,6 +50,7 @@ export function StyxFooter({collections = []}: {collections?: CollectionNode[]})
         {label: 'All Collections', to: '/collections'},
         {label: 'Compare Chains', to: '/compare', icon: 'scale' as const},
         {label: 'Print to Scale', to: '/print-list', icon: 'ruler' as const},
+        {label: 'Wishlist', to: '/wishlist', icon: 'heart' as const},
       ],
     },
     {
@@ -140,7 +143,7 @@ export function StyxFooter({collections = []}: {collections?: CollectionNode[]})
               {col.heading}
             </div>
             {col.links.map((link) => {
-              const icon = (link as {icon?: 'scale' | 'ruler'}).icon;
+              const icon = (link as {icon?: 'scale' | 'ruler' | 'heart'}).icon;
               return (
                 <Link
                   key={link.label}

@@ -14,6 +14,7 @@ import {Drawer, useDrawer} from '~/components/Drawer';
 import {useIsHydrated} from '~/hooks/useIsHydrated';
 import {useCartFetchers} from '~/hooks/useCartFetchers';
 import {usePrintList} from '~/context/PrintListContext';
+import {useWishlist} from '~/context/WishlistContext';
 import type {RootLoader} from '~/root';
 
 /* ═══════════════════════════════════════════════════════════════
@@ -86,6 +87,21 @@ function RulerIcon() {
   );
 }
 
+function HeartIcon() {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.4"
+    >
+      <path d="M12 20.5C12 20.5 3 14.5 3 8.2C3 5.3 5.3 3 8.1 3C9.8 3 11.3 3.9 12 5.2C12.7 3.9 14.2 3 15.9 3C18.7 3 21 5.3 21 8.2C21 14.5 12 20.5 12 20.5Z" />
+    </svg>
+  );
+}
+
 /** Print-to-scale list entry point: ruler icon + count badge. */
 function PrintListNavIcon() {
   const {handles} = usePrintList();
@@ -111,6 +127,58 @@ function PrintListNavIcon() {
       }}
     >
       <RulerIcon />
+      {count > 0 && (
+        <span
+          style={{
+            position: 'absolute',
+            top: -4,
+            right: -4,
+            minWidth: 14,
+            height: 14,
+            padding: '0 3px',
+            borderRadius: 7,
+            background: STYX.gold,
+            color: STYX.ink,
+            fontFamily: FONT.mono,
+            fontSize: 8,
+            fontWeight: 600,
+            lineHeight: '14px',
+            textAlign: 'center',
+            boxSizing: 'border-box',
+          }}
+        >
+          {count}
+        </span>
+      )}
+    </Link>
+  );
+}
+
+/** Wishlist entry point: heart icon + count badge. */
+function WishlistNavIcon() {
+  const {handles} = useWishlist();
+  const params = useParams();
+  const count = handles.length;
+  const to =
+    (params.locale ? `/${params.locale}` : '') +
+    '/wishlist' +
+    (count > 0 ? `?products=${handles.join(',')}` : '');
+
+  return (
+    <Link
+      to={to}
+      title="Wishlist"
+      aria-label="Wishlist"
+      style={{
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'center',
+        padding: 4,
+        color: 'inherit',
+        textDecoration: 'none',
+      }}
+    >
+      <HeartIcon />
       {count > 0 && (
         <span
           style={{
@@ -2062,6 +2130,7 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
                 <SearchIcon />
               </button>
             </Form>
+            <WishlistNavIcon />
             <PrintListNavIcon />
             <CartCount openCart={openCart} />
             {/* Mobile hamburger — hidden on desktop via CSS */}
