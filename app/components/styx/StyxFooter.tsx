@@ -14,6 +14,7 @@ export function StyxFooter({collections = []}: {collections?: CollectionNode[]})
       links: [
         ...shopLinks,
         {label: 'All Collections', to: '/collections'},
+        {label: 'Print to Scale', to: '/print-list'},
       ],
     },
     {

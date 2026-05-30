@@ -4,6 +4,7 @@ import {Link} from 'react-router';
 import {STYX, FONT} from './constants';
 import {PlaceholderImage} from './PlaceholderImage';
 import {CompareButton} from './CompareButton';
+import {PrintListButton} from './PrintListButton';
 
 type VariantNode = {
   id: string;
@@ -290,17 +291,20 @@ export function StyxProductCard({
           }}
         />
 
-        {/* Compare button — top right */}
+        {/* Compare + print-size buttons — top right */}
         <div
           style={{
             position: 'absolute',
             top: 8,
             right: 8,
+            display: 'flex',
+            gap: 4,
             opacity: isHovered ? 1 : 0.6,
             transition: 'opacity 0.3s ease',
           }}
         >
           <CompareButton handle={product.handle} compact />
+          <PrintListButton handle={product.handle} compact />
         </div>
       </div>
 

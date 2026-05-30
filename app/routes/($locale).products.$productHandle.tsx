@@ -48,6 +48,7 @@ import {
   Obol,
 } from '~/components/styx';
 import {CompareButton} from '~/components/styx/CompareButton';
+import {PrintListButton} from '~/components/styx/PrintListButton';
 
 export const headers = routeHeaders;
 
@@ -449,6 +450,12 @@ export default function Product() {
               {chainOrigin}{romanNumeral ? ` · ${romanNumeral}` : ''}
             </div>
           )}
+
+          {/* Compare + Print-size buttons (top) */}
+          <div style={{marginBottom: 16, display: 'flex', gap: 8, flexWrap: 'wrap'}}>
+            <CompareButton handle={product.handle} />
+            <PrintListButton handle={product.handle} />
+          </div>
 
           {/* Title */}
           <h1
@@ -987,9 +994,10 @@ export default function Product() {
                 </button>
               )}
 
-              {/* Compare Button */}
-              <div style={{marginTop: 16}}>
+              {/* Compare + Print-size buttons */}
+              <div style={{marginTop: 16, display: 'flex', gap: 8, flexWrap: 'wrap'}}>
                 <CompareButton handle={product.handle} />
+                <PrintListButton handle={product.handle} />
               </div>
 
               {/* ── Divider ── */}

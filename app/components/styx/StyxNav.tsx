@@ -13,6 +13,7 @@ import {CartLoading} from '~/components/CartLoading';
 import {Drawer, useDrawer} from '~/components/Drawer';
 import {useIsHydrated} from '~/hooks/useIsHydrated';
 import {useCartFetchers} from '~/hooks/useCartFetchers';
+import {usePrintList} from '~/context/PrintListContext';
 import type {RootLoader} from '~/root';
 
 /* ═══════════════════════════════════════════════════════════════
@@ -64,6 +65,76 @@ function BagIcon() {
       <path d="M5 8h14l-1 13H6L5 8z" />
       <path d="M9 8V6a3 3 0 0 1 6 0v2" />
     </svg>
+  );
+}
+
+function RulerIcon() {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="2" y="8" width="20" height="8" rx="1" />
+      <path d="M6 8v3M10 8v4M14 8v3M18 8v4" />
+    </svg>
+  );
+}
+
+/** Print-to-scale list entry point: ruler icon + count badge. */
+function PrintListNavIcon() {
+  const {handles} = usePrintList();
+  const params = useParams();
+  const count = handles.length;
+  const to =
+    (params.locale ? `/${params.locale}` : '') +
+    '/print-list' +
+    (count > 0 ? `?products=${handles.join(',')}` : '');
+
+  return (
+    <Link
+      to={to}
+      title="Print to scale"
+      aria-label="Print to scale list"
+      style={{
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'center',
+        padding: 4,
+        color: 'inherit',
+        textDecoration: 'none',
+      }}
+    >
+      <RulerIcon />
+      {count > 0 && (
+        <span
+          style={{
+            position: 'absolute',
+            top: -4,
+            right: -4,
+            minWidth: 14,
+            height: 14,
+            padding: '0 3px',
+            borderRadius: 7,
+            background: STYX.gold,
+            color: STYX.ink,
+            fontFamily: FONT.mono,
+            fontSize: 8,
+            fontWeight: 600,
+            lineHeight: '14px',
+            textAlign: 'center',
+            boxSizing: 'border-box',
+          }}
+        >
+          {count}
+        </span>
+      )}
+    </Link>
   );
 }
 
@@ -1991,6 +2062,7 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
                 <SearchIcon />
               </button>
             </Form>
+            <PrintListNavIcon />
             <CartCount openCart={openCart} />
             {/* Mobile hamburger — hidden on desktop via CSS */}
             <button

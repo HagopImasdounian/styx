@@ -386,6 +386,36 @@ export default function ComparePage() {
           <p style={{fontFamily: FONT.mono, fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: STYX.silt}}>
             {allSpecs.length} chain{allSpecs.length !== 1 ? 's' : ''} compared
           </p>
+
+          {/* Jump to print-to-scale with the compared products */}
+          {products.length > 0 && (
+            <Link
+              to={`/print-list?products=${products.map((p: any) => p.handle).join(',')}`}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                marginTop: 18,
+                padding: '11px 22px',
+                border: `1px solid ${STYX.gold}`,
+                background: 'rgba(184,146,74,0.08)',
+                color: STYX.goldDeep,
+                fontFamily: FONT.cinzel,
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
+                textDecoration: 'none',
+              }}
+            >
+              {/* ruler icon */}
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="8" width="20" height="8" rx="1" />
+                <path d="M6 8v3M10 8v4M14 8v3M18 8v4" />
+              </svg>
+              Print these to scale
+            </Link>
+          )}
         </div>
 
         {/* Add more controls */}

@@ -22,7 +22,35 @@ export default async function handleRequest(
       'https://shopify.com',
       'https://www.google-analytics.com',
       'https://www.googletagmanager.com',
+      'https://tagmanager.google.com',
       ...(process.env.NODE_ENV !== 'production' ? ['http://localhost:*'] : []),
+    ],
+    imgSrc: [
+      "'self'",
+      'https://cdn.shopify.com',
+      'https://www.googletagmanager.com',
+      'https://www.google-analytics.com',
+      'https://*.google-analytics.com',
+      'https://*.googletagmanager.com',
+      'data:',
+    ],
+    connectSrc: [
+      'self',
+      'https://www.google-analytics.com',
+      'https://*.google-analytics.com',
+      'https://*.analytics.google.com',
+      'https://*.googletagmanager.com',
+      'https://cdn.shopify.com',
+    ],
+    frameSrc: [
+      'self',
+      'https://www.googletagmanager.com',
+    ],
+    styleSrc: [
+      'self',
+      'https://tagmanager.google.com',
+      'https://fonts.googleapis.com',
+      "'unsafe-inline'",
     ],
   });
 

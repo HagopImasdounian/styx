@@ -2,6 +2,7 @@ import {Image} from '@shopify/hydrogen';
 import {Link} from 'react-router';
 import {STYX, FONT} from './constants';
 import {Obol} from './Obol';
+import {PrintListButton} from './PrintListButton';
 import {KARAT_PURITY} from '~/lib/gold';
 
 export type WeighInChain = {
@@ -99,7 +100,7 @@ export function WeighIn({
   const rows: Row[] = [
     {
       num: ROMAN[0], label: 'Your Toll', sub: 'retail price, today\'s fix',
-      render: (c) => <span>{c.minPrice === c.maxPrice ? `$${c.minPrice.toLocaleString()}` : `$${c.minPrice.toLocaleString()} – $${c.maxPrice.toLocaleString()}`}</span>,
+      render: (c) => <span>${c.minPrice.toLocaleString()}</span>,
       winIdx: cheapestIdx, winTag: 'less', alwaysShow: true,
     },
     {
@@ -378,6 +379,11 @@ function ChainColumn({chain, shortName, onRemove}: {chain: WeighInChain; shortNa
           {chain.construction !== '—' && <span>{chain.construction}</span>}
           {chain.origin && <span> · {chain.origin}</span>}
         </div>
+        {chain.type === 'product' && chain.handle && (
+          <div style={{marginTop: 8}}>
+            <PrintListButton handle={chain.handle} compact />
+          </div>
+        )}
         {onRemove && (
           <button onClick={onRemove} style={{marginTop: 8, padding: '4px 10px', border: `1px solid ${STYX.line}`, background: 'transparent', fontFamily: FONT.mono, fontSize: 8, color: STYX.silt, cursor: 'pointer', letterSpacing: '0.1em', textTransform: 'uppercase'}}>
             Remove

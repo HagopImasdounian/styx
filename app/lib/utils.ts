@@ -311,7 +311,8 @@ export function useIsStyxPath() {
     p === '/terms' ||
     p === '/faq' ||
     p === '/compare' ||
-    p.startsWith('/compare/')
+    p.startsWith('/compare/') ||
+    p === '/print-list'
   );
 }
 
