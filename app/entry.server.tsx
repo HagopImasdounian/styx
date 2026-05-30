@@ -17,7 +17,7 @@ export default async function handleRequest(
       storeDomain: context.env.PUBLIC_STORE_DOMAIN,
     },
     scriptSrc: [
-      'self',
+      "'self'",
       'https://cdn.shopify.com',
       'https://shopify.com',
       'https://www.google-analytics.com',
@@ -35,7 +35,7 @@ export default async function handleRequest(
       'data:',
     ],
     connectSrc: [
-      'self',
+      "'self'",
       'https://www.google-analytics.com',
       'https://*.google-analytics.com',
       'https://*.analytics.google.com',
@@ -43,11 +43,11 @@ export default async function handleRequest(
       'https://cdn.shopify.com',
     ],
     frameSrc: [
-      'self',
+      "'self'",
       'https://www.googletagmanager.com',
     ],
     styleSrc: [
-      'self',
+      "'self'",
       'https://tagmanager.google.com',
       'https://fonts.googleapis.com',
       "'unsafe-inline'",

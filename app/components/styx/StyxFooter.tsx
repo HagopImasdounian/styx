@@ -1,6 +1,38 @@
 import {Link} from 'react-router';
 import {STYX, FONT, type CollectionNode} from './constants';
 
+/** Small inline icon for the Compare / Print footer links. */
+function FooterToolIcon({kind}: {kind: 'scale' | 'ruler'}) {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      style={{flexShrink: 0}}
+      aria-hidden="true"
+    >
+      {kind === 'scale' ? (
+        <>
+          <path d="M12 3v18" />
+          <path d="M5 7l-3 9h6L5 7z" />
+          <path d="M19 7l-3 9h6l-3-9z" />
+          <path d="M5 7h14" />
+        </>
+      ) : (
+        <>
+          <rect x="2" y="8" width="20" height="8" rx="1" />
+          <path d="M6 8v3M10 8v4M14 8v3M18 8v4" />
+        </>
+      )}
+    </svg>
+  );
+}
+
 export function StyxFooter({collections = []}: {collections?: CollectionNode[]}) {
   // Build "Shop" column dynamically from collections
   const shopLinks = collections
@@ -14,7 +46,8 @@ export function StyxFooter({collections = []}: {collections?: CollectionNode[]})
       links: [
         ...shopLinks,
         {label: 'All Collections', to: '/collections'},
-        {label: 'Print to Scale', to: '/print-list'},
+        {label: 'Compare Chains', to: '/compare', icon: 'scale' as const},
+        {label: 'Print to Scale', to: '/print-list', icon: 'ruler' as const},
       ],
     },
     {
@@ -106,22 +139,26 @@ export function StyxFooter({collections = []}: {collections?: CollectionNode[]})
             >
               {col.heading}
             </div>
-            {col.links.map((link) => (
-              <Link
-                key={link.label}
-                to={link.to}
-                prefetch="intent"
-                style={linkStyle}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = 'rgba(255,255,255,0.8)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = 'rgba(255,255,255,0.5)';
-                }}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {col.links.map((link) => {
+              const icon = (link as {icon?: 'scale' | 'ruler'}).icon;
+              return (
+                <Link
+                  key={link.label}
+                  to={link.to}
+                  prefetch="intent"
+                  style={icon ? {...linkStyle, display: 'flex', alignItems: 'center', gap: 7} : linkStyle}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = 'rgba(255,255,255,0.8)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = 'rgba(255,255,255,0.5)';
+                  }}
+                >
+                  {icon && <FooterToolIcon kind={icon} />}
+                  {link.label}
+                </Link>
+              );
+            })}
           </div>
         ))}
       </div>

@@ -312,7 +312,7 @@ export default function PrintListPage() {
           </div>
           <ol style={{margin: 0, paddingLeft: 18, fontFamily: FONT.inter, fontSize: 13, color: STYX.silt, lineHeight: 1.7}}>
             <li>In the print dialog set <strong>Scale</strong> to <strong>100%</strong> (“Actual Size”). Do <strong>not</strong> use “Fit to page”.</li>
-            <li>Lay a ruler along the <strong>cm / inch ruler</strong> at the bottom — and check the <strong>5&nbsp;cm</strong> and <strong>2&nbsp;in</strong> bars. If they’re off, adjust the scale and reprint.</li>
+            <li>Lay a ruler along the <strong>cm / inch ruler</strong> at the bottom — <strong>10&nbsp;cm</strong> and <strong>4&nbsp;in</strong> should line up exactly with the notches. If they’re off, adjust the scale and reprint.</li>
           </ol>
         </div>
 
@@ -436,10 +436,10 @@ export default function PrintListPage() {
 
         {/* ───── The printable sheet (also shown on screen, actual size) ───── */}
         <div className="pl-no-print" style={{fontFamily: FONT.mono, fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase', color: STYX.silt, textAlign: 'center', marginBottom: 10}}>
-          Preview — shown at actual size
+          Preview — shown at actual size (scroll sideways on small screens)
         </div>
 
-        <div className="pl-sheet">
+        <div className="pl-sheet-scroll"><div className="pl-sheet">
           {/* Branded header */}
           <div className="pl-head">
             <img className="pl-logo" src={STYX_PRINT_LOGO} alt="STYX" />
@@ -494,7 +494,7 @@ export default function PrintListPage() {
 
           {/* Dual ruler — lay a physical ruler here to verify scale */}
           <div className="pl-ruler-block">
-            <div className="pl-ruler-label">↓ Lay a ruler along these lines to confirm true scale</div>
+            <div className="pl-ruler-label">↓ Lay a ruler along the notches — 10&nbsp;cm and 4&nbsp;in should line up exactly. If not, reprint at 100%.</div>
 
             {/* Centimeters */}
             <div className="pl-ruler pl-ruler-cm">
@@ -531,24 +531,12 @@ export default function PrintListPage() {
             </div>
           </div>
 
-          {/* Calibration check bars */}
-          <div className="pl-checks">
-            <div className="pl-check">
-              <div className="pl-check-bar" style={{width: '50mm'}} />
-              <span className="pl-check-text">should be exactly <strong>5&nbsp;cm</strong></span>
-            </div>
-            <div className="pl-check">
-              <div className="pl-check-bar" style={{width: '50.8mm'}} />
-              <span className="pl-check-text">should be exactly <strong>2&nbsp;in</strong></span>
-            </div>
-          </div>
-
           {/* Branded footer */}
           <div className="pl-foot">
             <span>Solid gold, every weight in the open — {SITE_URL}</span>
             <span>STYX</span>
           </div>
-        </div>
+        </div></div>
       </div>
 
       <div className="pl-no-print">
@@ -609,8 +597,8 @@ const PRINT_CSS = `
 .pl-subhead-title { font-family: 'Cormorant Garamond', serif; font-size: 13pt; color: #4A443B; }
 .pl-subhead-note { font-family: 'JetBrains Mono', monospace; font-size: 7.5pt; color: #6B6459; text-transform: uppercase; letter-spacing: 0.1em; }
 
-.pl-row { display: flex; align-items: flex-end; gap: 14mm; flex-wrap: wrap; margin-bottom: 10mm; }
-.pl-col { display: flex; flex-direction: column; align-items: center; }
+.pl-row { display: flex; align-items: flex-end; gap: 9mm; flex-wrap: wrap; margin-bottom: 10mm; }
+.pl-col { display: flex; flex-direction: column; align-items: center; width: 33mm; }
 .pl-visual { display: flex; align-items: flex-end; justify-content: center; height: 60mm; margin-bottom: 3mm; }
 .pl-bar {
   height: 55mm;
@@ -634,19 +622,14 @@ const PRINT_CSS = `
 
 .pl-ruler-block { margin-top: 6mm; }
 .pl-ruler-label { font-family: 'JetBrains Mono', monospace; font-size: 7pt; color: #6B6459; margin-bottom: 3mm; letter-spacing: 0.06em; }
-.pl-ruler { position: relative; width: 101.6mm; height: 9mm; border-bottom: 0.3mm solid #1a1815; margin-bottom: 7mm; }
-.pl-ruler-in { margin-top: 2mm; }
-.pl-tick { position: absolute; bottom: 0; width: 0.2mm; height: 1.6mm; background: #1a1815; }
-.pl-tick-sm { height: 2.6mm; }
-.pl-tick-md { height: 3.6mm; }
-.pl-tick-lg { height: 5.2mm; width: 0.3mm; }
-.pl-num { position: absolute; bottom: 5.4mm; transform: translateX(-50%); font-family: 'JetBrains Mono', monospace; font-size: 7pt; }
+.pl-ruler { position: relative; width: 101.6mm; max-width: 100%; height: 10mm; border-bottom: 0.4mm solid #1a1815; margin-bottom: 9mm; }
+.pl-ruler-in { margin-top: 3mm; }
+.pl-tick { position: absolute; bottom: 0; width: 0.25mm; height: 2.2mm; background: #1a1815; }
+.pl-tick-sm { height: 3.2mm; }
+.pl-tick-md { height: 4.4mm; }
+.pl-tick-lg { height: 6mm; width: 0.4mm; }
+.pl-num { position: absolute; bottom: 6.2mm; transform: translateX(-50%); font-family: 'JetBrains Mono', monospace; font-size: 7pt; }
 .pl-unit { position: absolute; right: -7mm; bottom: 0.5mm; font-family: 'JetBrains Mono', monospace; font-size: 6.5pt; color: #6B6459; }
-
-.pl-checks { display: flex; gap: 14mm; flex-wrap: wrap; margin-top: 2mm; }
-.pl-check { display: flex; align-items: center; gap: 3mm; }
-.pl-check-bar { height: 2.5mm; background: #1a1815; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-.pl-check-text { font-family: 'Inter', sans-serif; font-size: 7.5pt; color: #4A443B; }
 
 .pl-foot {
   display: flex; justify-content: space-between; align-items: baseline;
@@ -655,12 +638,25 @@ const PRINT_CSS = `
   letter-spacing: 0.08em;
 }
 
+/* Mobile: the A4 sheet preview is wider than the screen — let it scroll
+   sideways (true size preserved) instead of overflowing the page. */
+@media screen and (max-width: 760px) {
+  .pl-shell { padding: 28px 14px 96px !important; }
+  .pl-sheet-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 10px;
+  }
+  .pl-sheet { margin: 0; min-width: 186mm; box-shadow: none; }
+}
+
 @media print {
   @page { size: A4 portrait; margin: 12mm; }
   html, body { background: #fff !important; }
   .pl-no-print { display: none !important; }
   .pl-shell { max-width: none !important; padding: 0 !important; margin: 0 !important; }
-  .pl-sheet { border: none !important; box-shadow: none !important; max-width: none !important; padding: 0 !important; }
+  .pl-sheet-scroll { overflow: visible !important; }
+  .pl-sheet { border: none !important; box-shadow: none !important; max-width: none !important; min-width: 0 !important; padding: 0 !important; }
 }
 `;
 
