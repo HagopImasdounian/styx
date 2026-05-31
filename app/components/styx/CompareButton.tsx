@@ -3,13 +3,16 @@ import {STYX, FONT} from './constants';
 
 export function CompareButton({
   handle,
+  length = null,
   compact = false,
 }: {
   handle: string;
+  /** Price-affecting variant length (e.g. "18\""). Distinguishes variants of the same chain. */
+  length?: string | null;
   compact?: boolean;
 }) {
   const {add, remove, has, isFull} = useCompare();
-  const isActive = has(handle);
+  const isActive = has(handle, length);
 
   return (
     <button
@@ -18,9 +21,9 @@ export function CompareButton({
         e.preventDefault();
         e.stopPropagation();
         if (isActive) {
-          remove(handle);
+          remove(handle, length);
         } else if (!isFull) {
-          add(handle);
+          add(handle, length);
         }
       }}
       title={isActive ? 'Remove from comparison' : isFull ? 'Compare list full (4 max)' : 'Add to compare'}

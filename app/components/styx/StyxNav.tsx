@@ -224,6 +224,10 @@ const CHAIN_IMAGE_MAP: Record<string, string> = {
   'wheat': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-wheat.png?v=1779151450',
   'rolo': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-rolo.png?v=1779151429',
   'singapore': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-singapore.png?v=1779151442',
+  'paperclip': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-paperclip.png?v=1780167387',
+  'franco': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-franco.png?v=1780167769',
+  'herringbone': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-herringbone.png?v=1780167770',
+  'snake': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-snake.png?v=1780167771',
 };
 
 const CHAIN_TAXONOMY: ChainGroup[] = [
@@ -1875,7 +1879,7 @@ function AnnouncementBar() {
       }}
     >
       <span style={{opacity: 0.5, marginRight: 10}}>&mdash;</span>
-      Launch Offer: Free 1g of 24K Gold with Every Order Over $1,500
+      Launch Offer: Free 1g of 24K Gold with Every Order Over $2,000
       <span style={{opacity: 0.5, marginLeft: 10}}>&mdash;</span>
       <button
         onClick={() => setDismissed(true)}

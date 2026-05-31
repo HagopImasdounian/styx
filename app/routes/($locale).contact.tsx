@@ -1,6 +1,7 @@
 import {useState} from 'react';
 import {type MetaFunction} from 'react-router';
 import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel} from '~/components/styx';
+import {trackFormSubmit} from '~/components/GTMDataLayer';
 
 export const meta: MetaFunction = () => {
   return [{title: 'Contact — STYX'}, {name: 'description', content: 'Get in touch with Styx Gold. Questions about chains, pricing, custom orders, or anything else.'}];
@@ -8,6 +9,45 @@ export const meta: MetaFunction = () => {
 
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setError('');
+
+    const form = e.currentTarget;
+    const data = {
+      formId: 'contact',
+      formName: 'contact',
+      name: (form.elements.namedItem('name') as HTMLInputElement).value,
+      email: (form.elements.namedItem('email') as HTMLInputElement).value,
+      subject: (form.elements.namedItem('subject') as HTMLSelectElement).value,
+      message: (form.elements.namedItem('message') as HTMLTextAreaElement).value,
+    };
+
+    try {
+      await fetch('/api/form-submit', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data),
+      });
+
+      trackFormSubmit({
+        formId: 'contact',
+        formName: 'contact',
+        email: data.email,
+        name: data.name,
+      });
+
+      setSubmitted(true);
+    } catch {
+      setError('Something went wrong. Please try again or email us directly.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <div style={{background: STYX.bone, minHeight: '100vh'}}>
@@ -234,10 +274,7 @@ export default function Contact() {
             </div>
           ) : (
             <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                setSubmitted(true);
-              }}
+              onSubmit={handleSubmit}
               style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -379,23 +416,36 @@ export default function Contact() {
                 />
               </div>
 
+              {error && (
+                <p style={{
+                  fontFamily: FONT.inter,
+                  fontSize: 14,
+                  color: '#c0392b',
+                  margin: 0,
+                }}>
+                  {error}
+                </p>
+              )}
+
               <button
                 type="submit"
+                disabled={submitting}
                 style={{
                   width: '100%',
                   padding: '18px 24px',
-                  background: STYX.ink,
+                  background: submitting ? STYX.graphite : STYX.ink,
                   color: STYX.bone,
                   fontFamily: FONT.cinzel,
                   fontSize: 12,
                   letterSpacing: '0.25em',
                   textTransform: 'uppercase',
                   border: 'none',
-                  cursor: 'pointer',
+                  cursor: submitting ? 'wait' : 'pointer',
                   marginTop: 8,
+                  opacity: submitting ? 0.7 : 1,
                 }}
               >
-                Send Message
+                {submitting ? 'Sending...' : 'Send Message'}
               </button>
             </form>
           )}

@@ -29,6 +29,10 @@ declare global {
     PUBLIC_CUSTOMER_ACCOUNT_API_URL: string;
     PUBLIC_CHECKOUT_DOMAIN: string;
     SHOP_ID: string;
+    RESEND_API_KEY: string;
+    FORM_WEBHOOK_URL: string;
+    FORM_NOTIFY_EMAIL: string;
+    OWNER_EMAIL: string;
   }
 }
 

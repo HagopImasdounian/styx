@@ -2,6 +2,7 @@ import {useState} from 'react';
 import {STYX, FONT} from './constants';
 import {StyxLabel} from './StyxLabel';
 import {Obol} from './Obol';
+import {trackFormSubmit} from '~/components/GTMDataLayer';
 
 export function Newsletter() {
   const [firstName, setFirstName] = useState('');
@@ -12,9 +13,46 @@ export function Newsletter() {
   const [smsOptIn, setSmsOptIn] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email && firstName) setSubmitted(true);
+    if (!email || !firstName) return;
+    setSubmitting(true);
+
+    try {
+      await fetch('/api/form-submit', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          formId: 'newsletter',
+          formName: 'newsletter',
+          name: [firstName, lastName].filter(Boolean).join(' '),
+          email,
+          phone: phone || undefined,
+          fields: {
+            firstName,
+            lastName,
+            emailOptIn,
+            smsOptIn,
+          },
+        }),
+      });
+
+      trackFormSubmit({
+        formId: 'newsletter',
+        formName: 'newsletter',
+        email,
+        name: firstName,
+      });
+
+      setSubmitted(true);
+    } catch {
+      // Still show success — webhook/email failure shouldn't block UX
+      setSubmitted(true);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const inputStyle: React.CSSProperties = {
@@ -216,9 +254,10 @@ export function Newsletter() {
           {/* Submit */}
           <button
             type="submit"
+            disabled={submitting}
             style={{
               marginTop: 32,
-              background: STYX.ink,
+              background: submitting ? STYX.graphite : STYX.ink,
               border: 'none',
               fontFamily: FONT.cinzel,
               fontSize: 11,
@@ -226,17 +265,18 @@ export function Newsletter() {
               textTransform: 'uppercase',
               color: STYX.bone,
               padding: '16px 48px',
-              cursor: 'pointer',
+              cursor: submitting ? 'wait' : 'pointer',
               transition: 'background 0.2s ease',
+              opacity: submitting ? 0.7 : 1,
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = STYX.graphite;
+              if (!submitting) e.currentTarget.style.background = STYX.graphite;
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = STYX.ink;
+              if (!submitting) e.currentTarget.style.background = STYX.ink;
             }}
           >
-            Subscribe
+            {submitting ? 'Subscribing...' : 'Subscribe'}
           </button>
         </form>
       )}

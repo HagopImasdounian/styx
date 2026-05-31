@@ -45,8 +45,10 @@ import {
   StyxLabel,
   CTAButton,
   StyxProductCard,
+  RecommendedProducts,
   Obol,
 } from '~/components/styx';
+import type {CrossSellProduct} from '~/components/styx';
 import {CompareButton} from '~/components/styx/CompareButton';
 import {PrintListButton} from '~/components/styx/PrintListButton';
 import {useWishlist} from '~/context/WishlistContext';
@@ -102,6 +104,10 @@ async function loadCriticalData({
     (c: any) => !excludeCollections.has(c.handle),
   );
   const recommended = getRecommendedProducts(context.storefront, product.id, chainCollection?.handle);
+
+  // Cross-sell: nearest same-style/construction pieces + matching bracelet/necklace
+  const crossSell = await getCrossSellProducts(context.storefront, product);
+
   const selectedVariant = product.selectedOrFirstAvailableVariant ?? {};
   const variants = getAdjacentAndFirstAvailableVariants(product);
 
@@ -117,6 +123,7 @@ async function loadCriticalData({
     shop,
     storeDomain: shop.primaryDomain.url,
     recommended,
+    crossSell,
     seo,
   };
 }
@@ -140,7 +147,7 @@ export const meta = ({matches}: MetaArgs<typeof loader>) => {
 /* ─────────────────────────── Main Product Page ─────────────────────────── */
 
 export default function Product() {
-  const {product, shop, recommended, variants} =
+  const {product, shop, recommended, crossSell, variants} =
     useLoaderData<typeof loader>();
   const {media, title, vendor, descriptionHtml} = product;
   const {shippingPolicy, refundPolicy} = shop;
@@ -253,6 +260,12 @@ export default function Product() {
     (o: any) => o.name.toLowerCase() === 'color',
   );
   const selectedColor = colorOption?.value || null;
+
+  // Detect length (the price-affecting option) for variant-aware comparison
+  const lengthOption = selectedVariant?.selectedOptions?.find(
+    (o: any) => o.name.toLowerCase() === 'length',
+  );
+  const selectedLength = lengthOption?.value || null;
 
   // Compute gold transparency breakdown (only when we have weight)
   const hasTransparency = weightGrams !== null && weightGrams > 0;
@@ -456,7 +469,7 @@ export default function Product() {
 
           {/* Compare + Print-size buttons (top) */}
           <div style={{marginBottom: 16, display: 'flex', gap: 8, flexWrap: 'wrap'}}>
-            <CompareButton handle={product.handle} />
+            <CompareButton handle={product.handle} length={selectedLength} />
             <PrintListButton handle={product.handle} />
           </div>
 
@@ -543,7 +556,7 @@ export default function Product() {
                         style={{
                           fontFamily: FONT.mono,
                           fontSize: 10,
-                          color: STYX.silt,
+                          color: 'rgba(239,234,224,0.55)',
                           marginTop: 3,
                         }}
                       >
@@ -594,8 +607,8 @@ export default function Product() {
                     </div>
                   </div>
 
-                  {/* Weight row: Gold weight + Total weight */}
-                  {displayWeight && pureGoldWeight && (
+                  {/* Weight row: karat + total weight */}
+                  {displayWeight && (
                   <div
                     style={{
                       display: 'flex',
@@ -606,18 +619,18 @@ export default function Product() {
                       color: STYX.silt,
                     }}
                   >
-                    <span>
-                      <span style={{color: STYX.gold}}>Au</span>{' '}
-                      {pureGoldWeight}g pure ({karat}K / 24K)
-                    </span>
-                    <span style={{color: STYX.line}}>|</span>
-                    <span>{displayWeight}g total</span>
+                    <span>{karat}K &middot; {displayWeight}g total</span>
                   </div>
                   )}
                 </>
               );
             })()}
           </div>
+
+          {/* ── Cross-Sell: Pairs Well With (under price box) ── */}
+          {crossSell && crossSell.length > 0 && (
+            <RecommendedProducts products={crossSell} heading="Pairs Well With" />
+          )}
 
           {/* ── Variant Selectors ── */}
           <div style={{marginTop: 28, display: 'flex', flexDirection: 'column', gap: 28}}>
@@ -1002,7 +1015,7 @@ export default function Product() {
 
               {/* Compare + Print-size buttons */}
               <div style={{marginTop: 16, display: 'flex', gap: 8, flexWrap: 'wrap'}}>
-                <CompareButton handle={product.handle} />
+                <CompareButton handle={product.handle} length={selectedLength} />
                 <PrintListButton handle={product.handle} />
               </div>
 
@@ -1039,32 +1052,6 @@ export default function Product() {
                     {t.text}
                   </div>
                 ))}
-              </div>
-
-              {/* Payment methods */}
-              <div
-                style={{
-                  marginTop: 16,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  fontFamily: FONT.mono,
-                  fontSize: 9,
-                  color: STYX.silt2,
-                  letterSpacing: '0.08em',
-                }}
-              >
-                <span>VISA</span>
-                <span style={{opacity: 0.3}}>·</span>
-                <span>MC</span>
-                <span style={{opacity: 0.3}}>·</span>
-                <span>AMEX</span>
-                <span style={{opacity: 0.3}}>·</span>
-                <span>APPLE PAY</span>
-                <span style={{opacity: 0.3}}>·</span>
-                <span>SHOP PAY</span>
-                <span style={{opacity: 0.3}}>·</span>
-                <span>WIRE</span>
               </div>
             </div>
           )}
@@ -1173,11 +1160,13 @@ export default function Product() {
 
                 {/* Form */}
                 <form
-                  onSubmit={(e) => {
+                  onSubmit={async (e) => {
                     e.preventDefault();
                     const form = e.currentTarget;
                     const data = new FormData(form);
                     const payload = {
+                      formId: 'make-offer',
+                      formName: 'make-offer',
                       product: title,
                       sku: selectedVariant?.sku || '',
                       variant: selectedVariant?.title || '',
@@ -1188,8 +1177,15 @@ export default function Product() {
                       phone: data.get('phone'),
                       message: data.get('message'),
                     };
-                    // For now, log to console. Hook up to API/email later.
-                    console.log('Offer submitted:', payload);
+                    try {
+                      await fetch('/api/form-submit', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(payload),
+                      });
+                    } catch {
+                      // Confirm to the customer regardless; submission is logged server-side.
+                    }
                     alert('Your offer has been submitted. We will respond within 24 hours.');
                     setOfferOpen(false);
                   }}
@@ -1301,32 +1297,6 @@ export default function Product() {
             </div>
           )}
 
-          {/* ── Shipping / Returns Disclosure ── */}
-          <div style={{marginTop: 48, paddingTop: 40, borderTop: `1px solid ${STYX.line}`}}>
-              <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 0,
-              }}
-            >
-              {shippingPolicy?.body && (
-                <StyxDisclosure
-                  title="Shipping"
-                  content={getExcerpt(shippingPolicy.body)}
-                  learnMore={`/policies/${shippingPolicy.handle}`}
-                />
-              )}
-              {refundPolicy?.body && (
-                <StyxDisclosure
-                  title="Returns"
-                  content={getExcerpt(refundPolicy.body)}
-                  learnMore={`/policies/${refundPolicy.handle}`}
-                />
-              )}
-            </div>
-          </div>
-
           {/* ── Product Details ── */}
           <div
             style={{
@@ -1388,6 +1358,32 @@ export default function Product() {
                     </div>
                   </div>
                 ))}
+            </div>
+          </div>
+
+          {/* ── Shipping / Returns Disclosure ── */}
+          <div style={{marginTop: 40, paddingTop: 32, borderTop: `1px solid ${STYX.line}`}}>
+              <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 0,
+              }}
+            >
+              {shippingPolicy?.body && (
+                <StyxDisclosure
+                  title="Shipping"
+                  content={getExcerpt(shippingPolicy.body)}
+                  learnMore={`/policies/${shippingPolicy.handle}`}
+                />
+              )}
+              {refundPolicy?.body && (
+                <StyxDisclosure
+                  title="Returns"
+                  content={getExcerpt(refundPolicy.body)}
+                  learnMore={`/policies/${refundPolicy.handle}`}
+                />
+              )}
             </div>
           </div>
 
@@ -2312,6 +2308,7 @@ const PRODUCT_FRAGMENT = `#graphql
     title
     vendor
     handle
+    productType
     descriptionHtml
     description
     encodedVariantExistence
@@ -2519,4 +2516,181 @@ async function getRecommendedProducts(
   if (originalProduct >= 0) mergedProducts.splice(originalProduct, 1);
 
   return {nodes: mergedProducts};
+}
+
+/* ──────────────────── Cross-Sell ("Pairs Well With") ──────────────────── */
+
+const CROSS_SELL_QUERY = `#graphql
+  query crossSellProducts(
+    $query: String!
+    $count: Int
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    products(first: $count, query: $query) {
+      nodes {
+        id
+        title
+        handle
+        productType
+        chain_style: metafield(namespace: "chain", key: "chain_style") {
+          value
+        }
+        chain_thickness: metafield(namespace: "chain", key: "thickness") {
+          value
+        }
+        chain_construction: metafield(namespace: "chain", key: "construction") {
+          value
+        }
+        variants(first: 20) {
+          nodes {
+            id
+            availableForSale
+            image {
+              url
+              altText
+              width
+              height
+            }
+            price {
+              amount
+              currencyCode
+            }
+            selectedOptions {
+              name
+              value
+            }
+          }
+        }
+      }
+    }
+  }
+` as const;
+
+/** Parse first mm number out of a thickness string or title. */
+function parseMm(value?: string | null): number | null {
+  if (!value) return null;
+  const m = value.match(/(\d+(?:\.\d+)?)\s*mm/i) ?? value.match(/(\d+(?:\.\d+)?)/);
+  return m ? parseFloat(m[1]) : null;
+}
+
+function normalize(value?: string | null): string {
+  return (value ?? '').trim().toLowerCase();
+}
+
+/**
+ * Fetch candidate products of the same chain style and rank them for cross-sell:
+ *   - Necklace <-> bracelet pairing of the same style+width is the top upsell.
+ *   - Otherwise prefer same construction (hollow/solid) and nearest width.
+ * Returns up to 4 ranked products, or [] when there are no good matches.
+ */
+async function getCrossSellProducts(
+  storefront: Storefront,
+  product: any,
+): Promise<CrossSellProduct[]> {
+  const style = product?.chain_style?.value as string | undefined;
+  const styleTitle = (product?.title as string) || '';
+  const construction = normalize(product?.chain_construction?.value);
+  const myType = normalize(product?.productType); // "chain" | "bracelet"
+  const myMm =
+    parseMm(product?.chain_thickness?.value) ?? parseMm(styleTitle);
+
+  // Build a query to pull same-style candidates. Prefer the chain_style value;
+  // fall back to a broad necklace+bracelet pull when style is unknown.
+  let query: string;
+  if (style) {
+    // chain_style is also stored as a product tag (e.g. "Cuban Link").
+    query = `tag:'${style}'`;
+  } else {
+    query = `product_type:Chain OR product_type:Bracelet`;
+  }
+
+  let result: any;
+  try {
+    result = await storefront.query(CROSS_SELL_QUERY, {
+      variables: {query, count: 30},
+    });
+  } catch {
+    return [];
+  }
+
+  const candidates: any[] = (result?.products?.nodes ?? []).filter(
+    (c: any) => c?.id && c.id !== product.id,
+  );
+  if (candidates.length === 0) return [];
+
+  const myStyle = normalize(style);
+
+  type Scored = {product: CrossSellProduct; score: number; mmGap: number};
+  const scored: Scored[] = candidates.map((c: any) => {
+    const cType = normalize(c.productType);
+    const cStyle = normalize(c.chain_style?.value);
+    const cConstruction = normalize(c.chain_construction?.value);
+    const cMm = parseMm(c.chain_thickness?.value) ?? parseMm(c.title);
+
+    let score = 0;
+    let reason: string | null = null;
+
+    // Same style / weave
+    const sameStyle = !!myStyle && cStyle === myStyle;
+    if (sameStyle) score += 50;
+
+    // The key upsell: opposite product type (necklace <-> bracelet)
+    const isPairType =
+      (myType === 'chain' && cType === 'bracelet') ||
+      (myType === 'bracelet' && cType === 'chain');
+    if (isPairType) {
+      score += 40;
+      // Nearest width within the pairing matters most
+      if (myMm != null && cMm != null) {
+        const gap = Math.abs(cMm - myMm);
+        score += Math.max(0, 20 - gap * 8);
+        if (gap <= 0.5) reason = 'Matching bracelet/necklace';
+      }
+      if (!reason) reason = myType === 'chain' ? 'Matching bracelet' : 'Matching necklace';
+    }
+
+    // Same construction (hollow vs solid)
+    if (construction && cConstruction === construction) score += 12;
+
+    // Nearest width (applies broadly, but never overpowers the pairing)
+    let mmGap = Number.POSITIVE_INFINITY;
+    if (myMm != null && cMm != null) {
+      mmGap = Math.abs(cMm - myMm);
+      score += Math.max(0, 15 - mmGap * 6);
+    }
+
+    // In-stock nudge
+    if ((c.variants?.nodes ?? []).some((v: any) => v.availableForSale)) score += 3;
+
+    if (!reason) {
+      if (cMm != null) {
+        reason = `${cMm}mm${cStyle && myStyle && cStyle === myStyle ? '' : style ? ` · ${style}` : ''}`;
+      } else if (sameStyle && style) {
+        reason = style;
+      }
+    }
+
+    return {
+      product: {
+        id: c.id,
+        title: c.title,
+        handle: c.handle,
+        productType: c.productType,
+        variants: c.variants,
+        reason,
+      },
+      score,
+      mmGap,
+    };
+  });
+
+  // Only keep candidates that share the style (when we know it) or are a
+  // valid necklace/bracelet pairing — avoid recommending unrelated chains.
+  const filtered = scored.filter((s) => s.score >= 12);
+  if (filtered.length === 0) return [];
+
+  filtered.sort((a, b) => (b.score - a.score) || (a.mmGap - b.mmGap));
+
+  return filtered.slice(0, 4).map((s) => s.product);
 }

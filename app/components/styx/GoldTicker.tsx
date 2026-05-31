@@ -1,6 +1,7 @@
 import {useState, useEffect} from 'react';
 import {useRouteLoaderData, Link} from 'react-router';
 import {STYX, FONT} from './constants';
+import {CurrencyToggle} from './CurrencyToggle';
 import type {RootLoader} from '~/root';
 
 function fmt(n: number) {
@@ -137,22 +138,24 @@ export function GoldTicker() {
         </div>
       </div>
 
-      {/* Right link */}
-      <Link
-        to="/about"
-        style={{
-          fontFamily: FONT.cinzel,
-          fontSize: 10,
-          letterSpacing: '0.3em',
-          color: 'rgba(239,234,224,0.55)',
-          textTransform: 'uppercase',
-          flex: '0 0 auto',
-          cursor: 'pointer',
-          textDecoration: 'none',
-        }}
-      >
-        Why we show this
-      </Link>
+      {/* Right: currency switch (auto-shows when CAD is live) + link */}
+      <div style={{display: 'flex', alignItems: 'center', gap: 20, flex: '0 0 auto'}}>
+        <CurrencyToggle />
+        <Link
+          to="/about"
+          style={{
+            fontFamily: FONT.cinzel,
+            fontSize: 10,
+            letterSpacing: '0.3em',
+            color: 'rgba(239,234,224,0.55)',
+            textTransform: 'uppercase',
+            cursor: 'pointer',
+            textDecoration: 'none',
+          }}
+        >
+          Why we show this
+        </Link>
+      </div>
     </div>
   );
 }

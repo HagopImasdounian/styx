@@ -14,23 +14,21 @@ import {CompareButton} from '~/components/styx/CompareButton';
 import {WeighIn, type WeighInChain} from '~/components/styx/WeighIn';
 import {KARAT_PURITY} from '~/lib/gold';
 import {CURATED_COMPARISONS} from '~/data/comparisons';
+import {parseCompareItems} from '~/context/CompareContext';
 import type {RootLoader} from '~/root';
 
 export async function loader({request, context}: LoaderFunctionArgs) {
   const url = new URL(request.url);
-  const productsParam = url.searchParams.get('products') || '';
-  const handles = productsParam
-    .split(',')
-    .map((h) => h.trim())
-    .filter(Boolean)
-    .slice(0, 4);
+  const items = parseCompareItems(url.searchParams.get('products') || '');
 
-  if (handles.length === 0) {
-    return {products: []};
+  if (items.length === 0) {
+    return {entries: []};
   }
 
+  // Query each distinct product once, then attach to every requested length.
+  const uniqueHandles = Array.from(new Set(items.map((i) => i.handle)));
   const results = await Promise.all(
-    handles.map((handle) =>
+    uniqueHandles.map((handle) =>
       context.storefront.query(COMPARE_PRODUCT_QUERY, {
         variables: {
           handle,
@@ -41,8 +39,14 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     ),
   );
 
-  const products = results.map((r) => r.product).filter(Boolean);
-  return {products};
+  const byHandle = new Map<string, any>();
+  uniqueHandles.forEach((handle, i) => byHandle.set(handle, results[i].product));
+
+  const entries = items
+    .map((item) => ({handle: item.handle, length: item.length, product: byHandle.get(item.handle)}))
+    .filter((e) => e.product);
+
+  return {entries};
 }
 
 /* ─────────────────── Types ─────────────────── */
@@ -50,6 +54,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 type CompareSpec = {
   type: 'product' | 'custom';
   handle?: string;
+  length?: string | null;
   title: string;
   image?: any;
   karat: number;
@@ -80,7 +85,7 @@ type CompareSpec = {
 /* ─────────────────── Component ─────────────────── */
 
 export default function ComparePage() {
-  const {products} = useLoaderData<typeof loader>();
+  const {entries} = useLoaderData<typeof loader>();
   const rootData = useRouteLoaderData<RootLoader>('root');
   const spotPerOz = (rootData as any)?.goldData?.spotPerOz ?? 4700;
   const spotPerGram = spotPerOz / 31.1035;
@@ -118,8 +123,9 @@ export default function ComparePage() {
     setCustomEntries((prev) => prev.filter((_, i) => i !== idx));
   };
 
-  // Build specs from products
-  const productSpecs: CompareSpec[] = products.map((p: any) => {
+  // Build specs from products. When an entry specifies a length, scope the
+  // numbers to that variant; otherwise fall back to the whole-product range.
+  const productSpecs: CompareSpec[] = entries.map(({handle, length, product: p}: any) => {
     const karat = p.karat?.value
       ? parseInt(p.karat.value, 10)
       : /18\s*k/i.test(p.title) ? 18
@@ -133,31 +139,39 @@ export default function ComparePage() {
     const chainStyle = p.chain_style?.value || null;
     const origin = p.chain_origin?.value || null;
 
-    const prices = p.variants.nodes.map((v: any) => parseFloat(v.price.amount));
+    const allVariants = p.variants.nodes as any[];
+    const lengthOf = (v: any) => v.selectedOptions?.find((o: any) => o.name.toLowerCase() === 'length')?.value;
+    // Variants matching the requested length (colour-agnostic, since colour
+    // doesn't move the price). Empty selection falls back to all variants.
+    const scoped = length ? allVariants.filter((v) => lengthOf(v) === length) : allVariants;
+    const scopeVariants = scoped.length > 0 ? scoped : allVariants;
+
+    const prices = scopeVariants.map((v) => parseFloat(v.price.amount));
     const minPrice = Math.min(...prices);
     const maxPrice = Math.max(...prices);
 
-    const lengths = Array.from(
-      new Set(
-        p.variants.nodes
-          .map((v: any) => v.selectedOptions?.find((o: any) => o.name.toLowerCase() === 'length')?.value)
-          .filter(Boolean),
-      ),
-    ) as string[];
+    const lengths = length
+      ? [length]
+      : (Array.from(
+          new Set(allVariants.map(lengthOf).filter(Boolean)),
+        ) as string[]);
 
     const colors = Array.from(
       new Set(
-        p.variants.nodes
+        scopeVariants
           .map((v: any) => v.selectedOptions?.find((o: any) => o.name.toLowerCase() === 'color')?.value)
           .filter(Boolean),
       ),
     ) as string[];
 
-    // Find a variant with weight and extract its length for per-inch calc
-    const weightVariant = p.variants.nodes.find((v: any) => v.weight && v.weight > 0);
+    // Find a variant with weight (prefer one within the chosen length) and
+    // extract its length for per-inch calc.
+    const weightVariant =
+      scopeVariants.find((v) => v.weight && v.weight > 0) ||
+      allVariants.find((v) => v.weight && v.weight > 0);
     const weight = weightVariant?.weight ?? null;
-    const variantLengthStr = weightVariant?.selectedOptions?.find((o: any) => o.name.toLowerCase() === 'length')?.value;
-    const lengthInches = variantLengthStr ? parseFloat(variantLengthStr.replace(/[^0-9.]/g, '')) : null;
+    const variantLengthStr = length || lengthOf(weightVariant);
+    const lengthInches = variantLengthStr ? parseFloat(String(variantLengthStr).replace(/[^0-9.]/g, '')) : null;
 
     const purity = KARAT_PURITY[karat] ?? 10 / 24;
     const pureGold = weight ? weight * purity : null;
@@ -169,12 +183,13 @@ export default function ComparePage() {
     const pricePerPureGram = pureGold && pureGold > 0 ? minPrice / pureGold : null;
     const valueScore = meltValue && minPrice > 0 ? (meltValue / minPrice) * 100 : null;
 
-    const image = p.variants.nodes[0]?.image || p.featuredImage;
+    const image = scopeVariants[0]?.image || p.variants.nodes[0]?.image || p.featuredImage;
 
     return {
       type: 'product' as const,
       handle: p.handle,
-      title: p.title,
+      length: length ?? null,
+      title: length ? `${p.title} · ${length}` : p.title,
       image,
       karat,
       thickness,
@@ -248,7 +263,7 @@ export default function ComparePage() {
   });
 
   const allSpecs = [...productSpecs, ...customSpecs];
-  const totalSlots = products.length + customEntries.length;
+  const totalSlots = entries.length + customEntries.length;
   const canAddMore = totalSlots < 4;
 
   // Empty state
@@ -327,7 +342,7 @@ export default function ComparePage() {
             <div style={{marginTop: 48}}>
               <WeighIn
                 chains={customSpecs.map((s): WeighInChain => ({
-                  type: s.type, handle: s.handle, title: s.title, image: s.image,
+                  type: s.type, handle: s.handle, length: s.length, title: s.title, image: s.image,
                   karat: s.karat, weight: s.weight, pureGold: s.pureGold, meltValue: s.meltValue,
                   pricePerPureGram: s.pricePerPureGram, valueScore: s.valueScore,
                   minPrice: s.minPrice, maxPrice: s.maxPrice, thickness: s.thickness,
@@ -388,9 +403,9 @@ export default function ComparePage() {
           </p>
 
           {/* Jump to print-to-scale with the compared products */}
-          {products.length > 0 && (
+          {entries.length > 0 && (
             <Link
-              to={`/print-list?products=${products.map((p: any) => p.handle).join(',')}`}
+              to={`/print-list?products=${Array.from(new Set(entries.map((e: any) => e.handle))).join(',')}`}
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -480,6 +495,7 @@ export default function ComparePage() {
           chains={allSpecs.map((s): WeighInChain => ({
             type: s.type,
             handle: s.handle,
+            length: s.length,
             title: s.title,
             image: s.image,
             karat: s.karat,

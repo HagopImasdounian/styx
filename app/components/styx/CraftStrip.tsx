@@ -167,7 +167,7 @@ export function CraftStrip() {
                 marginTop: 8,
               }}
             >
-              free for every $1,500 spent
+              free for every $2,000 spent
             </div>
             <div
               style={{

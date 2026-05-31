@@ -8,6 +8,7 @@ import {KARAT_PURITY} from '~/lib/gold';
 export type WeighInChain = {
   type: 'product' | 'custom';
   handle?: string;
+  length?: string | null;
   title: string;
   image?: any;
   karat: number;
@@ -51,7 +52,11 @@ export function WeighIn({
   if (count === 0) return null;
 
   const maxWeight = Math.max(...chains.map((c) => c.weight || 0));
-  const shortNames = chains.map((c) => extractShort(c.title));
+  // Include length so two variants of the same chain read distinctly in the ledger.
+  const shortNames = chains.map((c) => extractShort(c.title) + (c.length ? ` ${c.length}` : ''));
+  // Stable unique key per column (same handle can appear at different lengths).
+  const keyOf = (c: WeighInChain, idx: number) =>
+    c.type === 'custom' ? `custom-${idx}` : `${c.handle || 'chain'}-${c.length || idx}`;
 
   // Best value (lowest $/g pure gold, with tolerance)
   const ppgs = chains.map((c) => c.pricePerPureGram || Infinity);
@@ -178,7 +183,7 @@ export function WeighIn({
       {/* ─── CHAIN COLUMNS ─── */}
       <div className="weighin-columns" style={{gridTemplateColumns: chains.map(() => '1fr').join(' ')}}>
         {chains.map((chain, idx) => (
-          <ChainColumn key={chain.handle || `custom-${idx}`} chain={chain} shortName={shortNames[idx]} onRemove={chain.type === 'custom' && onRemoveCustom ? () => {
+          <ChainColumn key={keyOf(chain, idx)} chain={chain} shortName={shortNames[idx]} onRemove={chain.type === 'custom' && onRemoveCustom ? () => {
             const customIdx = chains.slice(0, idx + 1).filter((c) => c.type === 'custom').length - 1;
             onRemoveCustom(customIdx);
           } : undefined} />
@@ -243,7 +248,7 @@ export function WeighIn({
         <div className="weighin-verdict-ctas">
           {chains.filter((c) => c.type === 'product').slice(0, 3).map((c, i) => (
             <Link
-              key={c.handle}
+              key={`${c.handle || 'chain'}-${c.length || i}`}
               to={`/products/${c.handle}`}
               style={{
                 padding: '12px 20px',

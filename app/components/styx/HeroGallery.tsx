@@ -78,7 +78,7 @@ export function HeroGallery({products = []}: {products?: any[]}) {
             textTransform: 'uppercase',
           }}
         >
-          Launch · 1g free per $1,500 spent
+          Launch · 1g free per $2,000 spent
         </div>
 
         {/* Main heading */}

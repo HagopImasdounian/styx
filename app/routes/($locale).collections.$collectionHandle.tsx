@@ -71,6 +71,26 @@ const CHAIN_INTROS: Record<string, {intro: string; journal: string; journalTitle
     journal: 'history-of-the-singapore-chain',
     journalTitle: 'Read: The History of the Singapore Chain →',
   },
+  franco: {
+    intro: 'The Franco Chain was born in the goldsmithing workshops of Northern Italy in the late 1970s — a flat-sided square weave so dense it reads as a solid bar of gold. It is the chain you choose when you need mass that can carry serious pendant weight and still lie flat against the chest.',
+    journal: 'history-of-the-franco-chain',
+    journalTitle: 'Read: The History of the Franco Chain →',
+  },
+  herringbone: {
+    intro: 'The Herringbone traces back to ancient Egypt around 3000 BCE — flat, slanted links laid in a tight fishbone pattern that turns the entire chain into a mirror-smooth ribbon of liquid gold. Sleek, flexible, and unmistakable under light, it lies perfectly flat against the skin.',
+    journal: 'history-of-the-herringbone-chain',
+    journalTitle: 'Read: The History of the Herringbone →',
+  },
+  snake: {
+    intro: 'The Snake Chain emerged in Victorian London around 1840 — tightly fitted links that form a smooth, round, flexible tube with the faint banding of a serpent\'s skin. Completely seamless to the touch, it catches the light in one continuous, unbroken line.',
+    journal: 'history-of-the-snake-chain',
+    journalTitle: 'Read: The History of the Snake Chain →',
+  },
+  paperclip: {
+    intro: 'The Paperclip Chain is the modern minimalist — elongated, uniform oval links inspired by the humble office clip, first popularized in Oslo around 1940. Clean, architectural, and effortlessly contemporary, it wears as well on its own as it does carrying a charm.',
+    journal: 'history-of-the-paperclip-chain',
+    journalTitle: 'Read: The History of the Paperclip →',
+  },
   '10k-gold': {
     intro: '10K gold is 41.7% pure gold alloyed with copper, silver, and zinc — making it the most durable karat we carry. Its hardness means thinner chains hold up to daily wear without stretching or deforming. The color is a refined, pale champagne-gold. For everyday chains, 10K is the workhorse: real gold, built to last, priced honestly.',
     journal: 'understanding-gold-karats',
@@ -230,20 +250,63 @@ function getThicknessMm(title: string): number | null {
   return m ? parseFloat(m[1]) : null;
 }
 
+// Karat lives in the product title (separate products per karat, not a variant
+// option), so parse it from there — falling back to a Karat variant option if
+// one ever exists.
+function getKaratLabel(title: string): string | null {
+  if (/18\s*k/i.test(title)) return '18K';
+  if (/14\s*k/i.test(title)) return '14K';
+  if (/10\s*k/i.test(title)) return '10K';
+  return null;
+}
+
+function cardKarat(product: any, variant: any): string | null {
+  const opt = variant?.selectedOptions?.find((o: any) => o.name === 'Karat');
+  if (opt?.value) {
+    const m = String(opt.value).match(/(\d+)/);
+    return m ? `${m[1]}K` : opt.value;
+  }
+  return getKaratLabel(product?.title || '');
+}
+
+// Normalize construction to a single canonical value so casing/whitespace
+// differences ("solid" vs "Solid") don't create a phantom extra filter pill.
+function normalizeConstruction(product: any): string {
+  const raw =
+    product?.chain_construction?.value ||
+    (/hollow/i.test(product?.title || '') ? 'Hollow' : 'Solid');
+  const v = String(raw).trim().toLowerCase();
+  if (v.includes('hollow')) return 'Hollow';
+  if (v.includes('solid')) return 'Solid';
+  return v ? v.charAt(0).toUpperCase() + v.slice(1) : 'Solid';
+}
+
+// A piece is a bracelet if its title says so (every bracelet in the catalog
+// has "Bracelet" in the title; necklaces never do).
+function cardType(product: any): 'Necklace' | 'Bracelet' {
+  return /bracelet/i.test(product?.title || '') ? 'Bracelet' : 'Necklace';
+}
+
 function extractFilters(cards: ReturnType<typeof explodeByColor>) {
   const colors = new Set<string>();
   const karats = new Set<string>();
   const thicknessRangesPresent = new Set<string>();
   const constructions = new Set<string>();
+  const types = new Set<string>();
 
   for (const {product, variantIndex} of cards) {
     const variant = product.variants?.nodes?.[variantIndex];
     if (!variant) continue;
 
+    types.add(cardType(product));
+
     for (const opt of variant.selectedOptions ?? []) {
       if (opt.name === 'Color') colors.add(opt.value);
-      if (opt.name === 'Karat') karats.add(opt.value);
     }
+
+    // Karat comes from the title (separate products per karat)
+    const k = cardKarat(product, variant);
+    if (k) karats.add(k);
 
     // Map thickness to range bucket
     const mm = getThicknessMm(product.title || '');
@@ -256,14 +319,9 @@ function extractFilters(cards: ReturnType<typeof explodeByColor>) {
       }
     }
 
-    // Extract construction from metafield (falls back to title parsing)
-    const constructionMeta = product.chain_construction?.value;
-    if (constructionMeta) {
-      constructions.add(constructionMeta);
-    } else {
-      const titleLower = (product.title || '').toLowerCase();
-      constructions.add(titleLower.includes('hollow') ? 'Hollow' : 'Solid');
-    }
+    // Construction — normalized so we only ever surface distinct builds
+    // (the Solid/Hollow filter then only shows when both are actually present)
+    constructions.add(normalizeConstruction(product));
   }
 
   // Return thickness ranges in order, only those that have products
@@ -276,16 +334,22 @@ function extractFilters(cards: ReturnType<typeof explodeByColor>) {
     karats: [...karats].sort((a, b) => parseInt(a) - parseInt(b)),
     thicknesses,
     constructions: [...constructions].sort(),
+    // Necklace first, Bracelet second — only those actually present
+    types: ['Necklace', 'Bracelet'].filter((t) => types.has(t)),
   };
 }
 
 function applyFilters(
   cards: ReturnType<typeof explodeByColor>,
-  filters: {color: string | null; karat: string | null; thickness: string | null; construction: string | null},
+  filters: {color: string | null; karat: string | null; thickness: string | null; construction: string | null; type?: string | null},
 ) {
   return cards.filter(({product, variantIndex}) => {
     const variant = product.variants?.nodes?.[variantIndex];
     if (!variant) return false;
+
+    if (filters.type) {
+      if (cardType(product) !== filters.type) return false;
+    }
 
     if (filters.color) {
       const colorOpt = variant.selectedOptions?.find(
@@ -295,22 +359,7 @@ function applyFilters(
     }
 
     if (filters.karat) {
-      // Check if this product has any variant with the selected karat + same color
-      const colorOpt = variant.selectedOptions?.find(
-        (o: any) => o.name === 'Color',
-      );
-      const color = colorOpt?.value;
-      const hasKarat = product.variants.nodes.some(
-        (v: any) =>
-          v.selectedOptions?.some(
-            (o: any) => o.name === 'Karat' && o.value === filters.karat,
-          ) &&
-          (!color ||
-            v.selectedOptions?.some(
-              (o: any) => o.name === 'Color' && o.value === color,
-            )),
-      );
-      if (!hasKarat) return false;
+      if (cardKarat(product, variant) !== filters.karat) return false;
     }
 
     if (filters.thickness) {
@@ -321,10 +370,7 @@ function applyFilters(
     }
 
     if (filters.construction) {
-      const constructionMeta = product.chain_construction?.value;
-      const constructionVal = constructionMeta
-        || (/hollow/i.test(product.title || '') ? 'Hollow' : 'Solid');
-      if (constructionVal.toLowerCase() !== filters.construction.toLowerCase()) return false;
+      if (normalizeConstruction(product) !== filters.construction) return false;
     }
 
     return true;
@@ -403,6 +449,9 @@ export default function Collection() {
   const [filterConstruction, setFilterConstruction] = useState<string | null>(
     searchParams.get('construction') || null,
   );
+  const [filterType, setFilterType] = useState<string | null>(
+    searchParams.get('type') || null,
+  );
 
   const allCards = useMemo(
     () => explodeByColor(collection.products.nodes),
@@ -418,15 +467,17 @@ export default function Collection() {
         karat: filterKarat,
         thickness: filterThickness,
         construction: filterConstruction,
+        type: filterType,
       }),
-    [allCards, filterColor, filterKarat, filterThickness, filterConstruction],
+    [allCards, filterColor, filterKarat, filterThickness, filterConstruction, filterType],
   );
 
   const activeFilterCount =
     (filterColor ? 1 : 0) +
     (filterKarat ? 1 : 0) +
     (filterThickness ? 1 : 0) +
-    (filterConstruction ? 1 : 0);
+    (filterConstruction ? 1 : 0) +
+    (filterType ? 1 : 0);
 
   // Chain close-up image (transparent PNG) for the hero
   const CHAIN_HERO_IMAGE: Record<string, string> = {
@@ -439,6 +490,10 @@ export default function Collection() {
     wheat: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-wheat.png?v=1779151450',
     rolo: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-rolo.png?v=1779151429',
     singapore: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-singapore.png?v=1779151442',
+    franco: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-franco.png?v=1780167769',
+    herringbone: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-herringbone.png?v=1780167770',
+    snake: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-snake.png?v=1780167771',
+    paperclip: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-paperclip.png?v=1780167387',
   };
   const heroChainImage = CHAIN_HERO_IMAGE[collection.handle] ?? null;
 
@@ -614,6 +669,7 @@ export default function Collection() {
                     setFilterKarat(null);
                     setFilterThickness(null);
                     setFilterConstruction(null);
+                    setFilterType(null);
                   }}
                   style={{
                     fontFamily: FONT.cinzel,
@@ -682,6 +738,34 @@ export default function Collection() {
               flexWrap: 'wrap',
             }}
           >
+            {/* Type filter (Necklaces / Bracelets) */}
+            {availableFilters.types.length > 1 && (
+              <div style={{display: 'flex', alignItems: 'center', gap: 8}}>
+                <span
+                  style={{
+                    fontFamily: FONT.cinzel,
+                    fontSize: 9,
+                    letterSpacing: '0.2em',
+                    textTransform: 'uppercase',
+                    color: STYX.silt2,
+                    marginRight: 4,
+                  }}
+                >
+                  Type
+                </span>
+                {availableFilters.types.map((t) => (
+                  <FilterPill
+                    key={t}
+                    label={t === 'Necklace' ? 'Necklaces' : 'Bracelets'}
+                    active={filterType === t}
+                    onClick={() =>
+                      setFilterType(filterType === t ? null : t)
+                    }
+                  />
+                ))}
+              </div>
+            )}
+
             {/* Color filters */}
             {availableFilters.colors.length > 1 && (
               <div style={{display: 'flex', alignItems: 'center', gap: 8}}>
@@ -847,6 +931,7 @@ export default function Collection() {
               filterKarat={filterKarat}
               filterThickness={filterThickness}
               filterConstruction={filterConstruction}
+              filterType={filterType}
             />
             <div
               style={{
@@ -1072,6 +1157,7 @@ function ProductsLoadedOnScroll({
   filterKarat,
   filterThickness,
   filterConstruction,
+  filterType,
 }: {
   nodes: any;
   inView: boolean;
@@ -1082,6 +1168,7 @@ function ProductsLoadedOnScroll({
   filterKarat: string | null;
   filterThickness: string | null;
   filterConstruction: string | null;
+  filterType: string | null;
 }) {
   const navigate = useNavigate();
 
@@ -1101,6 +1188,7 @@ function ProductsLoadedOnScroll({
     karat: filterKarat,
     thickness: filterThickness,
     construction: filterConstruction,
+    type: filterType,
   });
 
   if (cards.length === 0) {

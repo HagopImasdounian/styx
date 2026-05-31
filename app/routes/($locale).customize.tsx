@@ -3,6 +3,7 @@ import {useState} from 'react';
 
 import {Link} from '~/components/Link';
 import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel, Obol} from '~/components/styx';
+import {trackFormSubmit} from '~/components/GTMDataLayer';
 
 export async function loader({context}: LoaderFunctionArgs) {
   return {};
@@ -63,6 +64,45 @@ const CUSTOM_OPTIONS = [
 export default function Customize() {
   const [activeOption, setActiveOption] = useState<string | null>(null);
   const [formSent, setFormSent] = useState(false);
+
+  const handleCommissionSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const fd = new FormData(form);
+    const name = (fd.get('name') as string) || '';
+    const email = (fd.get('email') as string) || '';
+
+    const payload = {
+      formId: 'custom-commission',
+      formName: 'custom-commission',
+      name,
+      email,
+      phone: (fd.get('phone') as string) || undefined,
+      message: (fd.get('description') as string) || '',
+      fields: {
+        budget: (fd.get('budget') as string) || '',
+      },
+    };
+
+    try {
+      await fetch('/api/form-submit', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload),
+      });
+
+      trackFormSubmit({
+        formId: 'custom-commission',
+        formName: 'custom-commission',
+        email,
+        name,
+      });
+    } catch {
+      // Don't block the confirmation UI on email/webhook failure.
+    } finally {
+      setFormSent(true);
+    }
+  };
 
   return (
     <div style={{background: STYX.bone, minHeight: '100vh'}}>
@@ -336,12 +376,7 @@ export default function Customize() {
             </div>
           ) : (
             <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                const data = new FormData(e.currentTarget);
-                console.log('Custom commission:', Object.fromEntries(data));
-                setFormSent(true);
-              }}
+              onSubmit={handleCommissionSubmit}
               style={{display: 'flex', flexDirection: 'column', gap: 20}}
             >
               <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16}} className="styx-customize-form-row">

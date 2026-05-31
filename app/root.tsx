@@ -110,7 +110,7 @@ export async function loader(args: LoaderFunctionArgs) {
  * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
  */
 async function loadCriticalData({request, context}: LoaderFunctionArgs) {
-  const [layout, goldData, collectionsData] = await Promise.all([
+  const [layout, goldData, collectionsData, localizationData] = await Promise.all([
     getLayoutData(context),
     getGoldData(),
     context.storefront.query(ROOT_COLLECTIONS_QUERY, {
@@ -119,16 +119,28 @@ async function loadCriticalData({request, context}: LoaderFunctionArgs) {
         language: context.storefront.i18n.language,
       },
     }),
+    context.storefront.query(ROOT_LOCALIZATION_QUERY).catch(() => null),
   ]);
 
   const seo = seoPayload.root({shop: layout.shop, url: request.url});
 
   const {storefront, env} = context;
 
+  // Distinct presentment currencies Shopify can actually serve. Drives whether
+  // the USD/CAD toggle renders — it stays hidden until CAD is enabled in Markets.
+  const availableCurrencies = Array.from(
+    new Set(
+      (localizationData?.localization?.availableCountries || [])
+        .map((c: any) => c.currency?.isoCode)
+        .filter(Boolean),
+    ),
+  ) as string[];
+
   return {
     layout,
     seo,
     goldData,
+    availableCurrencies,
     collections: (collectionsData?.collections?.nodes || []).filter(
       (c: any) => c.products?.nodes?.length > 0,
     ),
@@ -177,8 +189,28 @@ function Layout({children}: {children?: React.ReactNode}) {
         <link rel="stylesheet" href={styles}></link>
         <Meta />
         <Links />
+        {/* Google Tag Manager */}
+        <script
+          nonce={nonce}
+          dangerouslySetInnerHTML={{
+            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-P56TCMJ');`,
+          }}
+        />
       </head>
       <body>
+        {/* Google Tag Manager (noscript) */}
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-P56TCMJ"
+            height="0"
+            width="0"
+            style={{display: 'none', visibility: 'hidden'}}
+          />
+        </noscript>
         {data ? (
           <Analytics.Provider
             cart={data.cart}
@@ -339,6 +371,19 @@ async function getLayoutData({storefront, env}: AppLoadContext) {
 
   return {shop: data.shop, headerMenu, footerMenu};
 }
+
+const ROOT_LOCALIZATION_QUERY = `#graphql
+  query rootLocalization {
+    localization {
+      availableCountries {
+        isoCode
+        currency {
+          isoCode
+        }
+      }
+    }
+  }
+` as const;
 
 const ROOT_COLLECTIONS_QUERY = `#graphql
   query rootCollections($country: CountryCode, $language: LanguageCode)

@@ -1,11 +1,11 @@
-import {useCompare} from '~/context/CompareContext';
+import {useCompare, compareKey, encodeCompareItems} from '~/context/CompareContext';
 import {Link} from 'react-router';
 import {STYX, FONT} from './constants';
 
 export function CompareBar() {
-  const {handles, remove, clear} = useCompare();
+  const {items, remove, clear} = useCompare();
 
-  if (handles.length === 0) return null;
+  if (items.length === 0) return null;
 
   return (
     <div
@@ -36,14 +36,14 @@ export function CompareBar() {
             flexShrink: 0,
           }}
         >
-          {handles.length}/4
+          {items.length}/4
         </span>
 
         {/* Chips */}
         <div style={{display: 'flex', gap: 8, overflow: 'hidden', flexWrap: 'wrap'}}>
-          {handles.map((handle) => (
+          {items.map((item) => (
             <div
-              key={handle}
+              key={compareKey(item.handle, item.length)}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -64,11 +64,11 @@ export function CompareBar() {
                   textOverflow: 'ellipsis',
                 }}
               >
-                {handle.replace(/-/g, ' ')}
+                {item.handle.replace(/-/g, ' ')}{item.length ? ` · ${item.length}` : ''}
               </span>
               <button
                 type="button"
-                onClick={() => remove(handle)}
+                onClick={() => remove(item.handle, item.length)}
                 style={{
                   background: 'none',
                   border: 'none',
@@ -107,7 +107,7 @@ export function CompareBar() {
         </button>
 
         <Link
-          to={`/compare?products=${handles.join(',')}`}
+          to={`/compare?products=${encodeCompareItems(items)}`}
           style={{
             display: 'inline-flex',
             alignItems: 'center',

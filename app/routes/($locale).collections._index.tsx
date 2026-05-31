@@ -311,6 +311,12 @@ const COLLECTION_IMAGES: Record<string, {src: string; alt: string}> = {
   'wheat': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-wheat-chain.png?v=1779151386', alt: 'Man wearing wheat chain in Tuscan vineyard'},
   'rolo': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-rolo-chain.png?v=1779151375', alt: 'Man wearing rolo chain in Victorian London'},
   'singapore': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-singapore-chain.png?v=1779151383', alt: 'Man wearing Singapore chain at Asian waterfront'},
+  'franco': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-franco.png?v=1780167769', alt: 'Franco gold chain'},
+  'herringbone': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-herringbone.png?v=1780167770', alt: 'Herringbone gold chain'},
+  'snake': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-snake.png?v=1780167771', alt: 'Snake gold chain'},
+  'paperclip': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-paperclip.png?v=1780167387', alt: 'Paperclip gold chain'},
+  'necklaces': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-necklaces.jpg?v=1780125024', alt: 'Gold chain necklaces — Cuban link, rope, Figaro, herringbone and box chains on stone'},
+  'bracelets': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-bracelets.jpg?v=1780125024', alt: 'Gold chain bracelets — Cuban link, rope, Figaro and curb bracelets on stone'},
   '10k-gold': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-cuban-link.jpg?v=1779151358', alt: '10K Gold chains collection'},
   '14k-gold': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-curb-chain.png?v=1779151362', alt: '14K Gold chains collection'},
 };

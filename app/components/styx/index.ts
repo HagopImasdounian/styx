@@ -1,12 +1,15 @@
 export {STYX, FONT} from './constants';
 export {Obol} from './Obol';
 export {GoldTicker} from './GoldTicker';
+export {CurrencyToggle} from './CurrencyToggle';
 export {StyxNav} from './StyxNav';
 export {HeroGallery} from './HeroGallery';
 export {Ribbon} from './Ribbon';
 export {CategoryTiles} from './CategoryTiles';
 export {FeaturedRow} from './FeaturedRow';
 export {StyxProductCard} from './StyxProductCard';
+export {RecommendedProducts} from './RecommendedProducts';
+export type {CrossSellProduct} from './RecommendedProducts';
 export {ChainProductCard} from './ChainProductCard';
 export {Lookbook} from './Lookbook';
 export {CraftStrip} from './CraftStrip';

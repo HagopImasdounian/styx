@@ -5,15 +5,10 @@ import {reactRouter} from '@react-router/dev/vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
-  plugins: [
-    hydrogen(),
-    oxygen(),
-    reactRouter(),
-    tsconfigPaths(),
-  ],
+  plugins: [hydrogen(), oxygen(), reactRouter(), tsconfigPaths()],
   ssr: {
     optimizeDeps: {
-      include: ['typographic-base'],
+      include: ['svix', 'typographic-base'],
     },
   },
   optimizeDeps: {
