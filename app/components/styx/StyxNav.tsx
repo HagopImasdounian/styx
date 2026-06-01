@@ -121,7 +121,9 @@ function PrintListNavIcon() {
         position: 'relative',
         display: 'flex',
         alignItems: 'center',
-        padding: 4,
+        // Bigger tap area without changing the on-screen footprint.
+        padding: 9,
+        margin: '0 -5px',
         color: 'inherit',
         textDecoration: 'none',
       }}
@@ -131,8 +133,8 @@ function PrintListNavIcon() {
         <span
           style={{
             position: 'absolute',
-            top: -4,
-            right: -4,
+            top: 1,
+            right: 1,
             minWidth: 14,
             height: 14,
             padding: '0 3px',
@@ -173,7 +175,10 @@ function WishlistNavIcon() {
         position: 'relative',
         display: 'flex',
         alignItems: 'center',
-        padding: 4,
+        // Bigger tap area; negative margin keeps the on-screen footprint the
+        // same so the crowded mobile nav doesn't overflow.
+        padding: 9,
+        margin: '0 -5px',
         color: 'inherit',
         textDecoration: 'none',
       }}
@@ -183,8 +188,8 @@ function WishlistNavIcon() {
         <span
           style={{
             position: 'absolute',
-            top: -4,
-            right: -4,
+            top: 1,
+            right: 1,
             minWidth: 14,
             height: 14,
             padding: '0 3px',
@@ -1886,14 +1891,15 @@ function AnnouncementBar() {
         aria-label="Dismiss"
         style={{
           position: 'absolute',
-          right: 16,
+          right: 8,
           top: '50%',
           transform: 'translateY(-50%)',
           background: 'none',
           border: 'none',
           color: STYX.silt,
           cursor: 'pointer',
-          padding: 4,
+          // Roomier hit area for the dismiss control (was ~22px).
+          padding: 10,
           fontSize: 14,
           lineHeight: 1,
         }}
@@ -2122,11 +2128,13 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
             >
               <button
                 type="submit"
+                aria-label="Search"
                 style={{
                   background: 'none',
                   border: 'none',
                   cursor: 'pointer',
-                  padding: 4,
+                  padding: 9,
+                  margin: '0 -5px',
                   display: 'flex',
                   color: 'inherit',
                 }}
@@ -2141,11 +2149,13 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
             <button
               className="styx-nav-hamburger"
               onClick={openMobileMenu}
+              aria-label="Open menu"
               style={{
                 background: 'none',
                 border: 'none',
                 cursor: 'pointer',
-                padding: 4,
+                padding: 10,
+                margin: '0 -6px',
                 color: STYX.ink,
                 display: 'none',
               }}
@@ -2341,11 +2351,13 @@ function CartBadge({
     return (
       <button
         onClick={openCart}
+        aria-label="Open cart"
         style={{
           background: 'none',
           border: 'none',
           cursor: 'pointer',
-          padding: 4,
+          padding: 9,
+          margin: '0 -5px',
           color: 'inherit',
         }}
       >
@@ -2355,7 +2367,7 @@ function CartBadge({
   }
 
   return (
-    <Link to="/cart" style={{padding: 4, color: 'inherit'}}>
+    <Link to="/cart" aria-label="Cart" style={{padding: 9, margin: '0 -5px', color: 'inherit', display: 'flex'}}>
       {inner}
     </Link>
   );

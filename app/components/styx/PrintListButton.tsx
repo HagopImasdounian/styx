@@ -34,7 +34,7 @@ export function PrintListButton({
         display: 'inline-flex',
         alignItems: 'center',
         gap: compact ? 0 : 6,
-        padding: compact ? '6px 8px' : '8px 14px',
+        padding: compact ? '9px 10px' : '8px 14px',
         border: `1px solid ${isActive ? STYX.gold : STYX.line}`,
         background: isActive ? 'rgba(184,146,74,0.08)' : 'transparent',
         cursor: isFull && !isActive ? 'not-allowed' : 'pointer',

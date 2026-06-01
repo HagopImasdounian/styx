@@ -61,7 +61,8 @@ export function Newsletter() {
     borderBottom: `1px solid ${STYX.line}`,
     padding: '14px 0',
     fontFamily: FONT.inter,
-    fontSize: 14,
+    // 16px keeps iOS Safari from auto-zooming the page when the field is focused.
+    fontSize: 16,
     color: STYX.ink,
     outline: 'none',
     width: '100%',

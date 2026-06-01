@@ -4,6 +4,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ───────────────────────────────────────────────────────────────
+   Horizontal-overflow guard.
+   A handful of templates push a few stray px past the viewport on
+   mobile (a wide ticker row, a price pseudo-element at 108% width),
+   which makes the whole page rubber-band sideways. `overflow-x: clip`
+   stops that without turning the body into a scroll container the way
+   `overflow: hidden` would — so the sticky nav keeps working.
+   ─────────────────────────────────────────────────────────────── */
+html, body { overflow-x: clip; max-width: 100%; }
+
 /* STYX Keyframe Animations */
 @keyframes styx-coinflip {
   0% { transform: rotateX(0deg); }
@@ -329,8 +339,9 @@ shop-pay-button {
   /* Toolbar: stack count/sort vertically */
   .styx-collection-toolbar { padding: 12px 16px !important; }
   .styx-collection-toolbar > div:first-child { flex-direction: column !important; align-items: flex-start !important; gap: 10px !important; }
-  .styx-collection-sort { flex-wrap: wrap !important; }
-  .styx-collection-sort button { font-size: 9px !important; padding: 6px 10px !important; }
+  .styx-collection-sort { flex-wrap: wrap !important; gap: 8px !important; }
+  /* Larger, easier-to-read/tap sort pills (were 9px / ~28px tall). */
+  .styx-collection-sort button { font-size: 11px !important; padding: 9px 14px !important; }
   /* Filters: horizontal scroll on mobile */
   .styx-collection-filters {
     flex-wrap: nowrap !important;

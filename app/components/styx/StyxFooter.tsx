@@ -78,7 +78,9 @@ export function StyxFooter({collections = []}: {collections?: CollectionNode[]})
     color: 'rgba(255,255,255,0.5)',
     textDecoration: 'none',
     display: 'block',
-    marginBottom: 10,
+    // Taller rows so each link clears the 24px tap-target floor (was ~20px).
+    padding: '6px 0',
+    marginBottom: 4,
     transition: 'color 0.2s ease',
   };
 
@@ -189,7 +191,7 @@ export function StyxFooter({collections = []}: {collections?: CollectionNode[]})
         </span>
 
         {/* Social icons */}
-        <div style={{display: 'flex', gap: 16}}>
+        <div style={{display: 'flex', gap: 8}}>
           {['Instagram', 'Twitter', 'Pinterest'].map((name) => (
             <a
               key={name}
@@ -200,6 +202,11 @@ export function StyxFooter({collections = []}: {collections?: CollectionNode[]})
                 color: 'rgba(255,255,255,0.3)',
                 textDecoration: 'none',
                 letterSpacing: '0.05em',
+                // Give each link a proper tap target (was ~17px tall).
+                display: 'inline-flex',
+                alignItems: 'center',
+                minHeight: 44,
+                padding: '0 8px',
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.color = STYX.gold;

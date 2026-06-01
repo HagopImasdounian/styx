@@ -324,11 +324,15 @@ function StyxCartLineItem({line}: {line: CartLine}) {
           >
             <button
               type="submit"
+              aria-label="Remove item"
               style={{
                 background: 'none',
                 border: 'none',
                 cursor: 'pointer',
-                padding: 4,
+                // Roomier hit area (was ~20px); negative margin keeps it tucked
+                // in the corner so the layout doesn't shift.
+                padding: 10,
+                margin: '-6px -6px 0 0',
                 color: STYX.silt,
                 alignSelf: 'flex-start',
                 flexShrink: 0,
@@ -368,13 +372,13 @@ function StyxCartLineItem({line}: {line: CartLine}) {
                 value={prevQuantity}
                 disabled={optimisticQuantity <= 1}
                 style={{
-                  width: 28,
-                  height: 28,
+                  width: 40,
+                  height: 40,
                   background: 'none',
                   border: 'none',
                   cursor: 'pointer',
                   fontFamily: FONT.cinzel,
-                  fontSize: 14,
+                  fontSize: 16,
                   color: STYX.ink,
                   padding: 0,
                 }}
@@ -403,13 +407,13 @@ function StyxCartLineItem({line}: {line: CartLine}) {
                 aria-label="Increase quantity"
                 value={nextQuantity}
                 style={{
-                  width: 28,
-                  height: 28,
+                  width: 40,
+                  height: 40,
                   background: 'none',
                   border: 'none',
                   cursor: 'pointer',
                   fontFamily: FONT.cinzel,
-                  fontSize: 14,
+                  fontSize: 16,
                   color: STYX.ink,
                   padding: 0,
                 }}
