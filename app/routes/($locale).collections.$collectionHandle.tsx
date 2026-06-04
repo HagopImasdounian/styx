@@ -242,7 +242,8 @@ const THICKNESS_RANGES = [
   {label: '2–3mm', min: 2, max: 3},
   {label: '3–5mm', min: 3, max: 5},
   {label: '5–8mm', min: 5, max: 8},
-  {label: '8mm+', min: 8, max: 999},
+  {label: '8–10mm', min: 8, max: 10},
+  {label: '10mm+', min: 10, max: 999},
 ];
 
 function getThicknessMm(title: string): number | null {
