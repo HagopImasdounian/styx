@@ -4,7 +4,7 @@ import {
 } from 'react-router';
 import {useLoaderData} from 'react-router';
 import invariant from 'tiny-invariant';
-import {getSeoMeta} from '@shopify/hydrogen';
+import {getStyxSeoMeta} from '~/lib/seo-meta';
 
 import {PageHeader, Section} from '~/components/Text';
 import {Button} from '~/components/Button';
@@ -45,7 +45,7 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
 }
 
 export const meta = ({matches}: MetaArgs<typeof loader>) => {
-  return getSeoMeta(...matches.map((match) => (match.data as any).seo));
+  return getStyxSeoMeta(...matches.map((match) => (match.data as any).seo));
 };
 
 export default function Policies() {

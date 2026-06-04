@@ -1,4 +1,4 @@
-import {type SeoConfig} from '@shopify/hydrogen';
+import {type SeoConfig, getSeoMeta} from '@shopify/hydrogen';
 import type {
   Article,
   Blog,
@@ -22,6 +22,21 @@ import type {
 
 import type {ShopFragment} from 'storefrontapi.generated';
 
+// Site-wide fallback social image (absolute URL required by OG/Twitter).
+import {DEFAULT_OG_IMAGE_PATH} from './seo-meta';
+
+function defaultOgImage(url: Request['url']): SeoConfig['media'] {
+  try {
+    return {
+      type: 'image',
+      url: new URL(DEFAULT_OG_IMAGE_PATH, new URL(url).origin).toString(),
+      altText: 'STYX Gold — solid gold chains',
+    };
+  } catch {
+    return undefined;
+  }
+}
+
 function root({
   shop,
   url,
@@ -38,6 +53,13 @@ function root({
     ),
     handle: '@styxgold',
     url,
+    media: shop?.brand?.logo?.image?.url
+      ? {
+          type: 'image',
+          url: shop.brand.logo.image.url,
+          altText: 'STYX Gold',
+        }
+      : defaultOgImage(url),
     robots: {
       noIndex: false,
       noFollow: false,
@@ -70,6 +92,7 @@ function home({url}: {url: Request['url']}): SeoConfig {
     description:
       'Solid gold chains — 10K & 14K — weighed, tested, and priced from the London fix. No markup mystery. Three generations in the gold trade.',
     url,
+    media: defaultOgImage(url),
     robots: {
       noIndex: false,
       noFollow: false,
@@ -190,23 +213,23 @@ function product({
   selectedVariant: SelectedVariantRequiredFields;
   url: Request['url'];
 }): SeoConfig {
-  const variantTitle = selectedVariant?.title && selectedVariant.title !== 'Default Title' 
-    ? ` - ${selectedVariant.title}` 
-    : '';
-  
-  const title = (product?.seo?.title ?? product?.title) + variantTitle;
-  
-  const description = truncate(
-    product?.seo?.description ?? product?.description ?? '',
-  );
+  // Keep the <title> tight: just the product name + brand suffix (via
+  // titleTemplate). Variant/option detail (length, colour) is dropped so titles
+  // stay under ~60 chars and don't read as duplicates across variants.
+  const title = product?.seo?.title || product?.title;
 
-  const variantDescription = selectedVariant?.title && selectedVariant.title !== 'Default Title'
-    ? `Shop the ${product.title} in ${selectedVariant.title}. Solid 10k or 14k gold chains priced transparently. ${description}`
-    : description;
+  // Prefer Shopify's authored SEO description. Otherwise generate one from the
+  // product body — strip HTML and any leftover spec lines, then truncate at a
+  // word boundary. No templated "Shop the … in …" prefix (it duplicated the
+  // title and ate the character budget).
+  const description = truncate(
+    product?.seo?.description || cleanText(product?.description ?? ''),
+  );
 
   return {
     title,
-    description: variantDescription,
+    titleTemplate: '%s | STYX Gold',
+    description,
     url,
     media: selectedVariant?.image,
     jsonLd: productJsonLd({product, selectedVariant, url}),
@@ -283,11 +306,16 @@ function collection({
   collection: CollectionRequiredFields;
   url: Request['url'];
 }): SeoConfig {
+  const title = collection?.seo?.title || collection?.title;
+  const description =
+    truncate(
+      collection?.seo?.description || cleanText(collection?.description ?? ''),
+    ) ||
+    `Shop ${collection?.title ?? 'solid gold chains'} — 10K & 14K, priced transparently from the London fix. No markup mystery.`;
+
   return {
-    title: collection?.seo?.title,
-    description: truncate(
-      collection?.seo?.description ?? collection?.description ?? '',
-    ),
+    title,
+    description,
     titleTemplate: '%s | STYX Gold',
     url,
     media: {
@@ -368,16 +396,22 @@ function article({
 }): SeoConfig {
   return {
     title: article?.seo?.title ?? article?.title,
-    description: truncate(article?.seo?.description ?? ''),
+    description: truncate(
+      article?.seo?.description ||
+        article?.excerpt ||
+        cleanText(article?.contentHtml ?? ''),
+    ),
     titleTemplate: '%s | STYX Gold',
     url,
-    media: {
-      type: 'image',
-      url: article?.image?.url,
-      height: article?.image?.height,
-      width: article?.image?.width,
-      altText: article?.image?.altText,
-    },
+    media: article?.image?.url
+      ? {
+          type: 'image',
+          url: article.image.url,
+          height: article?.image?.height,
+          width: article?.image?.width,
+          altText: article?.image?.altText,
+        }
+      : defaultOgImage(url),
     jsonLd: {
       '@context': 'https://schema.org',
       '@type': 'Article',
@@ -515,8 +549,33 @@ export const seoPayload = {
  */
 function truncate(str: string, num = 155): string {
   if (typeof str !== 'string') return '';
-  if (str.length <= num) {
-    return str;
+  const clean = str.trim();
+  if (clean.length <= num) {
+    return clean;
   }
-  return str.slice(0, num - 3) + '...';
+  // Truncate at the last word boundary before the limit so we never cut a word
+  // in half, then append an ellipsis.
+  const slice = clean.slice(0, num - 1);
+  const lastSpace = slice.lastIndexOf(' ');
+  const base = lastSpace > num * 0.5 ? slice.slice(0, lastSpace) : slice;
+  return base.replace(/[\s.,;:!-]+$/, '') + '…';
 }
+
+/**
+ * Strip HTML tags/entities and collapse whitespace so a product or collection
+ * descriptionHtml can be reused as a plain-text meta description.
+ */
+function cleanText(html: string): string {
+  if (typeof html !== 'string') return '';
+  return html
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+

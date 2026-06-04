@@ -1520,7 +1520,7 @@ function MobileMenu({
                         {CHAIN_IMAGE_MAP[chain.handle] ? (
                           <img
                             src={CHAIN_IMAGE_MAP[chain.handle]}
-                            alt=""
+                            alt={`${chain.name} chain`}
                             style={{
                               width: 130,
                               height: 46,
@@ -1941,6 +1941,24 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
   const [openMenu, setOpenMenu] = useState<MenuKey | null>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const headerHidden = useAutoHideHeader();
+  const headerRef = useRef<HTMLDivElement>(null);
+
+  // Publish the header's true height (announcement bar + nav) as a CSS var so
+  // sticky elements below it (e.g. the collection filter toolbar) can pin
+  // exactly beneath the header — and slide up to the viewport top when the
+  // header auto-hides, instead of being overlapped when it returns.
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const update = () => {
+      const h = headerHidden ? 0 : el.offsetHeight;
+      document.documentElement.style.setProperty('--styx-header-offset', `${h}px`);
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [headerHidden]);
 
   // Gold data for footer strip
   const rootData = useRouteLoaderData<RootLoader>('root');
@@ -1975,6 +1993,7 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
       />
 
       <div
+        ref={headerRef}
         className="styx-nav"
         style={{
           position: 'sticky',

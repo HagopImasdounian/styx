@@ -159,6 +159,7 @@ function CategoryCard({
         ) : imageData ? (
           <Image
             data={imageData}
+            alt={imageData.altText ?? collection.title}
             aspectRatio="4/5"
             sizes="(min-width: 1200px) 33vw, 50vw"
             style={{width: '100%', height: '100%', objectFit: 'cover'}}

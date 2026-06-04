@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import {type LoaderFunctionArgs} from 'react-router';
+import {type LoaderFunctionArgs, type MetaFunction} from 'react-router';
 import {useLoaderData, useNavigate, useFetcher} from 'react-router';
 import {Image} from '@shopify/hydrogen';
 import {Link} from '~/components/Link';
@@ -39,6 +39,19 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const products = results.map((r) => r.product).filter(Boolean);
   return {products};
 }
+
+export const meta: MetaFunction = () => {
+  return [
+    {title: 'Print List — STYX Gold'},
+    {
+      name: 'description',
+      content:
+        'A printable, true-to-scale spec sheet of your selected gold chains — widths shown at actual physical size.',
+    },
+    // Transient, query-param-driven utility page — keep it out of the index.
+    {name: 'robots', content: 'noindex, follow'},
+  ];
+};
 
 /* ─────────────────── Spec derivation ─────────────────── */
 
@@ -229,7 +242,7 @@ export default function PrintListPage() {
               >
                 <div style={{width: 36, height: 36, flexShrink: 0, background: STYX.paper, overflow: 'hidden'}}>
                   {r.image && (
-                    <img src={r.image} alt="" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+                    <img src={r.image} alt={r.title} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
                   )}
                 </div>
                 <span style={{flex: 1, fontFamily: FONT.inter, fontSize: 13, color: STYX.ink}}>
@@ -391,7 +404,7 @@ export default function PrintListPage() {
             >
               <div style={{width: 48, height: 48, flexShrink: 0, background: '#fff', overflow: 'hidden'}}>
                 {s.image && (
-                  <Image data={s.image} aspectRatio="1/1" sizes="48px" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+                  <Image data={s.image} alt={s.image?.altText ?? s.title} aspectRatio="1/1" sizes="48px" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
                 )}
               </div>
               <div style={{flex: 1, minWidth: 0}}>
@@ -465,7 +478,7 @@ export default function PrintListPage() {
                         <img
                           className="pl-silhouette"
                           src={`/images/silhouettes/${s.handle}.png`}
-                          alt=""
+                          alt={`${s.title} shown at actual ${s.mm}mm width`}
                           style={{width: `${s.mm}mm`}}
                           onError={() =>
                             setMissingSilhouette((prev) => ({...prev, [s.handle]: true}))

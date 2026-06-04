@@ -13,6 +13,7 @@ export type {CrossSellProduct} from './RecommendedProducts';
 export {ChainProductCard} from './ChainProductCard';
 export {Lookbook} from './Lookbook';
 export {CraftStrip} from './CraftStrip';
+export {ToolsStrip} from './ToolsStrip';
 export {Newsletter} from './Newsletter';
 export {StyxFooter} from './StyxFooter';
 export {StyxLabel} from './StyxLabel';

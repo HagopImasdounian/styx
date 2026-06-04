@@ -9,6 +9,7 @@ import invariant from 'tiny-invariant';
 import type {RootLoader} from '~/root';
 import {Link} from '~/components/Link';
 import {seoPayload} from '~/lib/seo.server';
+import {getStyxSeoMeta} from '~/lib/seo-meta';
 import {KARAT_PURITY} from '~/lib/gold';
 import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel, CTAButton, StyxProductCard} from '~/components/styx';
 import {PLACEHOLDER_ARTICLES} from '~/data/journal-articles';
@@ -121,7 +122,16 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
     formattedDate: placeholder.readTime,
     seo: {
       title: placeholder.title,
-      description: placeholder.content.substring(0, 160).replace(/<[^>]*>/g, ''),
+      titleTemplate: '%s | STYX Gold',
+      description: placeholder.content
+        .replace(/<[^>]*>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, 155)
+        .replace(/\s+\S*$/, '')
+        .replace(/[\s.,;:!-]+$/, '')
+        + '…',
+      url: request.url,
     },
     isPlaceholder: true,
     category: placeholder.category,
@@ -131,7 +141,7 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
 }
 
 export const meta = ({matches}: MetaArgs<typeof loader>) => {
-  return getSeoMeta(...matches.map((match) => (match.data as any).seo));
+  return getStyxSeoMeta(...matches.map((match) => (match.data as any).seo));
 };
 
 export default function Article() {
@@ -338,6 +348,7 @@ export default function Article() {
           ) : (
             <Image
               data={image}
+              alt={image.altText ?? title}
               sizes="90vw"
               loading="eager"
               style={{width: '100%', height: 'auto', display: 'block'}}

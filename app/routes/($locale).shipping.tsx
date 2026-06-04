@@ -1,12 +1,20 @@
-import {type MetaFunction} from 'react-router';
+import {type LoaderFunctionArgs, type MetaArgs} from 'react-router';
 import {Link} from 'react-router';
 import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel} from '~/components/styx';
+import {getStyxSeoMeta} from '~/lib/seo-meta';
 
-export const meta: MetaFunction = () => {
-  return [
-    {title: 'Shipping & Returns — STYX'},
-    {name: 'description', content: 'Free insured shipping on every order. 14-day return policy with inspection. Full details on delivery, tracking, returns, and exchanges at Styx Gold.'},
-  ];
+export async function loader({request}: LoaderFunctionArgs) {
+  return {url: request.url};
+}
+
+export const meta = ({data}: MetaArgs<typeof loader>) => {
+  return getStyxSeoMeta({
+    title: 'Shipping & Returns',
+    titleTemplate: '%s | STYX Gold',
+    description:
+      'Free insured shipping on every order. 14-day return policy with inspection. Full details on delivery, tracking, returns, and exchanges at STYX Gold.',
+    url: data?.url,
+  });
 };
 
 const SHIPPING_DETAILS = [

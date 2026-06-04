@@ -85,18 +85,15 @@ export function Lookbook({collections = []}: {collections?: CollectionNode[]}) {
         </div>
       </div>
 
-      {/* Horizontal scroll row */}
+      {/* Weave grid — rows of 4 on desktop, rows of 2 on mobile (no swiping) */}
       <div
         style={{
-          display: 'flex',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(4, 1fr)',
           gap: 4,
           padding: '0 56px',
-          overflowX: 'auto',
-          scrollSnapType: 'x mandatory',
-          WebkitOverflowScrolling: 'touch',
-          scrollbarWidth: 'none',
         }}
-        className="styx-hide-scrollbar"
+        className="styx-lookbook-grid"
       >
         {matched.map((item, i) => (
           <Link
@@ -108,9 +105,6 @@ export function Lookbook({collections = []}: {collections?: CollectionNode[]}) {
               position: 'relative',
               overflow: 'hidden',
               textDecoration: 'none',
-              flex: '0 0 calc(25% - 3px)',
-              minWidth: 220,
-              scrollSnapAlign: 'start',
             }}
             onMouseEnter={(e) => {
               const img = e.currentTarget.querySelector('img') as HTMLElement;
@@ -151,6 +145,7 @@ export function Lookbook({collections = []}: {collections?: CollectionNode[]}) {
               />
               {/* Title */}
               <div
+                className="styx-lookbook-tile-meta"
                 style={{
                   position: 'absolute',
                   bottom: 0,
@@ -164,6 +159,7 @@ export function Lookbook({collections = []}: {collections?: CollectionNode[]}) {
               >
                 <div>
                   <div
+                    className="styx-lookbook-tile-title"
                     style={{
                       fontFamily: FONT.cinzel,
                       fontSize: 22,

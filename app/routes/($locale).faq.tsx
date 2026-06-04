@@ -1,13 +1,21 @@
 import {useState} from 'react';
-import {type MetaFunction} from 'react-router';
+import {type LoaderFunctionArgs, type MetaArgs} from 'react-router';
 import {Link} from 'react-router';
 import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel} from '~/components/styx';
+import {getStyxSeoMeta} from '~/lib/seo-meta';
 
-export const meta: MetaFunction = () => {
-  return [
-    {title: 'FAQ — STYX'},
-    {name: 'description', content: 'Frequently asked questions about Styx Gold chains — pricing, shipping, returns, gold purity, and care.'},
-  ];
+export async function loader({request}: LoaderFunctionArgs) {
+  return {url: request.url};
+}
+
+export const meta = ({data}: MetaArgs<typeof loader>) => {
+  return getStyxSeoMeta({
+    title: 'FAQ',
+    titleTemplate: '%s | STYX Gold',
+    description:
+      'Frequently asked questions about STYX Gold chains — live pricing, shipping, returns, gold purity, and care.',
+    url: data?.url,
+  });
 };
 
 const FAQ_SECTIONS = [

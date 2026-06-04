@@ -7,7 +7,7 @@ import {
   useOutlet,
 } from 'react-router';
 import {Suspense} from 'react';
-import {type LoaderFunctionArgs} from 'react-router';
+import {redirect, type LoaderFunctionArgs, type MetaFunction} from 'react-router';
 import {flattenConnection} from '@shopify/hydrogen';
 
 import type {
@@ -34,7 +34,18 @@ import {
 
 export const headers = routeHeaders;
 
+export const meta: MetaFunction = () => {
+  // Private customer area — keep it out of search indexes.
+  return [{title: 'Account — STYX Gold'}, {name: 'robots', content: 'noindex, nofollow'}];
+};
+
 export async function loader({request, context, params}: LoaderFunctionArgs) {
+  // Customer accounts are optional (no SHOP_ID / customer-account env vars
+  // configured) — send visitors home instead of 500ing.
+  if (!context.customerAccount) {
+    throw redirect(params.locale ? `/${params.locale}` : '/');
+  }
+
   const {data, errors} = await context.customerAccount.query(
     CUSTOMER_DETAILS_QUERY,
   );

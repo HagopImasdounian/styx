@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {type LoaderFunctionArgs} from 'react-router';
+import {type LoaderFunctionArgs, type MetaFunction} from 'react-router';
 import {useLoaderData, useNavigate} from 'react-router';
 import {Image, Money} from '@shopify/hydrogen';
 import {Link} from '~/components/Link';
@@ -32,6 +32,19 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   );
   return {products: results.map((r) => r.product).filter(Boolean)};
 }
+
+export const meta: MetaFunction = () => {
+  return [
+    {title: 'Wishlist — STYX Gold'},
+    {
+      name: 'description',
+      content:
+        'Your saved gold chains, kept in one place — live priced from the London fix so you always see the real number.',
+    },
+    // Personal, query-param-driven list — not meant for the search index.
+    {name: 'robots', content: 'noindex, follow'},
+  ];
+};
 
 // Compare and Print lists have their own size caps; respect them so we don't
 // silently drop items in a confusing way.
@@ -402,7 +415,7 @@ export default function WishlistPage() {
                     <Link to={`/products/${p.handle}`} style={{textDecoration: 'none', display: 'block'}}>
                       <div style={{aspectRatio: '4/5', background: '#fff', overflow: 'hidden'}}>
                         {image && (
-                          <Image data={image} aspectRatio="4/5" sizes="(min-width: 768px) 25vw, 50vw" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+                          <Image data={image} alt={image.altText ?? p.title} aspectRatio="4/5" sizes="(min-width: 768px) 25vw, 50vw" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
                         )}
                       </div>
                       <div style={{padding: '14px 16px'}}>

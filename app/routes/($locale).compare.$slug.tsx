@@ -1,6 +1,6 @@
 import {type LoaderFunctionArgs, type MetaArgs} from 'react-router';
 import {useLoaderData, useRouteLoaderData} from 'react-router';
-import {getSeoMeta} from '@shopify/hydrogen';
+import {getStyxSeoMeta} from '~/lib/seo-meta';
 import {Link} from '~/components/Link';
 import {
   STYX,
@@ -51,7 +51,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 
 export const meta = ({data}: MetaArgs<typeof loader>) => {
   if (!data?.seo) return [];
-  return getSeoMeta({
+  return getStyxSeoMeta({
     title: data.seo.title,
     description: data.seo.description,
     url: data.seo.url,

@@ -1,12 +1,20 @@
-import {type MetaFunction} from 'react-router';
+import {type LoaderFunctionArgs, type MetaArgs} from 'react-router';
 import {Link} from 'react-router';
 import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel} from '~/components/styx';
+import {getStyxSeoMeta} from '~/lib/seo-meta';
 
-export const meta: MetaFunction = () => {
-  return [
-    {title: 'Privacy Policy — STYX'},
-    {name: 'description', content: 'Privacy policy for Styx Gold. How we collect, use, and protect your personal information.'},
-  ];
+export async function loader({request}: LoaderFunctionArgs) {
+  return {url: request.url};
+}
+
+export const meta = ({data}: MetaArgs<typeof loader>) => {
+  return getStyxSeoMeta({
+    title: 'Privacy Policy',
+    titleTemplate: '%s | STYX Gold',
+    description:
+      'Privacy policy for STYX Gold — how we collect, use, and protect your personal information.',
+    url: data?.url,
+  });
 };
 
 function SectionHeading({number, title}: {number: string; title: string}) {

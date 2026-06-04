@@ -5,6 +5,7 @@ import {
 import {useLoaderData, Link} from 'react-router';
 import {Image, getSeoMeta} from '@shopify/hydrogen';
 import {seoPayload} from '~/lib/seo.server';
+import {getStyxSeoMeta} from '~/lib/seo-meta';
 import {routeHeaders} from '~/data/cache';
 import {
   STYX,
@@ -40,7 +41,7 @@ export const loader = async ({
 };
 
 export const meta = ({matches}: MetaArgs<typeof loader>) => {
-  return getSeoMeta(...matches.map((match) => (match.data as any).seo));
+  return getStyxSeoMeta(...matches.map((match) => (match.data as any).seo));
 };
 
 export default function CollectionsIndex() {
@@ -364,6 +365,7 @@ function CollectionTile({
         ) : collection.image ? (
           <Image
             data={collection.image}
+            alt={collection.image.altText ?? collection.title}
             aspectRatio="4/5"
             sizes="(min-width: 1200px) 25vw, 50vw"
             style={{width: '100%', height: '100%', objectFit: 'cover'}}

@@ -15,7 +15,6 @@ import {
   flattenConnection,
   getPaginationVariables,
   Analytics,
-  getSeoMeta,
 } from '@shopify/hydrogen';
 import invariant from 'tiny-invariant';
 
@@ -106,6 +105,7 @@ import {type SortParam} from '~/components/SortFilter';
 import {PRODUCT_CARD_FRAGMENT} from '~/data/fragments';
 import {routeHeaders} from '~/data/cache';
 import {seoPayload} from '~/lib/seo.server';
+import {getStyxSeoMeta} from '~/lib/seo-meta';
 import {FILTER_URL_PREFIX} from '~/components/SortFilter';
 import {parseAsCurrency} from '~/lib/utils';
 
@@ -160,12 +160,12 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   const seo = seoPayload.collection({collection, url: request.url});
 
   const allFilterValues = collection.products.filters.flatMap(
-    (filter) => filter.values,
+    (filter: Filter) => filter.values,
   );
 
   const appliedFilters = filters
     .map((filter) => {
-      const foundValue = allFilterValues.find((value) => {
+      const foundValue = allFilterValues.find((value: Filter['values'][number]) => {
         const valueInput = JSON.parse(value.input as string) as ProductFilter;
         // special case for price, the user can enter something freeform (still a number, though)
         // that may not make sense for the locale/currency.
@@ -215,7 +215,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 }
 
 export const meta = ({matches}: MetaArgs<typeof loader>) => {
-  return getSeoMeta(...matches.map((match) => (match.data as any).seo));
+  return getStyxSeoMeta(...matches.map((match) => (match.data as any).seo));
 };
 
 const SORT_OPTIONS: {label: string; value: SortParam | 'default'}[] = [
@@ -432,8 +432,24 @@ function FilterPill({
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Collection page
+   Weave directory — all 13 chain families, shown on the Chains archive
    ═══════════════════════════════════════════════════════════════ */
+
+const WEAVES: Array<{handle: string; label: string}> = [
+  {handle: 'cuban', label: 'Cuban Link'},
+  {handle: 'curb', label: 'Curb'},
+  {handle: 'rope', label: 'Rope'},
+  {handle: 'box', label: 'Box'},
+  {handle: 'figaro', label: 'Figaro'},
+  {handle: 'cable', label: 'Cable'},
+  {handle: 'wheat', label: 'Wheat'},
+  {handle: 'rolo', label: 'Rolo'},
+  {handle: 'singapore', label: 'Singapore'},
+  {handle: 'franco', label: 'Franco'},
+  {handle: 'herringbone', label: 'Herringbone'},
+  {handle: 'paperclip', label: 'Paperclip'},
+  {handle: 'snake', label: 'Snake'},
+];
 
 export default function Collection() {
   const {collection} = useLoaderData<typeof loader>();
@@ -554,7 +570,7 @@ export default function Collection() {
             <h1
               style={{
                 fontFamily: FONT.cinzel,
-                fontSize: 80,
+                fontSize: (collection as any).handle === 'chains' ? 56 : 80,
                 fontWeight: 400,
                 textTransform: 'uppercase',
                 letterSpacing: '0.02em',
@@ -569,6 +585,83 @@ export default function Collection() {
 
         </div>
       </div>
+
+      {/* ── Shop by Weave — every chain family, on the all-chains archive ── */}
+      {(collection as any).handle === 'chains' && (
+        <div style={{borderBottom: `1px solid ${STYX.line}`, background: STYX.paper}}>
+          <div
+            className="styx-weave-strip"
+            style={{maxWidth: 1440, margin: '0 auto', padding: '32px 56px 36px'}}
+          >
+            <div
+              style={{
+                fontFamily: FONT.cinzel,
+                fontSize: 10,
+                letterSpacing: '0.3em',
+                textTransform: 'uppercase',
+                color: STYX.silt,
+                marginBottom: 18,
+              }}
+            >
+              Shop by Weave
+            </div>
+            <div
+              className="styx-weave-grid"
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(7, 1fr)',
+                gap: 12,
+              }}
+            >
+              {WEAVES.map((w) => (
+                <Link
+                  key={w.handle}
+                  to={`/collections/${w.handle}`}
+                  prefetch="intent"
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 10,
+                    padding: '16px 10px 14px',
+                    background: STYX.bone,
+                    border: `1px solid ${STYX.line}`,
+                    textDecoration: 'none',
+                    transition: 'border-color 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = STYX.gold;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = STYX.line;
+                  }}
+                >
+                  <img
+                    src={CHAIN_HERO_IMAGE[w.handle]}
+                    alt={`${w.label} chain close-up`}
+                    loading="lazy"
+                    style={{height: 30, maxWidth: '100%', objectFit: 'contain'}}
+                  />
+                  <span
+                    style={{
+                      fontFamily: FONT.cinzel,
+                      fontSize: 10,
+                      letterSpacing: '0.12em',
+                      textTransform: 'uppercase',
+                      color: STYX.ink,
+                      textAlign: 'center',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {w.label}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Chain Intro + Journal Link ── */}
       {(() => {
@@ -620,14 +713,15 @@ export default function Collection() {
         );
       })()}
 
-      {/* ── Sticky Filter Toolbar ── */}
+      {/* ── Sticky Filter Toolbar — pins exactly below the (auto-hiding) header ── */}
       <div
         style={{
           position: 'sticky',
-          top: 64,
+          top: 'var(--styx-header-offset, 64px)',
           zIndex: 5,
           background: STYX.paper,
           borderBottom: `1px solid ${STYX.line}`,
+          transition: 'top 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
         }}
       >
         <div
@@ -995,6 +1089,7 @@ export default function Collection() {
                   <div style={{position: 'relative', aspectRatio: '4/5', overflow: 'hidden'}}>
                     <Image
                       data={collection.image}
+                      alt={collection.image.altText ?? collection.title}
                       aspectRatio="4/5"
                       sizes="(min-width: 1200px) 40vw, 80vw"
                       style={{width: '100%', height: '100%', objectFit: 'cover'}}

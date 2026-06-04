@@ -1,5 +1,6 @@
 import {
-    redirect,
+  data,
+  redirect,
   type ActionFunction,
   type AppLoadContext,
 } from 'react-router';

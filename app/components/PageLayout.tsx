@@ -278,7 +278,7 @@ function MobileHeader({
       >
         <Heading
           className="font-bold text-center leading-none"
-          as={isHome ? 'h1' : 'h2'}
+          as="h2"
         >
           {title}
         </Heading>

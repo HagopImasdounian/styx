@@ -1,19 +1,23 @@
-import {type LoaderFunctionArgs} from 'react-router';
+import {type LoaderFunctionArgs, type MetaArgs} from 'react-router';
 import {useState} from 'react';
 
 import {Link} from '~/components/Link';
 import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel, Obol} from '~/components/styx';
 import {trackFormSubmit} from '~/components/GTMDataLayer';
+import {getStyxSeoMeta} from '~/lib/seo-meta';
 
-export async function loader({context}: LoaderFunctionArgs) {
-  return {};
+export async function loader({request}: LoaderFunctionArgs) {
+  return {url: request.url};
 }
 
-export const meta = () => {
-  return [
-    {title: 'Customize Your Chain | STYX Gold'},
-    {name: 'description', content: 'Commission a custom gold chain. Custom clasps, diamond accents, bespoke lengths, and one-of-one pieces. Handcrafted in solid gold.'},
-  ];
+export const meta = ({data}: MetaArgs<typeof loader>) => {
+  return getStyxSeoMeta({
+    title: 'Customize Your Chain',
+    titleTemplate: '%s | STYX Gold',
+    description:
+      'Commission a custom gold chain. Custom clasps, diamond accents, bespoke lengths, and one-of-one pieces. Handcrafted in solid gold.',
+    url: data?.url,
+  });
 };
 
 const CUSTOM_OPTIONS = [

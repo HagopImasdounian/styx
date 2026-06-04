@@ -1,12 +1,20 @@
-import {type MetaFunction} from 'react-router';
+import {type LoaderFunctionArgs, type MetaArgs} from 'react-router';
 import {Link} from 'react-router';
 import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel} from '~/components/styx';
+import {getStyxSeoMeta} from '~/lib/seo-meta';
 
-export const meta: MetaFunction = () => {
-  return [
-    {title: 'Terms & Conditions — STYX'},
-    {name: 'description', content: 'Terms and conditions for Styx Gold. Read before purchasing.'},
-  ];
+export async function loader({request}: LoaderFunctionArgs) {
+  return {url: request.url};
+}
+
+export const meta = ({data}: MetaArgs<typeof loader>) => {
+  return getStyxSeoMeta({
+    title: 'Terms & Conditions',
+    titleTemplate: '%s | STYX Gold',
+    description:
+      'The terms and conditions for buying solid gold chains from STYX Gold — pricing, ordering, payment, and your rights. Read before purchasing.',
+    url: data?.url,
+  });
 };
 
 function SectionHeading({number, title}: {number: string; title: string}) {

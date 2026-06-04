@@ -1,9 +1,20 @@
-import {type MetaFunction} from 'react-router';
+import {type LoaderFunctionArgs, type MetaArgs} from 'react-router';
 import {Link} from 'react-router';
 import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel, Obol} from '~/components/styx';
+import {getStyxSeoMeta} from '~/lib/seo-meta';
 
-export const meta: MetaFunction = () => {
-  return [{title: 'About — STYX'}, {name: 'description', content: 'Three generations. Fifty years of gold. The story behind Styx.'}];
+export async function loader({request}: LoaderFunctionArgs) {
+  return {url: request.url};
+}
+
+export const meta = ({data}: MetaArgs<typeof loader>) => {
+  return getStyxSeoMeta({
+    title: 'About',
+    titleTemplate: '%s | STYX Gold',
+    description:
+      'Three generations and fifty years in the gold trade. The story behind STYX — solid gold chains priced honestly from the London fix.',
+    url: data?.url,
+  });
 };
 
 export default function About() {

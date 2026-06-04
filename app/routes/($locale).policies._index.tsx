@@ -4,7 +4,7 @@ import {
 } from 'react-router';
 import {data, useLoaderData} from 'react-router';
 import invariant from 'tiny-invariant';
-import {getSeoMeta} from '@shopify/hydrogen';
+import {getStyxSeoMeta} from '~/lib/seo-meta';
 
 import {PageHeader, Section, Heading} from '~/components/Text';
 import {Link} from '~/components/Link';
@@ -18,11 +18,11 @@ export async function loader({
   request,
   context: {storefront},
 }: LoaderFunctionArgs) {
-  const data = await storefront.query(POLICIES_QUERY);
+  const result = await storefront.query(POLICIES_QUERY);
 
-  invariant(data, 'No data returned from Shopify API');
+  invariant(result, 'No data returned from Shopify API');
   const policies = Object.values(
-    data.shop as NonNullableFields<typeof data.shop>,
+    result.shop as NonNullableFields<typeof result.shop>,
   ).filter(Boolean);
 
   if (policies.length === 0) {
@@ -38,7 +38,7 @@ export async function loader({
 }
 
 export const meta = ({matches}: MetaArgs<typeof loader>) => {
-  return getSeoMeta(...matches.map((match) => (match.data as any).seo));
+  return getStyxSeoMeta(...matches.map((match) => (match.data as any).seo));
 };
 
 export default function Policies() {

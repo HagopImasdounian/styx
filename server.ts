@@ -1,10 +1,10 @@
 // @ts-ignore
 // Virtual entry point for the app
 import * as remixBuild from 'virtual:react-router/server-build';
-import {
-  createRequestHandler,
-  getStorefrontHeaders,
-} from '@shopify/remix-oxygen';
+import {createRequestHandler} from '@shopify/remix-oxygen';
+// Hydrogen's version includes the newer `buyerIpSig` header that
+// createStorefrontClient's StorefrontHeaders type requires.
+import {getStorefrontHeaders} from '@shopify/hydrogen/oxygen';
 import {
   cartGetIdDefault,
   cartSetIdDefault,

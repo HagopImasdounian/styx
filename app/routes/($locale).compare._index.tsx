@@ -1,6 +1,7 @@
 import {useState} from 'react';
-import {type LoaderFunctionArgs} from 'react-router';
+import {type LoaderFunctionArgs, type MetaArgs} from 'react-router';
 import {useLoaderData, useRouteLoaderData} from 'react-router';
+import {getStyxSeoMeta} from '~/lib/seo-meta';
 import {Image} from '@shopify/hydrogen';
 import {Link} from '~/components/Link';
 import {
@@ -22,7 +23,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const items = parseCompareItems(url.searchParams.get('products') || '');
 
   if (items.length === 0) {
-    return {entries: []};
+    return {entries: [], url: request.url};
   }
 
   // Query each distinct product once, then attach to every requested length.
@@ -46,8 +47,18 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     .map((item) => ({handle: item.handle, length: item.length, product: byHandle.get(item.handle)}))
     .filter((e) => e.product);
 
-  return {entries};
+  return {entries, url: request.url};
 }
+
+export const meta = ({data}: MetaArgs<typeof loader>) => {
+  return getStyxSeoMeta({
+    title: 'Compare Gold Chains — Side by Side',
+    titleTemplate: '%s | STYX Gold',
+    description:
+      'Compare solid gold chains side by side — weight, karat, gold content, and live price per gram. See exactly what your money buys. No markup mystery.',
+    url: data?.url,
+  });
+};
 
 /* ─────────────────── Types ─────────────────── */
 
@@ -745,7 +756,7 @@ function ComparisonTable({
                 {s.type === 'product' && s.image && (
                   <Link to={`/products/${s.handle}`} style={{textDecoration: 'none'}}>
                     <div style={{width: '100%', maxWidth: 160, aspectRatio: '4/5', margin: '0 auto 12px', background: '#fff', overflow: 'hidden'}}>
-                      <Image data={s.image} aspectRatio="4/5" sizes="160px" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+                      <Image data={s.image} alt={s.image?.altText ?? s.title} aspectRatio="4/5" sizes="160px" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
                     </div>
                   </Link>
                 )}

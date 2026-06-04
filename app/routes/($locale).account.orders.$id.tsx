@@ -1,6 +1,5 @@
 import clsx from 'clsx';
-import {data, redirect, type LoaderFunctionArgs} from 'react-router';
-import {data, useLoaderData, type MetaFunction} from 'react-router';
+import {data, redirect, useLoaderData, type LoaderFunctionArgs, type MetaFunction} from 'react-router';
 import {Money, Image, flattenConnection} from '@shopify/hydrogen';
 import type {FulfillmentStatus} from '@shopify/hydrogen/customer-account-api-types';
 
@@ -11,7 +10,11 @@ import {Heading, PageHeader, Text} from '~/components/Text';
 import {CUSTOMER_ORDER_QUERY} from '~/graphql/customer-account/CustomerOrderQuery';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `Order ${data?.order?.name}`}];
+  // Private order detail — never index.
+  return [
+    {title: `Order ${data?.order?.name} — STYX Gold`},
+    {name: 'robots', content: 'noindex, nofollow'},
+  ];
 };
 
 export async function loader({request, context, params}: LoaderFunctionArgs) {
@@ -126,7 +129,7 @@ export default function OrderRoute() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {lineItems.map((lineItem) => (
+                {lineItems.map((lineItem: any) => (
                   <tr key={lineItem.id}>
                     <td className="w-full py-4 pl-0 pr-3 align-top sm:align-middle max-w-0 sm:w-auto sm:max-w-none">
                       <div className="flex gap-6">
@@ -134,6 +137,7 @@ export default function OrderRoute() {
                           <div className="w-24 card-image aspect-square">
                             <Image
                               data={lineItem.image}
+                              alt={lineItem.image.altText ?? lineItem.title}
                               width={96}
                               height={96}
                             />

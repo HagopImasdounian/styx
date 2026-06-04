@@ -343,7 +343,7 @@ function ChainColumn({chain, shortName, onRemove}: {chain: WeighInChain; shortNa
       <div style={{position: 'relative', overflow: 'hidden'}}>
         {chain.type === 'product' && chain.image ? (
           <Link to={`/products/${chain.handle}`}>
-            <Image data={chain.image} aspectRatio="4/5" sizes="(min-width: 768px) 30vw, 80vw" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+            <Image data={chain.image} alt={chain.image?.altText ?? chain.title} aspectRatio="4/5" sizes="(min-width: 768px) 30vw, 80vw" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
           </Link>
         ) : chain.type === 'custom' ? (
           <div style={{aspectRatio: '4/5', background: STYX.parchment, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 8, border: `1px dashed ${STYX.line}`}}>
@@ -576,20 +576,25 @@ function weighinCSS(count: number) {
     max-width: 100%;
     font-size: 15px;
   }
+  /* Chain cards side by side — compact columns with a small image each */
   .weighin-columns {
-    grid-template-columns: 1fr !important;
-    gap: 12px;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px;
   }
   .weighin-ledger-header {
     display: none;
   }
+  /* Each measure: label spans the full row, values sit side by side beneath */
   .weighin-row {
-    grid-template-columns: 1fr !important;
-    padding: 20px 16px;
-    gap: 14px;
+    grid-template-columns: repeat(${count}, 1fr) !important;
+    padding: 16px;
+    gap: 10px 12px;
   }
   .weighin-row > div:first-child {
     display: none;
+  }
+  .weighin-row > div:nth-child(2) {
+    grid-column: 1 / -1;
   }
   .weighin-mobile-label {
     display: block;

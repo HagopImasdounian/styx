@@ -3,11 +3,17 @@ import invariant from 'tiny-invariant';
 import {
   type LoaderFunctionArgs,
   type ActionFunctionArgs,
+  type MetaFunction,
   } from 'react-router';
 import {CartForm, type CartQueryDataReturn, Analytics} from '@shopify/hydrogen';
 
 import {isLocalPath} from '~/lib/utils';
 import {Cart} from '~/components/Cart';
+
+export const meta: MetaFunction = () => {
+  // The cart is personal and transient — not something to index.
+  return [{title: 'Your Vault — STYX Gold'}, {name: 'robots', content: 'noindex, follow'}];
+};
 
 export async function action({request, context}: ActionFunctionArgs) {
   const {cart} = context;

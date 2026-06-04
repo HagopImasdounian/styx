@@ -16,6 +16,7 @@ import {Grid} from '~/components/Grid';
 import {PRODUCT_CARD_FRAGMENT} from '~/data/fragments';
 import {getImageLoadingPriority} from '~/lib/const';
 import {seoPayload} from '~/lib/seo.server';
+import {getStyxSeoMeta} from '~/lib/seo-meta';
 import {routeHeaders} from '~/data/cache';
 
 const PAGE_BY = 8;
@@ -28,7 +29,7 @@ export async function loader({
 }: LoaderFunctionArgs) {
   const variables = getPaginationVariables(request, {pageBy: PAGE_BY});
 
-  const data = await storefront.query(ALL_PRODUCTS_QUERY, {
+  const result = await storefront.query(ALL_PRODUCTS_QUERY, {
     variables: {
       ...variables,
       country: storefront.i18n.country,
@@ -36,7 +37,7 @@ export async function loader({
     },
   });
 
-  invariant(data, 'No data returned from Shopify API');
+  invariant(result, 'No data returned from Shopify API');
 
   const seo = seoPayload.collection({
     url: request.url,
@@ -51,19 +52,19 @@ export async function loader({
         description: 'All the store products',
       },
       metafields: [],
-      products: data.products,
+      products: result.products,
       updatedAt: '',
     },
   });
 
   return data({
-    products: data.products,
+    products: result.products,
     seo,
   });
 }
 
 export const meta = ({matches}: MetaArgs<typeof loader>) => {
-  return getSeoMeta(...matches.map((match) => (match.data as any).seo));
+  return getStyxSeoMeta(...matches.map((match) => (match.data as any).seo));
 };
 
 export default function AllProducts() {
@@ -75,7 +76,7 @@ export default function AllProducts() {
       <Section>
         <Pagination connection={products}>
           {({nodes, isLoading, NextLink, PreviousLink}) => {
-            const itemsMarkup = nodes.map((product, i) => (
+            const itemsMarkup = nodes.map((product: any, i: number) => (
               <ProductCard
                 key={product.id}
                 product={product}

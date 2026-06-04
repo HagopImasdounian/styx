@@ -105,15 +105,34 @@ export function StyxFooter({collections = []}: {collections?: CollectionNode[]})
         <div>
           <div
             style={{
-              fontFamily: FONT.cinzel,
-              fontSize: 20,
-              letterSpacing: '0.4em',
-              color: '#fff',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
               marginBottom: 16,
-              textTransform: 'uppercase',
             }}
           >
-            STYX
+            <img
+              src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-styx-logo.png?v=1779151809"
+              alt=""
+              style={{
+                height: 40,
+                width: 'auto',
+                // Dark-ink logo asset on a dark footer — render it bone-white.
+                filter: 'brightness(0) invert(1)',
+                opacity: 0.92,
+              }}
+            />
+            <div
+              style={{
+                fontFamily: FONT.cinzel,
+                fontSize: 20,
+                letterSpacing: '0.4em',
+                color: '#fff',
+                textTransform: 'uppercase',
+              }}
+            >
+              STYX
+            </div>
           </div>
           <p
             style={{

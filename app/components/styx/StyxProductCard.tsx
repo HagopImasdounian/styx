@@ -175,6 +175,7 @@ export function StyxProductCard({
         {variant.image ? (
           <Image
             data={variant.image}
+            alt={variant.image.altText ?? (colorLabel ? `${product.title} · ${colorLabel}` : product.title)}
             aspectRatio="4/5"
             sizes="(min-width: 1200px) 25vw, 50vw"
             style={{
@@ -198,6 +199,7 @@ export function StyxProductCard({
         {hoverImage && (
           <Image
             data={hoverImage}
+            alt={hoverImage.altText ?? product.title}
             aspectRatio="4/5"
             sizes="(min-width: 1200px) 25vw, 50vw"
             style={{

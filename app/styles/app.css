@@ -230,9 +230,6 @@ shop-pay-button {
   .styx-chain-guide-layout > div:last-child { border-left: none !important; border-top: 1px solid #e2ded6 !important; padding: 24px 20px !important; }
   .styx-chain-ref-grid { grid-template-columns: repeat(2, 1fr) !important; }
 
-  /* Sticky mobile ATC — visible on mobile only */
-  .styx-sticky-atc { display: flex !important; }
-
   /* Ticker */
   .styx-ticker { padding: 8px 16px !important; gap: 16px !important; }
   .styx-ticker [data-cell-extra] { display: none !important; }
@@ -280,11 +277,12 @@ shop-pay-button {
     scroll-snap-align: start;
   }
 
-  /* Lookbook */
+  /* Lookbook — static grid, rows of 2 on mobile */
   .styx-lookbook { padding: 80px 0 80px !important; }
   .styx-lookbook > div:first-child { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; padding: 0 20px !important; }
-  .styx-lookbook .styx-hide-scrollbar { padding: 0 20px !important; }
-  .styx-lookbook .styx-hide-scrollbar > * { flex: 0 0 55vw !important; min-width: 180px !important; }
+  .styx-lookbook-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; padding: 0 20px !important; }
+  .styx-lookbook-tile-meta { padding: 12px !important; }
+  .styx-lookbook-tile-title { font-size: 14px !important; letter-spacing: 0.06em !important; }
   .styx-lookbook h2 { font-size: 36px !important; }
 
   /* Craft / Promise */
@@ -313,15 +311,22 @@ shop-pay-button {
 
   /* ── Product page ── */
   .styx-product-breadcrumb { padding: 12px 20px !important; }
+  /* Breadcrumb: full trail wraps awkwardly on phones — show a single back link */
+  .styx-breadcrumb-full { display: none !important; }
+  .styx-breadcrumb-back { display: block !important; }
+  /* Color pills: three letter-spaced pills can't share one phone-width row — stack them */
+  .styx-color-pills { flex-direction: column !important; }
+  .styx-color-pills > a {
+    border-right: none !important;
+    border-bottom: 1px solid rgba(26,24,21,0.12) !important;
+  }
+  .styx-color-pills > a:last-child { border-bottom: none !important; }
   .styx-product-grid { grid-template-columns: 1fr !important; gap: 32px !important; padding: 40px 20px 60px !important; }
   .styx-product-grid h1 { font-size: 32px !important; }
   .styx-product-info { position: static !important; }
   .styx-product-price { font-size: 32px !important; }
   /* Product details grid — 2 col on tablet */
   .styx-product-specs-grid { grid-template-columns: 1fr !important; gap: 48px !important; padding: 60px 20px !important; }
-  /* Honest ledger — 2x2 */
-  .styx-product-ledger { grid-template-columns: repeat(2, 1fr) !important; }
-  .styx-product-ledger > div { padding: 24px 16px !important; }
   /* Transparency section */
   .styx-product-transparency { padding: 60px 20px !important; }
   .styx-product-transparency h2 { font-size: 32px !important; }
@@ -332,6 +337,11 @@ shop-pay-button {
 
   /* ── Collection page ── */
   .styx-collection-hero { padding: 40px 20px 32px !important; grid-template-columns: 1fr !important; }
+  /* Shop by Weave strip (chains archive) */
+  .styx-weave-strip { padding: 24px 16px 28px !important; }
+  .styx-weave-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; }
+  .styx-weave-grid a { padding: 12px 6px 10px !important; }
+  .styx-weave-grid a span { font-size: 8.5px !important; letter-spacing: 0.08em !important; }
   .styx-collection-hero h1 { font-size: clamp(32px, 10vw, 80px) !important; }
   .styx-collection-hero img { height: 48px !important; }
   .styx-collection-intro { padding: 24px 20px !important; flex-direction: column !important; gap: 16px !important; }
@@ -414,6 +424,16 @@ shop-pay-button {
 
   /* Footer bottom bar */
   .styx-footer-bottom { flex-direction: column !important; gap: 16px !important; text-align: center !important; }
+
+  /* ── Compare bar — compact: count + actions only, no name chips ── */
+  .styx-compare-bar { padding: 10px 16px !important; gap: 10px !important; }
+  .styx-compare-chips { display: none !important; }
+
+  /* ── Tools of the Trade (homepage) ── */
+  .styx-tools { padding: 60px 20px !important; }
+  .styx-tools h2 { font-size: 32px !important; }
+  .styx-tools-grid { grid-template-columns: 1fr !important; gap: 16px !important; }
+  .styx-tools-grid > a { padding: 28px 22px !important; }
 }
 
 /* Small mobile: ≤ 32em (512px) */
@@ -426,7 +446,6 @@ shop-pay-button {
 
   /* Homepage sections */
   .styx-featured-grid > * { flex: 0 0 70vw !important; }
-  .styx-lookbook .styx-hide-scrollbar > * { flex: 0 0 60vw !important; }
   .styx-lookbook h2 { font-size: 28px !important; }
   .styx-categories h2 { font-size: 28px !important; }
 
@@ -434,8 +453,6 @@ shop-pay-button {
   .styx-product-grid { padding: 24px 16px 48px !important; }
   .styx-product-grid h1 { font-size: 28px !important; }
   .styx-product-breadcrumb { padding: 10px 16px !important; }
-  .styx-product-ledger { grid-template-columns: 1fr 1fr !important; }
-  .styx-product-ledger > div { padding: 20px 12px !important; }
   .styx-product-transparency { padding: 40px 16px !important; }
   .styx-product-transparency h2 { font-size: 26px !important; }
   .styx-product-related { padding: 40px 16px !important; }

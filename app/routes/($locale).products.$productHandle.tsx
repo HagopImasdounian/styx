@@ -31,6 +31,7 @@ import {AddToCartButton} from '~/components/AddToCartButton';
 import {IconCaret, IconCheck, IconClose} from '~/components/Icon';
 import {getExcerpt} from '~/lib/utils';
 import {seoPayload} from '~/lib/seo.server';
+import {getStyxSeoMeta} from '~/lib/seo-meta';
 import {computeGoldPrice, KARAT_PURITY} from '~/lib/gold';
 import type {Storefront} from '~/lib/type';
 import {trackProductView, trackVariantSelect} from '~/components/GTMDataLayer';
@@ -141,7 +142,7 @@ function loadDeferredData(args: LoaderFunctionArgs) {
 }
 
 export const meta = ({matches}: MetaArgs<typeof loader>) => {
-  return getSeoMeta(...matches.map((match) => (match.data as any).seo));
+  return getStyxSeoMeta(...matches.map((match) => (match.data as any).seo));
 };
 
 /* ─────────────────────────── Main Product Page ─────────────────────────── */
@@ -295,7 +296,9 @@ export default function Product() {
         return (
           <div style={{borderBottom: `1px solid ${STYX.line}`}}>
             <div className="styx-product-breadcrumb" style={{maxWidth: 1440, margin: '0 auto', padding: '20px 56px'}}>
+              {/* Full trail — desktop / tablet */}
               <nav
+                className="styx-breadcrumb-full"
                 style={{
                   fontFamily: FONT.cinzel,
                   fontSize: 11,
@@ -323,6 +326,31 @@ export default function Product() {
                   </>
                 )}
                 <span style={{color: STYX.ink}}>{title}</span>
+              </nav>
+              {/* Single back link — mobile (product name is in the H1 right below) */}
+              <nav
+                className="styx-breadcrumb-back"
+                style={{
+                  display: 'none',
+                  fontFamily: FONT.cinzel,
+                  fontSize: 11,
+                  letterSpacing: '0.2em',
+                  textTransform: 'uppercase',
+                }}
+              >
+                <Link
+                  to={chainCollection ? `/collections/${chainCollection.handle}` : '/collections'}
+                  style={{
+                    color: STYX.silt,
+                    textDecoration: 'none',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 8,
+                  }}
+                >
+                  <span aria-hidden>&larr;</span>
+                  {chainCollection ? chainCollection.title : 'Collections'}
+                </Link>
               </nav>
             </div>
           </div>
@@ -363,6 +391,7 @@ export default function Product() {
                 {leadImage ? (
                   <ZoomableImage
                     data={leadImage}
+                    alt={title}
                     sizes="(min-width: 1200px) 55vw, 90vw"
                   />
                 ) : (
@@ -441,6 +470,7 @@ export default function Product() {
               >
                 <ZoomableImage
                   data={img}
+                  alt={title}
                   sizes="(min-width: 1200px) 55vw, 90vw"
                 />
               </div>
@@ -466,12 +496,6 @@ export default function Product() {
               {chainOrigin}{romanNumeral ? ` · ${romanNumeral}` : ''}
             </div>
           )}
-
-          {/* Compare + Print-size buttons (top) */}
-          <div style={{marginBottom: 16, display: 'flex', gap: 8, flexWrap: 'wrap'}}>
-            <CompareButton handle={product.handle} length={selectedLength} />
-            <PrintListButton handle={product.handle} />
-          </div>
 
           {/* Title */}
           <h1
@@ -627,11 +651,6 @@ export default function Product() {
             })()}
           </div>
 
-          {/* ── Cross-Sell: Pairs Well With (under price box) ── */}
-          {crossSell && crossSell.length > 0 && (
-            <RecommendedProducts products={crossSell} heading="Pairs Well With" />
-          )}
-
           {/* ── Variant Selectors ── */}
           <div style={{marginTop: 28, display: 'flex', flexDirection: 'column', gap: 28}}>
             {productOptions
@@ -724,7 +743,7 @@ export default function Product() {
                       </div>
                     ) : isColor ? (
                       /* Color: outline pills with swatch dot, gold accent when selected */
-                      <div style={{display: 'flex', width: '100%', border: `1px solid ${STYX.line}`}}>
+                      <div className="styx-color-pills" style={{display: 'flex', width: '100%', border: `1px solid ${STYX.line}`}}>
                         {option.optionValues.map(
                           ({isDifferentProduct, name, variantUriQuery, handle, selected, available}) => (
                             <Link
@@ -1031,13 +1050,13 @@ export default function Product() {
                 }}
               >
                 {[
-                  {icon: '✦', text: `Authentic ${karat}K Gold`},
-                  {icon: '◇', text: 'Free Insured Shipping'},
-                  {icon: '↩', text: '14-Day Returns'},
-                  {icon: '⬡', text: 'Hallmarked & Tested'},
-                ].map((t) => (
+                  `Authentic ${karat}K Gold`,
+                  'Free Insured Shipping',
+                  '14-Day Returns',
+                  'Hallmarked & Tested',
+                ].map((text) => (
                   <div
-                    key={t.text}
+                    key={text}
                     style={{
                       display: 'flex',
                       alignItems: 'center',
@@ -1048,8 +1067,8 @@ export default function Product() {
                       letterSpacing: '0.02em',
                     }}
                   >
-                    <span style={{color: STYX.gold, fontSize: 10, flexShrink: 0}}>{t.icon}</span>
-                    {t.text}
+                    <span style={{color: STYX.gold, flexShrink: 0}}>&bull;</span>
+                    {text}
                   </div>
                 ))}
               </div>
@@ -1510,6 +1529,11 @@ export default function Product() {
               </div>
             </div>
           )}
+
+          {/* ── Cross-Sell: Pairs Well With (below cart + live price receipt) ── */}
+          {crossSell && crossSell.length > 0 && (
+            <RecommendedProducts products={crossSell} heading="Pairs Well With" />
+          )}
         </div>
       </div>
 
@@ -1586,98 +1610,6 @@ export default function Product() {
           </div>
         </div>
 
-        {/* Honest Ledger Grid */}
-        <div
-          className="styx-product-ledger"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            background: STYX.bone,
-            border: `1px solid ${STYX.line}`,
-            marginTop: 56,
-          }}
-        >
-          {[
-            {
-              n: 'I',
-              label: 'Gold Weight',
-              value: `${displayWeight}g`,
-              sub: `solid ${karat}k gold`,
-            },
-            {
-              n: 'II',
-              label: 'Material Cost',
-              value: goldBreakdown ? `$${goldBreakdown.materialCost.toFixed(2)}` : `$${(displayWeight * perGramSelected).toFixed(2)}`,
-              sub: 'at market price',
-            },
-            {
-              n: 'III',
-              label: 'Hand Labor',
-              value: goldBreakdown ? `$${goldBreakdown.laborCost.toFixed(2)}` : `$${laborCost.toFixed(2)}`,
-              sub: 'cast & hand-finished',
-            },
-            {
-              n: 'IV',
-              label: 'Your Toll',
-              value: goldBreakdown
-                ? `$${goldBreakdown.retailPrice.toFixed(2)}`
-                : selectedVariant?.price
-                  ? `$${parseFloat(selectedVariant.price.amount).toFixed(2)}`
-                  : '—',
-              sub: goldBreakdown
-                ? `${goldBreakdown.markupMultiple}x material`
-                : 'final price',
-            },
-          ].map((cell) => (
-            <div
-              key={cell.label}
-              style={{
-                padding: '32px 24px',
-                borderRight: `1px solid ${STYX.line}`,
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 10,
-              }}
-            >
-              <div style={{fontFamily: FONT.cinzel, fontSize: 14, color: STYX.gold, fontWeight: 500}}>
-                {cell.n}
-              </div>
-              <div
-                style={{
-                  fontFamily: FONT.cinzel,
-                  fontSize: 11,
-                  letterSpacing: '0.3em',
-                  textTransform: 'uppercase',
-                  color: STYX.silt,
-                }}
-              >
-                {cell.label}
-              </div>
-              <div
-                style={{
-                  fontFamily: FONT.cinzel,
-                  fontSize: 28,
-                  fontWeight: 600,
-                  color: STYX.ink,
-                  fontVariantNumeric: 'tabular-nums',
-                }}
-              >
-                {cell.value}
-              </div>
-              <div
-                style={{
-                  fontFamily: FONT.cormorant,
-                  fontStyle: 'italic',
-                  fontSize: 13,
-                  color: STYX.silt2,
-                  marginTop: 6,
-                }}
-              >
-                {cell.sub}
-              </div>
-            </div>
-          ))}
-        </div>
         </div>
       </section>
       )}
@@ -1925,118 +1857,7 @@ export default function Product() {
         }}
       />
 
-      {/* ── Sticky Mobile ATC Bar ── */}
-      {selectedVariant && !isOutOfStock && (
-        <StickyMobileATC
-          variant={selectedVariant}
-          productId={product.id}
-          productTitle={product.title}
-        />
-      )}
-
       <StyxFooter />
-    </div>
-  );
-}
-
-/* ─────────────────────────── Sticky Mobile ATC ─────────────────────────── */
-
-function StickyMobileATC({
-  variant,
-  productId,
-  productTitle,
-}: {
-  variant: any;
-  productId: string;
-  productTitle: string;
-}) {
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const atcButton = document.querySelector('.styx-add-to-cart');
-    if (!atcButton) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => setVisible(!entry.isIntersecting),
-      {threshold: 0},
-    );
-    observer.observe(atcButton);
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <div
-      className="styx-sticky-atc"
-      style={{
-        position: 'fixed',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        zIndex: 39,
-        background: STYX.bone,
-        borderTop: `1px solid ${STYX.line}`,
-        padding: '12px 20px',
-        paddingBottom: 'max(12px, env(safe-area-inset-bottom))',
-        display: 'none',
-        alignItems: 'center',
-        gap: 12,
-        transform: visible ? 'translateY(0)' : 'translateY(100%)',
-        transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-      }}
-    >
-      <div style={{flex: 1, minWidth: 0}}>
-        <div
-          style={{
-            fontFamily: FONT.cinzel,
-            fontSize: 12,
-            letterSpacing: '0.06em',
-            color: STYX.ink,
-            textTransform: 'uppercase',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}
-        >
-          {productTitle}
-        </div>
-        <Money
-          data={variant.price!}
-          as="div"
-          style={{
-            fontFamily: FONT.mono,
-            fontSize: 13,
-            color: STYX.gold,
-            letterSpacing: '0.05em',
-            marginTop: 2,
-          }}
-        />
-      </div>
-      <AddToCartButton
-        lines={[{merchandiseId: variant.id!, quantity: 1}]}
-        analytics={{
-          id: productId,
-          title: productTitle,
-          price: variant.price?.amount || '0',
-          quantity: 1,
-          variantTitle: variant.title,
-        }}
-        variant="primary"
-        style={{
-          padding: '14px 28px',
-          background: STYX.ink,
-          color: STYX.bone,
-          fontFamily: FONT.cinzel,
-          fontSize: 11,
-          letterSpacing: '0.2em',
-          textTransform: 'uppercase',
-          border: 'none',
-          cursor: 'pointer',
-          whiteSpace: 'nowrap',
-          flexShrink: 0,
-        }}
-      >
-        Add to Cart
-      </AddToCartButton>
     </div>
   );
 }
@@ -2106,7 +1927,7 @@ function ReceiptRow({
   );
 }
 
-function ZoomableImage({data, sizes}: {data: any; sizes: string}) {
+function ZoomableImage({data, sizes, alt}: {data: any; sizes: string; alt?: string}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [zoomed, setZoomed] = useState(false);
   const [origin, setOrigin] = useState('50% 50%');
@@ -2131,6 +1952,7 @@ function ZoomableImage({data, sizes}: {data: any; sizes: string}) {
     >
       <Image
         data={data}
+        alt={data?.altText ?? alt ?? ''}
         sizes={sizes}
         style={{
           maxWidth: '100%',
@@ -2309,6 +2131,7 @@ const PRODUCT_FRAGMENT = `#graphql
     vendor
     handle
     productType
+    tags
     descriptionHtml
     description
     encodedVariantExistence
@@ -2533,6 +2356,7 @@ const CROSS_SELL_QUERY = `#graphql
         title
         handle
         productType
+        tags
         chain_style: metafield(namespace: "chain", key: "chain_style") {
           value
         }
@@ -2540,6 +2364,9 @@ const CROSS_SELL_QUERY = `#graphql
           value
         }
         chain_construction: metafield(namespace: "chain", key: "construction") {
+          value
+        }
+        chain_karat: metafield(namespace: "chain", key: "karat") {
           value
         }
         variants(first: 20) {
@@ -2578,32 +2405,83 @@ function normalize(value?: string | null): string {
   return (value ?? '').trim().toLowerCase();
 }
 
+/** Parse karat from a metafield value or product title (e.g. "10K 3mm Rope Chain" → 10). */
+function parseKarat(value?: string | null, title?: string | null): number | null {
+  const fromValue = value ? parseInt(value, 10) : NaN;
+  if (!Number.isNaN(fromValue) && fromValue > 0) return fromValue;
+  const m = (title ?? '').match(/(\d{2})\s*k/i);
+  return m ? parseInt(m[1], 10) : null;
+}
+
+// Longer names first so "Cuban Link" wins before any shorter substring could.
+const CHAIN_STYLE_NAMES = [
+  'Cuban Link', 'Herringbone', 'Singapore', 'Paperclip', 'Figaro',
+  'Franco', 'Wheat', 'Curb', 'Rope', 'Cable', 'Rolo', 'Snake', 'Box',
+];
+
 /**
- * Fetch candidate products of the same chain style and rank them for cross-sell:
- *   - Necklace <-> bracelet pairing of the same style+width is the top upsell.
- *   - Otherwise prefer same construction (hollow/solid) and nearest width.
- * Returns up to 4 ranked products, or [] when there are no good matches.
+ * Derive the weave/style. Most products have no chain.* metafields, so fall
+ * back to tags (e.g. "Cuban Link") and then the title.
+ */
+function parseStyle(
+  metaValue?: string | null,
+  tags?: string[] | null,
+  title?: string | null,
+): string | null {
+  if (metaValue) return metaValue;
+  const tagHit = (tags ?? []).find((t) =>
+    CHAIN_STYLE_NAMES.some((s) => normalize(t) === normalize(s)),
+  );
+  if (tagHit) return tagHit;
+  const hay = normalize(title);
+  return CHAIN_STYLE_NAMES.find((s) => hay.includes(normalize(s))) ?? null;
+}
+
+/** Derive hollow/solid from metafield, tags, or title. */
+function parseConstruction(
+  metaValue?: string | null,
+  tags?: string[] | null,
+  title?: string | null,
+): string {
+  const v = normalize(metaValue);
+  if (v) return v;
+  const hay = `${normalize(title)} ${(tags ?? []).map(normalize).join(' ')}`;
+  if (hay.includes('hollow')) return 'hollow';
+  if (hay.includes('solid')) return 'solid';
+  return '';
+}
+
+/**
+ * Cross-sell is strict: only the true counterpart piece — same weave, same
+ * thickness, same karat, opposite product type (chain <-> bracelet).
+ * A 3mm rope chain pairs with the 3mm rope chain bracelet, or nothing at all.
+ * Returns [] when there is no exact counterpart.
  */
 async function getCrossSellProducts(
   storefront: Storefront,
   product: any,
 ): Promise<CrossSellProduct[]> {
-  const style = product?.chain_style?.value as string | undefined;
   const styleTitle = (product?.title as string) || '';
-  const construction = normalize(product?.chain_construction?.value);
+  const myTags = (product?.tags ?? []) as string[];
+  const style = parseStyle(product?.chain_style?.value, myTags, styleTitle);
+  const construction = parseConstruction(
+    product?.chain_construction?.value,
+    myTags,
+    styleTitle,
+  );
   const myType = normalize(product?.productType); // "chain" | "bracelet"
   const myMm =
     parseMm(product?.chain_thickness?.value) ?? parseMm(styleTitle);
+  const myKarat = parseKarat(product?.karat?.value, styleTitle);
 
-  // Build a query to pull same-style candidates. Prefer the chain_style value;
-  // fall back to a broad necklace+bracelet pull when style is unknown.
-  let query: string;
-  if (style) {
-    // chain_style is also stored as a product tag (e.g. "Cuban Link").
-    query = `tag:'${style}'`;
-  } else {
-    query = `product_type:Chain OR product_type:Bracelet`;
-  }
+  // Without a known style, width, and karat we can't guarantee a true
+  // counterpart — suggest nothing rather than something unrelated.
+  if (!style || myMm == null || myKarat == null) return [];
+  if (myType !== 'chain' && myType !== 'bracelet') return [];
+
+  const pairType = myType === 'chain' ? 'Bracelet' : 'Chain';
+  // The weave is stored as a product tag (e.g. "Cuban Link").
+  const query = `tag:'${style}' AND product_type:${pairType}`;
 
   let result: any;
   try {
@@ -2614,83 +2492,40 @@ async function getCrossSellProducts(
     return [];
   }
 
-  const candidates: any[] = (result?.products?.nodes ?? []).filter(
-    (c: any) => c?.id && c.id !== product.id,
-  );
-  if (candidates.length === 0) return [];
-
   const myStyle = normalize(style);
 
-  type Scored = {product: CrossSellProduct; score: number; mmGap: number};
-  const scored: Scored[] = candidates.map((c: any) => {
-    const cType = normalize(c.productType);
-    const cStyle = normalize(c.chain_style?.value);
-    const cConstruction = normalize(c.chain_construction?.value);
-    const cMm = parseMm(c.chain_thickness?.value) ?? parseMm(c.title);
+  const matches = (result?.products?.nodes ?? [])
+    .filter((c: any) => {
+      if (!c?.id || c.id === product.id) return false;
+      if (normalize(c.productType) !== normalize(pairType)) return false;
+      const cStyle = normalize(parseStyle(c.chain_style?.value, c.tags, c.title));
+      if (cStyle !== myStyle) return false;
+      const cMm = parseMm(c.chain_thickness?.value) ?? parseMm(c.title);
+      // Titles round to the nearest 0.5mm — absorb that, but never let a
+      // genuinely different width (0.5mm+ apart) through.
+      if (cMm == null || Math.abs(cMm - myMm) > 0.25) return false;
+      const cKarat = parseKarat(c.chain_karat?.value, c.title);
+      if (cKarat == null || cKarat !== myKarat) return false;
+      return true;
+    })
+    // Prefer same construction (hollow/solid) and in-stock counterparts.
+    .sort((a: any, b: any) => {
+      const conScore = (c: any) =>
+        construction &&
+        parseConstruction(c.chain_construction?.value, c.tags, c.title) === construction
+          ? 1
+          : 0;
+      const stockScore = (c: any) =>
+        (c.variants?.nodes ?? []).some((v: any) => v.availableForSale) ? 1 : 0;
+      return (conScore(b) - conScore(a)) || (stockScore(b) - stockScore(a));
+    });
 
-    let score = 0;
-    let reason: string | null = null;
-
-    // Same style / weave
-    const sameStyle = !!myStyle && cStyle === myStyle;
-    if (sameStyle) score += 50;
-
-    // The key upsell: opposite product type (necklace <-> bracelet)
-    const isPairType =
-      (myType === 'chain' && cType === 'bracelet') ||
-      (myType === 'bracelet' && cType === 'chain');
-    if (isPairType) {
-      score += 40;
-      // Nearest width within the pairing matters most
-      if (myMm != null && cMm != null) {
-        const gap = Math.abs(cMm - myMm);
-        score += Math.max(0, 20 - gap * 8);
-        if (gap <= 0.5) reason = 'Matching bracelet/necklace';
-      }
-      if (!reason) reason = myType === 'chain' ? 'Matching bracelet' : 'Matching necklace';
-    }
-
-    // Same construction (hollow vs solid)
-    if (construction && cConstruction === construction) score += 12;
-
-    // Nearest width (applies broadly, but never overpowers the pairing)
-    let mmGap = Number.POSITIVE_INFINITY;
-    if (myMm != null && cMm != null) {
-      mmGap = Math.abs(cMm - myMm);
-      score += Math.max(0, 15 - mmGap * 6);
-    }
-
-    // In-stock nudge
-    if ((c.variants?.nodes ?? []).some((v: any) => v.availableForSale)) score += 3;
-
-    if (!reason) {
-      if (cMm != null) {
-        reason = `${cMm}mm${cStyle && myStyle && cStyle === myStyle ? '' : style ? ` · ${style}` : ''}`;
-      } else if (sameStyle && style) {
-        reason = style;
-      }
-    }
-
-    return {
-      product: {
-        id: c.id,
-        title: c.title,
-        handle: c.handle,
-        productType: c.productType,
-        variants: c.variants,
-        reason,
-      },
-      score,
-      mmGap,
-    };
-  });
-
-  // Only keep candidates that share the style (when we know it) or are a
-  // valid necklace/bracelet pairing — avoid recommending unrelated chains.
-  const filtered = scored.filter((s) => s.score >= 12);
-  if (filtered.length === 0) return [];
-
-  filtered.sort((a, b) => (b.score - a.score) || (a.mmGap - b.mmGap));
-
-  return filtered.slice(0, 4).map((s) => s.product);
+  return matches.slice(0, 2).map((c: any) => ({
+    id: c.id,
+    title: c.title,
+    handle: c.handle,
+    productType: c.productType,
+    variants: c.variants,
+    reason: myType === 'chain' ? 'The Matching Bracelet' : 'The Matching Necklace',
+  }));
 }

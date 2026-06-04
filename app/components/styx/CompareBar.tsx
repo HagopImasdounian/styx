@@ -1,14 +1,18 @@
 import {useCompare, compareKey, encodeCompareItems} from '~/context/CompareContext';
-import {Link} from 'react-router';
+import {Link, useLocation} from 'react-router';
 import {STYX, FONT} from './constants';
 
 export function CompareBar() {
   const {items, remove, clear} = useCompare();
+  const {pathname} = useLocation();
 
   if (items.length === 0) return null;
+  // Redundant on the compare page itself — you're already there.
+  if (pathname.includes('/compare')) return null;
 
   return (
     <div
+      className="styx-compare-bar"
       style={{
         position: 'fixed',
         bottom: 0,
@@ -39,8 +43,8 @@ export function CompareBar() {
           {items.length}/4
         </span>
 
-        {/* Chips */}
-        <div style={{display: 'flex', gap: 8, overflow: 'hidden', flexWrap: 'wrap'}}>
+        {/* Chips — hidden on mobile, there's never room for names */}
+        <div className="styx-compare-chips" style={{display: 'flex', gap: 8, overflow: 'hidden', flexWrap: 'wrap'}}>
           {items.map((item) => (
             <div
               key={compareKey(item.handle, item.length)}

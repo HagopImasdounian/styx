@@ -4,13 +4,10 @@ import {STYX, FONT} from './constants';
 import {PlaceholderImage} from './PlaceholderImage';
 
 /**
- * Cross-sell "You may also like" module shown directly under the live price box
- * on the product page. Candidates are pre-ranked in the route loader by:
- *   1. Same chain style / weave
- *   2. Same construction (hollow vs solid)
- *   3. Nearest width / thickness
- *   4. Necklace <-> bracelet pairing (the key upsell)
- * It renders nothing when there are no good matches.
+ * Cross-sell "Pairs Well With" module shown below the add-to-cart flow on the
+ * product page. The route loader is strict: it only returns the true
+ * counterpart piece — same weave, same thickness, same karat, opposite product
+ * type (chain <-> bracelet). Renders nothing when there is no exact match.
  */
 
 type CrossSellVariant = {
@@ -120,6 +117,7 @@ export function RecommendedProducts({
                 {variant.image ? (
                   <Image
                     data={variant.image}
+                    alt={variant.image.altText ?? product.title}
                     aspectRatio="1/1"
                     sizes="72px"
                     style={{

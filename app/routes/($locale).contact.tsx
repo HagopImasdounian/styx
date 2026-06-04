@@ -1,10 +1,21 @@
 import {useState} from 'react';
-import {type MetaFunction} from 'react-router';
+import {type LoaderFunctionArgs, type MetaArgs} from 'react-router';
 import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel} from '~/components/styx';
 import {trackFormSubmit} from '~/components/GTMDataLayer';
+import {getStyxSeoMeta} from '~/lib/seo-meta';
 
-export const meta: MetaFunction = () => {
-  return [{title: 'Contact — STYX'}, {name: 'description', content: 'Get in touch with Styx Gold. Questions about chains, pricing, custom orders, or anything else.'}];
+export async function loader({request}: LoaderFunctionArgs) {
+  return {url: request.url};
+}
+
+export const meta = ({data}: MetaArgs<typeof loader>) => {
+  return getStyxSeoMeta({
+    title: 'Contact',
+    titleTemplate: '%s | STYX Gold',
+    description:
+      'Get in touch with STYX Gold — questions about chains, live pricing, custom orders, or anything else. Real people in the gold trade.',
+    url: data?.url,
+  });
 };
 
 export default function Contact() {
