@@ -532,6 +532,13 @@ export default function PrintListPage() {
             })}
           </div>
 
+          {/* Approximation disclaimer */}
+          <div className="pl-approx">
+            Widths and link profiles are shown to scale as a guide. Each chain is
+            individually cast and hand-finished, so the actual piece may vary
+            slightly from this illustration.
+          </div>
+
           {/* Dual ruler — lay a physical ruler here to verify scale */}
           <div className="pl-ruler-block">
             <div className="pl-ruler-label">↓ Lay a ruler along the notches — 10&nbsp;cm and 4&nbsp;in should line up exactly. If not, reprint at 100%.</div>
@@ -639,15 +646,19 @@ const PRINT_CSS = `
 
 .pl-row { display: flex; align-items: flex-end; gap: 9mm; flex-wrap: wrap; margin-bottom: 10mm; }
 .pl-col { display: flex; flex-direction: column; align-items: center; width: 33mm; }
-.pl-visual { display: flex; align-items: flex-end; justify-content: center; height: 60mm; margin-bottom: 3mm; }
+/* Fixed 60mm window. Clips tall chains rather than scaling them down, so the
+   silhouette's WIDTH always stays exactly true-to-scale. */
+.pl-visual { display: flex; align-items: flex-end; justify-content: center; height: 60mm; margin-bottom: 3mm; overflow: hidden; }
 .pl-bar {
   height: 55mm;
   background: linear-gradient(90deg, #b8924a, #d4b478 50%, #8a6a32);
   border: 0.2mm solid #8a6a32;
   -webkit-print-color-adjust: exact; print-color-adjust: exact;
 }
+/* width is set inline to the true mm; height follows the link aspect ratio.
+   No max-height — the .pl-visual window clips instead, preserving true scale. */
 .pl-silhouette {
-  height: auto; max-height: 60mm; object-fit: contain;
+  height: auto; flex-shrink: 0;
   -webkit-print-color-adjust: exact; print-color-adjust: exact;
 }
 .pl-unknown {
@@ -660,6 +671,11 @@ const PRINT_CSS = `
 .pl-sub { font-family: 'JetBrains Mono', monospace; font-size: 7pt; color: #4A443B; }
 .pl-model { font-family: 'JetBrains Mono', monospace; font-size: 6.5pt; color: #6B6459; margin-top: 1mm; }
 
+.pl-approx {
+  font-family: 'Cormorant Garamond', serif; font-style: italic;
+  font-size: 9pt; color: #6B6459; line-height: 1.5;
+  text-align: center; max-width: 150mm; margin: 0 auto 8mm;
+}
 .pl-ruler-block { margin-top: 6mm; }
 .pl-ruler-label { font-family: 'JetBrains Mono', monospace; font-size: 7pt; color: #6B6459; margin-bottom: 3mm; letter-spacing: 0.06em; }
 .pl-ruler { position: relative; width: 101.6mm; max-width: 100%; height: 10mm; border-bottom: 0.4mm solid #1a1815; margin-bottom: 9mm; }

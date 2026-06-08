@@ -654,17 +654,29 @@ export default function Product() {
 
                   {/* Weight row: karat + total weight */}
                   {displayWeight && (
-                  <div
-                    style={{
-                      display: 'flex',
-                      gap: 16,
-                      marginTop: 14,
-                      fontFamily: FONT.mono,
-                      fontSize: 12,
-                      color: STYX.silt,
-                    }}
-                  >
-                    <span>{karat}K &middot; {displayWeight}g total</span>
+                  <div style={{marginTop: 14}}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        gap: 16,
+                        fontFamily: FONT.mono,
+                        fontSize: 12,
+                        color: STYX.silt,
+                      }}
+                    >
+                      <span>{karat}K &middot; {displayWeight}g total</span>
+                    </div>
+                    <div
+                      style={{
+                        fontFamily: FONT.cormorant,
+                        fontStyle: 'italic',
+                        fontSize: 13,
+                        color: STYX.silt2,
+                        marginTop: 4,
+                      }}
+                    >
+                      Approximate &mdash; each piece is hand-finished, so weight may vary by a few percent.
+                    </div>
                   </div>
                   )}
                 </>
