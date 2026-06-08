@@ -220,6 +220,14 @@ export type RootCollectionsQuery = {
   collections: {
     nodes: Array<
       Pick<StorefrontAPI.Collection, 'id' | 'title' | 'handle'> & {
+        image?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Image, 'url' | 'altText'>
+        >;
+        cutout?: StorefrontAPI.Maybe<{
+          reference?: StorefrontAPI.Maybe<{
+            image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>;
+          }>;
+        }>;
         products: {nodes: Array<Pick<StorefrontAPI.Product, 'id'>>};
       }
     >;
@@ -296,6 +304,11 @@ export type StyxCollectionsQuery = {
         image?: StorefrontAPI.Maybe<
           Pick<StorefrontAPI.Image, 'url' | 'altText' | 'width' | 'height'>
         >;
+        cutout?: StorefrontAPI.Maybe<{
+          reference?: StorefrontAPI.Maybe<{
+            image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>;
+          }>;
+        }>;
         products: {nodes: Array<Pick<StorefrontAPI.Product, 'id'>>};
       }
     >;
@@ -392,6 +405,11 @@ export type CollectionDetailsQuery = {
       chapter_kicker?: StorefrontAPI.Maybe<
         Pick<StorefrontAPI.Metafield, 'value'>
       >;
+      cutout?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<{
+          image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>;
+        }>;
+      }>;
       products: {
         filters: Array<
           Pick<StorefrontAPI.Filter, 'id' | 'label' | 'type'> & {
@@ -450,7 +468,15 @@ export type CollectionDetailsQuery = {
     }
   >;
   collections: {
-    edges: Array<{node: Pick<StorefrontAPI.Collection, 'title' | 'handle'>}>;
+    edges: Array<{
+      node: Pick<StorefrontAPI.Collection, 'title' | 'handle'> & {
+        cutout?: StorefrontAPI.Maybe<{
+          reference?: StorefrontAPI.Maybe<{
+            image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>;
+          }>;
+        }>;
+      };
+    }>;
   };
 };
 
@@ -470,6 +496,11 @@ export type StyxCollectionsIndexQuery = {
         image?: StorefrontAPI.Maybe<
           Pick<StorefrontAPI.Image, 'url' | 'altText' | 'width' | 'height'>
         >;
+        cutout?: StorefrontAPI.Maybe<{
+          reference?: StorefrontAPI.Maybe<{
+            image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>;
+          }>;
+        }>;
         seo: Pick<StorefrontAPI.Seo, 'description' | 'title'>;
       }
     >;
@@ -1558,7 +1589,7 @@ interface GeneratedQueryTypes {
     return: RootLocalizationQuery;
     variables: RootLocalizationQueryVariables;
   };
-  '#graphql\n  query rootCollections($country: CountryCode, $language: LanguageCode)\n  @inContext(country: $country, language: $language) {\n    collections(first: 100, sortKey: TITLE) {\n      nodes {\n        id\n        title\n        handle\n        products(first: 1) {\n          nodes {\n            id\n          }\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  query rootCollections($country: CountryCode, $language: LanguageCode)\n  @inContext(country: $country, language: $language) {\n    collections(first: 100, sortKey: TITLE) {\n      nodes {\n        id\n        title\n        handle\n        image {\n          url\n          altText\n        }\n        cutout: metafield(namespace: "custom", key: "cutout_image") {\n          reference {\n            ... on MediaImage {\n              image {\n                url\n              }\n            }\n          }\n        }\n        products(first: 1) {\n          nodes {\n            id\n          }\n        }\n      }\n    }\n  }\n': {
     return: RootCollectionsQuery;
     variables: RootCollectionsQueryVariables;
   };
@@ -1574,7 +1605,7 @@ interface GeneratedQueryTypes {
     return: StyxAllProductsQuery;
     variables: StyxAllProductsQueryVariables;
   };
-  '#graphql\n  query styxCollections($country: CountryCode, $language: LanguageCode)\n  @inContext(country: $country, language: $language) {\n    collections(first: 50, sortKey: TITLE) {\n      nodes {\n        id\n        title\n        handle\n        description\n        image {\n          url\n          altText\n          width\n          height\n        }\n        products(first: 1) {\n          nodes {\n            id\n          }\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  query styxCollections($country: CountryCode, $language: LanguageCode)\n  @inContext(country: $country, language: $language) {\n    collections(first: 50, sortKey: TITLE) {\n      nodes {\n        id\n        title\n        handle\n        description\n        image {\n          url\n          altText\n          width\n          height\n        }\n        cutout: metafield(namespace: "custom", key: "cutout_image") {\n          reference {\n            ... on MediaImage {\n              image {\n                url\n              }\n            }\n          }\n        }\n        products(first: 1) {\n          nodes {\n            id\n          }\n        }\n      }\n    }\n  }\n': {
     return: StyxCollectionsQuery;
     variables: StyxCollectionsQueryVariables;
   };
@@ -1582,11 +1613,11 @@ interface GeneratedQueryTypes {
     return: ApiAllProductsQuery;
     variables: ApiAllProductsQueryVariables;
   };
-  '#graphql\n  query CollectionDetails(\n    $handle: String!\n    $country: CountryCode\n    $language: LanguageCode\n    $filters: [ProductFilter!]\n    $sortKey: ProductCollectionSortKeys!\n    $reverse: Boolean\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      id\n      handle\n      title\n      description\n      seo {\n        description\n        title\n      }\n      image {\n        id\n        url\n        width\n        height\n        altText\n      }\n      story_heading: metafield(namespace: "custom", key: "story_heading") {\n        value\n      }\n      story_body: metafield(namespace: "custom", key: "story_body") {\n        value\n      }\n      era_label: metafield(namespace: "custom", key: "era_label") {\n        value\n      }\n      chapter_kicker: metafield(namespace: "custom", key: "chapter_kicker") {\n        value\n      }\n      products(\n        first: $first,\n        last: $last,\n        before: $startCursor,\n        after: $endCursor,\n        filters: $filters,\n        sortKey: $sortKey,\n        reverse: $reverse\n      ) {\n        filters {\n          id\n          label\n          type\n          values {\n            id\n            label\n            count\n            input\n          }\n        }\n        nodes {\n          ...ProductCard\n        }\n        pageInfo {\n          hasPreviousPage\n          hasNextPage\n          endCursor\n          startCursor\n        }\n      }\n    }\n    collections(first: 100) {\n      edges {\n        node {\n          title\n          handle\n        }\n      }\n    }\n  }\n  #graphql\n  fragment ProductCard on Product {\n    id\n    title\n    publishedAt\n    handle\n    vendor\n    productType\n    tags\n    variants(first: 100) {\n      nodes {\n        id\n        availableForSale\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n        weight\n        weightUnit\n        product {\n          handle\n          title\n        }\n      }\n    }\n    chain_construction: metafield(namespace: "chain", key: "construction") {\n      value\n    }\n  }\n\n': {
+  '#graphql\n  query CollectionDetails(\n    $handle: String!\n    $country: CountryCode\n    $language: LanguageCode\n    $filters: [ProductFilter!]\n    $sortKey: ProductCollectionSortKeys!\n    $reverse: Boolean\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      id\n      handle\n      title\n      description\n      seo {\n        description\n        title\n      }\n      image {\n        id\n        url\n        width\n        height\n        altText\n      }\n      story_heading: metafield(namespace: "custom", key: "story_heading") {\n        value\n      }\n      story_body: metafield(namespace: "custom", key: "story_body") {\n        value\n      }\n      era_label: metafield(namespace: "custom", key: "era_label") {\n        value\n      }\n      chapter_kicker: metafield(namespace: "custom", key: "chapter_kicker") {\n        value\n      }\n      cutout: metafield(namespace: "custom", key: "cutout_image") {\n        reference {\n          ... on MediaImage {\n            image {\n              url\n            }\n          }\n        }\n      }\n      products(\n        first: $first,\n        last: $last,\n        before: $startCursor,\n        after: $endCursor,\n        filters: $filters,\n        sortKey: $sortKey,\n        reverse: $reverse\n      ) {\n        filters {\n          id\n          label\n          type\n          values {\n            id\n            label\n            count\n            input\n          }\n        }\n        nodes {\n          ...ProductCard\n        }\n        pageInfo {\n          hasPreviousPage\n          hasNextPage\n          endCursor\n          startCursor\n        }\n      }\n    }\n    collections(first: 100) {\n      edges {\n        node {\n          title\n          handle\n          cutout: metafield(namespace: "custom", key: "cutout_image") {\n            reference {\n              ... on MediaImage {\n                image {\n                  url\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n  #graphql\n  fragment ProductCard on Product {\n    id\n    title\n    publishedAt\n    handle\n    vendor\n    productType\n    tags\n    variants(first: 100) {\n      nodes {\n        id\n        availableForSale\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n        weight\n        weightUnit\n        product {\n          handle\n          title\n        }\n      }\n    }\n    chain_construction: metafield(namespace: "chain", key: "construction") {\n      value\n    }\n  }\n\n': {
     return: CollectionDetailsQuery;
     variables: CollectionDetailsQueryVariables;
   };
-  '#graphql\n  query StyxCollectionsIndex(\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    collections(first: 100, sortKey: TITLE) {\n      nodes {\n        id\n        title\n        handle\n        description\n        products(first: 1) {\n          nodes {\n            id\n          }\n        }\n        image {\n          url\n          altText\n          width\n          height\n        }\n        seo {\n          description\n          title\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  query StyxCollectionsIndex(\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    collections(first: 100, sortKey: TITLE) {\n      nodes {\n        id\n        title\n        handle\n        description\n        products(first: 1) {\n          nodes {\n            id\n          }\n        }\n        image {\n          url\n          altText\n          width\n          height\n        }\n        cutout: metafield(namespace: "custom", key: "cutout_image") {\n          reference {\n            ... on MediaImage {\n              image {\n                url\n              }\n            }\n          }\n        }\n        seo {\n          description\n          title\n        }\n      }\n    }\n  }\n': {
     return: StyxCollectionsIndexQuery;
     variables: StyxCollectionsIndexQueryVariables;
   };

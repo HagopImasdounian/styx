@@ -7,7 +7,12 @@ import {
   Form,
 } from 'react-router';
 import {CartForm} from '@shopify/hydrogen';
-import {STYX, FONT, type CollectionNode} from './constants';
+import {
+  STYX,
+  FONT,
+  type CollectionNode,
+  collectionCutoutUrl,
+} from './constants';
 import {Cart} from '~/components/Cart';
 import {CartLoading} from '~/components/CartLoading';
 import {Drawer, useDrawer} from '~/components/Drawer';
@@ -218,22 +223,8 @@ function WishlistNavIcon() {
 type ChainItem = {name: string; handle: string; popular?: boolean};
 type ChainGroup = {group: string; kicker: string; chains: ChainItem[]};
 
-// Map chain collection handle → close-up chain image (transparent PNG) for mega menu hover
-const CHAIN_IMAGE_MAP: Record<string, string> = {
-  'cuban': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-cuban.png?v=1779151408',
-  'curb': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-curb.png?v=1779151414',
-  'box': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-box.png?v=1779151394',
-  'rope': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-rope.png?v=1779151436',
-  'cable': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-cable.png?v=1779151401',
-  'figaro': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-figaro.png?v=1779151422',
-  'wheat': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-wheat.png?v=1779151450',
-  'rolo': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-rolo.png?v=1779151429',
-  'singapore': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-singapore.png?v=1779151442',
-  'paperclip': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-paperclip.png?v=1780167387',
-  'franco': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-franco.png?v=1780167769',
-  'herringbone': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-herringbone.png?v=1780167770',
-  'snake': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-snake.png?v=1780167771',
-};
+// Chain cutout PNGs come from each collection's custom.cutout_image metafield
+// (set in Shopify admin) — loaded via the root collections query, no hardcoding.
 
 const CHAIN_TAXONOMY: ChainGroup[] = [
   {
@@ -482,7 +473,10 @@ function MenuLink({
 
 function ChainCard({chain}: {chain: ChainItem}) {
   const [hover, setHover] = useState(false);
-  const hasImage = !!CHAIN_IMAGE_MAP[chain.handle];
+  const collectionsList = useContext(CollectionsListContext);
+  const cutoutUrl = collectionCutoutUrl(
+    collectionsList.find((c) => c.handle === chain.handle),
+  );
   const closeMenu = useContext(CloseMenuContext);
 
   // Strip "Chain" / "Link" suffix for cleaner label
@@ -504,7 +498,7 @@ function ChainCard({chain}: {chain: ChainItem}) {
         cursor: 'pointer',
       }}
     >
-      {hasImage ? (
+      {cutoutUrl ? (
         <div
           style={{
             width: '100%',
@@ -518,7 +512,7 @@ function ChainCard({chain}: {chain: ChainItem}) {
           }}
         >
           <img
-            src={CHAIN_IMAGE_MAP[chain.handle]}
+            src={cutoutUrl}
             alt={chain.name}
             style={{
               width: '100%',
@@ -1179,11 +1173,15 @@ function MobileMenu({
   open,
   onClose,
   existingHandles,
+  collections = [],
 }: {
   open: boolean;
   onClose: () => void;
   existingHandles: Set<string>;
+  collections?: CollectionNode[];
 }) {
+  const cutoutFor = (handle: string) =>
+    collectionCutoutUrl(collections.find((c) => c.handle === handle));
   const [section, setSection] = useState<'Chains' | 'Collections' | null>(null);
   useEffect(() => {
     if (!open) {
@@ -1517,9 +1515,9 @@ function MobileMenu({
                         >
                           {chain.name}
                         </span>
-                        {CHAIN_IMAGE_MAP[chain.handle] ? (
+                        {cutoutFor(chain.handle) ? (
                           <img
-                            src={CHAIN_IMAGE_MAP[chain.handle]}
+                            src={cutoutFor(chain.handle)}
                             alt={`${chain.name} chain`}
                             style={{
                               width: 130,
@@ -1990,6 +1988,7 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
         open={isMobileMenuOpen}
         onClose={closeMobileMenu}
         existingHandles={existingHandles}
+        collections={collections}
       />
 
       <div

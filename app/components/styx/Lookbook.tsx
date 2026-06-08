@@ -4,19 +4,7 @@ import {StyxLabel} from './StyxLabel';
 import {CTAButton} from './CTAButton';
 import {Obol} from './Obol';
 
-// Collection images — same map as CategoryTiles and collections index
-const COLLECTION_IMAGES: Record<string, {src: string; alt: string}> = {
-  'cuban': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-cuban-link.jpg?v=1779151358', alt: 'Cuban link chain on Ocean Drive, Miami'},
-  'curb': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-curb-chain.png?v=1779151362', alt: 'Curb chain on a foggy London street'},
-  'box': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-box-chain.png?v=1779151351', alt: 'Box chain in Venice with canal and gondola'},
-  'rope': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-rope-chain.png?v=1779151380', alt: 'Rope chain at Mediterranean harbor'},
-  'cable': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-cable-chain.png?v=1779151355', alt: 'Cable chain at Mesopotamian ruins'},
-  'figaro': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-figaro-chain.png?v=1779151369', alt: 'Figaro chain in Vicenza, Italy'},
-  'wheat': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-wheat-chain.png?v=1779151386', alt: 'Wheat chain in Tuscan vineyard'},
-  'rolo': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-rolo-chain.png?v=1779151375', alt: 'Rolo chain in Victorian London'},
-  'singapore': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-singapore-chain.png?v=1779151383', alt: 'Singapore chain at Asian waterfront'},
-};
-
+// Lifestyle images come from each collection's image in Shopify (no hardcoding)
 const COLLECTION_ORDER = ['cuban', 'curb', 'rope', 'box', 'figaro', 'cable', 'wheat', 'rolo', 'singapore'];
 
 export function Lookbook({collections = []}: {collections?: CollectionNode[]}) {
@@ -24,9 +12,13 @@ export function Lookbook({collections = []}: {collections?: CollectionNode[]}) {
   const matched = COLLECTION_ORDER
     .map((handle) => {
       const coll = collections.find((c) => c.handle === handle);
-      const img = COLLECTION_IMAGES[handle];
-      if (!coll || !img) return null;
-      return {handle, title: coll.title, ...img};
+      if (!coll?.image?.url) return null;
+      return {
+        handle,
+        title: coll.title,
+        src: coll.image.url,
+        alt: coll.image.altText ?? coll.title,
+      };
     })
     .filter(Boolean) as Array<{handle: string; title: string; src: string; alt: string}>;
 

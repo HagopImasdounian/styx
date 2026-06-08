@@ -436,7 +436,7 @@ function normalizeProducts(
           length: v.length,
           weight,
           price,
-          wirePrice: Math.round(price * 0.97),
+          wirePrice: Math.round(price * 0.96), // 4% wire-transfer discount
           color: v.color,
         });
       }

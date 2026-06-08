@@ -3,18 +3,7 @@ import {Image} from '@shopify/hydrogen';
 import {STYX, FONT, type CollectionNode} from './constants';
 import {StyxLabel} from './StyxLabel';
 
-// Static lifestyle images for category tiles — keyed by collection handle
-const CATEGORY_IMAGES: Record<string, {src: string; alt: string}> = {
-  'cuban': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-cuban-link.jpg?v=1779151358', alt: 'Cuban link chain on Ocean Drive, Miami'},
-  'curb': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-curb-chain.png?v=1779151362', alt: 'Curb chain on a foggy London street at dusk'},
-  'box': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-box-chain.png?v=1779151351', alt: 'Box chain in Venice with canal and gondola'},
-  'rope': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-rope-chain.png?v=1779151380', alt: 'Rope chain at a Mediterranean harbor at golden hour'},
-  'cable': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-cable-chain.png?v=1779151355', alt: 'Cable chain at ancient Mesopotamian ruins'},
-  'figaro': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-figaro-chain.png?v=1779151369', alt: 'Figaro chain in Vicenza, Italy at golden hour'},
-  'wheat': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-wheat-chain.png?v=1779151386', alt: 'Wheat chain in Tuscan vineyard at sunset'},
-  'rolo': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-rolo-chain.png?v=1779151375', alt: 'Rolo chain in Victorian London'},
-  'singapore': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-singapore-chain.png?v=1779151383', alt: 'Singapore chain at Southeast Asian waterfront'},
-};
+// Lifestyle images come from each collection's image in Shopify (no hardcoding)
 
 export function CategoryTiles({
   collections = [],
@@ -114,8 +103,6 @@ function CategoryCard({
   index: number;
   products?: any[];
 }) {
-  // Use static lifestyle image if available, otherwise fall back to Shopify data
-  const staticImg = CATEGORY_IMAGES[collection.handle];
   const imageData = collection.image;
 
   return (
@@ -149,14 +136,7 @@ function CategoryCard({
       }}
     >
       <div style={{position: 'relative', overflow: 'hidden', aspectRatio: '4/5'}}>
-        {staticImg ? (
-          <img
-            src={staticImg.src}
-            alt={staticImg.alt}
-            loading="lazy"
-            style={{width: '100%', height: '100%', objectFit: 'cover'}}
-          />
-        ) : imageData ? (
+        {imageData ? (
           <Image
             data={imageData}
             alt={imageData.altText ?? collection.title}

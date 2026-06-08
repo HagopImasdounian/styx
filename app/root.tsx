@@ -393,6 +393,19 @@ const ROOT_COLLECTIONS_QUERY = `#graphql
         id
         title
         handle
+        image {
+          url
+          altText
+        }
+        cutout: metafield(namespace: "custom", key: "cutout_image") {
+          reference {
+            ... on MediaImage {
+              image {
+                url
+              }
+            }
+          }
+        }
         products(first: 1) {
           nodes {
             id

@@ -216,6 +216,15 @@ const STYX_COLLECTIONS_QUERY = `#graphql
           width
           height
         }
+        cutout: metafield(namespace: "custom", key: "cutout_image") {
+          reference {
+            ... on MediaImage {
+              image {
+                url
+              }
+            }
+          }
+        }
         products(first: 1) {
           nodes {
             id

@@ -27,7 +27,18 @@ export type CollectionNode = {
     width?: number | null;
     height?: number | null;
   } | null;
+  /** custom.cutout_image metafield — transparent chain PNG (mega menu, weave strip) */
+  cutout?: {
+    reference?: {
+      image?: {url: string} | null;
+    } | null;
+  } | null;
 };
+
+/** Cutout PNG URL for a collection, if set in Shopify (custom.cutout_image) */
+export function collectionCutoutUrl(c?: CollectionNode | null): string | undefined {
+  return c?.cutout?.reference?.image?.url ?? undefined;
+}
 
 export const FONT = {
   cinzel: "'Cinzel', serif",

@@ -301,27 +301,6 @@ export default function CollectionsIndex() {
   );
 }
 
-/* ─── Static lifestyle images for collection tiles ─── */
-const COLLECTION_IMAGES: Record<string, {src: string; alt: string}> = {
-  'cuban': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-cuban-link.jpg?v=1779151358', alt: 'Man wearing Cuban link chain on Ocean Drive, Miami'},
-  'curb': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-curb-chain.png?v=1779151362', alt: 'Man wearing curb chain on a foggy London street'},
-  'box': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-box-chain.png?v=1779151351', alt: 'Man wearing box chain in Venice with canal backdrop'},
-  'rope': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-rope-chain.png?v=1779151380', alt: 'Man wearing rope chain at Mediterranean harbor'},
-  'cable': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-cable-chain.png?v=1779151355', alt: 'Man wearing cable chain at Mesopotamian ruins'},
-  'figaro': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-figaro-chain.png?v=1779151369', alt: 'Man wearing Figaro chain in Vicenza, Italy'},
-  'wheat': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-wheat-chain.png?v=1779151386', alt: 'Man wearing wheat chain in Tuscan vineyard'},
-  'rolo': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-rolo-chain.png?v=1779151375', alt: 'Man wearing rolo chain in Victorian London'},
-  'singapore': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-singapore-chain.png?v=1779151383', alt: 'Man wearing Singapore chain at Asian waterfront'},
-  'franco': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-franco-chain-v2.jpg?v=1780553988', alt: 'Man wearing Franco chain on a Milan arcade street at dusk'},
-  'herringbone': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-herringbone-chain-v2.jpg?v=1780553991', alt: 'Man wearing herringbone chain by the Nile and an Egyptian temple'},
-  'snake': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-snake-chain-v2.jpg?v=1780553994', alt: 'Man wearing snake chain on a Victorian London street'},
-  'paperclip': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-paperclip-chain-v2.jpg?v=1780553997', alt: 'Man wearing paperclip chain on the Oslo harbor'},
-  'necklaces': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-necklaces.jpg?v=1780125024', alt: 'Gold chain necklaces — Cuban link, rope, Figaro, herringbone and box chains on stone'},
-  'bracelets': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-bracelets.jpg?v=1780125024', alt: 'Gold chain bracelets — Cuban link, rope, Figaro and curb bracelets on stone'},
-  '10k-gold': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-cuban-link.jpg?v=1779151358', alt: '10K Gold chains collection'},
-  '14k-gold': {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-curb-chain.png?v=1779151362', alt: '14K Gold chains collection'},
-};
-
 function CollectionTile({
   collection,
   index,
@@ -329,7 +308,6 @@ function CollectionTile({
   collection: any;
   index: number;
 }) {
-  const staticImg = COLLECTION_IMAGES[collection.handle];
   return (
     <Link
       to={`/collections/${collection.handle}`}
@@ -355,14 +333,7 @@ function CollectionTile({
     >
       {/* Image */}
       <div style={{aspectRatio: '4/5', position: 'relative', overflow: 'hidden'}}>
-        {staticImg ? (
-          <img
-            src={staticImg.src}
-            alt={staticImg.alt}
-            loading="lazy"
-            style={{width: '100%', height: '100%', objectFit: 'cover'}}
-          />
-        ) : collection.image ? (
+        {collection.image ? (
           <Image
             data={collection.image}
             alt={collection.image.altText ?? collection.title}
@@ -470,6 +441,15 @@ const COLLECTIONS_QUERY = `#graphql
           altText
           width
           height
+        }
+        cutout: metafield(namespace: "custom", key: "cutout_image") {
+          reference {
+            ... on MediaImage {
+              image {
+                url
+              }
+            }
+          }
         }
         seo {
           description
