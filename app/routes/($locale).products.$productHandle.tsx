@@ -153,6 +153,8 @@ export default function Product() {
   const {media, title, vendor, descriptionHtml} = product;
   const {shippingPolicy, refundPolicy} = shop;
   const [offerOpen, setOfferOpen] = useState(false);
+  // 'offer' = haggling on an in-stock piece; 'request' = backorder a sold-out size
+  const [offerMode, setOfferMode] = useState<'offer' | 'request'>('offer');
   const wishlist = useWishlist();
   const wished = wishlist.has(product.handle);
 
@@ -233,11 +235,9 @@ export default function Product() {
   const storyBody = p.story_body?.value || null;
   const pullQuote = p.pull_quote?.value || null;
   const pullQuoteAttr = p.pull_quote_attr?.value || null;
-  const specWeave = p.spec_weave?.value || null;
-  const specProfile = p.spec_profile?.value || null;
+  // spec_weave / spec_profile intentionally not shown — redundant with Chain Style
   const specClasp = p.spec_clasp?.value || null;
   const specCast = p.spec_cast?.value || null;
-  const hasSpecs = specWeave || specProfile || specClasp || specCast;
 
   // Use variant weight if available (from Shopify variant grams), else metafield
   const variantWeight = (selectedVariant as any)?.weight
@@ -278,8 +278,20 @@ export default function Product() {
   const selectedPurity = KARAT_PURITY[karat] ?? 0.75;
   const perGramSelected = (spotPerOz / 31.1035) * selectedPurity;
 
-  // Gallery
+  // Gallery — filter media to the selected color. An image is shown when its
+  // alt text either names the selected color or names no color at all
+  // (color-neutral lifestyle/detail shots stay visible for every variant).
   const mediaNodes = media?.nodes ?? [];
+  const COLOR_NAMES = ['yellow gold', 'white gold', 'rose gold'];
+  const mediaAlt = (m: any): string =>
+    String(m?.alt || m?.image?.altText || '').toLowerCase();
+  const colorFilteredMedia = selectedColor
+    ? mediaNodes.filter((m: any) => {
+        const alt = mediaAlt(m);
+        const named = COLOR_NAMES.find((c) => alt.includes(c));
+        return !named || named === selectedColor.toLowerCase();
+      })
+    : mediaNodes;
 
   return (
     <div style={{background: STYX.bone, minHeight: '100vh'}}>
@@ -372,10 +384,10 @@ export default function Product() {
       >
         {/* ── Left Column — Stacked Gallery ── */}
         <div style={{display: 'flex', flexDirection: 'column', gap: 8}}>
-          {/* Lead image — variant image if available, else first media */}
+          {/* Lead image — variant image if available, else first color-matched media */}
           {(() => {
             const variantImg = (selectedVariant as any)?.image;
-            const firstMedia = mediaNodes[0];
+            const firstMedia = colorFilteredMedia[0];
             const leadImage = variantImg || (firstMedia && 'image' in firstMedia ? firstMedia.image : firstMedia?.previewImage);
             return (
               <div
@@ -457,8 +469,17 @@ export default function Product() {
             );
           })()}
 
-          {/* Remaining media — large, stacked */}
-          {mediaNodes.slice(1, 8).map((m: any, i: number) => {
+          {/* Remaining media — large, stacked; skip whichever image leads */}
+          {(() => {
+            const variantImg = (selectedVariant as any)?.image;
+            const leadUrl =
+              variantImg?.url ||
+              colorFilteredMedia[0]?.image?.url ||
+              colorFilteredMedia[0]?.previewImage?.url;
+            return colorFilteredMedia
+              .filter((m: any) => (m.image?.url || m.previewImage?.url) !== leadUrl)
+              .slice(0, 7);
+          })().map((m: any, i: number) => {
             const img = m.image || m.previewImage;
             if (!img) return null;
             return (
@@ -531,7 +552,7 @@ export default function Product() {
             {/* Credit Card + Wire Transfer side by side */}
             {selectedVariant?.price && (() => {
               const basePrice = parseFloat(selectedVariant.price.amount);
-              const wirePrice = basePrice * 0.97;
+              const wirePrice = basePrice * 0.96;
               const currencyCode = selectedVariant.price.currencyCode;
               const fmt = (n: number) =>
                 new Intl.NumberFormat('en-US', {style: 'currency', currency: currencyCode, minimumFractionDigits: 2, maximumFractionDigits: 2}).format(n);
@@ -626,7 +647,7 @@ export default function Product() {
                           marginTop: 3,
                         }}
                       >
-                        3% discount
+                        4% discount
                       </div>
                     </div>
                   </div>
@@ -718,17 +739,19 @@ export default function Product() {
                                 fontSize: 13,
                                 letterSpacing: '0.15em',
                                 textTransform: 'uppercase',
-                                textDecoration: 'none',
                                 padding: '16px 0',
                                 textAlign: 'center',
                                 background: selected ? STYX.ink : 'transparent',
-                                color: selected ? STYX.gold : STYX.ink,
+                                color: selected ? STYX.gold : available ? STYX.ink : STYX.silt2,
                                 borderRight: `1px solid ${STYX.line}`,
                                 cursor: 'pointer',
-                                opacity: available ? 1 : 0.35,
+                                opacity: available ? 1 : 0.5,
+                                textDecoration: available ? 'none' : 'line-through',
+                                textDecorationThickness: available ? undefined : '1.5px',
                                 transition: 'all 0.25s ease',
                                 position: 'relative',
                               }}
+                              title={available ? undefined : 'Sold out — select to request this size'}
                             >
                               {name}
                               {selected && (
@@ -759,14 +782,15 @@ export default function Product() {
                                 fontSize: 12,
                                 letterSpacing: '0.12em',
                                 textTransform: 'uppercase',
-                                textDecoration: 'none',
                                 padding: '14px 0',
                                 textAlign: 'center',
                                 background: selected ? STYX.paper : 'transparent',
-                                color: selected ? STYX.ink : STYX.silt,
+                                color: selected ? STYX.ink : available ? STYX.silt : STYX.silt2,
                                 borderRight: `1px solid ${STYX.line}`,
                                 cursor: 'pointer',
-                                opacity: available ? 1 : 0.35,
+                                opacity: available ? 1 : 0.5,
+                                textDecoration: available ? 'none' : 'line-through',
+                                textDecorationThickness: available ? undefined : '1.5px',
                                 transition: 'all 0.25s ease',
                                 display: 'flex',
                                 alignItems: 'center',
@@ -774,6 +798,7 @@ export default function Product() {
                                 gap: 8,
                                 position: 'relative',
                               }}
+                              title={available ? undefined : 'Sold out — select to request this color'}
                             >
                               <span
                                 style={{
@@ -812,16 +837,18 @@ export default function Product() {
                               fontSize: 12,
                               letterSpacing: '0.15em',
                               textTransform: 'uppercase',
-                              textDecoration: 'none',
                               padding: '12px 24px',
                               background: selected ? STYX.paper : 'transparent',
-                              color: selected ? STYX.ink : STYX.silt,
+                              color: selected ? STYX.ink : available ? STYX.silt : STYX.silt2,
                               border: `1px solid ${selected ? STYX.graphite : STYX.line}`,
                               borderBottom: selected ? `2px solid ${STYX.gold}` : `1px solid ${STYX.line}`,
                               cursor: 'pointer',
-                              opacity: available ? 1 : 0.35,
+                              opacity: available ? 1 : 0.5,
+                              textDecoration: available ? 'none' : 'line-through',
+                              textDecorationThickness: available ? undefined : '1.5px',
                               transition: 'all 0.2s ease',
                             }}
+                            title={available ? undefined : 'Sold out — select to request this size'}
                           >
                             {swatch?.color || swatch?.image?.previewImage?.url ? (
                               <ProductOptionSwatch swatch={swatch} name={name} />
@@ -898,22 +925,47 @@ export default function Product() {
             <div style={{marginTop: 16}}>
               <div style={{display: 'flex', gap: 12}}>
                 {isOutOfStock ? (
-                  <div
-                    style={{
-                      flex: 1,
-                      padding: '18px 24px',
-                      background: STYX.silt2,
-                      color: STYX.bone,
-                      fontFamily: FONT.cinzel,
-                      fontSize: 13,
-                      letterSpacing: '0.25em',
-                      textTransform: 'uppercase',
-                      textAlign: 'center',
-                      cursor: 'not-allowed',
-                      opacity: 0.6,
-                    }}
-                  >
-                    Sold Out
+                  <div style={{flex: 1}}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setOfferMode('request');
+                        setOfferOpen(true);
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '22px 24px',
+                        background: STYX.ink,
+                        color: STYX.bone,
+                        fontFamily: FONT.cinzel,
+                        fontSize: 13,
+                        letterSpacing: '0.25em',
+                        textTransform: 'uppercase',
+                        border: 'none',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 12,
+                        transition: 'all 0.25s ease',
+                      }}
+                    >
+                      <span>Request This Size</span>
+                      <span style={{opacity: 0.4}}>&middot;</span>
+                      <span style={{color: STYX.gold}}>Made to Order</span>
+                    </button>
+                    <div
+                      style={{
+                        marginTop: 10,
+                        fontFamily: FONT.mono,
+                        fontSize: 10,
+                        letterSpacing: '0.06em',
+                        color: STYX.silt,
+                        textAlign: 'center',
+                      }}
+                    >
+                      This size is sold out — send a request and we&rsquo;ll source it for you.
+                    </div>
                   </div>
                 ) : (
                   <div style={{flex: 1}}>
@@ -977,41 +1029,15 @@ export default function Product() {
                     </AddToCartButton>
                   </div>
                 )}
-                {/* Wishlist Heart */}
-                <button
-                  type="button"
-                  onClick={() => wishlist.toggle(product.handle)}
-                  style={{
-                    width: 64,
-                    border: `1px solid ${wished ? STYX.gold : STYX.line}`,
-                    background: wished ? 'rgba(184,146,74,0.10)' : 'transparent',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                    transition: 'all 0.25s ease',
-                  }}
-                  aria-label={wished ? 'Remove from wishlist' : 'Add to wishlist'}
-                  title={wished ? 'Saved to wishlist' : 'Save to wishlist'}
-                >
-                  <svg
-                    width="22"
-                    height="20"
-                    viewBox="0 0 22 20"
-                    fill={wished ? STYX.gold : 'none'}
-                    stroke={wished ? STYX.gold : STYX.ink}
-                    strokeWidth="1.5"
-                  >
-                    <path d="M11 18.5C11 18.5 1.5 13 1.5 6.5C1.5 3.46 3.96 1 7 1C8.8 1 10.37 1.89 11 3.18C11.63 1.89 13.2 1 15 1C18.04 1 20.5 3.46 20.5 6.5C20.5 13 11 18.5 11 18.5Z" />
-                  </svg>
-                </button>
               </div>
 
               {/* Make an Offer */}
               {!isOutOfStock && (
                 <button
-                  onClick={() => setOfferOpen(true)}
+                  onClick={() => {
+                    setOfferMode('offer');
+                    setOfferOpen(true);
+                  }}
                   style={{
                     marginTop: 16,
                     background: 'none',
@@ -1032,10 +1058,52 @@ export default function Product() {
                 </button>
               )}
 
-              {/* Compare + Print-size buttons */}
-              <div style={{marginTop: 16, display: 'flex', gap: 8, flexWrap: 'wrap'}}>
-                <CompareButton handle={product.handle} length={selectedLength} />
-                <PrintListButton handle={product.handle} />
+              {/* Favorites + Compare + Print — three equal actions */}
+              <div style={{marginTop: 16, display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8}}>
+                <button
+                  type="button"
+                  onClick={() => wishlist.toggle(product.handle)}
+                  aria-label={wished ? 'Remove from favorites' : 'Add to favorites'}
+                  title={wished ? 'Saved to favorites' : 'Save to favorites'}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 6,
+                    padding: '8px 14px',
+                    border: `1px solid ${wished ? STYX.gold : STYX.line}`,
+                    background: wished ? 'rgba(184,146,74,0.08)' : 'transparent',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    fontFamily: FONT.mono,
+                    fontSize: 9,
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                    color: wished ? STYX.gold : STYX.silt,
+                    width: '100%',
+                  }}
+                >
+                  <svg
+                    width="15"
+                    height="14"
+                    viewBox="0 0 22 20"
+                    fill={wished ? STYX.gold : 'none'}
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                  >
+                    <path d="M11 18.5C11 18.5 1.5 13 1.5 6.5C1.5 3.46 3.96 1 7 1C8.8 1 10.37 1.89 11 3.18C11.63 1.89 13.2 1 15 1C18.04 1 20.5 3.46 20.5 6.5C20.5 13 11 18.5 11 18.5Z" />
+                  </svg>
+                  <span>{wished ? 'Saved' : 'Favorite'}</span>
+                </button>
+                <CompareButton
+                  handle={product.handle}
+                  length={selectedLength}
+                  style={{width: '100%', justifyContent: 'center'}}
+                />
+                <PrintListButton
+                  handle={product.handle}
+                  style={{width: '100%', justifyContent: 'center'}}
+                />
               </div>
 
               {/* ── Divider ── */}
@@ -1117,7 +1185,7 @@ export default function Product() {
                 <div className="offer-head" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24}}>
                   <div>
                     <div className="offer-eyebrow" style={{fontFamily: FONT.cinzel, fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: STYX.gold, marginBottom: 8}}>
-                      Make an Offer
+                      {offerMode === 'request' ? 'Request This Size' : 'Make an Offer'}
                     </div>
                     <div className="offer-title" style={{fontFamily: FONT.cinzel, fontSize: 20, fontWeight: 400, textTransform: 'uppercase', letterSpacing: '0.04em', color: STYX.ink}}>
                       {title}
@@ -1174,7 +1242,9 @@ export default function Product() {
                     borderBottom: `1px solid ${STYX.line}`,
                   }}
                 >
-                  Offers are reviewed within 24 hours. Once accepted, you have 48 hours to complete your purchase at the agreed price. Offers not completed within this window expire automatically.
+                  {offerMode === 'request'
+                    ? 'This size is currently sold out, but every piece is backorderable. Leave your details and we’ll confirm availability, price, and timing within 24 hours — then place the order for you.'
+                    : 'Offers are reviewed within 24 hours. Once accepted, you have 48 hours to complete your purchase at the agreed price. Offers not completed within this window expire automatically.'}
                 </div>
 
                 {/* Form */}
@@ -1184,8 +1254,8 @@ export default function Product() {
                     const form = e.currentTarget;
                     const data = new FormData(form);
                     const payload = {
-                      formId: 'make-offer',
-                      formName: 'make-offer',
+                      formId: offerMode === 'request' ? 'request-size' : 'make-offer',
+                      formName: offerMode === 'request' ? 'request-size' : 'make-offer',
                       product: title,
                       sku: selectedVariant?.sku || '',
                       variant: selectedVariant?.title || '',
@@ -1205,12 +1275,17 @@ export default function Product() {
                     } catch {
                       // Confirm to the customer regardless; submission is logged server-side.
                     }
-                    alert('Your offer has been submitted. We will respond within 24 hours.');
+                    alert(
+                      offerMode === 'request'
+                        ? 'Your request has been received. We will confirm availability and timing within 24 hours.'
+                        : 'Your offer has been submitted. We will respond within 24 hours.',
+                    );
                     setOfferOpen(false);
                   }}
                   className="offer-form"
                   style={{display: 'flex', flexDirection: 'column', gap: 16}}
                 >
+                  {offerMode === 'offer' && (
                   <div>
                     <label style={{fontFamily: FONT.cinzel, fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: STYX.silt, display: 'block', marginBottom: 6}}>
                       Your Offer (USD)
@@ -1232,6 +1307,7 @@ export default function Product() {
                       }}
                     />
                   </div>
+                  )}
                   <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12}}>
                     <div>
                       <label style={{fontFamily: FONT.cinzel, fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: STYX.silt, display: 'block', marginBottom: 6}}>
@@ -1309,7 +1385,7 @@ export default function Product() {
                       transition: 'background 0.2s',
                     }}
                   >
-                    Submit Offer
+                    {offerMode === 'request' ? 'Submit Request' : 'Submit Offer'}
                   </button>
                 </form>
               </div>
@@ -1348,8 +1424,12 @@ export default function Product() {
                 {label: 'Thickness', value: chainThickness},
                 {label: 'Construction', value: chainConstruction},
                 {label: 'Weight', value: displayWeight ? `${displayWeight}g` : null},
-                {label: 'Karat', value: karat ? `${karat}k Gold` : null},
+                {label: 'Karat', value: karat ? `${karat}k Gold (${(selectedPurity * 100).toFixed(1)}% pure)` : null},
                 {label: 'Color', value: selectedColor || 'Yellow Gold'},
+                {label: 'Clasp', value: specClasp},
+                {label: 'Our Cast', value: specCast},
+                {label: 'Origin', value: chainOrigin},
+                {label: 'Invented', value: yearInvented},
               ]
                 .filter((row) => row.value)
                 .map((row) => (
@@ -1614,8 +1694,8 @@ export default function Product() {
       </section>
       )}
 
-      {/* ── Specifications + Pull Quote ── */}
-      {(hasSpecs || pullQuote) && (
+      {/* ── Pull Quote ── (specs live in Product Details above) */}
+      {pullQuote && (
         <section
           style={{
             background: STYX.paper,
@@ -1628,73 +1708,12 @@ export default function Product() {
               margin: '0 auto',
               padding: '96px 56px',
               display: 'grid',
-              gridTemplateColumns: hasSpecs && pullQuote ? '1fr 1.2fr' : '1fr',
+              gridTemplateColumns: '1fr',
               gap: 80,
               alignItems: 'start',
             }}
             className="styx-product-specs-grid"
           >
-            {/* Specifications */}
-            {hasSpecs && (
-              <div>
-                <StyxLabel>Specifications</StyxLabel>
-                <div
-                  style={{
-                    marginTop: 28,
-                    background: STYX.bone,
-                    border: `1px solid ${STYX.line}`,
-                    padding: 28,
-                  }}
-                >
-                  {([
-                    ['Weave', specWeave],
-                    ['Profile', specProfile],
-                    ['Clasp', specClasp],
-                    ['Our Cast', specCast],
-                    ['Origin', chainOrigin],
-                    ['Year', yearInvented],
-                    ['Karat', `${karat}k (${(selectedPurity * 100).toFixed(1)}% pure)`],
-                    ['Weight', displayWeight ? `${displayWeight}g` : null],
-                  ] as const).filter(([, v]) => v).map(([k, v], i, arr) => (
-                    <div
-                      key={k}
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'baseline',
-                        padding: '14px 0',
-                        borderBottom: i === arr.length - 1 ? 'none' : `1px solid ${STYX.line}`,
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontFamily: FONT.cinzel,
-                          fontSize: 10,
-                          letterSpacing: '0.25em',
-                          color: STYX.silt,
-                          textTransform: 'uppercase',
-                        }}
-                      >
-                        {k}
-                      </div>
-                      <div
-                        style={{
-                          fontFamily: FONT.inter,
-                          fontSize: 14,
-                          color: STYX.ink,
-                          fontWeight: 500,
-                          textAlign: 'right',
-                          maxWidth: '60%',
-                        }}
-                      >
-                        {v}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
             {/* Pull Quote */}
             {pullQuote && (
               <div

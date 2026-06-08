@@ -12,12 +12,12 @@ import {seoPayload} from '~/lib/seo.server';
 import {getStyxSeoMeta} from '~/lib/seo-meta';
 import {KARAT_PURITY} from '~/lib/gold';
 import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel, CTAButton, StyxProductCard} from '~/components/styx';
-import {PLACEHOLDER_ARTICLES} from '~/data/journal-articles';
+import {PLACEHOLDER_ARTICLES, HIDDEN_ARTICLE_HANDLES} from '~/data/journal-articles';
 
 const BLOG_HANDLE = 'journal';
 
 /* ─── All journal entries for the "Other chapters" index ─── */
-const JOURNAL_ENTRIES = [
+const ALL_JOURNAL_ENTRIES = [
   {handle: 'history-of-gold-chains', title: 'A Brief History of Gold Chains', subtitle: 'From Mesopotamia to Miami', readTime: '10 min', vol: 'The Almanac'},
   {handle: 'sizing-guide', title: 'On Proportion & Stature', subtitle: 'The Definitive Sizing Guide', readTime: '8 min', vol: 'The Almanac'},
   {handle: 'history-of-the-cuban-link', title: 'The Cuban Link', subtitle: 'Miami, 1974', readTime: '6 min', vol: 'Vol I'},
@@ -33,6 +33,11 @@ const JOURNAL_ENTRIES = [
   {handle: 'history-of-the-paperclip-chain', title: 'The Paperclip', subtitle: 'Oslo, 1940', readTime: '4 min', vol: 'Vol IV'},
   {handle: 'history-of-the-tennis-chain', title: 'The Tennis Chain', subtitle: 'Forest Hills, 1978', readTime: '5 min', vol: 'Vol V'},
 ];
+
+// Only surface chapters for chain types we actually carry
+const JOURNAL_ENTRIES = ALL_JOURNAL_ENTRIES.filter(
+  (e) => !HIDDEN_ARTICLE_HANDLES.has(e.handle),
+);
 
 /* ─── Chain → collection mapping (handles match Shopify collection handles) ─── */
 const COLLECTION_MAP: Record<string, {name: string; handle: string}> = {
@@ -67,6 +72,11 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
   const {language, country} = context.storefront.i18n;
 
   invariant(params.journalHandle, 'Missing journal handle');
+
+  // Articles for chain types we don't carry are hidden entirely
+  if (HIDDEN_ARTICLE_HANDLES.has(params.journalHandle)) {
+    throw new Response(null, {status: 404});
+  }
 
   // Fetch article + related collection products in parallel
   const collectionMapping = COLLECTION_MAP[params.journalHandle];

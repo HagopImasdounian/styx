@@ -5,11 +5,13 @@ export function CompareButton({
   handle,
   length = null,
   compact = false,
+  style,
 }: {
   handle: string;
   /** Price-affecting variant length (e.g. "18\""). Distinguishes variants of the same chain. */
   length?: string | null;
   compact?: boolean;
+  style?: React.CSSProperties;
 }) {
   const {add, remove, has, isFull} = useCompare();
   const isActive = has(handle, length);
@@ -42,6 +44,7 @@ export function CompareButton({
         letterSpacing: '0.1em',
         textTransform: 'uppercase' as const,
         color: isActive ? STYX.gold : STYX.silt,
+        ...style,
       }}
     >
       {/* Scale icon */}

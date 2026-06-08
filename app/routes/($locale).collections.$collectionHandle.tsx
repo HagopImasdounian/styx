@@ -235,6 +235,14 @@ const COLOR_HEX: Record<string, string> = {
   'White Gold': '#D4D2CC',
 };
 
+// Metal collections pre-select their color filter so e.g. /collections/white-gold
+// opens showing only white-gold variants.
+const METAL_COLLECTION_COLOR: Record<string, string> = {
+  'yellow-gold': 'Yellow Gold',
+  'white-gold': 'White Gold',
+  'rose-gold': 'Rose Gold',
+};
+
 // Thickness ranges for filter pills
 const THICKNESS_RANGES = [
   {label: 'Under 1mm', min: 0, max: 1},
@@ -453,14 +461,25 @@ const WEAVES: Array<{handle: string; label: string}> = [
 ];
 
 export default function Collection() {
-  const {collection} = useLoaderData<typeof loader>();
+  const {collection, collections: allCollections} =
+    useLoaderData<typeof loader>();
+  // weave handle → cutout PNG url (custom.cutout_image metafield)
+  const weaveCutout = (handle: string): string | undefined =>
+    (allCollections as any[])?.find((c) => c.handle === handle)?.cutout
+      ?.reference?.image?.url;
 
   const {ref, inView} = useInView();
   const [searchParams, setSearchParams] = useSearchParams();
   const currentSort = searchParams.get('sort') || 'price-low-high';
 
   // Client-side filters
-  const [filterColor, setFilterColor] = useState<string | null>(null);
+  const [filterColor, setFilterColor] = useState<string | null>(
+    () => METAL_COLLECTION_COLOR[(collection as any).handle] ?? null,
+  );
+  // Re-apply the preset when navigating between collections (route stays mounted)
+  useEffect(() => {
+    setFilterColor(METAL_COLLECTION_COLOR[(collection as any).handle] ?? null);
+  }, [(collection as any).handle]);
   const [filterKarat, setFilterKarat] = useState<string | null>(null);
   const [filterThickness, setFilterThickness] = useState<string | null>(null);
   const [filterConstruction, setFilterConstruction] = useState<string | null>(
@@ -496,23 +515,10 @@ export default function Collection() {
     (filterConstruction ? 1 : 0) +
     (filterType ? 1 : 0);
 
-  // Chain close-up image (transparent PNG) for the hero
-  const CHAIN_HERO_IMAGE: Record<string, string> = {
-    cuban: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-cuban.png?v=1779151408',
-    curb: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-curb.png?v=1779151414',
-    box: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-box.png?v=1779151394',
-    rope: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-rope.png?v=1779151436',
-    cable: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-cable.png?v=1779151401',
-    figaro: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-figaro.png?v=1779151422',
-    wheat: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-wheat.png?v=1779151450',
-    rolo: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-rolo.png?v=1779151429',
-    singapore: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-singapore.png?v=1779151442',
-    franco: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-franco.png?v=1780167769',
-    herringbone: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-herringbone.png?v=1780167770',
-    snake: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-snake.png?v=1780167771',
-    paperclip: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-chains-PNG-paperclip.png?v=1780167387',
-  };
-  const heroChainImage = CHAIN_HERO_IMAGE[collection.handle] ?? null;
+  // Chain close-up cutout (transparent PNG) for the hero — from the
+  // collection's custom.cutout_image metafield, set in Shopify admin
+  const heroChainImage =
+    (collection as any).cutout?.reference?.image?.url ?? null;
 
   // Track collection view in data layer
   useEffect(() => {
@@ -638,12 +644,16 @@ export default function Collection() {
                     e.currentTarget.style.borderColor = STYX.line;
                   }}
                 >
-                  <img
-                    src={CHAIN_HERO_IMAGE[w.handle]}
-                    alt={`${w.label} chain close-up`}
-                    loading="lazy"
-                    style={{height: 30, maxWidth: '100%', objectFit: 'contain'}}
-                  />
+                  {weaveCutout(w.handle) ? (
+                    <img
+                      src={weaveCutout(w.handle)}
+                      alt={`${w.label} chain close-up`}
+                      loading="lazy"
+                      style={{height: 30, maxWidth: '100%', objectFit: 'contain'}}
+                    />
+                  ) : (
+                    <div style={{height: 30}} />
+                  )}
                   <span
                     style={{
                       fontFamily: FONT.cinzel,
@@ -1384,6 +1394,15 @@ const COLLECTION_QUERY = `#graphql
       chapter_kicker: metafield(namespace: "custom", key: "chapter_kicker") {
         value
       }
+      cutout: metafield(namespace: "custom", key: "cutout_image") {
+        reference {
+          ... on MediaImage {
+            image {
+              url
+            }
+          }
+        }
+      }
       products(
         first: $first,
         last: $last,
@@ -1420,6 +1439,15 @@ const COLLECTION_QUERY = `#graphql
         node {
           title
           handle
+          cutout: metafield(namespace: "custom", key: "cutout_image") {
+            reference {
+              ... on MediaImage {
+                image {
+                  url
+                }
+              }
+            }
+          }
         }
       }
     }

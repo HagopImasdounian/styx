@@ -799,7 +799,7 @@ function ComparisonTable({
                     color: STYX.goldDeep,
                     marginBottom: 8,
                   }}>
-                    Best Value
+                    Most Gold for Your Money
                   </div>
                 )}
 

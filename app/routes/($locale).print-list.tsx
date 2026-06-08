@@ -64,7 +64,21 @@ type PrintSpec = {
   karat: number | null;
   style: string | null;
   model: string | null;
+  /** Chain-family slug for the per-type outline silhouette (e.g. "cuban-link"). */
+  styleSlug: string | null;
 };
+
+/** "Cuban Link" → "cuban-link" — keys the per-chain-type outline asset. */
+function styleToSlug(style: string | null, title: string): string | null {
+  const source = style || title;
+  const FAMILIES = [
+    'cuban', 'curb', 'box', 'rope', 'cable', 'figaro', 'wheat',
+    'rolo', 'singapore', 'franco', 'herringbone', 'paperclip', 'snake',
+  ];
+  const hay = source.toLowerCase();
+  const hit = FAMILIES.find((f) => hay.includes(f));
+  return hit ?? null;
+}
 
 function deriveSpec(p: any): PrintSpec {
   // Width: prefer the chain.thickness metafield, fall back to the title.
@@ -98,7 +112,16 @@ function deriveSpec(p: any): PrintSpec {
 
   const image = p.featuredImage || p.variants?.nodes?.[0]?.image;
 
-  return {handle: p.handle, title: p.title, image, mm, karat, style, model};
+  return {
+    handle: p.handle,
+    title: p.title,
+    image,
+    mm,
+    karat,
+    style,
+    model,
+    styleSlug: styleToSlug(style, p.title),
+  };
 }
 
 /** "Cuban Link · 5.4 mm (5.4 mil)" */
@@ -469,7 +492,11 @@ export default function PrintListPage() {
           {/* Columns */}
           <div className="pl-row">
             {specs.map((s) => {
-              const showSilhouette = s.mm != null && !missingSilhouette[s.handle];
+              // Per-chain-type outline (cuban.png, curb.png, …) so the printed
+              // profile shows the actual link pattern of the weave; falls back
+              // to the solid gold bar when no outline asset exists.
+              const showSilhouette =
+                s.mm != null && s.styleSlug != null && !missingSilhouette[s.styleSlug];
               return (
                 <div key={s.handle} className="pl-col">
                   <div className="pl-visual">
@@ -477,11 +504,11 @@ export default function PrintListPage() {
                       showSilhouette ? (
                         <img
                           className="pl-silhouette"
-                          src={`/images/silhouettes/${s.handle}.png`}
-                          alt={`${s.title} shown at actual ${s.mm}mm width`}
+                          src={`/images/silhouettes/${s.styleSlug}.png`}
+                          alt={`${s.title} link outline shown at actual ${s.mm}mm width`}
                           style={{width: `${s.mm}mm`}}
                           onError={() =>
-                            setMissingSilhouette((prev) => ({...prev, [s.handle]: true}))
+                            setMissingSilhouette((prev) => ({...prev, [s.styleSlug!]: true}))
                           }
                         />
                       ) : (

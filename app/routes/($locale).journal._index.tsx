@@ -5,6 +5,7 @@ import {getStyxSeoMeta} from '~/lib/seo-meta';
 import {Link} from '~/components/Link';
 import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel, Obol} from '~/components/styx';
 import {routeHeaders} from '~/data/cache';
+import {HIDDEN_ARTICLE_HANDLES} from '~/data/journal-articles';
 
 export const headers = routeHeaders;
 
@@ -42,7 +43,7 @@ const HERO_IMAGES: Record<string, string> = {
 };
 
 /* ─── Volume data ─── */
-const JOURNAL_VOLUMES = [
+const ALL_JOURNAL_VOLUMES = [
   {
     id: 'vol-0',
     volLabel: 'The Almanac',
@@ -125,6 +126,12 @@ const JOURNAL_VOLUMES = [
     ],
   },
 ];
+
+// Hide articles for chain types we don't carry; drop volumes left empty.
+const JOURNAL_VOLUMES = ALL_JOURNAL_VOLUMES.map((vol) => ({
+  ...vol,
+  articles: vol.articles.filter((a) => !HIDDEN_ARTICLE_HANDLES.has(a.handle)),
+})).filter((vol) => vol.articles.length > 0);
 
 /* ─── Flatten into a single feed for filtering ─── */
 type JournalEntry = {

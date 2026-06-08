@@ -10,6 +10,27 @@ export interface Article {
   };
 }
 
+/**
+ * Articles for chain types STYX does not carry. The content stays written
+ * (ready to unhide if the catalog expands) but these are filtered out of the
+ * journal index and 404 on direct visits.
+ */
+export const HIDDEN_ARTICLE_HANDLES = new Set<string>([
+  'history-of-the-ball-chain',
+  'history-of-the-byzantine-chain',
+  'history-of-the-criss-cross-chain',
+  'history-of-the-forsantina-chain',
+  'history-of-the-heart-chain',
+  'history-of-the-mariner-chain',
+  'history-of-the-peanut-chain',
+  'history-of-the-s-link-chain',
+  'history-of-the-scroll-chain',
+  'history-of-the-tennis-chain',
+  'history-of-the-tinsel-chain',
+  'history-of-the-tulip-chain',
+  'history-of-the-valentino-chain',
+]);
+
 export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
   'history-of-gold-chains': {
     title: "The Almanac: A History of Gold — From Mesopotamian Links to Wearable Bullion",

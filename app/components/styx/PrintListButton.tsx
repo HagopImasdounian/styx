@@ -4,9 +4,11 @@ import {STYX, FONT} from './constants';
 export function PrintListButton({
   handle,
   compact = false,
+  style,
 }: {
   handle: string;
   compact?: boolean;
+  style?: React.CSSProperties;
 }) {
   const {add, remove, has, isFull} = usePrintList();
   const isActive = has(handle);
@@ -45,6 +47,7 @@ export function PrintListButton({
         letterSpacing: '0.1em',
         textTransform: 'uppercase' as const,
         color: isActive ? STYX.gold : STYX.silt,
+        ...style,
       }}
     >
       {/* Ruler icon — distinct from Compare's balance scale */}
