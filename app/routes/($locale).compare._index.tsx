@@ -10,6 +10,7 @@ import {
   GoldTicker,
   StyxNav,
   StyxFooter,
+  ActualSizeToggle,
 } from '~/components/styx';
 import {CompareButton} from '~/components/styx/CompareButton';
 import {WeighIn, type WeighInChain} from '~/components/styx/WeighIn';
@@ -442,6 +443,11 @@ export default function ComparePage() {
               Print these to scale
             </Link>
           )}
+
+          {/* See the chains at true size on this screen (card-calibrated) */}
+          <div style={{marginTop: 14, display: 'flex', justifyContent: 'center'}}>
+            <ActualSizeToggle label="Show actual size on screen" />
+          </div>
         </div>
 
         {/* Add more controls */}

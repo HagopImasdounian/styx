@@ -48,6 +48,7 @@ import {
   StyxProductCard,
   RecommendedProducts,
   Obol,
+  ActualSizeChainStrip,
 } from '~/components/styx';
 import type {CrossSellProduct} from '~/components/styx';
 import {CompareButton} from '~/components/styx/CompareButton';
@@ -1472,6 +1473,13 @@ export default function Product() {
             </div>
           </div>
 
+          {/* ── See it at actual size on your screen (card-calibrated) ── */}
+          <ActualSizeChainStrip
+            thickness={chainThickness}
+            chainStyle={chainStyle}
+            title={title}
+          />
+
           {/* ── Shipping / Returns Disclosure ── */}
           <div style={{marginTop: 40, paddingTop: 32, borderTop: `1px solid ${STYX.line}`}}>
               <div
@@ -1662,6 +1670,7 @@ export default function Product() {
         </h2>
 
         <div
+          className="styx-transparency-grid"
           style={{
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
@@ -1779,7 +1788,7 @@ export default function Product() {
           color: STYX.bone,
         }}
       >
-        <div style={{maxWidth: 1440, margin: '0 auto', padding: 56, display: 'flex', alignItems: 'center', gap: 40}}>
+        <div className="styx-pact-banner" style={{maxWidth: 1440, margin: '0 auto', padding: 56, display: 'flex', alignItems: 'center', gap: 40}}>
         <Obol size={64} color={STYX.goldLight} speed={6} />
         <div style={{flex: 1}}>
           <div

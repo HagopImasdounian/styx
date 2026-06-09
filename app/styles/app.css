@@ -292,9 +292,10 @@ shop-pay-button {
   /* Newsletter */
   .styx-newsletter { padding: 60px 20px !important; }
 
-  /* Footer */
+  /* Footer — brand column spans full width on top, 3 link groups flow 2-up below */
   .styx-footer { padding: 48px 20px 32px !important; }
-  .styx-footer [data-grid] { grid-template-columns: 1fr !important; gap: 32px !important; }
+  .styx-footer [data-grid] { grid-template-columns: repeat(2, 1fr) !important; gap: 28px 24px !important; }
+  .styx-footer [data-grid] > :first-child { grid-column: 1 / -1 !important; }
 
   /* About page */
   .styx-about-hero { grid-template-columns: 1fr !important; padding: 60px 20px 48px !important; gap: 32px !important; }
@@ -321,7 +322,10 @@ shop-pay-button {
     border-bottom: 1px solid rgba(26,24,21,0.12) !important;
   }
   .styx-color-pills > a:last-child { border-bottom: none !important; }
-  .styx-product-grid { grid-template-columns: 1fr !important; gap: 32px !important; padding: 40px 20px 60px !important; }
+  /* minmax(0,1fr) (not plain 1fr) so the gallery image's intrinsic max-content
+     width can't force the single grid track wider than the viewport (was causing
+     ~21px horizontal overflow at 390px / ~91px at 320px). */
+  .styx-product-grid { grid-template-columns: minmax(0, 1fr) !important; gap: 32px !important; padding: 40px 20px 60px !important; }
   .styx-product-grid h1 { font-size: 32px !important; }
   .styx-product-info { position: static !important; }
   .styx-product-price { font-size: 32px !important; }
@@ -330,6 +334,17 @@ shop-pay-button {
   /* Transparency section */
   .styx-product-transparency { padding: 60px 20px !important; }
   .styx-product-transparency h2 { font-size: 32px !important; }
+  /* "Every number, in the open" — single column on phones (two-up is too cramped) */
+  .styx-transparency-grid { grid-template-columns: 1fr !important; gap: 28px !important; }
+  /* Ferryman's Pact banner — stack to one column: text on top, Obol centered below;
+     drop the heavy 56px desktop padding. Obol is the first child, so column-reverse. */
+  .styx-pact-banner {
+    flex-direction: column-reverse !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 24px !important;
+    padding: 40px 20px !important;
+  }
   /* Related products */
   .styx-product-related { padding: 48px 20px !important; }
   .styx-product-related h2 { font-size: 28px !important; }

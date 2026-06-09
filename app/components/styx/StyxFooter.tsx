@@ -207,37 +207,23 @@ export function StyxFooter({collections = []}: {collections?: CollectionNode[]})
           }}
         >
           &copy; MMXXVI · Styx Gold
+          <span aria-hidden="true" style={{margin: '0 7px'}}>·</span>
+          Designed &amp; built by{' '}
+          <a
+            href="https://itshco.com/?utm_source=styxgold&utm_medium=referral&utm_campaign=footer_credit"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{color: 'inherit', textDecoration: 'none'}}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = STYX.gold;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = 'inherit';
+            }}
+          >
+            H&amp;Co
+          </a>
         </span>
-
-        {/* Social icons */}
-        <div style={{display: 'flex', gap: 8}}>
-          {['Instagram', 'Twitter', 'Pinterest'].map((name) => (
-            <a
-              key={name}
-              href="#"
-              style={{
-                fontFamily: FONT.inter,
-                fontSize: 11,
-                color: 'rgba(255,255,255,0.3)',
-                textDecoration: 'none',
-                letterSpacing: '0.05em',
-                // Give each link a proper tap target (was ~17px tall).
-                display: 'inline-flex',
-                alignItems: 'center',
-                minHeight: 44,
-                padding: '0 8px',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = STYX.gold;
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = 'rgba(255,255,255,0.3)';
-              }}
-            >
-              {name}
-            </a>
-          ))}
-        </div>
       </div>
     </footer>
   );

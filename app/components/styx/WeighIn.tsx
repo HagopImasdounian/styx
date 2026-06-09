@@ -3,7 +3,10 @@ import {Link} from 'react-router';
 import {STYX, FONT} from './constants';
 import {Obol} from './Obol';
 import {PrintListButton} from './PrintListButton';
+import {ChainSilhouette} from './ChainSilhouette';
 import {KARAT_PURITY} from '~/lib/gold';
+import {useScaleCalibration} from '~/context/ScaleCalibrationContext';
+import {styleToSlug, parseMm} from '~/lib/chains';
 
 export type WeighInChain = {
   type: 'product' | 'custom';
@@ -338,6 +341,9 @@ function NumInline({children}: {children: React.ReactNode}) {
 /* ─── Chain column card ─── */
 
 function ChainColumn({chain, shortName, onRemove}: {chain: WeighInChain; shortName: string; onRemove?: () => void}) {
+  const {actualSizeOn, pxPerMm} = useScaleCalibration();
+  const mm = parseMm(chain.thickness, chain.title);
+  const showActual = actualSizeOn && pxPerMm != null && mm != null;
   return (
     <div className="weighin-chain-col">
       <div style={{position: 'relative', overflow: 'hidden'}}>
@@ -366,6 +372,23 @@ function ChainColumn({chain, shortName, onRemove}: {chain: WeighInChain; shortNa
           <span style={{color: STYX.gold}}>${chain.minPrice.toLocaleString()}</span>
         </div>
       </div>
+      {/* Actual size on screen (card-calibrated) */}
+      {showActual && (
+        <div style={{borderBottom: `1px solid ${STYX.line}`, padding: '14px 0 10px'}}>
+          <div style={{display: 'flex', alignItems: 'flex-end', justifyContent: 'center', height: 130, overflow: 'hidden'}}>
+            <ChainSilhouette
+              styleSlug={styleToSlug(null, chain.title)}
+              widthMm={mm!}
+              pxPerMm={pxPerMm}
+              heightPx={130}
+              title={chain.title}
+            />
+          </div>
+          <div style={{textAlign: 'center', marginTop: 8, fontFamily: FONT.mono, fontSize: 8, letterSpacing: '0.08em', textTransform: 'uppercase', color: STYX.silt}}>
+            {mm} mm · actual size
+          </div>
+        </div>
+      )}
       <div style={{padding: '14px 16px'}}>
         {chain.type === 'product' ? (
           <Link to={`/products/${chain.handle}`} style={{textDecoration: 'none'}}>

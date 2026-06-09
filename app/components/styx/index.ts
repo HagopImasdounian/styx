@@ -25,3 +25,7 @@ export {CompareBar} from './CompareBar';
 export {PrintListButton} from './PrintListButton';
 export {WishlistButton} from './WishlistButton';
 export {WeighIn} from './WeighIn';
+export {ChainSilhouette} from './ChainSilhouette';
+export {ActualSizeToggle} from './ActualSizeToggle';
+export {ActualSizeChainStrip} from './ActualSizeChainStrip';
+export {CalibrationOverlay} from './CalibrationOverlay';

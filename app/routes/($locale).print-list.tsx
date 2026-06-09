@@ -3,10 +3,12 @@ import {type LoaderFunctionArgs, type MetaFunction} from 'react-router';
 import {useLoaderData, useNavigate, useFetcher} from 'react-router';
 import {Image} from '@shopify/hydrogen';
 import {Link} from '~/components/Link';
-import {STYX, FONT, GoldTicker, StyxNav, StyxFooter} from '~/components/styx';
+import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, ChainSilhouette, ActualSizeToggle} from '~/components/styx';
 import {usePrintList} from '~/context/PrintListContext';
+import {useScaleCalibration} from '~/context/ScaleCalibrationContext';
 import {usePrefixPathWithLocale} from '~/lib/utils';
 import {STYX_PRINT_LOGO} from '~/components/styx/printLogo';
+import {styleToSlug} from '~/lib/chains';
 
 // Customer-facing site URL shown on the printout. Edit to the live domain.
 const SITE_URL = 'styxgold.com';
@@ -68,18 +70,6 @@ type PrintSpec = {
   styleSlug: string | null;
 };
 
-/** "Cuban Link" → "cuban-link" — keys the per-chain-type outline asset. */
-function styleToSlug(style: string | null, title: string): string | null {
-  const source = style || title;
-  const FAMILIES = [
-    'cuban', 'curb', 'box', 'rope', 'cable', 'figaro', 'wheat',
-    'rolo', 'singapore', 'franco', 'herringbone', 'paperclip', 'snake',
-  ];
-  const hay = source.toLowerCase();
-  const hit = FAMILIES.find((f) => hay.includes(f));
-  return hit ?? null;
-}
-
 function deriveSpec(p: any): PrintSpec {
   // Width: prefer the chain.thickness metafield, fall back to the title.
   const rawThickness: string | null =
@@ -124,11 +114,11 @@ function deriveSpec(p: any): PrintSpec {
   };
 }
 
-/** "Cuban Link · 5.4 mm (5.4 mil)" */
+/** "Cuban Link · 5.4 mm" */
 function oneLiner(s: PrintSpec): string {
   const parts: string[] = [];
   if (s.style) parts.push(s.style);
-  if (s.mm != null) parts.push(`${s.mm} mm (${s.mm} mil)`);
+  if (s.mm != null) parts.push(`${s.mm} mm`);
   return parts.join(' · ') || s.title;
 }
 
@@ -137,6 +127,7 @@ function oneLiner(s: PrintSpec): string {
 export default function PrintListPage() {
   const {products} = useLoaderData<typeof loader>();
   const {handles, add, move, remove, clear, isFull} = usePrintList();
+  const {actualSizeOn, pxPerMm, staleZoom, openCalibration} = useScaleCalibration();
   const navigate = useNavigate();
 
   const specByHandle = new Map<string, PrintSpec>(
@@ -153,8 +144,6 @@ export default function PrintListPage() {
   const specs = orderedHandles
     .map((h) => specByHandle.get(h))
     .filter(Boolean) as PrintSpec[];
-
-  const [missingSilhouette, setMissingSilhouette] = useState<Record<string, boolean>>({});
 
   // ── Search to add any item ──
   const [query, setQuery] = useState('');
@@ -348,7 +337,7 @@ export default function PrintListPage() {
           </div>
           <ol style={{margin: 0, paddingLeft: 18, fontFamily: FONT.inter, fontSize: 13, color: STYX.silt, lineHeight: 1.7}}>
             <li>In the print dialog set <strong>Scale</strong> to <strong>100%</strong> (“Actual Size”). Do <strong>not</strong> use “Fit to page”.</li>
-            <li>Lay a ruler along the <strong>cm / inch ruler</strong> at the bottom — <strong>10&nbsp;cm</strong> and <strong>4&nbsp;in</strong> should line up exactly with the notches. If they’re off, adjust the scale and reprint.</li>
+            <li><strong>No ruler?</strong> Lay a credit card or ID over the <strong>dashed card box</strong> at the bottom — if it fills the outline edge&#8209;to&#8209;edge, your scale is correct. Or check the <strong>ruler</strong> beside it reads <strong>6&nbsp;cm / 2&nbsp;in</strong> exactly. If either is off, adjust the scale and reprint.</li>
           </ol>
         </div>
 
@@ -410,6 +399,57 @@ export default function PrintListPage() {
 
         {/* Search to add any item (screen only) */}
         <div className="pl-no-print">{searchBox}</div>
+
+        {/* View at actual size on this screen (card-calibrated) — screen only.
+            The printed sheet stays true on paper; this is for shoppers without
+            a printer who want real size right on their phone or laptop. */}
+        <div className="pl-no-print" style={{maxWidth: 820, margin: '0 auto 40px', textAlign: 'center'}}>
+          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 14, flexWrap: 'wrap'}}>
+            <span style={{fontFamily: FONT.mono, fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: STYX.silt}}>
+              No printer? See them at actual size on screen
+            </span>
+            <ActualSizeToggle />
+          </div>
+
+          {actualSizeOn && pxPerMm != null && (
+            <div style={{marginTop: 24}}>
+              <div style={{display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: 30, flexWrap: 'wrap'}}>
+                {specs.map((s) =>
+                  s.mm != null ? (
+                    <div key={s.handle} style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8}}>
+                      <div style={{display: 'flex', alignItems: 'flex-end', height: 180, overflow: 'hidden'}}>
+                        <ChainSilhouette
+                          styleSlug={s.styleSlug}
+                          widthMm={s.mm}
+                          pxPerMm={pxPerMm}
+                          heightPx={180}
+                          title={s.title}
+                        />
+                      </div>
+                      <div style={{fontFamily: FONT.mono, fontSize: 9, letterSpacing: '0.08em', textTransform: 'uppercase', color: STYX.silt}}>
+                        {s.mm} mm
+                      </div>
+                    </div>
+                  ) : null,
+                )}
+              </div>
+              <div style={{marginTop: 16, display: 'flex', flexDirection: 'column', gap: 6}}>
+                {staleZoom && (
+                  <span style={{fontFamily: FONT.mono, fontSize: 9, letterSpacing: '0.08em', textTransform: 'uppercase', color: STYX.goldDeep}}>
+                    Your browser zoom changed — re-calibrate for accuracy
+                  </span>
+                )}
+                <button
+                  type="button"
+                  onClick={() => openCalibration()}
+                  style={{fontFamily: FONT.mono, fontSize: 9, letterSpacing: '0.1em', textTransform: 'uppercase', color: STYX.silt, background: 'none', border: 'none', textDecoration: 'underline', cursor: 'pointer'}}
+                >
+                  Re-calibrate screen
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* Reorderable list (screen only) */}
         <div className="pl-no-print" style={{display: 'grid', gap: 10, maxWidth: 640, margin: '0 auto 40px'}}>
@@ -492,24 +532,25 @@ export default function PrintListPage() {
           {/* Columns */}
           <div className="pl-row">
             {specs.map((s) => {
-              // Per-chain-type outline (cuban.png, curb.png, …) so the printed
-              // profile shows the actual link pattern of the weave; falls back
-              // to the solid gold bar when no outline asset exists.
-              const showSilhouette =
-                s.mm != null && s.styleSlug != null && !missingSilhouette[s.styleSlug];
+              // Per-chain-type outline tile (tiles/cuban.png, …) repeated
+              // vertically to fill the window, so every chain shows the SAME
+              // length at its true mm width; falls back to the solid gold bar
+              // when no outline asset exists.
+              const showSilhouette = s.mm != null && s.styleSlug != null;
               return (
                 <div key={s.handle} className="pl-col">
                   <div className="pl-visual">
                     {s.mm != null ? (
                       showSilhouette ? (
-                        <img
+                        <div
                           className="pl-silhouette"
-                          src={`/images/silhouettes/${s.styleSlug}.png`}
-                          alt={`${s.title} link outline shown at actual ${s.mm}mm width`}
-                          style={{width: `${s.mm}mm`}}
-                          onError={() =>
-                            setMissingSilhouette((prev) => ({...prev, [s.styleSlug!]: true}))
-                          }
+                          role="img"
+                          aria-label={`${s.title} link outline shown at actual ${s.mm}mm width`}
+                          style={{
+                            width: `${s.mm}mm`,
+                            backgroundImage: `url(/images/silhouettes/tiles/${s.styleSlug}.png)`,
+                            backgroundSize: `${s.mm}mm auto`,
+                          }}
                         />
                       ) : (
                         <div className="pl-bar" style={{width: `${s.mm}mm`}} />
@@ -521,10 +562,7 @@ export default function PrintListPage() {
                   <div className="pl-col-meta">
                     <div className="pl-mm">{s.mm != null ? `${s.mm} mm` : '—'}</div>
                     <div className="pl-style">{s.style || s.title}</div>
-                    <div className="pl-sub">
-                      {s.karat ? `${s.karat}K` : ''}
-                      {s.mm != null ? `${s.karat ? ' · ' : ''}${s.mm} mil` : ''}
-                    </div>
+                    <div className="pl-sub">{s.karat ? `${s.karat}K` : ''}</div>
                     {s.model && <div className="pl-model">Model {s.model}</div>}
                   </div>
                 </div>
@@ -539,42 +577,49 @@ export default function PrintListPage() {
             slightly from this illustration.
           </div>
 
-          {/* Dual ruler — lay a physical ruler here to verify scale */}
-          <div className="pl-ruler-block">
-            <div className="pl-ruler-label">↓ Lay a ruler along the notches — 10&nbsp;cm and 4&nbsp;in should line up exactly. If not, reprint at 100%.</div>
-
-            {/* Centimeters */}
-            <div className="pl-ruler pl-ruler-cm">
-              {Array.from({length: 101}, (_, mm) => (
+          {/* Scale check — a thin dual ruler for those who have one, plus a
+              card cutout for those who don't. */}
+          <div className="pl-scale">
+            {/* One hairline ruler: inches above the line, centimetres below. */}
+            <div className="pl-ruler2">
+              <div className="pl-ruler2-line" />
+              {/* inch ticks above (every 1/8"), numbered each inch */}
+              {Array.from({length: 21}, (_, i) => (
                 <span
-                  key={`cm${mm}`}
-                  className={`pl-tick ${mm % 10 === 0 ? 'pl-tick-lg' : mm % 5 === 0 ? 'pl-tick-md' : ''}`}
+                  key={`in${i}`}
+                  className={`pl-t-up ${i % 8 === 0 ? 'pl-t-up-lg' : i % 4 === 0 ? 'pl-t-up-md' : ''}`}
+                  style={{left: `${(i * 25.4) / 8}mm`}}
+                />
+              ))}
+              {Array.from({length: 3}, (_, i) => (
+                <span key={`inl${i}`} className="pl-l-up" style={{left: `${i * 25.4}mm`}}>{i}</span>
+              ))}
+              <span className="pl-u-up">in</span>
+              {/* cm ticks below (every mm), numbered each cm */}
+              {Array.from({length: 64}, (_, mm) => (
+                <span
+                  key={`mm${mm}`}
+                  className={`pl-t-dn ${mm % 10 === 0 ? 'pl-t-dn-lg' : mm % 5 === 0 ? 'pl-t-dn-md' : ''}`}
                   style={{left: `${mm}mm`}}
                 />
               ))}
-              {Array.from({length: 11}, (_, cm) => (
-                <span key={`cml${cm}`} className="pl-num pl-num-cm" style={{left: `${cm * 10}mm`}}>
-                  {cm}
-                </span>
+              {Array.from({length: 7}, (_, cm) => (
+                <span key={`cml${cm}`} className="pl-l-dn" style={{left: `${cm * 10}mm`}}>{cm}</span>
               ))}
-              <span className="pl-unit">cm</span>
+              <span className="pl-u-dn">cm</span>
             </div>
 
-            {/* Inches (0–4", ticks every 1/16") */}
-            <div className="pl-ruler pl-ruler-in">
-              {Array.from({length: 65}, (_, i) => (
-                <span
-                  key={`in${i}`}
-                  className={`pl-tick ${i % 16 === 0 ? 'pl-tick-lg' : i % 8 === 0 ? 'pl-tick-md' : i % 4 === 0 ? 'pl-tick-sm' : ''}`}
-                  style={{left: `${(i * 25.4) / 16}mm`}}
-                />
-              ))}
-              {Array.from({length: 5}, (_, inch) => (
-                <span key={`inl${inch}`} className="pl-num pl-num-in" style={{left: `${inch * 25.4}mm`}}>
-                  {inch}
-                </span>
-              ))}
-              <span className="pl-unit">in</span>
+            {/* No-ruler calibration: a true-size card outline. */}
+            <div className="pl-card">
+              <div className="pl-card-box">
+                <div className="pl-card-title">Lay any card here</div>
+                <div className="pl-card-dims">Credit card / ID · 85.6 × 54&nbsp;mm</div>
+              </div>
+              <div className="pl-card-cap">
+                No ruler? Place a credit card or ID over the dashed box. If it
+                fills the outline edge&#8209;to&#8209;edge, your print is at true
+                100% scale.
+              </div>
             </div>
           </div>
 
@@ -646,19 +691,23 @@ const PRINT_CSS = `
 
 .pl-row { display: flex; align-items: flex-end; gap: 9mm; flex-wrap: wrap; margin-bottom: 10mm; }
 .pl-col { display: flex; flex-direction: column; align-items: center; width: 33mm; }
-/* Fixed 60mm window. Clips tall chains rather than scaling them down, so the
-   silhouette's WIDTH always stays exactly true-to-scale. */
-.pl-visual { display: flex; align-items: flex-end; justify-content: center; height: 60mm; margin-bottom: 3mm; overflow: hidden; }
+/* Fixed 90mm window. Clips tall chains rather than scaling them down, so the
+   silhouette's WIDTH always stays exactly true-to-scale; the taller window lets
+   each chain run longer instead of looking stubby. */
+.pl-visual { display: flex; align-items: flex-end; justify-content: center; height: 90mm; margin-bottom: 3mm; overflow: hidden; }
 .pl-bar {
-  height: 55mm;
+  height: 86mm;
   background: linear-gradient(90deg, #b8924a, #d4b478 50%, #8a6a32);
   border: 0.2mm solid #8a6a32;
   -webkit-print-color-adjust: exact; print-color-adjust: exact;
 }
-/* width is set inline to the true mm; height follows the link aspect ratio.
-   No max-height — the .pl-visual window clips instead, preserving true scale. */
+/* Width is set inline to the true mm; a single seamless link tile is repeated
+   down the column to fill the window, so every chain shows the same length at
+   its real width regardless of how dense its weave is. */
 .pl-silhouette {
-  height: auto; flex-shrink: 0;
+  height: 100%; flex-shrink: 0;
+  background-repeat: repeat-y;
+  background-position: center bottom;
   -webkit-print-color-adjust: exact; print-color-adjust: exact;
 }
 .pl-unknown {
@@ -676,16 +725,45 @@ const PRINT_CSS = `
   font-size: 9pt; color: #6B6459; line-height: 1.5;
   text-align: center; max-width: 150mm; margin: 0 auto 8mm;
 }
-.pl-ruler-block { margin-top: 6mm; }
-.pl-ruler-label { font-family: 'JetBrains Mono', monospace; font-size: 7pt; color: #6B6459; margin-bottom: 3mm; letter-spacing: 0.06em; }
-.pl-ruler { position: relative; width: 101.6mm; max-width: 100%; height: 10mm; border-bottom: 0.4mm solid #1a1815; margin-bottom: 9mm; }
-.pl-ruler-in { margin-top: 3mm; }
-.pl-tick { position: absolute; bottom: 0; width: 0.25mm; height: 2.2mm; background: #1a1815; }
-.pl-tick-sm { height: 3.2mm; }
-.pl-tick-md { height: 4.4mm; }
-.pl-tick-lg { height: 6mm; width: 0.4mm; }
-.pl-num { position: absolute; bottom: 6.2mm; transform: translateX(-50%); font-family: 'JetBrains Mono', monospace; font-size: 7pt; }
-.pl-unit { position: absolute; right: -7mm; bottom: 0.5mm; font-family: 'JetBrains Mono', monospace; font-size: 6.5pt; color: #6B6459; }
+/* ── Scale check: thin dual-unit ruler + true-size card cutout ── */
+.pl-scale {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 9mm; margin-top: 7mm; flex-wrap: wrap;
+}
+
+/* One hairline, ticks above (inches) and below (cm). 63.5mm = 2.5in = 6.35cm. */
+.pl-ruler2 { position: relative; width: 63.5mm; height: 12mm; flex-shrink: 0; }
+.pl-ruler2-line { position: absolute; top: 50%; left: 0; right: 0; height: 0.25mm; background: #1a1815; transform: translateY(-50%); }
+.pl-t-up, .pl-t-dn { position: absolute; left: 0; width: 0.2mm; background: #1a1815; }
+.pl-t-up { bottom: 50%; height: 1.3mm; }
+.pl-t-up-md { height: 2.1mm; }
+.pl-t-up-lg { height: 3mm; width: 0.35mm; }
+.pl-t-dn { top: 50%; height: 1.3mm; }
+.pl-t-dn-md { height: 2.1mm; }
+.pl-t-dn-lg { height: 3mm; width: 0.35mm; }
+.pl-l-up, .pl-l-dn {
+  position: absolute; transform: translateX(-50%);
+  font-family: 'JetBrains Mono', monospace; font-size: 6pt; color: #4A443B;
+}
+.pl-l-up { bottom: 50%; margin-bottom: 3.2mm; }
+.pl-l-dn { top: 50%; margin-top: 3.2mm; }
+.pl-u-up, .pl-u-dn { position: absolute; right: -5.5mm; font-family: 'JetBrains Mono', monospace; font-size: 6pt; color: #6B6459; }
+.pl-u-up { bottom: 50%; margin-bottom: 0.4mm; }
+.pl-u-dn { top: 50%; margin-top: 0.4mm; }
+
+.pl-card { display: flex; flex-direction: column; align-items: flex-start; gap: 2.5mm; }
+.pl-card-box {
+  width: 85.6mm; height: 53.98mm; box-sizing: border-box;
+  border: 0.3mm dashed #8a6a32; border-radius: 3.18mm;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5mm;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+.pl-card-title { font-family: 'Cinzel', serif; font-size: 10pt; letter-spacing: 0.08em; color: #4A443B; }
+.pl-card-dims { font-family: 'JetBrains Mono', monospace; font-size: 7pt; letter-spacing: 0.08em; color: #8A6A32; text-transform: uppercase; }
+.pl-card-cap {
+  font-family: 'Cormorant Garamond', serif; font-style: italic;
+  font-size: 9pt; color: #6B6459; line-height: 1.4; max-width: 85.6mm;
+}
 
 .pl-foot {
   display: flex; justify-content: space-between; align-items: baseline;

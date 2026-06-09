@@ -31,6 +31,8 @@ import {CompareProvider} from '~/context/CompareContext';
 import {CompareBar} from '~/components/styx/CompareBar';
 import {PrintListProvider} from '~/context/PrintListContext';
 import {WishlistProvider} from '~/context/WishlistContext';
+import {ScaleCalibrationProvider} from '~/context/ScaleCalibrationContext';
+import {CalibrationOverlay} from '~/components/styx/CalibrationOverlay';
 import {useIsHydrated} from '~/hooks/useIsHydrated';
 import {useCartFetchers} from '~/hooks/useCartFetchers';
 import type {RootLoader} from '~/root';
@@ -54,6 +56,7 @@ export function PageLayout({children, layout}: LayoutProps) {
       <CompareProvider>
         <PrintListProvider>
         <WishlistProvider>
+        <ScaleCalibrationProvider>
         <div className="flex flex-col min-h-screen">
           <div className="">
             <a href="#mainContent" className="sr-only">
@@ -65,6 +68,8 @@ export function PageLayout({children, layout}: LayoutProps) {
           </main>
         </div>
         <CompareBar />
+        <CalibrationOverlay />
+        </ScaleCalibrationProvider>
         </WishlistProvider>
         </PrintListProvider>
       </CompareProvider>
@@ -77,6 +82,7 @@ export function PageLayout({children, layout}: LayoutProps) {
     <CompareProvider>
       <PrintListProvider>
       <WishlistProvider>
+      <ScaleCalibrationProvider>
       <div style={{background: STYX.bone, minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
         <a href="#mainContent" className="sr-only">
           Skip to content
@@ -100,6 +106,8 @@ export function PageLayout({children, layout}: LayoutProps) {
         <StyxFooter />
       </div>
       <CompareBar />
+      <CalibrationOverlay />
+      </ScaleCalibrationProvider>
       </WishlistProvider>
       </PrintListProvider>
     </CompareProvider>
