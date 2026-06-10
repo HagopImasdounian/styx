@@ -1,10 +1,16 @@
 import {STYX} from './constants';
 
 /**
- * A single chain-weave silhouette: one seamless link tile repeated vertically
- * to fill the window at a given width. Width may be expressed in real `mm`
- * (print, true on paper) or CSS `px` (screen, true once calibrated). Falls back
- * to a solid gold bar when the weave has no tile.
+ * A single chain-weave tile repeated vertically to fill the window at a given
+ * width. Width may be expressed in real `mm` (print, true on paper) or CSS `px`
+ * (screen, true once calibrated). Falls back to a solid gold bar when the weave
+ * has no tile.
+ *
+ * On screen (px mode) we use a real photographic gold-chain tile so shoppers see
+ * the actual metal at true size; print (mm mode) keeps the crisp black line-art
+ * tile, which reproduces far better on paper than a photo. Both are seamless
+ * one-period tiles cropped so the chain fills the tile width edge-to-edge, so
+ * the same `width = thickness` scaling holds for either.
  */
 export function ChainSilhouette({
   styleSlug,
@@ -27,6 +33,8 @@ export function ChainSilhouette({
   const px = pxPerMm != null;
   const width = px ? `${widthMm * pxPerMm!}px` : `${widthMm}mm`;
   const height = px ? `${heightPx ?? 220}px` : heightCss ?? '90mm';
+  // Photographic tiles on screen, line-art tiles for print.
+  const tileDir = px ? 'tiles-photo' : 'tiles';
 
   const base: React.CSSProperties = {
     width,
@@ -60,7 +68,7 @@ export function ChainSilhouette({
       }
       style={{
         ...base,
-        backgroundImage: `url(/images/silhouettes/tiles/${styleSlug}.png)`,
+        backgroundImage: `url(/images/silhouettes/${tileDir}/${styleSlug}.png)`,
         backgroundRepeat: 'repeat-y',
         backgroundPosition: 'center bottom',
         backgroundSize: `${width} auto`,
