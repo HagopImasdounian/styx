@@ -19,6 +19,10 @@ import {
  */
 
 const STORAGE_KEY = 'styx-screen-calibration';
+// Whether the shopper wants actual-size on. Persisted so that, once calibrated
+// and switched on, every page they visit (and future visits) shows true size
+// without re-toggling — we already know their screen.
+const PREF_KEY = 'styx-actual-size-on';
 
 type Stored = {pxPerMm: number; dpr: number};
 
@@ -71,6 +75,8 @@ export function ScaleCalibrationProvider({children}: {children: React.ReactNode}
         if (parsed && typeof parsed.pxPerMm === 'number' && parsed.pxPerMm > 0) {
           setPxPerMm(parsed.pxPerMm);
           setDpr(typeof parsed.dpr === 'number' ? parsed.dpr : null);
+          // Restore the on/off preference — once on, stays on across pages/visits.
+          if (localStorage.getItem(PREF_KEY) === '1') setActualSizeOnState(true);
         }
       }
     } catch {}
@@ -86,30 +92,42 @@ export function ScaleCalibrationProvider({children}: {children: React.ReactNode}
     return () => window.removeEventListener('resize', check);
   }, [dpr]);
 
-  const setCalibration = useCallback((value: number) => {
-    const d = typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1;
-    setPxPerMm(value);
-    setDpr(d);
-    setStaleZoom(false);
+  // Set the on/off preference AND persist it, so it survives reloads and
+  // carries to every page once the shopper has switched it on.
+  const applyActualSizeOn = useCallback((on: boolean) => {
+    setActualSizeOnState(on);
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({pxPerMm: value, dpr: d}));
+      localStorage.setItem(PREF_KEY, on ? '1' : '0');
     } catch {}
-    setIsOpen(false);
-    if (thenEnableRef.current) {
-      setActualSizeOnState(true);
-      thenEnableRef.current = false;
-    }
   }, []);
+
+  const setCalibration = useCallback(
+    (value: number) => {
+      const d = typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1;
+      setPxPerMm(value);
+      setDpr(d);
+      setStaleZoom(false);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({pxPerMm: value, dpr: d}));
+      } catch {}
+      setIsOpen(false);
+      if (thenEnableRef.current) {
+        applyActualSizeOn(true);
+        thenEnableRef.current = false;
+      }
+    },
+    [applyActualSizeOn],
+  );
 
   const clearCalibration = useCallback(() => {
     setPxPerMm(null);
     setDpr(null);
     setStaleZoom(false);
-    setActualSizeOnState(false);
+    applyActualSizeOn(false);
     try {
       localStorage.removeItem(STORAGE_KEY);
     } catch {}
-  }, []);
+  }, [applyActualSizeOn]);
 
   const openCalibration = useCallback((opts?: {thenEnable?: boolean}) => {
     thenEnableRef.current = !!opts?.thenEnable;
@@ -134,15 +152,15 @@ export function ScaleCalibrationProvider({children}: {children: React.ReactNode}
         } catch {}
         if (stored != null) {
           setPxPerMm(stored);
-          setActualSizeOnState(true);
+          applyActualSizeOn(true);
           return;
         }
         openCalibration({thenEnable: true});
         return;
       }
-      setActualSizeOnState(on);
+      applyActualSizeOn(on);
     },
-    [pxPerMm, openCalibration],
+    [pxPerMm, openCalibration, applyActualSizeOn],
   );
 
   return (
