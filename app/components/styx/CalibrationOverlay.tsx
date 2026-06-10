@@ -21,7 +21,7 @@ import {CARD_LONG_MM, CARD_SHORT_MM} from '~/lib/chains';
  */
 const SHORT_RATIO = CARD_SHORT_MM / CARD_LONG_MM; // ~0.63
 const MIN = 120;
-const CTRL_COL = 300; // width reserved for the controls column in side-by-side mode
+const CTRL_COL = 230; // width reserved for the controls column in side-by-side mode
 
 export function CalibrationOverlay() {
   const {isOpen, closeCalibration, setCalibration, pxPerMm} = useScaleCalibration();
@@ -48,13 +48,16 @@ export function CalibrationOverlay() {
 
     let cap: number;
     if (isPortrait) {
-      // Long edge is vertical; height-bound, minus heading/controls below.
-      cap = Math.min(Math.round(vh - 280), 680);
+      // Long edge is vertical; height-bound, minus the controls below. The
+      // heading now lives INSIDE the card, so there's more room — the max must
+      // comfortably EXCEED a real card (≈85.6mm) or it can't be matched.
+      cap = Math.min(Math.round(vh - 240), 820);
     } else if (sideBySide) {
       // Card height = long × ratio must fit the (short) viewport; width is
-      // whatever's left after the controls column. Lets it reach true size.
-      const byHeight = Math.round((vh - 48) / SHORT_RATIO);
-      const byWidth = Math.round(vw - CTRL_COL - 48);
+      // whatever's left after the (now slim) controls column. Pushed as large
+      // as the axes allow so it can exceed a real card on a landscape phone.
+      const byHeight = Math.round((vh - 20) / SHORT_RATIO);
+      const byWidth = Math.round(vw - CTRL_COL - 28);
       cap = Math.min(byHeight, byWidth, 1100);
     } else {
       // Roomy desktop: width-bound.
@@ -146,45 +149,60 @@ export function CalibrationOverlay() {
           touchAction: 'none',
         }}
       >
-        {/* faux chip for "card" legibility (sits near a corner) */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '8%',
-            left: '8%',
-            width: shortPx * 0.22,
-            height: shortPx * 0.16,
-            borderRadius: radius * 0.5,
-            border: `1px solid rgba(212,180,120,0.55)`,
-          }}
-        />
+        {/* Heading lives INSIDE the card cutout — keeps the instructions out of
+            the way of the controls (which otherwise get pushed off the bottom
+            of a phone) and reads naturally as the face of the card. */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
+            overflow: 'hidden',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             flexDirection: 'column',
-            gap: 4,
+            gap: 8,
+            padding: '8% 10%',
             textAlign: 'center',
             color: STYX.goldLight,
             pointerEvents: 'none',
           }}
         >
-          <span
+          <div
             style={{
-              fontFamily: FONT.mono,
-              fontSize: 10,
-              letterSpacing: '0.16em',
-              textTransform: 'uppercase',
+              fontFamily: FONT.cinzel,
+              fontSize: 18,
+              fontWeight: 500,
+              letterSpacing: '0.08em',
+              color: STYX.bone,
             }}
           >
-            Match your card
-          </span>
-          <span style={{fontFamily: FONT.mono, fontSize: 8, opacity: 0.8}}>
-            85.6 × 54 mm
-          </span>
+            Calibrate Your Screen
+          </div>
+          <div
+            style={{
+              fontFamily: FONT.cormorant,
+              fontSize: 16,
+              lineHeight: 1.4,
+              color: 'rgba(239,234,224,0.9)',
+              maxWidth: 320,
+            }}
+          >
+            Hold a real bank card or ID {portrait ? 'upright' : 'flat'} to the
+            screen and resize this outline until it matches exactly.
+          </div>
+          <div
+            style={{
+              fontFamily: FONT.mono,
+              fontSize: 9,
+              letterSpacing: '0.16em',
+              textTransform: 'uppercase',
+              opacity: 0.7,
+              marginTop: 2,
+            }}
+          >
+            ID-1 · 85.6 × 54 mm
+          </div>
         </div>
         {/* drag handle, bottom-right */}
         <div
@@ -221,33 +239,6 @@ export function CalibrationOverlay() {
           flexShrink: 0,
         }}
       >
-        {/* Heading */}
-        <div style={{textAlign: 'center', maxWidth: 460}}>
-          <div
-            style={{
-              fontFamily: FONT.cinzel,
-              fontSize: side ? 17 : 20,
-              fontWeight: 500,
-              letterSpacing: '0.08em',
-              color: STYX.bone,
-              marginBottom: 8,
-            }}
-          >
-            Calibrate Your Screen
-          </div>
-          <div
-            style={{
-              fontFamily: FONT.cormorant,
-              fontSize: side ? 15 : 17,
-              color: 'rgba(239,234,224,0.82)',
-              lineHeight: 1.4,
-            }}
-          >
-            Hold any bank card or ID {portrait ? 'upright' : 'flat'} against the
-            screen and resize the outline until it matches the card exactly.
-          </div>
-        </div>
-
         {/* Size control. The slider is deliberately NARROWER than the screen so
             both thumb extremes stay well inside the edges — your finger reaches
             full/empty without sliding off the side of the phone — and a shorter

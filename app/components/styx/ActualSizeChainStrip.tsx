@@ -69,12 +69,14 @@ export function ActualSizeChainStrip({
 
       {showing && (
         <div style={{marginTop: 24}}>
+          {/* Horizontal so the chain's true thickness is its HEIGHT — reads
+              like laying it on a ruler and costs far less vertical space than a
+              tall vertical strip. */}
           <div
             style={{
               display: 'flex',
-              alignItems: 'flex-end',
-              justifyContent: 'center',
-              height: 240,
+              alignItems: 'center',
+              width: '100%',
               overflow: 'hidden',
             }}
           >
@@ -82,7 +84,7 @@ export function ActualSizeChainStrip({
               styleSlug={slug}
               widthMm={mm}
               pxPerMm={pxPerMm}
-              heightPx={240}
+              orientation="horizontal"
               title={title}
             />
           </div>
