@@ -23,6 +23,9 @@ export default async function handleRequest(
       'https://www.google-analytics.com',
       'https://www.googletagmanager.com',
       'https://tagmanager.google.com',
+      // Google Ads conversion tags loaded via GTM
+      'https://www.googleadservices.com',
+      'https://googleads.g.doubleclick.net',
       // Meta pixel (pre-added for future paid social)
       'https://connect.facebook.net',
       ...(process.env.NODE_ENV !== 'production' ? ['http://localhost:*'] : []),
@@ -36,6 +39,8 @@ export default async function handleRequest(
       'https://*.googletagmanager.com',
       // Google Ads / consent-mode conversion pings (ccm/collect)
       'https://www.google.com',
+      'https://pagead2.googlesyndication.com',
+      'https://googleads.g.doubleclick.net',
       // Meta pixel (pre-added for future paid social)
       'https://www.facebook.com',
       'data:',
@@ -49,6 +54,8 @@ export default async function handleRequest(
       'https://cdn.shopify.com',
       // Google Ads / consent-mode conversion pings (ccm/collect)
       'https://www.google.com',
+      'https://pagead2.googlesyndication.com',
+      'https://googleads.g.doubleclick.net',
       // Meta pixel (pre-added for future paid social)
       'https://www.facebook.com',
       'https://connect.facebook.net',

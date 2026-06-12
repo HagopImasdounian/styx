@@ -145,7 +145,7 @@ export function HeroGallery({products = []}: {products?: any[]}) {
 
         {/* CTAs */}
         <div style={{display: 'flex', gap: 16}}>
-          <CTAButton variant="primary" href="/collections">
+          <CTAButton variant="primary" href="/collections/chains">
             Shop Chains
           </CTAButton>
           <CTAButton variant="ghost" href="/about">

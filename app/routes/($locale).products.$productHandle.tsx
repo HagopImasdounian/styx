@@ -281,6 +281,32 @@ export default function Product() {
   );
   const selectedLength = lengthOption?.value || null;
 
+  // All variants known client-side (selected + adjacent + first-selectable per
+  // option value, via getAdjacentAndFirstAvailableVariants). Enough to price
+  // every Length pill against the currently-selected Color.
+  const knownVariants: any[] = [
+    selectedVariant,
+    ...(((variants as any[]) ?? []) as any[]),
+  ].filter(Boolean);
+  const findVariantForLength = (lengthName: string) => {
+    const hasLength = (v: any) =>
+      v?.selectedOptions?.some(
+        (o: any) =>
+          o.name?.toLowerCase() === 'length' && o.value === lengthName,
+      );
+    const matchesColor = (v: any) =>
+      !selectedColor ||
+      v?.selectedOptions?.some(
+        (o: any) =>
+          o.name?.toLowerCase() === 'color' && o.value === selectedColor,
+      );
+    return (
+      knownVariants.find((v) => hasLength(v) && matchesColor(v)) ??
+      knownVariants.find(hasLength) ??
+      null
+    );
+  };
+
   // Compute gold transparency breakdown (only when we have weight)
   const hasTransparency = weightGrams !== null && weightGrams > 0;
   const goldBreakdown = hasTransparency
@@ -875,9 +901,19 @@ export default function Product() {
                         )}
                       </div>
                     ) : (
-                      /* Default: outline pill buttons, gold underline when selected */
+                      /* Default: outline pill buttons, gold underline when selected.
+                         Length pills also show that length's price (current color). */
                       option.optionValues.map(
-                        ({isDifferentProduct, name, variantUriQuery, handle, selected, available, swatch}) => (
+                        ({isDifferentProduct, name, variantUriQuery, handle, selected, available, swatch, firstSelectableVariant}) => {
+                          const isLength = option.name.toLowerCase() === 'length';
+                          const pillVariant = isLength
+                            ? findVariantForLength(name) ?? firstSelectableVariant ?? null
+                            : null;
+                          const pillPrice =
+                            isLength && available && pillVariant?.price
+                              ? pillVariant.price
+                              : null;
+                          return (
                           <Link
                             key={option.name + name}
                             {...(!isDifferentProduct ? {rel: 'nofollow'} : {})}
@@ -890,7 +926,7 @@ export default function Product() {
                               fontSize: 12,
                               letterSpacing: '0.15em',
                               textTransform: 'uppercase',
-                              padding: '12px 24px',
+                              padding: isLength ? '10px 14px' : '12px 24px',
                               background: selected ? STYX.paper : 'transparent',
                               color: selected ? STYX.ink : available ? STYX.silt : STYX.silt2,
                               border: `1px solid ${selected ? STYX.graphite : STYX.line}`,
@@ -900,6 +936,17 @@ export default function Product() {
                               textDecoration: available ? 'none' : 'line-through',
                               textDecorationThickness: available ? undefined : '1.5px',
                               transition: 'all 0.2s ease',
+                              ...(isLength
+                                ? {
+                                    display: 'flex',
+                                    flexDirection: 'column' as const,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    gap: 3,
+                                    flex: '1 0 auto',
+                                    textAlign: 'center' as const,
+                                  }
+                                : {}),
                             }}
                             title={available ? undefined : 'Sold out — select to request this size'}
                           >
@@ -908,8 +955,29 @@ export default function Product() {
                             ) : (
                               name
                             )}
+                            {isLength && (
+                              <span
+                                className="styx-length-pill-price"
+                                style={{
+                                  fontFamily: FONT.mono,
+                                  fontSize: 10,
+                                  letterSpacing: '0.04em',
+                                  textTransform: 'none',
+                                  textDecoration: 'none',
+                                  color: selected ? STYX.graphite : STYX.silt2,
+                                  lineHeight: 1,
+                                }}
+                              >
+                                {pillPrice ? (
+                                  <Money data={pillPrice} as="span" withoutTrailingZeros />
+                                ) : (
+                                  '—'
+                                )}
+                              </span>
+                            )}
                           </Link>
-                        ),
+                          );
+                        },
                       )
                     )}
                   </div>
@@ -1085,32 +1153,33 @@ export default function Product() {
                 )}
               </div>
 
-              {/* Make an Offer */}
+              {/* Make an Offer — quiet text link, deliberately demoted below ATC */}
               {!isOutOfStock && (
-                <button
-                  onClick={() => {
-                    setOfferMode('offer');
-                    setOfferStatus('idle');
-                    setOfferOpen(true);
-                  }}
-                  style={{
-                    marginTop: 16,
-                    background: 'none',
-                    border: `1px solid ${STYX.graphite}`,
-                    cursor: 'pointer',
-                    fontFamily: FONT.cinzel,
-                    fontSize: 12,
-                    letterSpacing: '0.2em',
-                    textTransform: 'uppercase',
-                    color: STYX.graphite,
-                    padding: '16px 24px',
-                    display: 'block',
-                    width: '100%',
-                    textAlign: 'center',
-                  }}
-                >
-                  Make an Offer
-                </button>
+                <div style={{marginTop: 14, textAlign: 'center'}}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOfferMode('offer');
+                      setOfferStatus('idle');
+                      setOfferOpen(true);
+                    }}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      padding: 0,
+                      cursor: 'pointer',
+                      fontFamily: FONT.cormorant,
+                      fontSize: 14,
+                      fontStyle: 'italic',
+                      color: STYX.silt,
+                      textDecoration: 'underline',
+                      textUnderlineOffset: 3,
+                      textDecorationColor: 'rgba(74,68,59,0.45)',
+                    }}
+                  >
+                    Make an offer on this piece
+                  </button>
+                </div>
               )}
 
               {/* Favorites + Compare + Print — three equal actions */}

@@ -5,6 +5,7 @@ import {
   useEffect,
   useRef,
   useCallback,
+  useMemo,
 } from 'react';
 
 /**
@@ -163,21 +164,34 @@ export function ScaleCalibrationProvider({children}: {children: React.ReactNode}
     [pxPerMm, openCalibration, applyActualSizeOn],
   );
 
+  const value = useMemo(
+    () => ({
+      pxPerMm,
+      isCalibrated: pxPerMm != null,
+      staleZoom,
+      actualSizeOn,
+      setActualSizeOn,
+      openCalibration,
+      closeCalibration,
+      isOpen,
+      setCalibration,
+      clearCalibration,
+    }),
+    [
+      pxPerMm,
+      staleZoom,
+      actualSizeOn,
+      setActualSizeOn,
+      openCalibration,
+      closeCalibration,
+      isOpen,
+      setCalibration,
+      clearCalibration,
+    ],
+  );
+
   return (
-    <ScaleCalibrationContext.Provider
-      value={{
-        pxPerMm,
-        isCalibrated: pxPerMm != null,
-        staleZoom,
-        actualSizeOn,
-        setActualSizeOn,
-        openCalibration,
-        closeCalibration,
-        isOpen,
-        setCalibration,
-        clearCalibration,
-      }}
-    >
+    <ScaleCalibrationContext.Provider value={value}>
       {children}
     </ScaleCalibrationContext.Provider>
   );

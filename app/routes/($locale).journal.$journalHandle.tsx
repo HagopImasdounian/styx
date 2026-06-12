@@ -130,6 +130,21 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
     throw new Response(null, {status: 404});
   }
 
+  const origin = new URL(request.url).origin;
+  const description =
+    placeholder.content
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 155)
+      .replace(/\s+\S*$/, '')
+      .replace(/[\s.,;:!-]+$/, '') + '…';
+  // Hero images are usually absolute (Shopify CDN); resolve against the
+  // request origin in case any are site-relative paths.
+  const heroImageUrl = placeholder.image
+    ? new URL(placeholder.image.url, origin).toString()
+    : undefined;
+
   return data(
     {
     article: {
@@ -142,15 +157,29 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
     seo: {
       title: placeholder.title,
       titleTemplate: '%s | STYX Gold',
-      description: placeholder.content
-        .replace(/<[^>]*>/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim()
-        .slice(0, 155)
-        .replace(/\s+\S*$/, '')
-        .replace(/[\s.,;:!-]+$/, '')
-        + '…',
+      description,
       url: request.url,
+      jsonLd: {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: placeholder.title,
+        description,
+        ...(heroImageUrl ? {image: heroImageUrl} : {}),
+        author: {
+          '@type': 'Organization',
+          name: 'STYX Gold',
+        },
+        publisher: {
+          '@type': 'Organization',
+          name: 'STYX Gold',
+          logo: {
+            '@type': 'ImageObject',
+            url: `${origin}/images/styx-logo-512.png`,
+          },
+        },
+        mainEntityOfPage: request.url,
+        url: request.url,
+      },
     },
     isPlaceholder: true,
     category: placeholder.category,

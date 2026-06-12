@@ -1,4 +1,4 @@
-import {useEffect, useState, useMemo} from 'react';
+import {useEffect, useMemo} from 'react';
 import {
     type MetaArgs,
   type LoaderFunctionArgs,
@@ -101,21 +101,17 @@ const CHAIN_INTROS: Record<string, {intro: string; journal: string; journalTitle
     journalTitle: 'Read: Understanding Gold Karats — 10K to 24K →',
   },
 };
-import {type SortParam} from '~/components/SortFilter';
+import {FILTER_URL_PREFIX, type SortParam} from '~/components/SortFilter';
 import {PRODUCT_CARD_FRAGMENT} from '~/data/fragments';
 import {CACHE_SHORT, routeHeaders} from '~/data/cache';
 import {seoPayload} from '~/lib/seo.server';
 import {getStyxSeoMeta} from '~/lib/seo-meta';
-import {FILTER_URL_PREFIX} from '~/components/SortFilter';
 import {parseAsCurrency, validateLocale} from '~/lib/utils';
 
 export const headers = routeHeaders;
 
 export async function loader({params, request, context}: LoaderFunctionArgs) {
   validateLocale(params);
-  const paginationVariables = getPaginationVariables(request, {
-    pageBy: 24,
-  });
   const {collectionHandle} = params;
   const locale = context.storefront.i18n;
 
@@ -126,6 +122,11 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   const {sortKey, reverse} = getSortValuesFromParam(
     (searchParams.get('sort') as SortParam) || 'price-low-high',
   );
+
+  // Server-side filters (`filter.*` params → Storefront API ProductFilter).
+  // On this store only `price` and `available` have Search & Discovery filter
+  // definitions, so only those actually narrow the query — the mobile menu's
+  // price buckets use `filter.price`.
   const filters = [...searchParams.entries()].reduce(
     (filters, [key, value]) => {
       if (key.startsWith(FILTER_URL_PREFIX)) {
@@ -139,7 +140,19 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     [] as ProductFilter[],
   );
 
-  const {collection, collections} = await context.storefront.query(
+  // Client-side pills (type/color/karat/width/construction) have NO working
+  // Storefront API filter on this store (productType/tag/variantOption/
+  // productMetafield filters are silently ignored without S&D definitions).
+  // When any is active we bypass pagination and fetch the FULL collection
+  // (≤ ~115 products) so client filtering and counts are complete.
+  const clientFilters = resolveClientFilters(searchParams, collectionHandle);
+  const fullSet = clientFilters.any;
+
+  const paginationVariables = fullSet
+    ? {first: FULL_SET_PAGE_SIZE}
+    : getPaginationVariables(request, {pageBy: 24});
+
+  const {collection, allIndex, collections} = await context.storefront.query(
     COLLECTION_QUERY,
     {
       variables: {
@@ -148,6 +161,11 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
         filters,
         sortKey,
         reverse,
+        // In paginated mode, also fetch a lightweight index of the whole
+        // collection so the result count + available pills cover every
+        // product, not just loaded pages. In full-set mode the main
+        // products query already holds the complete set.
+        fetchIndex: !fullSet,
         country: context.storefront.i18n.country,
         language: context.storefront.i18n.language,
       },
@@ -210,6 +228,10 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   return data(
     {
       collection,
+      // Lightweight full-collection index (null in full-set mode, where
+      // collection.products already contains every product).
+      allProductIndex: fullSet ? null : (allIndex?.products?.nodes ?? null),
+      fullSet,
       appliedFilters,
       collections: flattenConnection(collections),
       seo,
@@ -246,6 +268,64 @@ const METAL_COLLECTION_COLOR: Record<string, string> = {
   'white-gold': 'White Gold',
   'rose-gold': 'Rose Gold',
 };
+
+/* ═══════════════════════════════════════════════════════════════
+   Filter state lives in the URL (shareable / bookmarkable / back-safe)
+
+   Two kinds of filters:
+   • SERVER filters — `filter.*` params parsed by the loader into Storefront
+     API ProductFilters. Only `price` (and `available`) have Search &
+     Discovery definitions on this store, so only those work server-side.
+   • CLIENT pills — `type`, `color`, `karat`, `width`, `construction`
+     params. The API silently ignores productType/tag/variantOption/
+     productMetafield filters here, so these are applied client-side over
+     the FULL collection set (loader fetches first: 250 when any is active).
+   ═══════════════════════════════════════════════════════════════ */
+
+// Collections max out around ~115 products, so one 250-product page always
+// covers the complete set when client-side pill filtering is active.
+const FULL_SET_PAGE_SIZE = 250;
+
+const CLIENT_FILTER_KEYS = [
+  'type',
+  'color',
+  'karat',
+  'width',
+  'construction',
+] as const;
+
+type ClientFilters = {
+  type: string | null;
+  color: string | null;
+  karat: string | null;
+  width: string | null;
+  construction: string | null;
+  any: boolean;
+};
+
+function resolveClientFilters(
+  searchParams: URLSearchParams,
+  collectionHandle: string,
+): ClientFilters {
+  const get = (key: string) => {
+    const v = searchParams.get(key);
+    return v && v !== 'all' ? v : null;
+  };
+  // Metal collections preset their color; `color=all` is the explicit
+  // "preset toggled off" sentinel.
+  const presetColor = METAL_COLLECTION_COLOR[collectionHandle] ?? null;
+  const colorRaw = searchParams.get('color');
+  const color = colorRaw === 'all' ? null : colorRaw || presetColor;
+
+  const values = {
+    type: get('type'),
+    color,
+    karat: get('karat'),
+    width: get('width'),
+    construction: get('construction'),
+  };
+  return {...values, any: Object.values(values).some(Boolean)};
+}
 
 // Thickness ranges for filter pills
 const THICKNESS_RANGES = [
@@ -465,8 +545,13 @@ const WEAVES: Array<{handle: string; label: string}> = [
 ];
 
 export default function Collection() {
-  const {collection, collections: allCollections} =
-    useLoaderData<typeof loader>();
+  const {
+    collection,
+    collections: allCollections,
+    allProductIndex,
+    fullSet,
+    appliedFilters,
+  } = useLoaderData<typeof loader>();
   // weave handle → cutout PNG url (custom.cutout_image metafield)
   const weaveCutout = (handle: string): string | undefined =>
     (allCollections as any[])?.find((c) => c.handle === handle)?.cutout
@@ -475,41 +560,47 @@ export default function Collection() {
   const {ref, inView} = useInView();
   const [searchParams, setSearchParams] = useSearchParams();
   const currentSort = searchParams.get('sort') || 'price-low-high';
+  const collectionHandle = (collection as any).handle as string;
+  const presetColor = METAL_COLLECTION_COLOR[collectionHandle] ?? null;
 
-  // Client-side filters
-  const [filterColor, setFilterColor] = useState<string | null>(
-    () => METAL_COLLECTION_COLOR[(collection as any).handle] ?? null,
-  );
-  // Re-apply the preset when navigating between collections (route stays mounted)
-  useEffect(() => {
-    setFilterColor(METAL_COLLECTION_COLOR[(collection as any).handle] ?? null);
-  }, [(collection as any).handle]);
-  const [filterKarat, setFilterKarat] = useState<string | null>(null);
-  const [filterThickness, setFilterThickness] = useState<string | null>(null);
-  const [filterConstruction, setFilterConstruction] = useState<string | null>(
-    searchParams.get('construction') || null,
-  );
-  const [filterType, setFilterType] = useState<string | null>(
-    searchParams.get('type') || null,
+  // All filter state is derived from the URL — shareable, bookmarkable,
+  // back-button safe. Pills toggle their param via setSearchParams below.
+  const clientFilters = resolveClientFilters(searchParams, collectionHandle);
+  const {
+    type: filterType,
+    color: filterColor,
+    karat: filterKarat,
+    width: filterThickness,
+    construction: filterConstruction,
+  } = clientFilters;
+
+  // Complete collection set (post server filters): in full-set mode the main
+  // products query holds everything; otherwise use the lightweight index.
+  // Drives the result count + which pills are shown — never just loaded pages.
+  const fullSetCards = useMemo(() => {
+    const nodes =
+      fullSet || !allProductIndex
+        ? collection.products.nodes
+        : allProductIndex;
+    return explodeByColor(nodes as any[]);
+  }, [fullSet, allProductIndex, collection.products.nodes]);
+
+  const availableFilters = useMemo(
+    () => extractFilters(fullSetCards),
+    [fullSetCards],
   );
 
-  const allCards = useMemo(
-    () => explodeByColor(collection.products.nodes),
-    [collection.products.nodes],
-  );
-
-  const availableFilters = useMemo(() => extractFilters(allCards), [allCards]);
-
-  const filteredCards = useMemo(
+  // Exact count over the COMPLETE filtered set (not loaded pages)
+  const filteredCount = useMemo(
     () =>
-      applyFilters(allCards, {
+      applyFilters(fullSetCards, {
         color: filterColor,
         karat: filterKarat,
         thickness: filterThickness,
         construction: filterConstruction,
         type: filterType,
-      }),
-    [allCards, filterColor, filterKarat, filterThickness, filterConstruction, filterType],
+      }).length,
+    [fullSetCards, filterColor, filterKarat, filterThickness, filterConstruction, filterType],
   );
 
   const activeFilterCount =
@@ -517,7 +608,46 @@ export default function Collection() {
     (filterKarat ? 1 : 0) +
     (filterThickness ? 1 : 0) +
     (filterConstruction ? 1 : 0) +
-    (filterType ? 1 : 0);
+    (filterType ? 1 : 0) +
+    appliedFilters.length;
+
+  // Toggle a client pill: write/remove its URL param (resets pagination)
+  const setClientFilter = (key: string, value: string | null) => {
+    const params = new URLSearchParams(searchParams);
+    params.delete('cursor');
+    params.delete('direction');
+    if (value === null) {
+      // `color=all` keeps a metal collection's preset from re-applying
+      if (key === 'color' && presetColor) params.set('color', 'all');
+      else params.delete(key);
+    } else {
+      params.set(key, value);
+    }
+    setSearchParams(params, {preventScrollReset: true});
+  };
+
+  // Remove a server-side `filter.*` param (e.g. the mobile menu's price bucket)
+  const removeServerFilter = (filter: ProductFilter) => {
+    const params = new URLSearchParams(searchParams);
+    Object.entries(filter).forEach(([key, value]) => {
+      params.delete(FILTER_URL_PREFIX + key, JSON.stringify(value));
+    });
+    params.delete('cursor');
+    params.delete('direction');
+    setSearchParams(params, {preventScrollReset: true});
+  };
+
+  const clearAllFilters = () => {
+    const params = new URLSearchParams(searchParams);
+    for (const key of CLIENT_FILTER_KEYS) params.delete(key);
+    for (const key of [...params.keys()]) {
+      if (key.startsWith(FILTER_URL_PREFIX)) params.delete(key);
+    }
+    params.delete('cursor');
+    params.delete('direction');
+    if (presetColor) params.set('color', 'all');
+    setSearchParams(params, {preventScrollReset: true});
+  };
 
   // Chain close-up cutout (transparent PNG) for the hero — from the
   // collection's custom.cutout_image metafield, set in Shopify admin
@@ -768,18 +898,12 @@ export default function Collection() {
                   color: STYX.silt,
                 }}
               >
-                {filteredCards.length} Piece
-                {filteredCards.length !== 1 ? 's' : ''}
+                {filteredCount} Piece
+                {filteredCount !== 1 ? 's' : ''}
               </span>
               {activeFilterCount > 0 && (
                 <button
-                  onClick={() => {
-                    setFilterColor(null);
-                    setFilterKarat(null);
-                    setFilterThickness(null);
-                    setFilterConstruction(null);
-                    setFilterType(null);
-                  }}
+                  onClick={clearAllFilters}
                   style={{
                     fontFamily: FONT.cinzel,
                     fontSize: 10,
@@ -813,6 +937,9 @@ export default function Collection() {
                       } else {
                         params.set('sort', opt.value);
                       }
+                      // sort changes restart pagination
+                      params.delete('cursor');
+                      params.delete('direction');
                       setSearchParams(params, {preventScrollReset: true});
                     }}
                     style={{
@@ -868,7 +995,7 @@ export default function Collection() {
                     label={t === 'Necklace' ? 'Necklaces' : 'Bracelets'}
                     active={filterType === t}
                     onClick={() =>
-                      setFilterType(filterType === t ? null : t)
+                      setClientFilter('type', filterType === t ? null : t)
                     }
                   />
                 ))}
@@ -897,7 +1024,10 @@ export default function Collection() {
                     active={filterColor === color}
                     swatch={COLOR_HEX[color]}
                     onClick={() =>
-                      setFilterColor(filterColor === color ? null : color)
+                      setClientFilter(
+                        'color',
+                        filterColor === color ? null : color,
+                      )
                     }
                   />
                 ))}
@@ -925,7 +1055,7 @@ export default function Collection() {
                     label={k}
                     active={filterKarat === k}
                     onClick={() =>
-                      setFilterKarat(filterKarat === k ? null : k)
+                      setClientFilter('karat', filterKarat === k ? null : k)
                     }
                   />
                 ))}
@@ -953,7 +1083,8 @@ export default function Collection() {
                     label={t}
                     active={filterThickness === t}
                     onClick={() =>
-                      setFilterThickness(
+                      setClientFilter(
+                        'width',
                         filterThickness === t ? null : t,
                       )
                     }
@@ -983,10 +1114,38 @@ export default function Collection() {
                     label={c}
                     active={filterConstruction === c}
                     onClick={() =>
-                      setFilterConstruction(
+                      setClientFilter(
+                        'construction',
                         filterConstruction === c ? null : c,
                       )
                     }
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* Active server-side filters (e.g. price bucket from the
+                mobile menu) — click to remove */}
+            {appliedFilters.length > 0 && (
+              <div style={{display: 'flex', alignItems: 'center', gap: 8}}>
+                <span
+                  style={{
+                    fontFamily: FONT.cinzel,
+                    fontSize: 9,
+                    letterSpacing: '0.2em',
+                    textTransform: 'uppercase',
+                    color: STYX.silt2,
+                    marginRight: 4,
+                  }}
+                >
+                  Price
+                </span>
+                {appliedFilters.map(({label, filter}) => (
+                  <FilterPill
+                    key={`${label}-${JSON.stringify(filter)}`}
+                    label={`${label} ✕`}
+                    active
+                    onClick={() => removeServerFilter(filter)}
                   />
                 ))}
               </div>
@@ -1369,6 +1528,7 @@ const COLLECTION_QUERY = `#graphql
     $last: Int
     $startCursor: String
     $endCursor: String
+    $fetchIndex: Boolean!
   ) @inContext(country: $country, language: $language) {
     collection(handle: $handle) {
       id
@@ -1435,6 +1595,29 @@ const COLLECTION_QUERY = `#graphql
           hasNextPage
           endCursor
           startCursor
+        }
+      }
+    }
+    # Lightweight index of the ENTIRE collection (post server filters) —
+    # powers the exact result count + available filter pills while the main
+    # products query stays paginated. Skipped in full-set mode.
+    allIndex: collection(handle: $handle) @include(if: $fetchIndex) {
+      id
+      products(first: 250, filters: $filters) {
+        nodes {
+          id
+          title
+          chain_construction: metafield(namespace: "chain", key: "construction") {
+            value
+          }
+          variants(first: 30) {
+            nodes {
+              selectedOptions {
+                name
+                value
+              }
+            }
+          }
         }
       }
     }

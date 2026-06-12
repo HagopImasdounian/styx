@@ -1,4 +1,4 @@
-import {createContext, useContext, useState, useEffect, useCallback, useRef} from 'react';
+import {createContext, useContext, useState, useEffect, useCallback, useMemo, useRef} from 'react';
 
 const MAX_COMPARE = 4;
 const STORAGE_KEY = 'styx-compare';
@@ -117,8 +117,13 @@ export function CompareProvider({children}: {children: React.ReactNode}) {
     [items],
   );
 
+  const value = useMemo(
+    () => ({items, add, remove, clear, has, isFull: items.length >= MAX_COMPARE}),
+    [items, add, remove, clear, has],
+  );
+
   return (
-    <CompareContext.Provider value={{items, add, remove, clear, has, isFull: items.length >= MAX_COMPARE}}>
+    <CompareContext.Provider value={value}>
       {children}
     </CompareContext.Provider>
   );

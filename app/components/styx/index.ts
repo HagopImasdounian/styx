@@ -10,7 +10,6 @@ export {FeaturedRow} from './FeaturedRow';
 export {StyxProductCard} from './StyxProductCard';
 export {RecommendedProducts} from './RecommendedProducts';
 export type {CrossSellProduct} from './RecommendedProducts';
-export {ChainProductCard} from './ChainProductCard';
 export {Lookbook} from './Lookbook';
 export {CraftStrip} from './CraftStrip';
 export {ToolsStrip} from './ToolsStrip';

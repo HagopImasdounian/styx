@@ -6,11 +6,17 @@ export function GenericError({
 }: {
   error?: {message: string; stack?: string};
 }) {
+  // NODE_ENV is defined at build time, so this branch (and the stack-trace
+  // markup below) is compiled out of production bundles entirely.
+  const isDev = process.env.NODE_ENV !== 'production';
+
   const heading = `Something’s wrong here.`;
   let description = `We found an error while loading this page.`;
 
   if (error) {
-    description += `\n${error.message}`;
+    if (isDev) {
+      description += `\n${error.message}`;
+    }
     console.error(error);
   }
 
@@ -20,7 +26,7 @@ export function GenericError({
         <Text width="narrow" as="p">
           {description}
         </Text>
-        {error?.stack && (
+        {isDev && error?.stack && (
           <pre
             style={{
               padding: '2rem',

@@ -1,4 +1,4 @@
-import {createContext, useContext, useState, useEffect, useCallback, useRef} from 'react';
+import {createContext, useContext, useState, useEffect, useCallback, useMemo, useRef} from 'react';
 
 const MAX_PRINT = 8;
 const STORAGE_KEY = 'styx-print-list';
@@ -78,18 +78,21 @@ export function PrintListProvider({children}: {children: React.ReactNode}) {
     });
   }, []);
 
+  const value = useMemo(
+    () => ({
+      handles,
+      add,
+      remove,
+      clear,
+      has,
+      isFull: handles.length >= MAX_PRINT,
+      move,
+    }),
+    [handles, add, remove, clear, has, move],
+  );
+
   return (
-    <PrintListContext.Provider
-      value={{
-        handles,
-        add,
-        remove,
-        clear,
-        has,
-        isFull: handles.length >= MAX_PRINT,
-        move,
-      }}
-    >
+    <PrintListContext.Provider value={value}>
       {children}
     </PrintListContext.Provider>
   );

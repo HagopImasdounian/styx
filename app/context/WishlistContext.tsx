@@ -1,4 +1,4 @@
-import {createContext, useContext, useState, useEffect, useCallback, useRef} from 'react';
+import {createContext, useContext, useState, useEffect, useCallback, useMemo, useRef} from 'react';
 
 const STORAGE_KEY = 'styx-wishlist';
 
@@ -67,10 +67,13 @@ export function WishlistProvider({children}: {children: React.ReactNode}) {
 
   const has = useCallback((handle: string) => handles.includes(handle), [handles]);
 
+  const value = useMemo(
+    () => ({handles, add, remove, toggle, clear, has, count: handles.length}),
+    [handles, add, remove, toggle, clear, has],
+  );
+
   return (
-    <WishlistContext.Provider
-      value={{handles, add, remove, toggle, clear, has, count: handles.length}}
-    >
+    <WishlistContext.Provider value={value}>
       {children}
     </WishlistContext.Provider>
   );
