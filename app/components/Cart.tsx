@@ -542,6 +542,112 @@ function CartCheckoutActions({cart}: {cart: CartType}) {
   );
 }
 
+/** English ordinal: 2 → "2nd", 3 → "3rd", 4 → "4th" … */
+function ordinal(n: number): string {
+  const v = n % 100;
+  if (v >= 11 && v <= 13) return `${n}th`;
+  const suffix = ({1: 'st', 2: 'nd', 3: 'rd'} as Record<number, string>)[n % 10];
+  return `${n}${suffix || 'th'}`;
+}
+
+/**
+ * Launch offer: 1g of 24K gold free per $2,000 spent.
+ * Slim progress module above the receipt footer. Pure computation from the
+ * cart cost (SSR-safe); hidden when the cart is empty because CartDetails
+ * already returns null without items.
+ */
+function GoldOfferProgress({cost}: {cost: CartCost}) {
+  const amountStr = cost?.subtotalAmount?.amount;
+  if (!amountStr) return null;
+  const subtotal = parseFloat(amountStr);
+  if (!Number.isFinite(subtotal) || subtotal <= 0) return null;
+
+  const TIER = 2000;
+  const gramsEarned = Math.floor(subtotal / TIER);
+  const withinBand = subtotal - gramsEarned * TIER;
+  const progress = Math.min(withinBand / TIER, 1);
+  const remaining = Math.ceil(TIER - withinBand);
+
+  const currency = cost.subtotalAmount.currencyCode || 'USD';
+  const fmt = (n: number) => {
+    try {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency,
+        maximumFractionDigits: 0,
+      }).format(n);
+    } catch {
+      return `$${n.toFixed(0)}`;
+    }
+  };
+
+  // Past the first gram and barely into the next band — lead with what's
+  // earned; only nudge toward the next gram once meaningfully close (>50%).
+  const showNextGramNudge = gramsEarned > 0 && progress > 0.5;
+
+  return (
+    <div style={{marginBottom: 16}}>
+      <div
+        style={{
+          fontFamily: FONT.cinzel,
+          fontSize: 9,
+          letterSpacing: '0.25em',
+          textTransform: 'uppercase',
+          color: STYX.gold,
+          marginBottom: 6,
+        }}
+      >
+        Launch Offer · 24K Gold
+      </div>
+      <div
+        style={{
+          fontFamily: FONT.cormorant,
+          fontSize: 14,
+          fontStyle: 'italic',
+          color: STYX.graphite,
+          lineHeight: 1.45,
+          marginBottom: 8,
+        }}
+      >
+        {gramsEarned === 0 ? (
+          <>
+            Add {fmt(remaining)} to receive 1g of 24K gold — on the house.
+          </>
+        ) : (
+          <>
+            You&rsquo;ve earned {gramsEarned}g of 24K gold.
+            {showNextGramNudge && (
+              <> {fmt(remaining)} to your {ordinal(gramsEarned + 1)} gram.</>
+            )}
+          </>
+        )}
+      </div>
+      {/* Thin 2px bar — gold fill on a faint ink track */}
+      <div
+        role="progressbar"
+        aria-valuemin={0}
+        aria-valuemax={TIER}
+        aria-valuenow={Math.round(withinBand)}
+        aria-label="Progress toward your next gram of 24K gold"
+        style={{
+          height: 2,
+          width: '100%',
+          background: 'rgba(26,24,21,0.1)',
+        }}
+      >
+        <div
+          style={{
+            height: '100%',
+            width: `${Math.max(progress * 100, 1).toFixed(1)}%`,
+            background: STYX.gold,
+            transition: 'width 0.4s ease',
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
 function CartSummary({
   cost,
   layout,
@@ -560,6 +666,9 @@ function CartSummary({
           background: STYX.bone,
         }}
       >
+        {/* Gold-offer progress — sits above the receipt lines */}
+        <GoldOfferProgress cost={cost} />
+
         {/* Receipt lines */}
         <div style={{marginBottom: 14, fontFamily: FONT.mono, fontSize: 12}}>
           <div

@@ -31,6 +31,7 @@ import {GTMPageView, GTM_ID} from '~/components/GTMDataLayer';
 import favicon from '~/assets/favicon.svg';
 import {seoPayload} from '~/lib/seo.server';
 import styles from '~/styles/app.css?url';
+import fontStyles from '~/styles/fonts.css?url';
 
 import {DEFAULT_LOCALE, parseMenu} from './lib/utils';
 import {getGoldData} from './lib/gold.server';
@@ -75,18 +76,27 @@ export const links: LinksFunction = () => {
       rel: 'preconnect',
       href: 'https://shop.app',
     },
+    // Above-the-fold fonts: preload so text paints without a font swap.
+    // (Self-hosted in /public/fonts — see app/styles/fonts.css.)
     {
-      rel: 'preconnect',
-      href: 'https://fonts.googleapis.com',
-    },
-    {
-      rel: 'preconnect',
-      href: 'https://fonts.gstatic.com',
+      rel: 'preload',
+      href: '/fonts/cinzel-var.woff2',
+      as: 'font',
+      type: 'font/woff2',
       crossOrigin: 'anonymous' as const,
     },
     {
+      rel: 'preload',
+      href: '/fonts/cormorant-400.woff2',
+      as: 'font',
+      type: 'font/woff2',
+      crossOrigin: 'anonymous' as const,
+    },
+    // (inter-var deliberately not preloaded — it isn't used above the fold,
+    // and the browser flags the wasted preload.)
+    {
       rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap',
+      href: fontStyles,
     },
     {rel: 'icon', type: 'image/svg+xml', href: favicon},
   ];

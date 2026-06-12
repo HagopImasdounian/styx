@@ -49,6 +49,8 @@ import {
   RecommendedProducts,
   Obol,
   ActualSizeChainStrip,
+  RecentlyViewed,
+  recordRecentlyViewed,
 } from '~/components/styx';
 import type {CrossSellProduct} from '~/components/styx';
 import {CompareButton} from '~/components/styx/CompareButton';
@@ -280,6 +282,27 @@ export default function Product() {
     (o: any) => o.name.toLowerCase() === 'length',
   );
   const selectedLength = lengthOption?.value || null;
+
+  // Record this product for the Recently Viewed strip (client-only effect).
+  // Keyed on handle so a variant change doesn't churn the list; the strip
+  // below excludes the current product from its own display.
+  useEffect(() => {
+    const firstMedia = media?.nodes?.[0] as any;
+    const img =
+      (selectedVariant as any)?.image?.url ||
+      firstMedia?.image?.url ||
+      firstMedia?.previewImage?.url ||
+      null;
+    recordRecentlyViewed({
+      handle: product.handle,
+      title: product.title,
+      image: img,
+      price: selectedVariant?.price?.amount ?? null,
+      currencyCode: selectedVariant?.price?.currencyCode ?? null,
+      karat,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product.handle]);
 
   // All variants known client-side (selected + adjacent + first-selectable per
   // option value, via getAdjacentAndFirstAvailableVariants). Enough to price
@@ -1286,6 +1309,43 @@ export default function Product() {
                   );
                 })}
               </div>
+
+              {/* Delivery promise — exact terms from the shipping policy:
+                  ships in 1–2 business days, domestic transit 3–5,
+                  fully insured with signature on delivery. */}
+              <div
+                style={{
+                  marginTop: 16,
+                  textAlign: 'center',
+                  fontFamily: FONT.cormorant,
+                  fontSize: 14,
+                  fontStyle: 'italic',
+                  color: STYX.silt,
+                  lineHeight: 1.5,
+                }}
+              >
+                Ships fully insured in 1&ndash;2 business days &mdash; domestic
+                delivery typically 3&ndash;5 business days, signature on
+                arrival.
+              </div>
+
+              {/* FAQ link — same quiet idiom as the Make-an-Offer link */}
+              <div style={{marginTop: 8, textAlign: 'center'}}>
+                <Link
+                  to="/faq"
+                  style={{
+                    fontFamily: FONT.cormorant,
+                    fontSize: 14,
+                    fontStyle: 'italic',
+                    color: STYX.silt,
+                    textDecoration: 'underline',
+                    textUnderlineOffset: 3,
+                    textDecorationColor: 'rgba(74,68,59,0.45)',
+                  }}
+                >
+                  Questions? Read the FAQ
+                </Link>
+              </div>
             </div>
           )}
 
@@ -2096,6 +2156,9 @@ export default function Product() {
           }
         </Await>
       </Suspense>
+
+      {/* ── Recently Viewed (localStorage, client-only) ── */}
+      <RecentlyViewed excludeHandle={product.handle} />
 
       <Analytics.ProductView
         data={{

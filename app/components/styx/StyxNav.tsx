@@ -13,6 +13,10 @@ import {
   type CollectionNode,
   collectionCutoutUrl,
 } from './constants';
+import {
+  PredictiveSearchPanel,
+  MobileMenuSearch,
+} from './PredictiveSearch';
 import {Cart, cartToAnalyticsPayload} from '~/components/Cart';
 import {trackCartView} from '~/components/GTMDataLayer';
 import {CartLoading} from '~/components/CartLoading';
@@ -1205,7 +1209,7 @@ function MobileMenu({
     const focusables = () =>
       Array.from(
         panel.querySelectorAll<HTMLElement>(
-          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+          'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
         ),
       ).filter((el) => !el.closest('[inert]'));
 
@@ -1399,6 +1403,11 @@ function MobileMenu({
               flexDirection: 'column',
             }}
           >
+            {/* Search — debounced predictive suggestions; tapping a result
+                navigates and closes the menu. The input participates in the
+                focus trap via the focusables() selector above. */}
+            <MobileMenuSearch onClose={onClose} />
+
             <div style={{flex: 1, paddingTop: 8}}>
               {ROOT_LINKS.map((item) =>
                 item.drillTo ? (
@@ -2068,6 +2077,7 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
   const params = useParams();
   const [hoverLink, setHoverLink] = useState<string | null>(null);
   const [openMenu, setOpenMenu] = useState<MenuKey | null>(null);
+  const [searchOpen, setSearchOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const headerHidden = useAutoHideHeader();
   const headerRef = useRef<HTMLDivElement>(null);
@@ -2178,7 +2188,12 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
                   onMouseEnter={() => {
                     setHoverLink(item.label);
                     cancelClose();
-                    if (item.mega) setOpenMenu(item.mega);
+                    if (item.mega) {
+                      setOpenMenu(item.mega);
+                      // Mega panel and search overlay share the same slot
+                      // under the header — never show both.
+                      setSearchOpen(false);
+                    }
                   }}
                   onMouseLeave={() => {
                     setHoverLink(null);
@@ -2198,6 +2213,7 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
                       if (item.mega) {
                         cancelClose();
                         setOpenMenu(item.mega);
+                        setSearchOpen(false);
                       }
                     }}
                     style={{
@@ -2292,13 +2308,22 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
             >
               Contact
             </Link>
+            {/* With JS the icon opens the predictive overlay; without JS the
+                form still submits straight to /search. */}
             <Form
               method="get"
               action={params.locale ? `/${params.locale}/search` : '/search'}
+              onSubmit={(e) => {
+                e.preventDefault();
+                closeMenuNow();
+                setSearchOpen((open) => !open);
+              }}
             >
               <button
                 type="submit"
                 aria-label="Search"
+                aria-expanded={searchOpen}
+                aria-haspopup="dialog"
                 style={{
                   background: 'none',
                   border: 'none',
@@ -2306,7 +2331,7 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
                   padding: 9,
                   margin: '0 -5px',
                   display: 'flex',
-                  color: 'inherit',
+                  color: searchOpen ? STYX.gold : 'inherit',
                 }}
               >
                 <SearchIcon />
@@ -2334,6 +2359,11 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
             </button>
           </div>
         </nav>
+
+        {/* ── Predictive search overlay ── */}
+        {searchOpen && (
+          <PredictiveSearchPanel onClose={() => setSearchOpen(false)} />
+        )}
 
         {/* ── Mega panel ── */}
         {Panel && (

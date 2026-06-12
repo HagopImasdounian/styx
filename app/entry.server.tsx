@@ -26,6 +26,9 @@ export default async function handleRequest(
       // Google Ads conversion tags loaded via GTM
       'https://www.googleadservices.com',
       'https://googleads.g.doubleclick.net',
+      // Hotjar (loaded via GTM container)
+      'https://static.hotjar.com',
+      'https://script.hotjar.com',
       // Meta pixel (pre-added for future paid social)
       'https://connect.facebook.net',
       ...(process.env.NODE_ENV !== 'production' ? ['http://localhost:*'] : []),
@@ -56,6 +59,10 @@ export default async function handleRequest(
       'https://www.google.com',
       'https://pagead2.googlesyndication.com',
       'https://googleads.g.doubleclick.net',
+      // Hotjar (loaded via GTM container)
+      'https://*.hotjar.com',
+      'https://*.hotjar.io',
+      'wss://*.hotjar.com',
       // Meta pixel (pre-added for future paid social)
       'https://www.facebook.com',
       'https://connect.facebook.net',
