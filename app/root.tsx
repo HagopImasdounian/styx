@@ -40,6 +40,23 @@ import fontStylesInline from '~/styles/fonts.css?inline';
 
 const INLINE_CSS = import.meta.env.PROD;
 
+/**
+ * Preload href for a self-hosted font. Oxygen's deploy pipeline rewrites
+ * url(/fonts/…) inside built CSS to deploy-specific CDN URLs
+ * (cdn.shopify.com/oxygen-v2/…/fonts/…) — but it does NOT rewrite hardcoded
+ * hrefs in links(). A hardcoded '/fonts/…' preload therefore fetches a URL
+ * the CSS never requests: the font downloads twice and the browser logs
+ * "preloaded but not used". Reading the URL out of the (already rewritten)
+ * CSS string keeps the preload pointed at the real font URL in every
+ * environment.
+ */
+function preloadFontHref(file: string): string {
+  const m = fontStylesInline.match(
+    new RegExp(`url\\((['"]?)([^'")]*${file})\\1\\)`),
+  );
+  return m?.[2] ?? `/fonts/${file}`;
+}
+
 import {DEFAULT_LOCALE, parseMenu} from './lib/utils';
 import {getGoldData} from './lib/gold.server';
 
@@ -87,14 +104,14 @@ export const links: LinksFunction = () => {
     // (Self-hosted in /public/fonts — see app/styles/fonts.css.)
     {
       rel: 'preload',
-      href: '/fonts/cinzel-var.woff2',
+      href: preloadFontHref('cinzel-var.woff2'),
       as: 'font',
       type: 'font/woff2',
       crossOrigin: 'anonymous' as const,
     },
     {
       rel: 'preload',
-      href: '/fonts/cormorant-400.woff2',
+      href: preloadFontHref('cormorant-400.woff2'),
       as: 'font',
       type: 'font/woff2',
       crossOrigin: 'anonymous' as const,
