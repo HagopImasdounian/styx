@@ -253,6 +253,34 @@ export const DEFAULT_LOCALE: I18nLocale = Object.freeze({
   pathPrefix: '',
 });
 
+/**
+ * Validates the `($locale)` route param against the active markets in
+ * ~/data/countries.ts and throws a 404 for unknown prefixes.
+ *
+ * Without this, `($locale)`-prefixed routes happily render any first path
+ * segment as a "locale" (e.g. /xx-yy/products/foo renders as a duplicate of
+ * /products/foo), creating infinite duplicate-content URLs. Call this at the
+ * top of every `($locale).*` route loader:
+ *
+ * ```ts
+ * export async function loader({params, ...}: LoaderFunctionArgs) {
+ *   validateLocale(params);
+ *   // ...
+ * }
+ * ```
+ *
+ * No-op when `params.locale` is absent (the unprefixed default market).
+ * Throws a 404 Response when a locale param exists but isn't an active
+ * market key (keys in countries.ts are prefixed with '/', e.g. '/en-ca').
+ */
+export function validateLocale(params: {locale?: string}): void {
+  const {locale} = params;
+  if (!locale) return;
+  if (!countries[`/${locale.toLowerCase()}`]) {
+    throw new Response('Not found', {status: 404});
+  }
+}
+
 export function getLocaleFromRequest(request: Request): I18nLocale {
   const url = new URL(request.url);
   const firstPathPart =

@@ -17,6 +17,7 @@ import type {
   Offer,
   Organization,
   Product as SeoProduct,
+  SearchAction,
   WebPage,
 } from 'schema-dts';
 
@@ -64,28 +65,14 @@ function root({
       noIndex: false,
       noFollow: false,
     },
-    jsonLd: {
-      '@context': 'https://schema.org',
-      '@type': 'JewelryStore',
-      name: 'STYX Gold',
-      logo: shop.brand?.logo?.image?.url,
-      description:
-        'Solid gold chains priced transparently from the London fix. Three generations in the gold trade.',
-      sameAs: [
-        'https://instagram.com/styxgold',
-      ],
-      url,
-      priceRange: '$$$',
-      potentialAction: {
-        '@type': 'SearchAction',
-        target: `${url}search?q={search_term}`,
-        query: "required name='search_term'",
-      },
-    },
+    // Site-wide structured data (WebSite/SearchAction + JewelryStore) is
+    // emitted only on the homepage — see home() below — so it isn't
+    // duplicated on every page.
   };
 }
 
 function home({url}: {url: Request['url']}): SeoConfig {
+  const origin = new URL(url).origin;
   return {
     title: 'Solid Gold Chains — Priced Honestly',
     titleTemplate: '%s | STYX Gold',
@@ -108,11 +95,27 @@ function home({url}: {url: Request['url']}): SeoConfig {
       },
       {
         '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: 'STYX Gold',
+        url: origin,
+        // schema-dts doesn't model Google's 'query-input' extension, hence
+        // the cast. https://developers.google.com/search/docs/appearance/site-names
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: `${origin}/search?q={search_term_string}`,
+          'query-input': 'required name=search_term_string',
+        } as SearchAction,
+      },
+      {
+        '@context': 'https://schema.org',
         '@type': 'JewelryStore',
         name: 'STYX Gold',
         description:
           'Three generations in the gold trade. Solid gold chains — 10K & 14K — priced from the London fix.',
-        url,
+        url: origin,
+        logo: `${origin}/images/styx-logo-512.png`,
+        image: `${origin}/images/styx-logo-512.png`,
+        sameAs: ['https://instagram.com/styxgold'],
         priceRange: '$$$',
         currenciesAccepted: 'USD, CAD',
       },
@@ -134,6 +137,10 @@ type ProductRequiredFields = Pick<
       'sku' | 'price' | 'selectedOptions' | 'availableForSale'
     >
   >;
+  /** Product media (when queried) — used to emit every product image. */
+  media?: null | {
+    nodes?: Array<{image?: null | Partial<Image>} | null> | null;
+  };
 };
 
 function productJsonLd({
@@ -150,6 +157,10 @@ function productJsonLd({
   const description = truncate(
     product?.seo?.description ?? product?.description,
   );
+  // Offers are computed at request time, so this rolls forward on each render.
+  const priceValidUntil = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .split('T')[0];
   const offers: Offer[] = (variants || []).map((variant) => {
     const variantUrl = new URL(url);
     for (const option of variant.selectedOptions) {
@@ -164,10 +175,26 @@ function productJsonLd({
       availability,
       price: parseFloat(variant.price.amount),
       priceCurrency: variant.price.currencyCode,
+      priceValidUntil,
+      itemCondition: 'https://schema.org/NewCondition',
+      seller: {
+        '@type': 'Organization',
+        name: 'STYX Gold',
+      },
       sku: variant?.sku ?? '',
       url: variantUrl.toString(),
     };
   });
+
+  // All product images (selected variant first), with empty strings dropped
+  // so we never emit image: [""].
+  const images = [
+    selectedVariant?.image?.url,
+    ...(product.media?.nodes ?? []).map((node) => node?.image?.url as
+      | string
+      | undefined),
+  ].filter((src): src is string => Boolean(src));
+  const uniqueImages = Array.from(new Set(images));
   return [
     {
       '@context': 'https://schema.org',
@@ -194,7 +221,7 @@ function productJsonLd({
         name: product.vendor,
       },
       description,
-      image: [selectedVariant?.image?.url ?? ''],
+      image: uniqueImages,
       name: product.title,
       offers,
       sku: selectedVariant?.sku ?? '',
@@ -254,13 +281,13 @@ function collectionJsonLd({
   url: Request['url'];
   collection: CollectionRequiredFields;
 }): SeoConfig['jsonLd'] {
-  const siteUrl = new URL(url);
+  const origin = new URL(url).origin;
   const itemListElement: CollectionPage['mainEntity'] =
     collection.products.nodes.map((product, index) => {
       return {
         '@type': 'ListItem',
         position: index + 1,
-        url: `/products/${product.handle}`,
+        url: `${origin}/products/${product.handle}`,
       };
     });
 
@@ -273,7 +300,7 @@ function collectionJsonLd({
           '@type': 'ListItem',
           position: 1,
           name: 'Collections',
-          item: `${siteUrl.host}/collections`,
+          item: `${origin}/collections`,
         },
         {
           '@type': 'ListItem',
@@ -290,7 +317,7 @@ function collectionJsonLd({
         collection?.seo?.description ?? collection?.description ?? '',
       ),
       image: collection?.image?.url,
-      url: `/collections/${collection.handle}`,
+      url: `${origin}/collections/${collection.handle}`,
       mainEntity: {
         '@type': 'ItemList',
         itemListElement,
@@ -340,12 +367,13 @@ function collectionsJsonLd({
   url: Request['url'];
   collections: CollectionListRequiredFields;
 }): SeoConfig['jsonLd'] {
+  const origin = new URL(url).origin;
   const itemListElement: CollectionPage['mainEntity'] = collections.nodes.map(
     (collection, index) => {
       return {
         '@type': 'ListItem',
         position: index + 1,
-        url: `/collections/${collection.handle}`,
+        url: `${origin}/collections/${collection.handle}`,
       };
     },
   );
@@ -416,12 +444,15 @@ function article({
       '@context': 'https://schema.org',
       '@type': 'Article',
       alternativeHeadline: article.title,
-      articleBody: article.contentHtml,
       datePublished: article?.publishedAt,
       description: truncate(
         article?.seo?.description || article?.excerpt || '',
       ),
-      headline: article?.seo?.title || '',
+      headline: article?.seo?.title || article?.title,
+      publisher: {
+        '@type': 'Organization',
+        name: 'STYX Gold',
+      },
       image: article?.image?.url,
       url,
     },

@@ -23,6 +23,8 @@ export default async function handleRequest(
       'https://www.google-analytics.com',
       'https://www.googletagmanager.com',
       'https://tagmanager.google.com',
+      // Meta pixel (pre-added for future paid social)
+      'https://connect.facebook.net',
       ...(process.env.NODE_ENV !== 'production' ? ['http://localhost:*'] : []),
     ],
     imgSrc: [
@@ -32,6 +34,10 @@ export default async function handleRequest(
       'https://www.google-analytics.com',
       'https://*.google-analytics.com',
       'https://*.googletagmanager.com',
+      // Google Ads / consent-mode conversion pings (ccm/collect)
+      'https://www.google.com',
+      // Meta pixel (pre-added for future paid social)
+      'https://www.facebook.com',
       'data:',
     ],
     connectSrc: [
@@ -41,16 +47,30 @@ export default async function handleRequest(
       'https://*.analytics.google.com',
       'https://*.googletagmanager.com',
       'https://cdn.shopify.com',
+      // Google Ads / consent-mode conversion pings (ccm/collect)
+      'https://www.google.com',
+      // Meta pixel (pre-added for future paid social)
+      'https://www.facebook.com',
+      'https://connect.facebook.net',
     ],
     frameSrc: [
       "'self'",
       'https://www.googletagmanager.com',
+      // Meta pixel (pre-added for future paid social)
+      'https://www.facebook.com',
     ],
     styleSrc: [
       "'self'",
       'https://tagmanager.google.com',
       'https://fonts.googleapis.com',
       "'unsafe-inline'",
+    ],
+    fontSrc: [
+      "'self'",
+      'https://cdn.shopify.com',
+      // Google Fonts woff2 files (the CSS comes from fonts.googleapis.com)
+      'https://fonts.gstatic.com',
+      'data:',
     ],
   });
 
@@ -75,6 +95,23 @@ export default async function handleRequest(
 
   responseHeaders.set('Content-Type', 'text/html');
   responseHeaders.set('Content-Security-Policy', header);
+
+  // Security headers
+  if (process.env.NODE_ENV === 'production') {
+    responseHeaders.set(
+      'Strict-Transport-Security',
+      'max-age=31536000; includeSubDomains',
+    );
+  }
+  responseHeaders.set('X-Content-Type-Options', 'nosniff');
+  responseHeaders.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  // No app code uses camera/microphone/geolocation (screen calibration is
+  // CSS/manual — no getUserMedia), so deny all three.
+  responseHeaders.set(
+    'Permissions-Policy',
+    'camera=(), microphone=(), geolocation=()',
+  );
+
   return new Response(body, {
     headers: responseHeaders,
     status: responseStatusCode,

@@ -13,7 +13,9 @@ export async function loader({
     storefront,
     request,
     types: ['products', 'pages', 'collections', 'articles'],
-    customUrls: [`${baseUrl}/sitemap-empty.xml`],
+    // Local (non-Shopify) content: homepage, static pages, journal
+    // articles, and curated compare pages. See [sitemap-custom.xml].tsx.
+    customUrls: [`${baseUrl}/sitemap-custom.xml`],
   });
 
   response.headers.set('Oxygen-Cache-Control', `max-age=${60 * 60 * 24}`);

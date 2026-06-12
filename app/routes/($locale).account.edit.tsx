@@ -15,8 +15,9 @@ import {Button} from '~/components/Button';
 import {Text} from '~/components/Text';
 import {getInputStyleClasses} from '~/lib/utils';
 import {CUSTOMER_UPDATE_MUTATION} from '~/graphql/customer-account/CustomerUpdateMutation';
+import {requireCustomerAccount} from '~/lib/customer.server';
 
-import {doLogout} from './($locale).account_.logout';
+import {doLogout} from '~/lib/customer.server';
 
 export interface AccountOutletContext {
   customer: Customer;
@@ -48,11 +49,14 @@ export const handle = {
 };
 
 export const action: ActionFunction = async ({request, context, params}) => {
+  // Redirects home when customer accounts aren't configured.
+  const customerAccount = requireCustomerAccount(context, params);
+
   const formData = await request.formData();
 
   // Double-check current user is logged in.
   // Will throw a logout redirect if not.
-  if (!(await context.customerAccount.isLoggedIn())) {
+  if (!(await customerAccount.isLoggedIn())) {
     throw await doLogout(context);
   }
 
@@ -64,7 +68,7 @@ export const action: ActionFunction = async ({request, context, params}) => {
     formDataHas(formData, 'lastName') &&
       (customer.lastName = formData.get('lastName') as string);
 
-    const {data, errors} = await context.customerAccount.mutate(
+    const {data, errors} = await customerAccount.mutate(
       CUSTOMER_UPDATE_MUTATION,
       {
         variables: {

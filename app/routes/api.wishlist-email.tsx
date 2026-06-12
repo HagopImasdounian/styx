@@ -9,9 +9,13 @@ import {type ActionFunctionArgs, data} from 'react-router';
  *
  * POST body (JSON):
  *   to:     recipient email (required)
- *   note:   optional short message from the sender
- *   origin: site origin for building product links (optional; falls back to request origin)
- *   items:  [{ handle, title, length?, price?, currency?, image? }]
+ *   note:   optional short message from the sender (capped at 500 chars)
+ *   items:  [{ handle, title, length?, price?, currency?, image? }] (max 8)
+ *
+ * Security: the link origin is ALWAYS derived from the request URL — any
+ * client-supplied `origin` is ignored (phishing-link injection vector).
+ * Item handles must match /^[a-z0-9-]+$/ and images must be hosted on
+ * cdn.shopify.com; anything else is dropped.
  */
 
 type WishlistEmailItem = {
@@ -25,6 +29,48 @@ type WishlistEmailItem = {
 
 const FROM = 'STYX Gold <noreply@styxgold.com>';
 
+const MAX_ITEMS = 8;
+const MAX_NOTE_LENGTH = 500;
+const HANDLE_RE = /^[a-z0-9-]+$/;
+
+/** Only allow product images served from Shopify's CDN; drop everything else. */
+function sanitizeImage(image: unknown): string | null {
+  if (typeof image !== 'string' || !image) return null;
+  try {
+    const url = new URL(image);
+    if (url.protocol !== 'https:' || url.hostname !== 'cdn.shopify.com') {
+      return null;
+    }
+    return url.toString();
+  } catch {
+    return null;
+  }
+}
+
+function sanitizeItems(raw: unknown): WishlistEmailItem[] {
+  if (!Array.isArray(raw)) return [];
+  const items: WishlistEmailItem[] = [];
+  for (const entry of raw) {
+    if (items.length >= MAX_ITEMS) break;
+    if (!entry || typeof entry !== 'object') continue;
+    const item = entry as Record<string, unknown>;
+    const handle = typeof item.handle === 'string' ? item.handle : '';
+    // Drop items whose handle isn't a plain product handle.
+    if (!HANDLE_RE.test(handle)) continue;
+    const str = (v: unknown, max: number): string | null =>
+      typeof v === 'string' && v ? v.slice(0, max) : null;
+    items.push({
+      handle,
+      title: str(item.title, 200) || handle,
+      length: str(item.length, 60),
+      price: str(item.price, 30),
+      currency: str(item.currency, 10),
+      image: sanitizeImage(item.image),
+    });
+  }
+  return items;
+}
+
 export async function action({request, context}: ActionFunctionArgs) {
   if (request.method !== 'POST') {
     return data({error: 'Method not allowed'}, {status: 405});
@@ -33,23 +79,23 @@ export async function action({request, context}: ActionFunctionArgs) {
   let body: {
     to?: string;
     note?: string;
-    origin?: string;
-    items?: WishlistEmailItem[];
+    items?: unknown;
   };
   try {
     body = (await request.json()) as {
       to?: string;
       note?: string;
-      origin?: string;
-      items?: WishlistEmailItem[];
+      items?: unknown;
     };
   } catch {
     return data({error: 'Invalid request body'}, {status: 400});
   }
 
   const to = (body.to || '').trim();
-  const note = (body.note || '').trim();
-  const items = Array.isArray(body.items) ? body.items.slice(0, 50) : [];
+  const note = (typeof body.note === 'string' ? body.note : '')
+    .trim()
+    .slice(0, MAX_NOTE_LENGTH);
+  const items = sanitizeItems(body.items);
 
   // Basic email validation
   if (!to || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) {
@@ -65,7 +111,8 @@ export async function action({request, context}: ActionFunctionArgs) {
     return data({error: 'Email is not configured'}, {status: 500});
   }
 
-  const origin = (body.origin || new URL(request.url).origin).replace(/\/$/, '');
+  // SECURITY: never trust a client-supplied origin — derive it from the request.
+  const origin = new URL(request.url).origin.replace(/\/$/, '');
 
   try {
     const res = await fetch('https://api.resend.com/emails', {
@@ -84,16 +131,15 @@ export async function action({request, context}: ActionFunctionArgs) {
 
     if (!res.ok) {
       const detail = await res.text().catch(() => '');
-      return data(
-        {error: `Failed to send (${res.status})`, detail},
-        {status: 502},
-      );
+      console.error(`[wishlist-email] Resend failed (${res.status}): ${detail}`);
+      return data({error: 'Failed to send email'}, {status: 502});
     }
   } catch (err) {
-    return data(
-      {error: err instanceof Error ? err.message : 'Failed to send email'},
-      {status: 502},
+    console.error(
+      '[wishlist-email] send error:',
+      err instanceof Error ? err.message : err,
     );
+    return data({error: 'Failed to send email'}, {status: 502});
   }
 
   return data({success: true});

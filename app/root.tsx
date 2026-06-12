@@ -112,13 +112,21 @@ export async function loader(args: LoaderFunctionArgs) {
 async function loadCriticalData({request, context}: LoaderFunctionArgs) {
   const [layout, goldData, collectionsData, localizationData] = await Promise.all([
     getLayoutData(context),
+    // Kept critical: product/compare/journal pages and the nav read
+    // goldData.spotPerOz synchronously. The external API is bounded by a
+    // 1.2s timeout + last-good-price cache in gold.server.ts, so the
+    // worst-case TTFB tax is small and it never throws.
     getGoldData(),
-    context.storefront.query(ROOT_COLLECTIONS_QUERY, {
-      variables: {
-        country: context.storefront.i18n.country,
-        language: context.storefront.i18n.language,
-      },
-    }),
+    // Menu imagery is non-essential — a Storefront API blip here must not 500
+    // every page. Nav renders without weave tiles when this is null.
+    context.storefront
+      .query(ROOT_COLLECTIONS_QUERY, {
+        variables: {
+          country: context.storefront.i18n.country,
+          language: context.storefront.i18n.language,
+        },
+      })
+      .catch(() => null),
     context.storefront.query(ROOT_LOCALIZATION_QUERY).catch(() => null),
   ]);
 
@@ -172,7 +180,10 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
 }
 
 export const meta = ({data}: MetaArgs<typeof loader>) => {
-  return getSeoMeta(data!.seo as SeoConfig);
+  // data is undefined when the loader threw (error-boundary render) — fall
+  // back to a static title instead of crashing meta generation.
+  if (!data?.seo) return [{title: 'STYX Gold'}];
+  return getSeoMeta(data.seo as SeoConfig);
 };
 
 function Layout({children}: {children?: React.ReactNode}) {

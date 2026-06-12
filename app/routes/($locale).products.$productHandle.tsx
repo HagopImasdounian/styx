@@ -107,8 +107,10 @@ async function loadCriticalData({
   );
   const recommended = getRecommendedProducts(context.storefront, product.id, chainCollection?.handle);
 
-  // Cross-sell: nearest same-style/construction pieces + matching bracelet/necklace
-  const crossSell = await getCrossSellProducts(context.storefront, product);
+  // Cross-sell: nearest same-style/construction pieces + matching bracelet/necklace.
+  // Deliberately NOT awaited — it's a below-fold module and must not block TTFB.
+  // Streamed to the client and rendered via <Suspense>/<Await> like `recommended`.
+  const crossSell = getCrossSellProducts(context.storefront, product);
 
   const selectedVariant = product.selectedOrFirstAvailableVariant ?? {};
   const variants = getAdjacentAndFirstAvailableVariants(product);
@@ -156,6 +158,10 @@ export default function Product() {
   const [offerOpen, setOfferOpen] = useState(false);
   // 'offer' = haggling on an in-stock piece; 'request' = backorder a sold-out size
   const [offerMode, setOfferMode] = useState<'offer' | 'request'>('offer');
+  // Inline submission state for the offer/request form (no native alert()s)
+  const [offerStatus, setOfferStatus] = useState<
+    'idle' | 'submitting' | 'success' | 'error'
+  >('idle');
   const wishlist = useWishlist();
   const wished = wishlist.has(product.handle);
 
@@ -370,7 +376,11 @@ export default function Product() {
         );
       })()}
 
-      {/* ── Main Two-Column Grid ── */}
+      {/* ── Main Two-Column Grid ──
+          Three direct grid children so mobile can interleave with CSS `order`:
+          lead image → buy box → remaining gallery (see app.css ≤48em overrides).
+          Desktop placement is explicit: gallery rows 1–2 in col 1 (8px row gap
+          reproduces the old flex-column gap), info spans both rows in col 2. */}
       <div
         className="styx-product-grid"
         style={{
@@ -378,13 +388,14 @@ export default function Product() {
           margin: '0 auto',
           display: 'grid',
           gridTemplateColumns: '1.15fr 1fr',
-          gap: 80,
+          columnGap: 80,
+          rowGap: 8,
           padding: '64px 56px 100px',
           alignItems: 'start',
         }}
       >
-        {/* ── Left Column — Stacked Gallery ── */}
-        <div style={{display: 'flex', flexDirection: 'column', gap: 8}}>
+        {/* ── Gallery — Lead Image (first on mobile) ── */}
+        <div className="styx-gallery-lead" style={{gridColumn: '1 / 2', gridRow: '1'}}>
           {/* Lead image — variant image if available, else first color-matched media */}
           {(() => {
             const variantImg = (selectedVariant as any)?.image;
@@ -406,6 +417,7 @@ export default function Product() {
                     data={leadImage}
                     alt={title}
                     sizes="(min-width: 1200px) 55vw, 90vw"
+                    loading="eager"
                   />
                 ) : (
                   <div
@@ -469,7 +481,19 @@ export default function Product() {
               </div>
             );
           })()}
+        </div>
 
+        {/* ── Gallery — Remaining Images (after buy box on mobile) ── */}
+        <div
+          className="styx-gallery-rest"
+          style={{
+            gridColumn: '1 / 2',
+            gridRow: '2',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 8,
+          }}
+        >
           {/* Remaining media — large, stacked; skip whichever image leads */}
           {(() => {
             const variantImg = (selectedVariant as any)?.image;
@@ -494,6 +518,7 @@ export default function Product() {
                   data={img}
                   alt={title}
                   sizes="(min-width: 1200px) 55vw, 90vw"
+                  loading="lazy"
                 />
               </div>
             );
@@ -502,7 +527,16 @@ export default function Product() {
         </div>
 
         {/* ── Right Column — Product Info (sticky) ── */}
-        <div className="styx-product-info" style={{position: 'sticky', top: 88, paddingTop: 8}}>
+        <div
+          className="styx-product-info"
+          style={{
+            gridColumn: '2 / 3',
+            gridRow: '1 / 3',
+            position: 'sticky',
+            top: 88,
+            paddingTop: 8,
+          }}
+        >
           {/* Origin Label (no collection name) */}
           {chainOrigin && (
             <div
@@ -943,6 +977,7 @@ export default function Product() {
                       type="button"
                       onClick={() => {
                         setOfferMode('request');
+                        setOfferStatus('idle');
                         setOfferOpen(true);
                       }}
                       style={{
@@ -1049,6 +1084,7 @@ export default function Product() {
                 <button
                   onClick={() => {
                     setOfferMode('offer');
+                    setOfferStatus('idle');
                     setOfferOpen(true);
                   }}
                   style={{
@@ -1131,27 +1167,49 @@ export default function Product() {
                 }}
               >
                 {[
-                  `Authentic ${karat}K Gold`,
-                  'Free Insured Shipping',
-                  '14-Day Returns',
-                  'Hallmarked & Tested',
-                ].map((text) => (
-                  <div
-                    key={text}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 8,
-                      fontFamily: FONT.inter,
-                      fontSize: 11,
-                      color: STYX.silt,
-                      letterSpacing: '0.02em',
-                    }}
-                  >
-                    <span style={{color: STYX.gold, flexShrink: 0}}>&bull;</span>
-                    {text}
-                  </div>
-                ))}
+                  {text: `Authentic ${karat}K Gold`},
+                  {text: 'Free Insured Shipping'},
+                  {text: '14-Day Returns'},
+                  {text: 'Hallmarked & Tested'},
+                  {text: '5-Year Buyback Guarantee', href: '#ferrymans-pact'},
+                ].map(({text, href}) => {
+                  const rowStyle: React.CSSProperties = {
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    fontFamily: FONT.inter,
+                    fontSize: 11,
+                    color: STYX.silt,
+                    letterSpacing: '0.02em',
+                  };
+                  return href ? (
+                    <a
+                      key={text}
+                      href={href}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        document
+                          .getElementById(href.slice(1))
+                          ?.scrollIntoView({behavior: 'smooth'});
+                      }}
+                      style={{
+                        ...rowStyle,
+                        textDecoration: 'underline',
+                        textDecorationColor: STYX.gold,
+                        textUnderlineOffset: 3,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <span style={{color: STYX.gold, flexShrink: 0}}>&bull;</span>
+                      {text}
+                    </a>
+                  ) : (
+                    <div key={text} style={rowStyle}>
+                      <span style={{color: STYX.gold, flexShrink: 0}}>&bull;</span>
+                      {text}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -1241,6 +1299,55 @@ export default function Product() {
                   </div>
                 </div>
 
+                {offerStatus === 'success' ? (
+                  /* Inline confirmation — replaces the form once the submission lands */
+                  <div style={{padding: '8px 0 4px', textAlign: 'center'}}>
+                    <div
+                      style={{
+                        fontFamily: FONT.cinzel,
+                        fontSize: 11,
+                        letterSpacing: '0.3em',
+                        textTransform: 'uppercase',
+                        color: STYX.gold,
+                        marginBottom: 14,
+                      }}
+                    >
+                      {offerMode === 'request' ? 'Request Received' : 'Offer Submitted'}
+                    </div>
+                    <p
+                      style={{
+                        fontFamily: FONT.cormorant,
+                        fontSize: 17,
+                        fontStyle: 'italic',
+                        color: STYX.graphite,
+                        lineHeight: 1.6,
+                        margin: '0 0 24px',
+                      }}
+                    >
+                      {offerMode === 'request'
+                        ? 'Your request has been received. We will confirm availability, price, and timing within 24 hours.'
+                        : 'Your offer has been submitted. We will respond within 24 hours.'}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setOfferOpen(false)}
+                      style={{
+                        padding: '14px 40px',
+                        background: STYX.ink,
+                        color: STYX.bone,
+                        fontFamily: FONT.cinzel,
+                        fontSize: 12,
+                        letterSpacing: '0.2em',
+                        textTransform: 'uppercase',
+                        border: 'none',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      Close
+                    </button>
+                  </div>
+                ) : (
+                <>
                 {/* Rules */}
                 <div
                   className="offer-rules"
@@ -1279,21 +1386,20 @@ export default function Product() {
                       phone: data.get('phone'),
                       message: data.get('message'),
                     };
+                    setOfferStatus('submitting');
                     try {
-                      await fetch('/api/form-submit', {
+                      const res = await fetch('/api/form-submit', {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify(payload),
                       });
+                      if (!res.ok) {
+                        throw new Error(`Form submit failed: ${res.status}`);
+                      }
+                      setOfferStatus('success');
                     } catch {
-                      // Confirm to the customer regardless; submission is logged server-side.
+                      setOfferStatus('error');
                     }
-                    alert(
-                      offerMode === 'request'
-                        ? 'Your request has been received. We will confirm availability and timing within 24 hours.'
-                        : 'Your offer has been submitted. We will respond within 24 hours.',
-                    );
-                    setOfferOpen(false);
                   }}
                   className="offer-form"
                   style={{display: 'flex', flexDirection: 'column', gap: 16}}
@@ -1383,8 +1489,28 @@ export default function Product() {
                       }}
                     />
                   </div>
+                  {offerStatus === 'error' && (
+                    <div
+                      role="alert"
+                      style={{
+                        fontFamily: FONT.cormorant,
+                        fontSize: 15,
+                        fontStyle: 'italic',
+                        color: '#8A2E2E',
+                        background: 'rgba(138,46,46,0.06)',
+                        border: '1px solid rgba(138,46,46,0.35)',
+                        padding: '12px 16px',
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      Something went wrong &mdash; your{' '}
+                      {offerMode === 'request' ? 'request' : 'offer'} was not
+                      sent. Please try again in a moment.
+                    </div>
+                  )}
                   <button
                     type="submit"
+                    disabled={offerStatus === 'submitting'}
                     style={{
                       padding: '16px 24px',
                       background: STYX.ink,
@@ -1394,13 +1520,20 @@ export default function Product() {
                       letterSpacing: '0.2em',
                       textTransform: 'uppercase',
                       border: 'none',
-                      cursor: 'pointer',
+                      cursor: offerStatus === 'submitting' ? 'wait' : 'pointer',
+                      opacity: offerStatus === 'submitting' ? 0.6 : 1,
                       transition: 'background 0.2s',
                     }}
                   >
-                    {offerMode === 'request' ? 'Submit Request' : 'Submit Offer'}
+                    {offerStatus === 'submitting'
+                      ? 'Sending…'
+                      : offerMode === 'request'
+                        ? 'Submit Request'
+                        : 'Submit Offer'}
                   </button>
                 </form>
+                </>
+                )}
               </div>
             </div>
           )}
@@ -1631,9 +1764,15 @@ export default function Product() {
           )}
 
           {/* ── Cross-Sell: Pairs Well With (below cart + live price receipt) ── */}
-          {crossSell && crossSell.length > 0 && (
-            <RecommendedProducts products={crossSell} heading="Pairs Well With" />
-          )}
+          <Suspense fallback={null}>
+            <Await resolve={crossSell} errorElement={null}>
+              {(products) =>
+                products && products.length > 0 ? (
+                  <RecommendedProducts products={products} heading="Pairs Well With" />
+                ) : null
+              }
+            </Await>
+          </Suspense>
         </div>
       </div>
 
@@ -1783,9 +1922,11 @@ export default function Product() {
 
       {/* ── Ferryman's Pact Banner ── */}
       <section
+        id="ferrymans-pact"
         style={{
           background: STYX.taupe,
           color: STYX.bone,
+          scrollMarginTop: 96,
         }}
       >
         <div className="styx-pact-banner" style={{maxWidth: 1440, margin: '0 auto', padding: 56, display: 'flex', alignItems: 'center', gap: 40}}>
@@ -1967,7 +2108,17 @@ function ReceiptRow({
   );
 }
 
-function ZoomableImage({data, sizes, alt}: {data: any; sizes: string; alt?: string}) {
+function ZoomableImage({
+  data,
+  sizes,
+  alt,
+  loading,
+}: {
+  data: any;
+  sizes: string;
+  alt?: string;
+  loading?: 'eager' | 'lazy';
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [zoomed, setZoomed] = useState(false);
   const [origin, setOrigin] = useState('50% 50%');
@@ -1994,6 +2145,7 @@ function ZoomableImage({data, sizes, alt}: {data: any; sizes: string; alt?: stri
         data={data}
         alt={data?.altText ?? alt ?? ''}
         sizes={sizes}
+        loading={loading}
         style={{
           maxWidth: '100%',
           maxHeight: '100%',

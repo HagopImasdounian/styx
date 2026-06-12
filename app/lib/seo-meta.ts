@@ -5,7 +5,9 @@ import {type SeoConfig, getSeoMeta} from '@shopify/hydrogen';
  * this module must NOT live in (or import from) seo.server.ts.
  */
 
-export const DEFAULT_OG_IMAGE_PATH = '/images/hero.jpg';
+// 1200px-wide ~130 KB derivative of hero.jpg — full-size hero (2.9 MB) is too
+// heavy for WhatsApp/Slack link previews, which cap fetch size.
+export const DEFAULT_OG_IMAGE_PATH = '/images/og-default.jpg';
 
 /**
  * Wraps Hydrogen's getSeoMeta to guarantee a complete Twitter Card and a plain

@@ -24,7 +24,9 @@ import {
   CREATE_ADDRESS_MUTATION,
 } from '~/graphql/customer-account/CustomerAddressMutations';
 
-import {doLogout} from './($locale).account_.logout';
+import {requireCustomerAccount} from '~/lib/customer.server';
+
+import {doLogout} from '~/lib/customer.server';
 import type {AccountOutletContext} from './($locale).account.edit';
 
 interface ActionData {
@@ -36,7 +38,9 @@ export const handle = {
 };
 
 export const action: ActionFunction = async ({request, context, params}) => {
-  const {customerAccount} = context;
+  // Redirects home when customer accounts aren't configured.
+  const customerAccount = requireCustomerAccount(context, params);
+
   const formData = await request.formData();
 
   // Double-check current user is logged in.
@@ -58,8 +62,8 @@ export const action: ActionFunction = async ({request, context, params}) => {
       invariant(!errors?.length, errors?.[0]?.message);
 
       invariant(
-        !data?.customerAddressUpdate?.userErrors?.length,
-        data?.customerAddressUpdate?.userErrors?.[0]?.message,
+        !data?.customerAddressDelete?.userErrors?.length,
+        data?.customerAddressDelete?.userErrors?.[0]?.message,
       );
 
       return redirect(

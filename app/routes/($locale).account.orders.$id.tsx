@@ -8,6 +8,7 @@ import {statusMessage} from '~/lib/utils';
 import {Link} from '~/components/Link';
 import {Heading, PageHeader, Text} from '~/components/Text';
 import {CUSTOMER_ORDER_QUERY} from '~/graphql/customer-account/CustomerOrderQuery';
+import {requireCustomerAccount} from '~/lib/customer.server';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   // Private order detail — never index.
@@ -18,6 +19,9 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
 };
 
 export async function loader({request, context, params}: LoaderFunctionArgs) {
+  // Redirects home when customer accounts aren't configured.
+  const customerAccount = requireCustomerAccount(context, params);
+
   if (!params.id) {
     return redirect(params?.locale ? `${params.locale}/account` : '/account');
   }
@@ -30,16 +34,18 @@ export async function loader({request, context, params}: LoaderFunctionArgs) {
       ? `gid://shopify/Order/${params.id}?key=${orderToken}`
       : `gid://shopify/Order/${params.id}`;
 
-    const {data, errors} = await context.customerAccount.query(
+    // Note: named `queryData` so it doesn't shadow react-router's `data()`
+    // helper used in the return below.
+    const {data: queryData, errors} = await customerAccount.query(
       CUSTOMER_ORDER_QUERY,
       {variables: {orderId}},
     );
 
-    if (errors?.length || !data?.order || !data?.order?.lineItems) {
+    if (errors?.length || !queryData?.order || !queryData?.order?.lineItems) {
       throw new Error('order information');
     }
 
-    const order: OrderFragment = data.order;
+    const order: OrderFragment = queryData.order;
 
     const lineItems = flattenConnection(order.lineItems);
 

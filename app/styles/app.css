@@ -207,6 +207,10 @@ shop-pay-button {
 .styx-hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
 .styx-hide-scrollbar::-webkit-scrollbar { display: none; }
 
+/* Product gallery: when there are no remaining images, drop the empty grid
+   item so it doesn't add a phantom row/gap on either breakpoint. */
+.styx-gallery-rest:empty { display: none; }
+
 /* ═══════════════════════════════════════════════════════════════
    STYX Responsive Overrides
    Inline styles have highest specificity — !important is required.
@@ -328,6 +332,15 @@ shop-pay-button {
   .styx-product-grid { grid-template-columns: minmax(0, 1fr) !important; gap: 32px !important; padding: 40px 20px 60px !important; }
   .styx-product-grid h1 { font-size: 32px !important; }
   .styx-product-info { position: static !important; }
+  /* Interleave (CRO): first gallery image → buy box → remaining gallery images.
+     The route sets explicit desktop grid placements inline (col/row), so reset
+     them to auto here and let `order` drive the single-column flow. */
+  .styx-gallery-lead,
+  .styx-gallery-rest,
+  .styx-product-info { grid-column: auto !important; grid-row: auto !important; }
+  .styx-gallery-lead { order: 1 !important; }
+  .styx-product-info { order: 2 !important; }
+  .styx-gallery-rest { order: 3 !important; }
   .styx-product-price { font-size: 32px !important; }
   /* Product details grid — 2 col on tablet */
   .styx-product-specs-grid { grid-template-columns: 1fr !important; gap: 48px !important; padding: 60px 20px !important; }

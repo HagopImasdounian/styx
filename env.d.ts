@@ -6,8 +6,9 @@ import type {
   WithCache,
   HydrogenCart,
   HydrogenSessionData,
+  CustomerAccount,
 } from '@shopify/hydrogen';
-import type {Storefront, CustomerAccount} from '~/lib/type';
+import type {Storefront} from '~/lib/type';
 import type {AppSession} from '~/lib/session.server';
 
 declare global {
@@ -44,7 +45,11 @@ declare module '@shopify/remix-oxygen' {
     waitUntil: ExecutionContext['waitUntil'];
     session: AppSession;
     storefront: Storefront;
-    customerAccount: CustomerAccount;
+    /**
+     * Optional: only created when PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID and
+     * SHOP_ID env vars are configured (see server.ts). Guard before use.
+     */
+    customerAccount: CustomerAccount | undefined;
     cart: HydrogenCart;
     env: Env;
   }

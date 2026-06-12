@@ -12,6 +12,10 @@ export function Newsletter() {
   const [emailOptIn, setEmailOptIn] = useState(false);
   const [smsOptIn, setSmsOptIn] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
+  // Honeypot — hidden from humans; bots that fill it get silently discarded
+  // server-side. Field name matches the api.form-submit honeypot check.
+  const [website, setWebsite] = useState('');
 
   const [submitting, setSubmitting] = useState(false);
 
@@ -19,9 +23,10 @@ export function Newsletter() {
     e.preventDefault();
     if (!email || !firstName) return;
     setSubmitting(true);
+    setError('');
 
     try {
-      await fetch('/api/form-submit', {
+      const res = await fetch('/api/form-submit', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
@@ -30,6 +35,7 @@ export function Newsletter() {
           name: [firstName, lastName].filter(Boolean).join(' '),
           email,
           phone: phone || undefined,
+          website,
           fields: {
             firstName,
             lastName,
@@ -38,6 +44,11 @@ export function Newsletter() {
           },
         }),
       });
+
+      if (!res.ok) {
+        setError('Something went wrong — try again');
+        return;
+      }
 
       trackFormSubmit({
         formId: 'newsletter',
@@ -48,8 +59,7 @@ export function Newsletter() {
 
       setSubmitted(true);
     } catch {
-      // Still show success — webhook/email failure shouldn't block UX
-      setSubmitted(true);
+      setError('Something went wrong — try again');
     } finally {
       setSubmitting(false);
     }
@@ -130,6 +140,25 @@ export function Newsletter() {
           }}
           className="styx-newsletter-form"
         >
+          {/* Honeypot — invisible to humans, catches naive bots. */}
+          <input
+            type="text"
+            name="website"
+            value={website}
+            onChange={(e) => setWebsite(e.target.value)}
+            autoComplete="off"
+            tabIndex={-1}
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              left: '-9999px',
+              width: 1,
+              height: 1,
+              opacity: 0,
+              pointerEvents: 'none',
+            }}
+          />
+
           {/* Name row */}
           <div
             style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24}}
@@ -140,6 +169,7 @@ export function Newsletter() {
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               placeholder="First name"
+              aria-label="First name"
               required
               style={inputStyle}
             />
@@ -148,6 +178,7 @@ export function Newsletter() {
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               placeholder="Last name"
+              aria-label="Last name"
               style={inputStyle}
             />
           </div>
@@ -158,6 +189,7 @@ export function Newsletter() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email address"
+            aria-label="Email address"
             required
             style={{...inputStyle, marginTop: 8}}
           />
@@ -168,6 +200,7 @@ export function Newsletter() {
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="Phone number (for SMS updates)"
+            aria-label="Phone number for SMS updates"
             style={{...inputStyle, marginTop: 8}}
           />
 
@@ -279,6 +312,21 @@ export function Newsletter() {
           >
             {submitting ? 'Subscribing...' : 'Subscribe'}
           </button>
+
+          {/* Inline error — shown when the submit request fails. */}
+          {error && (
+            <p
+              role="alert"
+              style={{
+                fontFamily: FONT.inter,
+                fontSize: 13,
+                color: '#a4392f',
+                marginTop: 16,
+              }}
+            >
+              {error}
+            </p>
+          )}
         </form>
       )}
 

@@ -1,4 +1,3 @@
-import {useState, useEffect} from 'react';
 import {useRouteLoaderData, Link} from 'react-router';
 import {STYX, FONT} from './constants';
 import {CurrencyToggle} from './CurrencyToggle';
@@ -18,30 +17,8 @@ export function GoldTicker() {
   // No real data — don't show the ticker at all
   if (!goldData?.spotPerOz) return null;
 
-  const apiSpot = goldData.spotPerOz;
-
-  // Small client-side jitter to make it feel "live"
-  const [spot, setSpot] = useState(apiSpot);
-  const [prev, setPrev] = useState(apiSpot);
-
-  useEffect(() => {
-    setSpot(apiSpot);
-    setPrev(apiSpot);
-  }, [apiSpot]);
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      setSpot((s: number) => {
-        setPrev(s);
-        const delta = (Math.random() - 0.48) * 1.4;
-        return +(s + delta).toFixed(2);
-      });
-    }, 3000);
-    return () => clearInterval(id);
-  }, []);
-
-  const change = spot - apiSpot;
-  const pct = ((change / apiSpot) * 100).toFixed(2);
+  const spot: number = goldData.spotPerOz;
+  const isFallback: boolean = Boolean(goldData.isFallback);
 
   const per10k = (spot / 31.1035) * 0.417;
   const per14k = (spot / 31.1035) * 0.585;
@@ -85,15 +62,15 @@ export function GoldTicker() {
         overflow: 'hidden',
       }}
     >
-      {/* Live indicator */}
+      {/* Live indicator — softened (no pulse glow) when showing a fallback price */}
       <div style={{display: 'flex', alignItems: 'center', gap: 8, flex: '0 0 auto'}}>
         <span
           style={{
             width: 6,
             height: 6,
             borderRadius: '50%',
-            background: '#7DB86F',
-            boxShadow: '0 0 8px #7DB86F',
+            background: isFallback ? 'rgba(239,234,224,0.35)' : '#7DB86F',
+            boxShadow: isFallback ? 'none' : '0 0 8px #7DB86F',
             display: 'inline-block',
           }}
         />
@@ -106,7 +83,7 @@ export function GoldTicker() {
             textTransform: 'uppercase',
           }}
         >
-          LIVE
+          {isFallback ? 'SPOT' : 'LIVE'}
         </span>
       </div>
 
@@ -115,18 +92,6 @@ export function GoldTicker() {
         <div style={cell}>
           <span style={lbl}>Gold Spot</span>
           <span style={val}>${fmt(spot)}/oz</span>
-        </div>
-        <div style={cell}>
-          <span style={lbl}>24h</span>
-          <span
-            style={{
-              ...val,
-              color: change >= 0 ? '#A8C99B' : '#C99B8C',
-            }}
-          >
-            {change >= 0 ? '+' : ''}
-            {change.toFixed(2)} ({pct}%)
-          </span>
         </div>
         <div style={cell} data-cell-extra="">
           <span style={lbl}>10k / g</span>

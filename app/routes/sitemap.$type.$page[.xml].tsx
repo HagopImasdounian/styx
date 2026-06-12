@@ -1,10 +1,6 @@
 import type {LoaderFunctionArgs} from 'react-router';
 
 import {getSitemap} from 'app/lib/sitemap';
-import {countries} from '~/data/countries';
-
-const locales = Object.keys(countries).filter((k) => k !== 'default');
-locales.unshift('en-us');
 
 export async function loader({
   request,
@@ -15,13 +11,12 @@ export async function loader({
     storefront,
     request,
     params,
-    locales,
-    getLink: ({type, baseUrl, handle, locale}) => {
+    // Single active market (en-US, no path prefix) — no hreflang alternates.
+    locales: [],
+    getLink: ({type, baseUrl, handle}) => {
       // Make sure the generated sitemap urls are reflective of the routes
       const typeUrl = type === 'articles' ? 'journal' : type;
-
-      if (!locale) return `${baseUrl}/${typeUrl}/${handle}`;
-      return `${baseUrl}${locale}/${typeUrl}/${handle}`;
+      return `${baseUrl}/${typeUrl}/${handle}`;
     },
   });
 

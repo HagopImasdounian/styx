@@ -26,7 +26,7 @@ import {usePrefixPathWithLocale} from '~/lib/utils';
 import {CACHE_NONE, routeHeaders} from '~/data/cache';
 import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetailsQuery';
 
-import {doLogout} from './($locale).account_.logout';
+import {doLogout} from '~/lib/customer.server';
 import {
   getFeaturedData,
   type FeaturedData,

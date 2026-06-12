@@ -22,6 +22,7 @@ import {PRODUCT_CARD_FRAGMENT} from '~/data/fragments';
 import {getImageLoadingPriority, PAGINATION_SIZE} from '~/lib/const';
 import {seoPayload} from '~/lib/seo.server';
 import {getStyxSeoMeta} from '~/lib/seo-meta';
+import {validateLocale} from '~/lib/utils';
 
 import {
   getFeaturedData,
@@ -30,8 +31,10 @@ import {
 
 export async function loader({
   request,
+  params,
   context: {storefront},
 }: LoaderFunctionArgs) {
+  validateLocale(params);
   const searchParams = new URL(request.url).searchParams;
   const searchTerm = searchParams.get('q')!;
   const variables = getPaginationVariables(request, {pageBy: 8});
@@ -47,23 +50,28 @@ export async function loader({
 
   const shouldGetRecommendations = !searchTerm || products?.nodes?.length === 0;
 
-  const seo = seoPayload.collection({
-    url: request.url,
-    collection: {
-      id: 'search',
-      title: 'Search',
-      handle: 'search',
-      descriptionHtml: 'Search results',
-      description: 'Search results',
-      seo: {
+  const seo = {
+    ...seoPayload.collection({
+      url: request.url,
+      collection: {
+        id: 'search',
         title: 'Search',
-        description: `Showing ${products.nodes.length} search results for "${searchTerm}"`,
+        handle: 'search',
+        descriptionHtml: 'Search results',
+        description: 'Search results',
+        seo: {
+          title: 'Search',
+          description: `Showing ${products.nodes.length} search results for "${searchTerm}"`,
+        },
+        metafields: [],
+        products,
+        updatedAt: new Date().toISOString(),
       },
-      metafields: [],
-      products,
-      updatedAt: new Date().toISOString(),
-    },
-  });
+    }),
+    // Search results are query-driven duplicates — keep them out of the index
+    // (also disallowed in robots.txt).
+    robots: {noIndex: true, noFollow: false},
+  };
 
   return ({
     seo,

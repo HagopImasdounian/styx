@@ -9,6 +9,9 @@ type FormPayload = {
   subject?: string;
   message?: string;
   fields?: Record<string, unknown>;
+  // Honeypot fields — real users never fill these (hidden inputs).
+  _gotcha?: string;
+  website?: string;
   // Make-an-Offer specific fields
   product?: string;
   sku?: string;
@@ -19,6 +22,19 @@ type FormPayload = {
   [key: string]: unknown;
 };
 
+// Reject request bodies larger than this (bytes of raw JSON text).
+const MAX_BODY_BYTES = 10 * 1024;
+// Cap any individual string field when rendering into emails.
+const MAX_FIELD_LENGTH = 2000;
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/** Strip newlines and control characters (header/subject injection hygiene). */
+function sanitizeHeaderText(value: string): string {
+  // eslint-disable-next-line no-control-regex
+  return value.replace(/[\u0000-\u001f\u007f]+/g, ' ').trim();
+}
+
 export async function action({request, context}: ActionFunctionArgs) {
   if (request.method !== 'POST') {
     return data({error: 'Method not allowed'}, {status: 405});
@@ -26,15 +42,29 @@ export async function action({request, context}: ActionFunctionArgs) {
 
   let body: FormPayload;
   try {
-    body = (await request.json()) as FormPayload;
+    const raw = await request.text();
+    if (raw.length > MAX_BODY_BYTES) {
+      return data({error: 'Request body too large'}, {status: 413});
+    }
+    body = JSON.parse(raw) as FormPayload;
+    if (!body || typeof body !== 'object' || Array.isArray(body)) {
+      return data({error: 'Invalid request body'}, {status: 400});
+    }
   } catch {
     return data({error: 'Invalid request body'}, {status: 400});
   }
 
+  // Honeypot: hidden fields humans never fill. If present, silently discard —
+  // pretend success so bots don't learn they were caught.
+  const gotcha = body._gotcha ?? body.website;
+  if (typeof gotcha === 'string' && gotcha.trim() !== '') {
+    return data({success: true});
+  }
+
   const {formId, formName, name, email} = body;
 
-  if (!email) {
-    return data({error: 'Email is required'}, {status: 400});
+  if (!email || typeof email !== 'string' || !EMAIL_RE.test(email.trim())) {
+    return data({error: 'A valid email address is required'}, {status: 400});
   }
 
   const env = context.env as Record<string, string>;
@@ -49,6 +79,9 @@ export async function action({request, context}: ActionFunctionArgs) {
   const fromAddress = 'STYX Gold <noreply@styxgold.com>';
 
   const friendlyFormName = prettyFormName(formName);
+  // Subject-line hygiene: never let newlines/control chars reach the subject.
+  const safeName = sanitizeHeaderText(String(name || '')).slice(0, 120);
+  const safeEmail = sanitizeHeaderText(email).slice(0, 254);
   const timestamp = new Date().toISOString();
   const payload: FormPayload = {
     ...body,
@@ -92,7 +125,7 @@ export async function action({request, context}: ActionFunctionArgs) {
           from: fromAddress,
           to: [ownerEmail],
           reply_to: email,
-          subject: `[${friendlyFormName}] New submission from ${name || email}`,
+          subject: `[${friendlyFormName}] New submission from ${safeName || safeEmail}`,
           html: buildOwnerEmail(friendlyFormName, payload),
         }),
       });
@@ -122,7 +155,23 @@ export async function action({request, context}: ActionFunctionArgs) {
     }
   }
 
-  return data({success: true, results});
+  // Keep delivery details server-side only — never leak webhook/notification
+  // internals to the client. Log failures for operator visibility.
+  const failures = Object.entries(results).filter(
+    ([, status]) => status !== 'sent',
+  );
+  if (failures.length > 0) {
+    console.error(
+      `[form-submit] delivery issues for "${friendlyFormName}":`,
+      JSON.stringify(results),
+    );
+  }
+
+  if (process.env.NODE_ENV === 'development') {
+    // Dev-only: surface delivery results to make local debugging easier.
+    return data({success: true, results});
+  }
+  return data({success: true});
 }
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -146,7 +195,7 @@ function prettyFormName(formName?: string): string {
 }
 
 // Fields we never want to render as raw rows in the owner email.
-const HIDDEN_OWNER_KEYS = new Set(['formId', 'formName']);
+const HIDDEN_OWNER_KEYS = new Set(['formId', 'formName', '_gotcha', 'website']);
 
 function humanizeKey(key: string): string {
   const overrides: Record<string, string> = {
@@ -184,7 +233,8 @@ function renderValue(value: unknown): string {
       .map(([k, v]) => `${escapeHtml(humanizeKey(k))}: ${escapeHtml(renderValue(v))}`)
       .join('<br/>');
   }
-  return escapeHtml(String(value));
+  // Cap individual values so a single oversized field can't bloat the email.
+  return escapeHtml(String(value).slice(0, MAX_FIELD_LENGTH));
 }
 
 function buildOwnerEmail(friendlyFormName: string, data: FormPayload): string {

@@ -17,9 +17,11 @@ import {WeighIn, type WeighInChain} from '~/components/styx/WeighIn';
 import {KARAT_PURITY} from '~/lib/gold';
 import {CURATED_COMPARISONS} from '~/data/comparisons';
 import {parseCompareItems} from '~/context/CompareContext';
+import {validateLocale} from '~/lib/utils';
 import type {RootLoader} from '~/root';
 
-export async function loader({request, context}: LoaderFunctionArgs) {
+export async function loader({request, params, context}: LoaderFunctionArgs) {
+  validateLocale(params);
   const url = new URL(request.url);
   const items = parseCompareItems(url.searchParams.get('products') || '');
 
@@ -58,6 +60,9 @@ export const meta = ({data}: MetaArgs<typeof loader>) => {
     description:
       'Compare solid gold chains side by side — weight, karat, gold content, and live price per gram. See exactly what your money buys. No markup mystery.',
     url: data?.url,
+    // This page renders from localStorage/query-string selections — no stable
+    // indexable content. Curated /compare/<slug> pages stay indexable.
+    robots: {noIndex: true, noFollow: false},
   });
 };
 

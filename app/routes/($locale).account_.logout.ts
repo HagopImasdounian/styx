@@ -1,20 +1,24 @@
 import {
   redirect,
   type ActionFunction,
-  type AppLoadContext,
   type LoaderFunctionArgs,
   type ActionFunctionArgs,
 } from 'react-router';
 
-export async function doLogout(context: AppLoadContext) {
-  return context.customerAccount.logout();
-}
+import {doLogout} from '~/lib/customer.server';
+
+export const action: ActionFunction = async ({
+  context,
+  params,
+}: ActionFunctionArgs) => {
+  if (!context.customerAccount) {
+    throw redirect(params?.locale ? `/${params.locale}` : '/');
+  }
+
+  return doLogout(context);
+};
 
 export async function loader({params}: LoaderFunctionArgs) {
   const locale = params.locale;
   return redirect(locale ? `/${locale}` : '/');
 }
-
-export const action: ActionFunction = async ({context}: ActionFunctionArgs) => {
-  return doLogout(context);
-};

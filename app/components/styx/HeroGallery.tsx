@@ -3,6 +3,12 @@ import {STYX, FONT} from './constants';
 import {CTAButton} from './CTAButton';
 import {Obol} from './Obol';
 
+// Shopify CDN serves resized variants via the `width` query param — the
+// original is 1.38 MB; these keep the LCP image proportional to the viewport.
+const HERO_IMAGE =
+  'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-hero.jpg?v=1779151485';
+const HERO_WIDTHS = [768, 1280, 1600, 2048];
+
 export function HeroGallery({products = []}: {products?: any[]}) {
   return (
     <section
@@ -15,9 +21,18 @@ export function HeroGallery({products = []}: {products?: any[]}) {
         alignItems: 'center',
       }}
     >
-      {/* Full-bleed background image */}
+      {/* Full-bleed background image (LCP — load eagerly at high priority) */}
       <img
-        src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-hero.jpg?v=1779151485"
+        src={`${HERO_IMAGE}&width=1600`}
+        srcSet={HERO_WIDTHS.map((w) => `${HERO_IMAGE}&width=${w} ${w}w`).join(
+          ', ',
+        )}
+        sizes="100vw"
+        width={2048}
+        height={869}
+        loading="eager"
+        // React 18 only forwards this attribute in lowercase
+        {...({fetchpriority: 'high'} as any)}
         alt="Man wearing a gold chain in a vintage convertible"
         style={{
           position: 'absolute',
@@ -78,7 +93,7 @@ export function HeroGallery({products = []}: {products?: any[]}) {
             textTransform: 'uppercase',
           }}
         >
-          Launch · 1g free per $2,000 spent
+          Launch · 1g of 24K gold free per $2,000 spent
         </div>
 
         {/* Main heading */}

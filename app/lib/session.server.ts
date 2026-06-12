@@ -27,6 +27,9 @@ export class AppSession implements HydrogenSession {
         httpOnly: true,
         path: '/',
         sameSite: 'lax',
+        // Modern browsers still accept `secure` cookies over http://localhost,
+        // so this is safe for local dev too.
+        secure: true,
         secrets,
       },
     });
