@@ -1,5 +1,4 @@
-import clsx from 'clsx';
-import {useRef} from 'react';
+import {useEffect, useState} from 'react';
 import {useRouteLoaderData} from 'react-router';
 import {
   flattenConnection,
@@ -21,6 +20,10 @@ import {Link} from '~/components/Link';
 import {IconRemove} from '~/components/Icon';
 import {trackBeginCheckout} from '~/components/GTMDataLayer';
 import type {RootLoader} from '~/root';
+import type {
+  CrossSellCounterpart,
+  CrossSellResponse,
+} from '~/routes/api.cross-sell';
 
 const STYX = {
   bone: '#EFEAE0',
@@ -141,6 +144,8 @@ export function CartDetails({
         {/* Cart items */}
         <div style={{flex: 1, overflowY: 'auto'}}>
           <CartLines lines={cart?.lines} layout={layout} />
+          {/* "Complete the set" — strict counterpart upsell (chain <-> bracelet) */}
+          <CompleteTheSetRow cart={cart} onClose={onClose} />
         </div>
 
         {/* Footer: totals + checkout */}
@@ -454,6 +459,162 @@ function StyxCartLineItem({line}: {line: CartLine}) {
             {line.cost?.totalAmount && <Money data={line.cost.totalAmount} />}
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Session cache for counterpart lookups, keyed by product handle. The drawer
+ * unmounts on close (headlessui Transition), so without this every open would
+ * refetch. `null` (no counterpart) is cached too — it's the common answer.
+ */
+const counterpartCache = new Map<string, CrossSellCounterpart | null>();
+
+/**
+ * "Complete the set" — one slim receipt-style row between the line items and
+ * the summary. Looks up the strict counterpart (same weave/karat/width,
+ * opposite type) for the FIRST cart line via /api/cross-sell. Renders nothing
+ * when there's no counterpart, the counterpart is already in the cart, it's
+ * sold out, or the fetch fails — silence over noise.
+ *
+ * No add-to-cart button by design: length must be chosen on the PDP (price
+ * varies by length), so the row links there instead.
+ */
+function CompleteTheSetRow({
+  cart,
+  onClose,
+}: {
+  cart: CartType;
+  onClose?: () => void;
+}) {
+  const lines = (cart?.lines ? flattenConnection(cart.lines) : []) as CartLine[];
+  const firstHandle = lines[0]?.merchandise?.product?.handle ?? null;
+
+  const [counterpart, setCounterpart] = useState<CrossSellCounterpart | null>(
+    () => (firstHandle && counterpartCache.get(firstHandle)) || null,
+  );
+
+  // Fetch once per first-line product (on drawer open / first line change),
+  // never on unrelated re-renders — the [firstHandle] dependency plus the
+  // module-level cache take care of both.
+  useEffect(() => {
+    if (!firstHandle) {
+      setCounterpart(null);
+      return;
+    }
+    if (counterpartCache.has(firstHandle)) {
+      setCounterpart(counterpartCache.get(firstHandle) ?? null);
+      return;
+    }
+    let cancelled = false;
+    fetch(`/api/cross-sell?handle=${encodeURIComponent(firstHandle)}`)
+      .then((res) => (res.ok ? (res.json() as Promise<CrossSellResponse>) : null))
+      .then((json) => {
+        const product = json?.product ?? null;
+        counterpartCache.set(firstHandle, product);
+        if (!cancelled) setCounterpart(product);
+      })
+      .catch(() => {
+        // Silent — the upsell is an enhancement, never an error state.
+        if (!cancelled) setCounterpart(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [firstHandle]);
+
+  if (!counterpart || !counterpart.available) return null;
+
+  // Never pitch something the customer already has in the vault.
+  const inCart = lines.some(
+    (l) => l.merchandise?.product?.handle === counterpart.handle,
+  );
+  if (inCart) return null;
+
+  return (
+    <div
+      style={{
+        padding: '14px 24px',
+        borderBottom: `1px solid ${STYX.line}`,
+        display: 'flex',
+        alignItems: 'center',
+        gap: 12,
+        background: STYX.paper,
+      }}
+    >
+      {/* Thumbnail */}
+      <div style={{width: 40, height: 40, flexShrink: 0, background: STYX.bone}}>
+        {counterpart.image && (
+          <Image
+            width={80}
+            height={80}
+            data={{
+              url: counterpart.image.url,
+              altText: counterpart.image.altText ?? counterpart.title,
+            }}
+            alt={counterpart.image.altText ?? counterpart.title}
+            style={{width: '100%', height: '100%', objectFit: 'cover'}}
+          />
+        )}
+      </div>
+
+      {/* Eyebrow + title */}
+      <div style={{flex: 1, minWidth: 0}}>
+        <div
+          style={{
+            fontFamily: FONT.cinzel,
+            fontSize: 8.5,
+            letterSpacing: '0.25em',
+            textTransform: 'uppercase',
+            color: STYX.gold,
+            marginBottom: 3,
+          }}
+        >
+          Complete the Set
+        </div>
+        <div
+          style={{
+            fontFamily: FONT.cormorant,
+            fontSize: 14,
+            fontStyle: 'italic',
+            color: STYX.graphite,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {counterpart.title}
+        </div>
+      </div>
+
+      {/* Price + quiet link to the PDP (length is chosen there) */}
+      <div style={{flexShrink: 0, textAlign: 'right'}}>
+        <div
+          style={{
+            fontFamily: FONT.mono,
+            fontSize: 11,
+            color: STYX.ink,
+            fontVariantNumeric: 'tabular-nums',
+            marginBottom: 2,
+          }}
+        >
+          from <Money data={counterpart.price} as="span" withoutTrailingZeros />
+        </div>
+        <Link
+          to={`/products/${counterpart.handle}`}
+          onClick={onClose}
+          style={{
+            fontFamily: FONT.cinzel,
+            fontSize: 9,
+            letterSpacing: '0.2em',
+            textTransform: 'uppercase',
+            color: STYX.silt,
+            textDecoration: 'none',
+          }}
+        >
+          View →
+        </Link>
       </div>
     </div>
   );

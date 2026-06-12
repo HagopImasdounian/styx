@@ -51,6 +51,7 @@ import {
   ActualSizeChainStrip,
   RecentlyViewed,
   recordRecentlyViewed,
+  ImageLightbox,
 } from '~/components/styx';
 import type {CrossSellProduct} from '~/components/styx';
 import {CompareButton} from '~/components/styx/CompareButton';
@@ -2260,6 +2261,7 @@ function ZoomableImage({
   const containerRef = useRef<HTMLDivElement>(null);
   const [zoomed, setZoomed] = useState(false);
   const [origin, setOrigin] = useState('50% 50%');
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -2268,35 +2270,62 @@ function ZoomableImage({
     setOrigin(`${x}% ${y}%`);
   }, []);
 
+  const resolvedAlt = data?.altText ?? alt ?? '';
+
   return (
-    <div
-      ref={containerRef}
-      onMouseEnter={() => setZoomed(true)}
-      onMouseLeave={() => setZoomed(false)}
-      onMouseMove={handleMouseMove}
-      style={{
-        overflow: 'hidden',
-        cursor: zoomed ? 'zoom-out' : 'zoom-in',
-      }}
-    >
-      <Image
-        data={data}
-        alt={data?.altText ?? alt ?? ''}
-        sizes={sizes}
-        loading={loading}
-        style={{
-          maxWidth: '100%',
-          maxHeight: '100%',
-          width: 'auto',
-          height: 'auto',
-          objectFit: 'contain',
-          display: 'block',
-          transform: zoomed ? 'scale(2)' : 'scale(1)',
-          transformOrigin: origin,
-          transition: zoomed ? 'transform 0.1s ease-out' : 'transform 0.3s ease',
+    <>
+      <div
+        ref={containerRef}
+        role="button"
+        tabIndex={0}
+        aria-label={`View ${resolvedAlt || 'image'} full screen`}
+        onClick={() => setLightboxOpen(true)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setLightboxOpen(true);
+          }
         }}
+        onMouseEnter={() => setZoomed(true)}
+        onMouseLeave={() => setZoomed(false)}
+        onMouseMove={handleMouseMove}
+        style={{
+          overflow: 'hidden',
+          cursor: zoomed ? 'zoom-out' : 'zoom-in',
+        }}
+      >
+        <Image
+          data={data}
+          alt={resolvedAlt}
+          sizes={sizes}
+          loading={loading}
+          style={{
+            maxWidth: '100%',
+            maxHeight: '100%',
+            width: 'auto',
+            height: 'auto',
+            objectFit: 'contain',
+            display: 'block',
+            transform: zoomed ? 'scale(2)' : 'scale(1)',
+            transformOrigin: origin,
+            transition: zoomed ? 'transform 0.1s ease-out' : 'transform 0.3s ease',
+          }}
+        />
+      </div>
+      <ImageLightbox
+        image={
+          lightboxOpen && data?.url
+            ? {
+                url: data.url,
+                altText: resolvedAlt,
+                width: data?.width,
+                height: data?.height,
+              }
+            : null
+        }
+        onClose={() => setLightboxOpen(false)}
       />
-    </div>
+    </>
   );
 }
 

@@ -31,3 +31,5 @@ export {ActualSizeToggle} from './ActualSizeToggle';
 export {ActualSizeChainStrip} from './ActualSizeChainStrip';
 export {CalibrationOverlay} from './CalibrationOverlay';
 export {PredictiveSearchPanel, MobileMenuSearch} from './PredictiveSearch';
+export {ImageLightbox} from './ImageLightbox';
+export type {LightboxImage} from './ImageLightbox';

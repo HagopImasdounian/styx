@@ -1559,6 +1559,70 @@ export type PaginatedProductsSearchQuery = {
   };
 };
 
+export type CrossSellSourceProductQueryVariables = StorefrontAPI.Exact<{
+  handle: StorefrontAPI.Scalars['String']['input'];
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+}>;
+
+export type CrossSellSourceProductQuery = {
+  product?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Product, 'id' | 'title' | 'productType' | 'tags'> & {
+      chain_style?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+      chain_thickness?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      chain_construction?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      karat?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+    }
+  >;
+};
+
+export type CrossSellCounterpartsQueryVariables = StorefrontAPI.Exact<{
+  query: StorefrontAPI.Scalars['String']['input'];
+  count?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['Int']['input']>;
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+}>;
+
+export type CrossSellCounterpartsQuery = {
+  products: {
+    nodes: Array<
+      Pick<
+        StorefrontAPI.Product,
+        'id' | 'title' | 'handle' | 'productType' | 'tags'
+      > & {
+        featuredImage?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Image, 'url' | 'altText'>
+        >;
+        priceRange: {
+          minVariantPrice: Pick<
+            StorefrontAPI.MoneyV2,
+            'amount' | 'currencyCode'
+          >;
+        };
+        chain_style?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'value'>
+        >;
+        chain_thickness?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'value'>
+        >;
+        chain_construction?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'value'>
+        >;
+        chain_karat?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'value'>
+        >;
+        variants: {
+          nodes: Array<Pick<StorefrontAPI.ProductVariant, 'availableForSale'>>;
+        };
+      }
+    >;
+  };
+};
+
 export type StyxPredictiveFallbackQueryVariables = StorefrontAPI.Exact<{
   q: StorefrontAPI.Scalars['String']['input'];
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
@@ -1710,6 +1774,14 @@ interface GeneratedQueryTypes {
   '#graphql\n  query PaginatedProductsSearch(\n    $country: CountryCode\n    $endCursor: String\n    $first: Int\n    $language: LanguageCode\n    $last: Int\n    $searchTerm: String\n    $startCursor: String\n  ) @inContext(country: $country, language: $language) {\n    products(\n      first: $first,\n      last: $last,\n      before: $startCursor,\n      after: $endCursor,\n      sortKey: RELEVANCE,\n      query: $searchTerm\n    ) {\n      nodes {\n        ...ProductCard\n      }\n      pageInfo {\n        startCursor\n        endCursor\n        hasNextPage\n        hasPreviousPage\n      }\n    }\n  }\n\n  #graphql\n  fragment ProductCard on Product {\n    id\n    title\n    publishedAt\n    handle\n    vendor\n    productType\n    tags\n    variants(first: 30) {\n      nodes {\n        id\n        availableForSale\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n        weight\n        weightUnit\n      }\n    }\n    chain_construction: metafield(namespace: "chain", key: "construction") {\n      value\n    }\n  }\n\n': {
     return: PaginatedProductsSearchQuery;
     variables: PaginatedProductsSearchQueryVariables;
+  };
+  '#graphql\n  query crossSellSourceProduct(\n    $handle: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    product(handle: $handle) {\n      id\n      title\n      productType\n      tags\n      chain_style: metafield(namespace: "chain", key: "chain_style") {\n        value\n      }\n      chain_thickness: metafield(namespace: "chain", key: "thickness") {\n        value\n      }\n      chain_construction: metafield(namespace: "chain", key: "construction") {\n        value\n      }\n      karat: metafield(namespace: "chain", key: "karat") {\n        value\n      }\n    }\n  }\n': {
+    return: CrossSellSourceProductQuery;
+    variables: CrossSellSourceProductQueryVariables;
+  };
+  '#graphql\n  query crossSellCounterparts(\n    $query: String!\n    $count: Int\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    products(first: $count, query: $query) {\n      nodes {\n        id\n        title\n        handle\n        productType\n        tags\n        featuredImage {\n          url\n          altText\n        }\n        priceRange {\n          minVariantPrice {\n            amount\n            currencyCode\n          }\n        }\n        chain_style: metafield(namespace: "chain", key: "chain_style") {\n          value\n        }\n        chain_thickness: metafield(namespace: "chain", key: "thickness") {\n          value\n        }\n        chain_construction: metafield(namespace: "chain", key: "construction") {\n          value\n        }\n        chain_karat: metafield(namespace: "chain", key: "karat") {\n          value\n        }\n        variants(first: 20) {\n          nodes {\n            availableForSale\n          }\n        }\n      }\n    }\n  }\n': {
+    return: CrossSellCounterpartsQuery;
+    variables: CrossSellCounterpartsQueryVariables;
   };
   '#graphql\n  query StyxPredictiveFallback(\n    $q: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    products(first: 6, sortKey: RELEVANCE, query: $q) {\n      nodes {\n        id\n        handle\n        title\n        featuredImage {\n          url\n          altText\n        }\n        priceRange {\n          minVariantPrice {\n            amount\n            currencyCode\n          }\n        }\n      }\n    }\n  }\n': {
     return: StyxPredictiveFallbackQuery;
