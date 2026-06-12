@@ -3,7 +3,7 @@ export {Obol} from './Obol';
 export {GoldTicker} from './GoldTicker';
 export {CurrencyToggle} from './CurrencyToggle';
 export {StyxNav} from './StyxNav';
-export {HeroGallery} from './HeroGallery';
+export {HeroGallery, HERO_IMAGE, HERO_WIDTHS} from './HeroGallery';
 export {Ribbon} from './Ribbon';
 export {CategoryTiles} from './CategoryTiles';
 export {FeaturedRow} from './FeaturedRow';

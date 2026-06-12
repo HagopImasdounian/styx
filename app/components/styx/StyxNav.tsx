@@ -1363,7 +1363,7 @@ function MobileMenu({
             </button>
           )}
           <img
-            src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-styx-logo.png?v=1779151809"
+            src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-styx-logo.png?v=1779151809&width=200"
             alt="STYX"
             style={{height: 28, width: 'auto'}}
           />
@@ -1598,6 +1598,11 @@ function MobileMenu({
                           <img
                             src={cutoutFor(chain.handle)}
                             alt={`${chain.name} chain`}
+                            // The drawer is always in the DOM (slid offscreen).
+                            // Without lazy, these 13 cutouts download on every
+                            // page load and starve the LCP image on mobile.
+                            loading="lazy"
+                            decoding="async"
                             style={{
                               width: 130,
                               height: 46,
@@ -2260,7 +2265,7 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
             }}
           >
             <img
-              src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-styx-logo.png?v=1779151809"
+              src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-styx-logo.png?v=1779151809&width=200"
               alt="STYX"
               style={{height: 36, width: 'auto'}}
             />

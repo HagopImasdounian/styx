@@ -72,7 +72,7 @@ export function FeaturedRow({products}: {products: ProductNode[]}) {
         }}
       >
         {products.slice(0, 4).map((product, i) => (
-          <StyxProductCard key={product.id} product={product} index={i} />
+          <StyxProductCard key={product.id} product={product} index={i} belowFold />
         ))}
       </div>
     </section>

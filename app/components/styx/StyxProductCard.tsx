@@ -75,10 +75,14 @@ export function StyxProductCard({
   product,
   variantIndex = 0,
   index = 0,
+  belowFold = false,
 }: {
   product: ProductNode;
   variantIndex?: number;
   index?: number;
+  /** Set when the card renders below the fold (e.g. homepage FeaturedRow) —
+   * keeps its images lazy so they don't compete with the page's LCP image. */
+  belowFold?: boolean;
 }) {
   const variant = product.variants.nodes[variantIndex] ?? product.variants.nodes[0];
   const [isHovered, setIsHovered] = useState(false);
@@ -87,11 +91,10 @@ export function StyxProductCard({
   // First 4 cards are above the fold on collection grids — load them eagerly,
   // and give the very first card top fetch priority (lowercase attribute:
   // React 18 doesn't forward camelCase fetchPriority to the DOM).
-  const eager = index < 4;
-  const priorityProps = (index === 0 ? {fetchpriority: 'high'} : {}) as Record<
-    string,
-    string
-  >;
+  const eager = !belowFold && index < 4;
+  const priorityProps = (!belowFold && index === 0
+    ? {fetchpriority: 'high'}
+    : {}) as Record<string, string>;
 
   // Hover image from a different variant
   const hoverImage = (() => {

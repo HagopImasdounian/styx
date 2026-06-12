@@ -65,12 +65,27 @@ function loadGTM() {
     analytics_storage: 'granted',
   });
 
-  window.dataLayer.push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+  // Defer the container script (144 KB + whatever tags it loads) until after
+  // the window `load` event — on throttled mobile it otherwise competes with
+  // the LCP image for bandwidth. Events pushed in the meantime queue in the
+  // dataLayer array and GTM replays them when it boots.
+  const inject = () => {
+    window.dataLayer.push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtm.js?id=${GTM_ID}`;
+    document.head.appendChild(script);
+  };
+  const scheduleInject = () =>
+    'requestIdleCallback' in window
+      ? (window as any).requestIdleCallback(inject, {timeout: 2000})
+      : setTimeout(inject, 200);
 
-  const script = document.createElement('script');
-  script.async = true;
-  script.src = `https://www.googletagmanager.com/gtm.js?id=${GTM_ID}`;
-  document.head.appendChild(script);
+  if (document.readyState === 'complete') {
+    scheduleInject();
+  } else {
+    window.addEventListener('load', scheduleInject, {once: true});
+  }
 }
 
 /**

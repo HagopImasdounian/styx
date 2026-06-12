@@ -5,9 +5,11 @@ import {Obol} from './Obol';
 
 // Shopify CDN serves resized variants via the `width` query param — the
 // original is 1.38 MB; these keep the LCP image proportional to the viewport.
-const HERO_IMAGE =
+// Exported so the homepage route can emit a <link rel="preload"> for the
+// LCP image with matching srcset/sizes.
+export const HERO_IMAGE =
   'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-hero.jpg?v=1779151485';
-const HERO_WIDTHS = [768, 1280, 1600, 2048];
+export const HERO_WIDTHS = [768, 1280, 1600, 2048];
 
 export function HeroGallery({products = []}: {products?: any[]}) {
   return (

@@ -112,8 +112,10 @@ export function StyxFooter({collections = []}: {collections?: CollectionNode[]})
             }}
           >
             <img
-              src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-styx-logo.png?v=1779151809"
+              src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-styx-logo.png?v=1779151809&width=200"
               alt=""
+              loading="lazy"
+              decoding="async"
               style={{
                 height: 40,
                 width: 'auto',

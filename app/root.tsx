@@ -32,6 +32,13 @@ import favicon from '~/assets/favicon.svg';
 import {seoPayload} from '~/lib/seo.server';
 import styles from '~/styles/app.css?url';
 import fontStyles from '~/styles/fonts.css?url';
+// Inlined in production: app.css + fonts.css are ~13 KB combined but cost two
+// render-blocking CDN round trips (~770 ms on throttled mobile) when linked.
+// Dev keeps the <link> tags so CSS HMR still works.
+import stylesInline from '~/styles/app.css?inline';
+import fontStylesInline from '~/styles/fonts.css?inline';
+
+const INLINE_CSS = import.meta.env.PROD;
 
 import {DEFAULT_LOCALE, parseMenu} from './lib/utils';
 import {getGoldData} from './lib/gold.server';
@@ -94,10 +101,16 @@ export const links: LinksFunction = () => {
     },
     // (inter-var deliberately not preloaded — it isn't used above the fold,
     // and the browser flags the wasted preload.)
-    {
-      rel: 'stylesheet',
-      href: fontStyles,
-    },
+    // fonts.css is inlined as a <style> in production (see Layout) — only
+    // link it in dev.
+    ...(INLINE_CSS
+      ? []
+      : [
+          {
+            rel: 'stylesheet',
+            href: fontStyles,
+          },
+        ]),
     {rel: 'icon', type: 'image/svg+xml', href: favicon},
   ];
 };
@@ -207,7 +220,19 @@ function Layout({children}: {children?: React.ReactNode}) {
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <meta name="msvalidate.01" content="A352E6A0AF9A652267361BBB572B8468" />
-        <link rel="stylesheet" href={styles}></link>
+        {/* Production inlines both stylesheets to kill the render-blocking
+            round trips; dev keeps <link> so CSS HMR works (and avoids the
+            insertBefore dev bug noted above links()). */}
+        {INLINE_CSS ? (
+          <style
+            nonce={nonce}
+            dangerouslySetInnerHTML={{
+              __html: `${stylesInline}\n${fontStylesInline}`,
+            }}
+          />
+        ) : (
+          <link rel="stylesheet" href={styles}></link>
+        )}
         <Meta />
         <Links />
         {/* Google Tag Manager is injected post-hydration from GTMDataLayer.tsx

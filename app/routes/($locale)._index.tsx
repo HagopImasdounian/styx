@@ -1,6 +1,7 @@
 import {
     type MetaArgs,
   type LoaderFunctionArgs,
+  type LinksFunction,
 } from 'react-router';
 import {Suspense} from 'react';
 import {Await, data, useLoaderData} from 'react-router';
@@ -23,8 +24,25 @@ import {
   Newsletter,
   StyxFooter,
 } from '~/components/styx';
+import {HERO_IMAGE, HERO_WIDTHS} from '~/components/styx';
 
 export const headers = routeHeaders;
+
+// Preload the hero (LCP) image from the document head so the browser starts
+// fetching it alongside the CSS instead of waiting for the <img> in the body.
+export const links: LinksFunction = () => [
+  {
+    rel: 'preload',
+    as: 'image',
+    href: `${HERO_IMAGE}&width=1600`,
+    imageSrcSet: HERO_WIDTHS.map((w) => `${HERO_IMAGE}&width=${w} ${w}w`).join(
+      ', ',
+    ),
+    imageSizes: '100vw',
+    // React Router types don't know fetchpriority yet — passes through to the tag.
+    ...({fetchpriority: 'high'} as any),
+  },
+];
 
 export async function loader(args: LoaderFunctionArgs) {
   const {params, context} = args;
