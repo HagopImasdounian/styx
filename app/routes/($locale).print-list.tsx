@@ -6,14 +6,15 @@ import {Link} from '~/components/Link';
 import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, ChainSilhouette, ActualSizeToggle} from '~/components/styx';
 import {usePrintList} from '~/context/PrintListContext';
 import {useScaleCalibration} from '~/context/ScaleCalibrationContext';
-import {usePrefixPathWithLocale} from '~/lib/utils';
+import {usePrefixPathWithLocale, validateLocale} from '~/lib/utils';
 import {STYX_PRINT_LOGO} from '~/components/styx/printLogo';
 import {styleToSlug} from '~/lib/chains';
 
 // Customer-facing site URL shown on the printout. Edit to the live domain.
 const SITE_URL = 'styxgold.com';
 
-export async function loader({request, context}: LoaderFunctionArgs) {
+export async function loader({request, params, context}: LoaderFunctionArgs) {
+  validateLocale(params);
   const url = new URL(request.url);
   const productsParam = url.searchParams.get('products') || '';
   const handles = productsParam

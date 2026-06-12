@@ -7,30 +7,43 @@ import {STYX, FONT, GoldTicker, StyxNav, StyxFooter} from '~/components/styx';
 import {useWishlist} from '~/context/WishlistContext';
 import {useCompare, encodeCompareItems} from '~/context/CompareContext';
 import {usePrintList} from '~/context/PrintListContext';
-import {usePrefixPathWithLocale} from '~/lib/utils';
+import {usePrefixPathWithLocale, validateLocale} from '~/lib/utils';
 
-export async function loader({request, context}: LoaderFunctionArgs) {
+export async function loader({request, params, context}: LoaderFunctionArgs) {
+  validateLocale(params);
   const url = new URL(request.url);
+  // Sanitize: Shopify handles are strictly [a-z0-9-], and the handles are
+  // interpolated into the query below, so reject anything else outright.
   const handles = (url.searchParams.get('products') || '')
     .split(',')
     .map((h) => h.trim())
-    .filter(Boolean)
+    .filter((h) => /^[a-z0-9-]+$/.test(h))
     .slice(0, 50);
 
   if (handles.length === 0) return {products: []};
 
-  const results = await Promise.all(
-    handles.map((handle) =>
-      context.storefront.query(WISHLIST_PRODUCT_QUERY, {
-        variables: {
-          handle,
-          country: context.storefront.i18n.country,
-          language: context.storefront.i18n.language,
-        },
-      }),
-    ),
-  );
-  return {products: results.map((r) => r.product).filter(Boolean)};
+  // ONE aliased query for all handles instead of up to 50 parallel queries.
+  const batchedQuery = `
+    query WishlistProducts($country: CountryCode, $language: LanguageCode)
+    @inContext(country: $country, language: $language) {
+      ${handles
+        .map((h, i) => `p${i}: product(handle: "${h}") { ...WishlistProduct }`)
+        .join('\n      ')}
+    }
+    ${WISHLIST_PRODUCT_FRAGMENT}
+  `;
+
+  const data = (await context.storefront.query(batchedQuery, {
+    variables: {
+      country: context.storefront.i18n.country,
+      language: context.storefront.i18n.language,
+    },
+  })) as Record<string, any>;
+
+  // Preserve stored order (alias index follows handle order).
+  return {
+    products: handles.map((_, i) => data?.[`p${i}`]).filter(Boolean),
+  };
 }
 
 export const meta: MetaFunction = () => {
@@ -423,7 +436,8 @@ export default function WishlistPage() {
                           {p.title}
                         </div>
                         {price && (
-                          <div style={{fontFamily: FONT.mono, fontSize: 12, color: STYX.gold, marginTop: 6}}>
+                          // goldDeep (not gold) — 4.5:1 contrast on light paper
+                          <div style={{fontFamily: FONT.mono, fontSize: 12, color: STYX.goldDeep, marginTop: 6}}>
                             <Money data={price} />
                           </div>
                         )}
@@ -481,24 +495,20 @@ const emailInputStyle: React.CSSProperties = {
   boxSizing: 'border-box',
 };
 
-const WISHLIST_PRODUCT_QUERY = `#graphql
-  query WishlistProduct(
-    $country: CountryCode
-    $language: LanguageCode
-    $handle: String!
-  ) @inContext(country: $country, language: $language) {
-    product(handle: $handle) {
-      id
-      title
-      handle
-      featuredImage { url altText width height }
-      variants(first: 1) {
-        nodes {
-          image { url altText width height }
-          price { amount currencyCode }
-          selectedOptions { name value }
-        }
+// NOTE: deliberately no `#graphql` tag — this fragment is interpolated into a
+// dynamically-built aliased query in the loader, so codegen must skip it.
+const WISHLIST_PRODUCT_FRAGMENT = `
+  fragment WishlistProduct on Product {
+    id
+    title
+    handle
+    featuredImage { url altText width height }
+    variants(first: 1) {
+      nodes {
+        image { url altText width height }
+        price { amount currencyCode }
+        selectedOptions { name value }
       }
     }
   }
-` as const;
+`;

@@ -8,9 +8,12 @@ import type {MediaFragment} from 'storefrontapi.generated';
 export function ProductGallery({
   media,
   className,
+  productTitle,
 }: {
   media: MediaFragment[];
   className?: string;
+  /** Used to build descriptive alt text when the image has none. */
+  productTitle?: string;
 }) {
   if (!media.length) {
     return null;
@@ -27,7 +30,14 @@ export function ProductGallery({
 
         const image =
           med.__typename === 'MediaImage'
-            ? {...med.image, altText: med.alt || 'Product image'}
+            ? {
+                ...med.image,
+                // Descriptive fallback: product title + position, not a
+                // generic "Product image" repeated for every photo.
+                altText:
+                  med.alt ||
+                  `${productTitle || 'Product'} — image ${i + 1} of ${media.length}`,
+              }
             : null;
 
         const style = [

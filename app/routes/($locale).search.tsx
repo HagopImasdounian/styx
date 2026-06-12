@@ -1,33 +1,19 @@
 import {
-    type MetaArgs,
+  type MetaArgs,
   type LoaderFunctionArgs,
 } from 'react-router';
-import {Await, Form, useLoaderData} from 'react-router';
-import {Suspense} from 'react';
-import {
-  Pagination,
-  getPaginationVariables,
-  Analytics,
-  getSeoMeta,
-} from '@shopify/hydrogen';
+import {Form, useLoaderData} from 'react-router';
+import {useEffect} from 'react';
+import {Pagination, getPaginationVariables, Analytics} from '@shopify/hydrogen';
 
-import {Heading, PageHeader, Section, Text} from '~/components/Text';
 import {trackSearch} from '~/components/GTMDataLayer';
-import {Input} from '~/components/Input';
-import {Grid} from '~/components/Grid';
-import {ProductCard} from '~/components/ProductCard';
-import {ProductSwimlane} from '~/components/ProductSwimlane';
-import {FeaturedCollections} from '~/components/FeaturedCollections';
+import {Link} from '~/components/Link';
+import {STYX, FONT} from '~/components/styx';
+import {StyxProductCard} from '~/components/styx/StyxProductCard';
 import {PRODUCT_CARD_FRAGMENT} from '~/data/fragments';
-import {getImageLoadingPriority, PAGINATION_SIZE} from '~/lib/const';
 import {seoPayload} from '~/lib/seo.server';
 import {getStyxSeoMeta} from '~/lib/seo-meta';
 import {validateLocale} from '~/lib/utils';
-
-import {
-  getFeaturedData,
-  type FeaturedData,
-} from './($locale).featured-products';
 
 export async function loader({
   request,
@@ -36,7 +22,7 @@ export async function loader({
 }: LoaderFunctionArgs) {
   validateLocale(params);
   const searchParams = new URL(request.url).searchParams;
-  const searchTerm = searchParams.get('q')!;
+  const searchTerm = searchParams.get('q') ?? '';
   const variables = getPaginationVariables(request, {pageBy: 8});
 
   const {products} = await storefront.query(SEARCH_QUERY, {
@@ -47,8 +33,6 @@ export async function loader({
       language: storefront.i18n.language,
     },
   });
-
-  const shouldGetRecommendations = !searchTerm || products?.nodes?.length === 0;
 
   const seo = {
     ...seoPayload.collection({
@@ -73,14 +57,7 @@ export async function loader({
     robots: {noIndex: true, noFollow: false},
   };
 
-  return ({
-    seo,
-    searchTerm,
-    products,
-    noResultRecommendations: shouldGetRecommendations
-      ? getNoResultRecommendations(storefront)
-      : Promise.resolve(null),
-  });
+  return {seo, searchTerm, products};
 }
 
 export const meta = ({matches}: MetaArgs<typeof loader>) => {
@@ -88,124 +65,224 @@ export const meta = ({matches}: MetaArgs<typeof loader>) => {
 };
 
 export default function Search() {
-  const {searchTerm, products, noResultRecommendations} =
-    useLoaderData<typeof loader>();
-  const noResults = products?.nodes?.length === 0;
+  const {searchTerm, products} = useLoaderData<typeof loader>();
+  const hasQuery = Boolean(searchTerm);
+  const noResults = hasQuery && products?.nodes?.length === 0;
 
-  // Track search in data layer
-  if (typeof window !== 'undefined' && searchTerm) {
-    trackSearch(searchTerm);
-  }
+  // GTM search event — effect (not render body) so it fires once per term,
+  // not on every re-render.
+  useEffect(() => {
+    if (searchTerm) trackSearch(searchTerm);
+  }, [searchTerm]);
 
   return (
-    <>
-      <PageHeader>
-        <Heading as="h1" size="copy">
+    <div style={{maxWidth: 1200, margin: '0 auto'}}>
+      {/* ───── Heading + search form ───── */}
+      <div style={{textAlign: 'center', marginBottom: 40}}>
+        <h1
+          style={{
+            fontFamily: FONT.cinzel,
+            fontSize: 28,
+            fontWeight: 500,
+            letterSpacing: '0.08em',
+            color: STYX.ink,
+            marginBottom: 8,
+          }}
+        >
           Search
-        </Heading>
-        <Form method="get" className="relative flex w-full text-heading">
-          <Input
+        </h1>
+        <p
+          style={{
+            fontFamily: FONT.cormorant,
+            fontSize: 17,
+            fontStyle: 'italic',
+            color: STYX.silt,
+            margin: '0 0 28px',
+          }}
+        >
+          Find your chain by weave, karat or width.
+        </p>
+
+        <Form
+          method="get"
+          style={{
+            display: 'flex',
+            maxWidth: 560,
+            margin: '0 auto',
+            border: `1px solid ${STYX.line}`,
+            background: STYX.paper,
+          }}
+        >
+          <input
+            className="styx-search-input"
             defaultValue={searchTerm}
             name="q"
-            placeholder="Search…"
             type="search"
-            variant="search"
+            placeholder="Cuban, 14k, 5mm…"
+            aria-label="Search products"
+            style={{
+              flex: 1,
+              padding: '14px 18px',
+              border: 'none',
+              background: 'transparent',
+              fontFamily: FONT.inter,
+              // 16px minimum so iOS Safari doesn't zoom the page on focus
+              fontSize: 16,
+              color: STYX.ink,
+              outline: 'none',
+              minWidth: 0,
+            }}
           />
-          <button className="absolute right-0 py-2" type="submit">
-            Go
+          <button
+            type="submit"
+            style={{
+              padding: '0 26px',
+              background: STYX.ink,
+              color: STYX.bone,
+              border: 'none',
+              fontFamily: FONT.cinzel,
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: '0.15em',
+              textTransform: 'uppercase',
+              cursor: 'pointer',
+            }}
+          >
+            Search
           </button>
         </Form>
-      </PageHeader>
-      {!searchTerm || noResults ? (
-        <NoResults
-          noResults={noResults}
-          recommendations={noResultRecommendations}
-        />
-      ) : (
-        <Section>
-          <Pagination connection={products}>
-            {({nodes, isLoading, NextLink, PreviousLink}) => {
-              const itemsMarkup = nodes.map((product: any, i: number) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  loading={getImageLoadingPriority(i)}
-                />
-              ));
+      </div>
 
-              return (
-                <>
-                  <div className="flex items-center justify-center mt-6">
-                    <PreviousLink className="inline-block rounded font-medium text-center py-3 px-6 border border-primary/10 bg-contrast text-primary w-full">
-                      {isLoading ? 'Loading...' : 'Previous'}
-                    </PreviousLink>
-                  </div>
-                  <Grid data-test="product-grid">{itemsMarkup}</Grid>
-                  <div className="flex items-center justify-center mt-6">
-                    <NextLink className="inline-block rounded font-medium text-center py-3 px-6 border border-primary/10 bg-contrast text-primary w-full">
-                      {isLoading ? 'Loading...' : 'Next'}
-                    </NextLink>
-                  </div>
-                </>
-              );
-            }}
-          </Pagination>
-        </Section>
-      )}
-      <Analytics.SearchView data={{searchTerm, searchResults: products}} />
-    </>
-  );
-}
-
-function NoResults({
-  noResults,
-  recommendations,
-}: {
-  noResults: boolean;
-  recommendations: Promise<null | FeaturedData>;
-}) {
-  return (
-    <>
-      {noResults && (
-        <Section padding="x">
-          <Text className="opacity-50">
-            No results, try a different search.
-          </Text>
-        </Section>
-      )}
-      <Suspense>
-        <Await
-          errorElement="There was a problem loading related products"
-          resolve={recommendations}
-        >
-          {(result) => {
-            if (!result) return null;
-            const {featuredCollections, featuredProducts} = result;
-
-            return (
-              <>
-                <FeaturedCollections
-                  title="Trending Collections"
-                  collections={featuredCollections}
-                />
-                <ProductSwimlane
-                  title="Trending Products"
-                  products={featuredProducts}
-                />
-              </>
-            );
+      {/* ───── Results / empty states ───── */}
+      {!hasQuery ? (
+        <p
+          style={{
+            textAlign: 'center',
+            fontFamily: FONT.mono,
+            fontSize: 11,
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+            color: STYX.silt,
+            padding: '24px 0 64px',
           }}
-        </Await>
-      </Suspense>
-    </>
+        >
+          Type a search above to begin
+        </p>
+      ) : noResults ? (
+        <div style={{textAlign: 'center', padding: '32px 0 80px'}}>
+          <p
+            style={{
+              fontFamily: FONT.cormorant,
+              fontSize: 20,
+              color: STYX.ink,
+              margin: '0 auto 10px',
+              maxWidth: 520,
+            }}
+          >
+            No results for &ldquo;{searchTerm}&rdquo;
+          </p>
+          <p
+            style={{
+              fontFamily: FONT.inter,
+              fontSize: 13,
+              color: STYX.silt,
+              margin: '0 auto 30px',
+              maxWidth: 460,
+            }}
+          >
+            Try a different spelling, a weave name like cuban or rope, or
+            explore the full collection.
+          </p>
+          <Link
+            to="/collections/chains"
+            style={{
+              display: 'inline-block',
+              padding: '14px 28px',
+              background: STYX.ink,
+              color: STYX.bone,
+              fontFamily: FONT.cinzel,
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: '0.15em',
+              textTransform: 'uppercase',
+              textDecoration: 'none',
+            }}
+          >
+            Explore the Collection
+          </Link>
+        </div>
+      ) : (
+        <Pagination connection={products}>
+          {({nodes, isLoading, hasNextPage, NextLink, PreviousLink}) => (
+            <>
+              {/* Result count */}
+              <p
+                style={{
+                  fontFamily: FONT.mono,
+                  fontSize: 11,
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase',
+                  color: STYX.silt,
+                  textAlign: 'center',
+                  margin: '0 0 32px',
+                }}
+              >
+                <span style={{color: STYX.goldDeep}}>
+                  {nodes.length}
+                  {hasNextPage ? '+' : ''}
+                </span>{' '}
+                result{nodes.length !== 1 || hasNextPage ? 's' : ''} for
+                &ldquo;{searchTerm}&rdquo;
+              </p>
+
+              <div style={{display: 'flex', justifyContent: 'center', marginBottom: 28}}>
+                <PreviousLink style={paginationLinkStyle}>
+                  {isLoading ? 'Loading…' : 'Previous'}
+                </PreviousLink>
+              </div>
+
+              {/* One card per product — no per-color explosion on search */}
+              <div
+                data-test="product-grid"
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
+                  gap: '48px 32px',
+                }}
+              >
+                {nodes.map((product: any, i: number) => (
+                  <StyxProductCard key={product.id} product={product} index={i} />
+                ))}
+              </div>
+
+              <div style={{display: 'flex', justifyContent: 'center', marginTop: 48}}>
+                <NextLink style={paginationLinkStyle}>
+                  {isLoading ? 'Loading…' : 'Load More'}
+                </NextLink>
+              </div>
+            </>
+          )}
+        </Pagination>
+      )}
+
+      <Analytics.SearchView data={{searchTerm, searchResults: products}} />
+    </div>
   );
 }
 
-export function getNoResultRecommendations(
-  storefront: LoaderFunctionArgs['context']['storefront'],
-) {
-  return getFeaturedData(storefront, {pageBy: PAGINATION_SIZE});
-}
+const paginationLinkStyle: React.CSSProperties = {
+  display: 'inline-block',
+  padding: '12px 26px',
+  border: `1px solid ${STYX.line}`,
+  background: 'transparent',
+  fontFamily: FONT.cinzel,
+  fontSize: 11,
+  fontWeight: 600,
+  letterSpacing: '0.13em',
+  textTransform: 'uppercase',
+  color: STYX.ink,
+  textDecoration: 'none',
+};
 
 const SEARCH_QUERY = `#graphql
   query PaginatedProductsSearch(

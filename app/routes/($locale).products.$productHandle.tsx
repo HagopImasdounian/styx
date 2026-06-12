@@ -4,7 +4,7 @@ import {
     type MetaArgs,
   type LoaderFunctionArgs,
 } from 'react-router';
-import {useLoaderData, Await, useRouteLoaderData} from 'react-router';
+import {data, useLoaderData, Await, useRouteLoaderData} from 'react-router';
 import {
   getSeoMeta,
   Money,
@@ -29,13 +29,13 @@ import type {RootLoader} from '~/root';
 import {Link} from '~/components/Link';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {IconCaret, IconCheck, IconClose} from '~/components/Icon';
-import {getExcerpt} from '~/lib/utils';
+import {getExcerpt, validateLocale} from '~/lib/utils';
 import {seoPayload} from '~/lib/seo.server';
 import {getStyxSeoMeta} from '~/lib/seo-meta';
 import {computeGoldPrice, KARAT_PURITY} from '~/lib/gold';
 import type {Storefront} from '~/lib/type';
 import {trackProductView, trackVariantSelect} from '~/components/GTMDataLayer';
-import {routeHeaders} from '~/data/cache';
+import {CACHE_SHORT, routeHeaders} from '~/data/cache';
 import {MEDIA_FRAGMENT, PRODUCT_CARD_FRAGMENT} from '~/data/fragments';
 import {
   STYX,
@@ -58,6 +58,7 @@ import {useWishlist} from '~/context/WishlistContext';
 export const headers = routeHeaders;
 
 export async function loader(args: LoaderFunctionArgs) {
+  validateLocale(args.params);
   const {productHandle} = args.params;
   invariant(productHandle, 'Missing productHandle param, check route filename');
 
@@ -67,7 +68,12 @@ export async function loader(args: LoaderFunctionArgs) {
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
 
-  return ({...deferredData, ...criticalData});
+  // PDP prices float with the gold spot price — never cache longer than
+  // CACHE_SHORT (max-age=1 with a short stale-while-revalidate window).
+  return data(
+    {...deferredData, ...criticalData},
+    {headers: {'Cache-Control': CACHE_SHORT}},
+  );
 }
 
 /**

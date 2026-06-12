@@ -13,7 +13,8 @@ import {
   type CollectionNode,
   collectionCutoutUrl,
 } from './constants';
-import {Cart} from '~/components/Cart';
+import {Cart, cartToAnalyticsPayload} from '~/components/Cart';
+import {trackCartView} from '~/components/GTMDataLayer';
 import {CartLoading} from '~/components/CartLoading';
 import {Drawer, useDrawer} from '~/components/Drawer';
 import {useIsHydrated} from '~/hooks/useIsHydrated';
@@ -1183,6 +1184,7 @@ function MobileMenu({
   const cutoutFor = (handle: string) =>
     collectionCutoutUrl(collections.find((c) => c.handle === handle));
   const [section, setSection] = useState<'Chains' | 'Collections' | null>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!open) {
       const t = setTimeout(() => {
@@ -1191,6 +1193,61 @@ function MobileMenu({
       return () => clearTimeout(t);
     }
   }, [open]);
+
+  // Dialog behavior while open: move focus in, trap Tab, close on Escape,
+  // restore focus on close. Off-screen panes carry `inert` (below) so the
+  // trap only cycles through the visible pane's controls.
+  useEffect(() => {
+    if (!open) return;
+    const panel = panelRef.current;
+    if (!panel) return;
+
+    const focusables = () =>
+      Array.from(
+        panel.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      ).filter((el) => !el.closest('[inert]'));
+
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    focusables()[0]?.focus();
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        onClose();
+        return;
+      }
+      if (e.key !== 'Tab') return;
+      const els = focusables();
+      if (els.length === 0) return;
+      const first = els[0];
+      const last = els[els.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+      const inside = active ? panel.contains(active) : false;
+      if (e.shiftKey) {
+        if (!inside || active === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else if (!inside || active === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      previouslyFocused?.focus?.();
+    };
+    // focusables() is re-queried on every keydown, so the trap follows the
+    // drill-in pane changes without re-running this effect.
+  }, [open, onClose]);
+
+  // React 18 passes `inert` through as a DOM attribute when given a string.
+  const inertWhen = (condition: boolean) =>
+    condition ? ({inert: ''} as any) : {};
 
   const filteredTaxonomy = CHAIN_TAXONOMY.map((group) => ({
     ...group,
@@ -1209,17 +1266,22 @@ function MobileMenu({
     {numeral: 'VI', label: 'Contact', to: '/contact'},
   ];
 
+  // Metal swatches link to their collections; ones without a published
+  // collection are filtered out (no dead-end rows).
   const METAL_SWATCHES = [
-    {label: 'Yellow Gold', hex: '#D4A844', sub: 'The classic alloy'},
-    {label: 'Rose Gold', hex: '#C9877A', sub: 'Copper-warmed'},
-    {label: 'White Gold', hex: '#D5D0C8', sub: 'Palladium-alloyed'},
-  ];
+    {label: 'Yellow Gold', hex: '#D4A844', sub: 'The classic alloy', handle: 'yellow-gold'},
+    {label: 'Rose Gold', hex: '#C9877A', sub: 'Copper-warmed', handle: 'rose-gold'},
+    {label: 'White Gold', hex: '#D5D0C8', sub: 'Palladium-alloyed', handle: 'white-gold'},
+  ].filter((m) => existingHandles.has(m.handle));
 
+  // Price buckets navigate to the all-chains collection with the same
+  // `filter.price={"min","max"}` URL convention the collection loader parses
+  // (FILTER_URL_PREFIX in SortFilter.tsx \u2192 Storefront API ProductFilter).
   const PRICE_BUCKETS = [
-    {label: 'Under $500', sub: 'Thin chains, daily wear', count: 24},
-    {label: '$500 \u2013 $1,500', sub: 'Mid-weight chains', count: 48},
-    {label: '$1,500 \u2013 $5,000', sub: 'Signature pieces', count: 36},
-    {label: '$5,000+', sub: 'Statement weight', count: 12},
+    {label: 'Under $500', sub: 'Thin chains, daily wear', price: {max: 500}},
+    {label: '$500 \u2013 $1,500', sub: 'Mid-weight chains', price: {min: 500, max: 1500}},
+    {label: '$1,500 \u2013 $5,000', sub: 'Signature pieces', price: {min: 1500, max: 5000}},
+    {label: '$5,000+', sub: 'Statement weight', price: {min: 5000}},
   ];
 
   return (
@@ -1241,6 +1303,12 @@ function MobileMenu({
 
       {/* Panel */}
       <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal={open ? true : undefined}
+        aria-label="Menu"
+        aria-hidden={open ? undefined : true}
+        {...inertWhen(!open)}
         style={{
           position: 'fixed',
           top: 0,
@@ -1319,6 +1387,7 @@ function MobileMenu({
 
           {/* ── Root pane ── */}
           <div
+            {...inertWhen(section !== null)}
             style={{
               position: 'absolute',
               inset: 0,
@@ -1431,6 +1500,7 @@ function MobileMenu({
 
           {/* ── Chains detail pane ── */}
           <div
+            {...inertWhen(section !== 'Chains')}
             style={{
               position: 'absolute',
               inset: 0,
@@ -1541,6 +1611,7 @@ function MobileMenu({
 
           {/* ── Collections detail pane ── */}
           <div
+            {...inertWhen(section !== 'Collections')}
             style={{
               position: 'absolute',
               inset: 0,
@@ -1613,27 +1684,34 @@ function MobileMenu({
               </div>
 
               {/* Metal */}
-              <div style={{marginTop: 24}}>
-                <div style={{fontFamily: FONT.mono, fontSize: 9, letterSpacing: '0.25em', textTransform: 'uppercase', color: STYX.silt, marginBottom: 14}}>Metal</div>
-                <div style={{display: 'flex', flexDirection: 'column', gap: 10}}>
-                  {METAL_SWATCHES.map((m) => (
-                    <div
-                      key={m.label}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 14,
-                        padding: '12px 0',
-                        borderBottom: `1px solid ${STYX.lineSoft}`,
-                      }}
-                    >
-                      <span style={{width: 22, height: 22, borderRadius: '50%', background: m.hex, flexShrink: 0, border: '2px solid rgba(26,24,21,0.1)'}} />
-                      <span style={{fontFamily: FONT.cormorant, fontSize: 20, color: STYX.ink}}>{m.label}</span>
-                      <span style={{fontFamily: FONT.cormorant, fontSize: 14, fontStyle: 'italic', color: STYX.silt2, marginLeft: 'auto'}}>{m.sub}</span>
-                    </div>
-                  ))}
+              {METAL_SWATCHES.length > 0 && (
+                <div style={{marginTop: 24}}>
+                  <div style={{fontFamily: FONT.mono, fontSize: 9, letterSpacing: '0.25em', textTransform: 'uppercase', color: STYX.silt, marginBottom: 14}}>Metal</div>
+                  <div style={{display: 'flex', flexDirection: 'column', gap: 10}}>
+                    {METAL_SWATCHES.map((m) => (
+                      <Link
+                        key={m.label}
+                        to={`/collections/${m.handle}`}
+                        prefetch="intent"
+                        onClick={onClose}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 14,
+                          padding: '12px 0',
+                          borderBottom: `1px solid ${STYX.lineSoft}`,
+                          textDecoration: 'none',
+                          color: 'inherit',
+                        }}
+                      >
+                        <span style={{width: 22, height: 22, borderRadius: '50%', background: m.hex, flexShrink: 0, border: '2px solid rgba(26,24,21,0.1)'}} />
+                        <span style={{fontFamily: FONT.cormorant, fontSize: 20, color: STYX.ink}}>{m.label}</span>
+                        <span style={{fontFamily: FONT.cormorant, fontSize: 14, fontStyle: 'italic', color: STYX.silt2, marginLeft: 'auto'}}>{m.sub}</span>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Karat / Purity */}
               <div style={{marginTop: 28}}>
@@ -1643,12 +1721,16 @@ function MobileMenu({
                     {label: '10K', purity: 41.7, handle: '10k-gold'},
                     {label: '14K', purity: 58.3, handle: '14k-gold'},
                     {label: '18K', purity: 75.0, handle: '18k-gold'},
-                    {label: '24K', purity: 100, handle: '24k-gold'},
                   ]
-                    .filter((k) => k.purity === 100 || existingHandles.has(k.handle))
-                    .map((k) => {
-                      const isLink = existingHandles.has(k.handle);
-                      const inner = (
+                    .filter((k) => existingHandles.has(k.handle))
+                    .map((k) => (
+                      <Link
+                        key={k.handle}
+                        to={`/collections/${k.handle}`}
+                        prefetch="intent"
+                        onClick={onClose}
+                        style={{textDecoration: 'none', color: 'inherit'}}
+                      >
                         <div>
                           <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 6}}>
                             <span style={{fontFamily: FONT.cinzel, fontSize: 15, color: STYX.ink, letterSpacing: '0.08em'}}>{k.label}</span>
@@ -1665,23 +1747,8 @@ function MobileMenu({
                             }} />
                           </div>
                         </div>
-                      );
-                      return isLink ? (
-                        <Link
-                          key={k.handle}
-                          to={`/collections/${k.handle}`}
-                          prefetch="intent"
-                          onClick={onClose}
-                          style={{textDecoration: 'none', color: 'inherit'}}
-                        >
-                          {inner}
-                        </Link>
-                      ) : (
-                        <div key={k.handle} style={{opacity: 0.4}}>
-                          {inner}
-                        </div>
-                      );
-                    })}
+                      </Link>
+                    ))}
                 </div>
               </div>
 
@@ -1690,20 +1757,26 @@ function MobileMenu({
                 <div style={{fontFamily: FONT.mono, fontSize: 9, letterSpacing: '0.25em', textTransform: 'uppercase', color: STYX.silt, marginBottom: 14}}>Price</div>
                 <div style={{display: 'flex', flexDirection: 'column', gap: 10}}>
                   {PRICE_BUCKETS.map((tier) => (
-                    <div
+                    <Link
                       key={tier.label}
+                      to={`/collections/chains?filter.price=${encodeURIComponent(
+                        JSON.stringify(tier.price),
+                      )}`}
+                      prefetch="intent"
+                      onClick={onClose}
                       style={{
                         display: 'flex',
                         alignItems: 'baseline',
                         justifyContent: 'space-between',
                         padding: '12px 0',
                         borderBottom: `1px solid ${STYX.lineSoft}`,
-                        cursor: 'pointer',
+                        textDecoration: 'none',
+                        color: 'inherit',
                       }}
                     >
                       <span style={{fontFamily: FONT.cormorant, fontSize: 20, color: STYX.ink}}>{tier.label}</span>
                       <span style={{fontFamily: FONT.cormorant, fontSize: 14, fontStyle: 'italic', color: STYX.silt2}}>{tier.sub}</span>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -1716,7 +1789,31 @@ function MobileMenu({
   );
 }
 
+/**
+ * Fires a GA4 view_cart once when mounted (mounted only while the cart
+ * drawer is open with a resolved cart).
+ */
+function CartViewTracker({cart}: {cart: any}) {
+  useEffect(() => {
+    if (!cart || !cart.totalQuantity) return;
+    trackCartView(cartToAnalyticsPayload(cart));
+    // Fire once per drawer open (mount).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return null;
+}
+
 function StyxCartDrawer({open, onClose}: {open: boolean; onClose: () => void}) {
+  // Close on Escape while open.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [open, onClose]);
+
   return (
     <>
       {/* Backdrop */}
@@ -1736,6 +1833,13 @@ function StyxCartDrawer({open, onClose}: {open: boolean; onClose: () => void}) {
 
       {/* Drawer panel */}
       <div
+        role="dialog"
+        aria-modal={open ? true : undefined}
+        aria-label="Cart"
+        aria-hidden={open ? undefined : true}
+        // `inert` keeps the off-screen drawer's links/buttons out of the tab
+        // order when closed (string form for React 18 DOM attribute passthrough).
+        {...(!open ? ({inert: ''} as any) : {})}
         style={{
           position: 'fixed',
           top: 0,
@@ -1814,7 +1918,10 @@ function StyxCartDrawer({open, onClose}: {open: boolean; onClose: () => void}) {
           <Suspense fallback={<CartLoading />}>
             <Await resolve={useRouteLoaderData<RootLoader>('root')?.cart}>
               {(cart) => (
-                <Cart layout="drawer" onClose={onClose} cart={cart || null} />
+                <>
+                  {open && cart ? <CartViewTracker cart={cart} /> : null}
+                  <Cart layout="drawer" onClose={onClose} cart={cart || null} />
+                </>
               )}
             </Await>
           </Suspense>
@@ -1862,8 +1969,32 @@ function useAutoHideHeader() {
 /* ═══════════════════════════════════════════════════════════════
    Announcement Bar
    ═══════════════════════════════════════════════════════════════ */
+const ANNOUNCEMENT_DISMISSED_KEY = 'styx-announcement-dismissed';
+
 function AnnouncementBar() {
   const [dismissed, setDismissed] = useState(false);
+
+  // SSR-safe persistence: sessionStorage is only read after hydration (never
+  // during render) so the server and client first-paint trees always match.
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem(ANNOUNCEMENT_DISMISSED_KEY) === '1') {
+        setDismissed(true);
+      }
+    } catch {
+      // sessionStorage unavailable (private mode etc.) — bar stays visible.
+    }
+  }, []);
+
+  const dismiss = () => {
+    setDismissed(true);
+    try {
+      sessionStorage.setItem(ANNOUNCEMENT_DISMISSED_KEY, '1');
+    } catch {
+      // Non-fatal: dismissal just won't persist across navigations.
+    }
+  };
+
   if (dismissed) return null;
 
   return (
@@ -1885,7 +2016,7 @@ function AnnouncementBar() {
       Launch Offer: Free 1g of 24K Gold with Every Order Over $2,000
       <span style={{opacity: 0.5, marginLeft: 10}}>&mdash;</span>
       <button
-        onClick={() => setDismissed(true)}
+        onClick={dismiss}
         aria-label="Dismiss"
         style={{
           position: 'absolute',
@@ -1976,6 +2107,16 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
     setOpenMenu(null);
   }, []);
 
+  // Keyboard access: Escape closes the open mega panel.
+  useEffect(() => {
+    if (!openMenu) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeMenuNow();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [openMenu, closeMenuNow]);
+
   const Panel = openMenu ? MENU_PANELS[openMenu] : null;
 
   return (
@@ -2048,6 +2189,17 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
                   <Link
                     to={item.to}
                     prefetch="intent"
+                    aria-haspopup={item.mega ? 'true' : undefined}
+                    aria-expanded={item.mega ? openMenu === item.mega : undefined}
+                    // Keyboard access: focusing a trigger opens its panel
+                    // (hover behavior on the wrapper is unchanged); Enter/click
+                    // still navigates to the section landing page.
+                    onFocus={() => {
+                      if (item.mega) {
+                        cancelClose();
+                        setOpenMenu(item.mega);
+                      }
+                    }}
                     style={{
                       fontFamily: FONT.inter,
                       fontSize: 12,
@@ -2260,7 +2412,7 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
                     color: STYX.graphite,
                   }}
                 >
-                  Complimentary signature delivery over $800
+                  Complimentary insured delivery on every order
                 </div>
               </div>
               <Link

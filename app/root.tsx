@@ -27,7 +27,7 @@ import invariant from 'tiny-invariant';
 import {PageLayout} from '~/components/PageLayout';
 import {GenericError} from '~/components/GenericError';
 import {NotFound} from '~/components/NotFound';
-import {GTMPageView} from '~/components/GTMDataLayer';
+import {GTMPageView, GTM_ID} from '~/components/GTMDataLayer';
 import favicon from '~/assets/favicon.svg';
 import {seoPayload} from '~/lib/seo.server';
 import styles from '~/styles/app.css?url';
@@ -200,23 +200,15 @@ function Layout({children}: {children?: React.ReactNode}) {
         <link rel="stylesheet" href={styles}></link>
         <Meta />
         <Links />
-        {/* Google Tag Manager */}
-        <script
-          nonce={nonce}
-          dangerouslySetInnerHTML={{
-            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-P56TCMJ');`,
-          }}
-        />
+        {/* Google Tag Manager is injected post-hydration from GTMDataLayer.tsx
+            (loadGTM) — an inline bootstrap here mutated the <head> before
+            React hydrated and caused hydration mismatches. */}
       </head>
       <body>
         {/* Google Tag Manager (noscript) */}
         <noscript>
           <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-P56TCMJ"
+            src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
             height="0"
             width="0"
             style={{display: 'none', visibility: 'hidden'}}

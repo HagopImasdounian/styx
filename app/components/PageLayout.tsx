@@ -59,7 +59,7 @@ export function PageLayout({children, layout}: LayoutProps) {
         <ScaleCalibrationProvider>
         <div className="flex flex-col min-h-screen">
           <div className="">
-            <a href="#mainContent" className="sr-only">
+            <a href="#mainContent" className="skip-link">
               Skip to content
             </a>
           </div>
@@ -84,7 +84,7 @@ export function PageLayout({children, layout}: LayoutProps) {
       <WishlistProvider>
       <ScaleCalibrationProvider>
       <div style={{background: STYX.bone, minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
-        <a href="#mainContent" className="sr-only">
+        <a href="#mainContent" className="skip-link">
           Skip to content
         </a>
         <GoldTicker />

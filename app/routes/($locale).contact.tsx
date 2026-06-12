@@ -1,11 +1,16 @@
 import {useState} from 'react';
-import {type LoaderFunctionArgs, type MetaArgs} from 'react-router';
+import {data, type LoaderFunctionArgs, type MetaArgs} from 'react-router';
 import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel} from '~/components/styx';
 import {trackFormSubmit} from '~/components/GTMDataLayer';
 import {getStyxSeoMeta} from '~/lib/seo-meta';
+import {validateLocale} from '~/lib/utils';
+import {CACHE_LONG, routeHeaders} from '~/data/cache';
 
-export async function loader({request}: LoaderFunctionArgs) {
-  return {url: request.url};
+export const headers = routeHeaders;
+
+export async function loader({request, params}: LoaderFunctionArgs) {
+  validateLocale(params);
+  return data({url: request.url}, {headers: {'Cache-Control': CACHE_LONG}});
 }
 
 export const meta = ({data}: MetaArgs<typeof loader>) => {

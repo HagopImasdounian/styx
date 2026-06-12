@@ -10,14 +10,17 @@ import {PageHeader, Section, Heading} from '~/components/Text';
 import {Link} from '~/components/Link';
 import {routeHeaders} from '~/data/cache';
 import {seoPayload} from '~/lib/seo.server';
+import {validateLocale} from '~/lib/utils';
 import type {NonNullableFields} from '~/lib/type';
 
 export const headers = routeHeaders;
 
 export async function loader({
   request,
+  params,
   context: {storefront},
 }: LoaderFunctionArgs) {
+  validateLocale(params);
   const result = await storefront.query(POLICIES_QUERY);
 
   invariant(result, 'No data returned from Shopify API');

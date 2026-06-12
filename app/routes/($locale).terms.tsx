@@ -2,8 +2,10 @@ import {type LoaderFunctionArgs, type MetaArgs} from 'react-router';
 import {Link} from 'react-router';
 import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel} from '~/components/styx';
 import {getStyxSeoMeta} from '~/lib/seo-meta';
+import {validateLocale} from '~/lib/utils';
 
-export async function loader({request}: LoaderFunctionArgs) {
+export async function loader({request, params}: LoaderFunctionArgs) {
+  validateLocale(params);
   return {url: request.url};
 }
 

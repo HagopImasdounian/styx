@@ -3,12 +3,12 @@ import {
   type LoaderFunctionArgs,
 } from 'react-router';
 import {Suspense} from 'react';
-import {Await, useLoaderData} from 'react-router';
+import {Await, data, useLoaderData} from 'react-router';
 import {getSeoMeta} from '@shopify/hydrogen';
 
 import {seoPayload} from '~/lib/seo.server';
 import {getStyxSeoMeta} from '~/lib/seo-meta';
-import {routeHeaders} from '~/data/cache';
+import {CACHE_SHORT, routeHeaders} from '~/data/cache';
 
 import {
   GoldTicker,
@@ -40,7 +40,10 @@ export async function loader(args: LoaderFunctionArgs) {
   const criticalData = await loadCriticalData(args);
   const deferredData = loadDeferredData(args);
 
-  return ({...deferredData, ...criticalData});
+  return data(
+    {...deferredData, ...criticalData},
+    {headers: {'Cache-Control': CACHE_SHORT}},
+  );
 }
 
 async function loadCriticalData({context, request}: LoaderFunctionArgs) {
@@ -62,7 +65,9 @@ async function loadCriticalData({context, request}: LoaderFunctionArgs) {
 
   return {
     shop,
-    allProducts: products?.nodes || [],
+    // Only the 4 best-value picks reach the client — the full 50-product
+    // scan happens server-side in bestValueProducts().
+    featuredProducts: bestValueProducts(products?.nodes || []),
     collections: (collections?.nodes || []).filter(
       (c: any) => c.products?.nodes?.length > 0,
     ),
@@ -111,16 +116,16 @@ function bestValueProducts(products: any[]) {
 }
 
 export default function Homepage() {
-  const {allProducts, collections} = useLoaderData<typeof loader>();
+  const {featuredProducts, collections} = useLoaderData<typeof loader>();
 
   return (
     <div style={{background: '#EFEAE0'}}>
       <GoldTicker />
       <StyxNav collections={collections} />
-      <HeroGallery products={allProducts} />
+      <HeroGallery />
       <Ribbon />
       <Lookbook collections={collections} />
-      <FeaturedRow products={bestValueProducts(allProducts)} />
+      <FeaturedRow products={featuredProducts} />
       <ToolsStrip />
       <CraftStrip />
       <Newsletter />
@@ -161,6 +166,9 @@ const HOMEPAGE_SEO_QUERY = `#graphql
   }
 ` as const;
 
+// Trimmed to exactly what bestValueProducts() (price + weight per variant)
+// and the FeaturedRow StyxProductCards (image, price, options, weight,
+// stock) consume.
 const STYX_ALL_PRODUCTS_QUERY = `#graphql
   query styxAllProducts($country: CountryCode, $language: LanguageCode)
   @inContext(country: $country, language: $language) {
@@ -170,10 +178,10 @@ const STYX_ALL_PRODUCTS_QUERY = `#graphql
         title
         handle
         vendor
-        productType
         variants(first: 10) {
           nodes {
             id
+            availableForSale
             image {
               url
               altText
@@ -181,10 +189,6 @@ const STYX_ALL_PRODUCTS_QUERY = `#graphql
               height
             }
             price {
-              amount
-              currencyCode
-            }
-            compareAtPrice {
               amount
               currencyCode
             }

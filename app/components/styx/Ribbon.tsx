@@ -4,7 +4,8 @@ const ITEMS = [
   'Solid gold · 10k & 14k',
   'Every piece weighed & tested',
   'Transparent pricing',
-  'Launch: 1g free per $1.5k spent',
+  'Launch: 1g free per $2k spent',
+  'Free shipping · every order',
   'Meets or exceeds stamped karat',
 ];
 

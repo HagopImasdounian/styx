@@ -568,3 +568,76 @@ shop-pay-button {
     }
   }
 }
+
+/* ───────────────────────────────────────────────────────────────
+   Skip link — visually hidden until keyboard focus, then a small
+   gold-on-ink pill pinned top-left so keyboard users can jump
+   straight to the main content.
+   ─────────────────────────────────────────────────────────────── */
+.skip-link {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 200;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 10px 20px;
+  overflow: visible;
+  clip: auto;
+  background: #1a1815; /* ink */
+  color: #d4b478; /* goldLight */
+  border-radius: 999px;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-decoration: none;
+  outline: 2px solid #b8924a; /* gold */
+  outline-offset: 2px;
+}
+
+/* ───────────────────────────────────────────────────────────────
+   Search input — gold focus ring + uppercase tracked placeholder,
+   matching the rest of the site's inputs.
+   ─────────────────────────────────────────────────────────────── */
+.styx-search-input::placeholder {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 12px;
+  color: #6b6459; /* silt2 */
+}
+
+.styx-search-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #b8924a; /* gold focus ring */
+}
+
+/* ───────────────────────────────────────────────────────────────
+   Reduced motion — kill the marquee/ticker, shimmer and the other
+   keyframe animations and transitions for users who ask for it.
+   ─────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

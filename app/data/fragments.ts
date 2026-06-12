@@ -37,6 +37,11 @@ export const MEDIA_FRAGMENT = `#graphql
   }
 `;
 
+// variants(first: 30) covers the real catalog maximum (10 lengths x 3 colors)
+// and fetches only the fields the cards actually read: price/compareAtPrice
+// (price + Sale label), selectedOptions (color-exploded cards + karat),
+// image (per-color imagery + hover), weight (grams badge), availableForSale
+// (stock dot).
 export const PRODUCT_CARD_FRAGMENT = `#graphql
   fragment ProductCard on Product {
     id
@@ -46,7 +51,7 @@ export const PRODUCT_CARD_FRAGMENT = `#graphql
     vendor
     productType
     tags
-    variants(first: 100) {
+    variants(first: 30) {
       nodes {
         id
         availableForSale
@@ -70,10 +75,6 @@ export const PRODUCT_CARD_FRAGMENT = `#graphql
         }
         weight
         weightUnit
-        product {
-          handle
-          title
-        }
       }
     }
     chain_construction: metafield(namespace: "chain", key: "construction") {

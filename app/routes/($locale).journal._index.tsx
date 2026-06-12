@@ -4,7 +4,8 @@ import {getStyxSeoMeta} from '~/lib/seo-meta';
 
 import {Link} from '~/components/Link';
 import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel, Obol} from '~/components/styx';
-import {routeHeaders} from '~/data/cache';
+import {validateLocale} from '~/lib/utils';
+import {CACHE_LONG, routeHeaders} from '~/data/cache';
 import {HIDDEN_ARTICLE_HANDLES} from '~/data/journal-articles';
 
 export const headers = routeHeaders;
@@ -165,22 +166,26 @@ const ALL_ENTRIES = buildFlatIndex();
 const CATEGORIES = ['All', ...Array.from(new Set(JOURNAL_VOLUMES.map((v) => v.cat)))];
 const TOTAL_COUNT = ALL_ENTRIES.length;
 
-export async function loader({request}: LoaderFunctionArgs) {
+export async function loader({request, params}: LoaderFunctionArgs) {
+  validateLocale(params);
   const origin = new URL(request.url).origin;
-  return data({
-    seo: {
-      title: 'The Journal',
-      titleTemplate: '%s | STYX Gold',
-      description:
-        "Explore the history, engineering, and cultural significance of the world's most iconic gold chains.",
-      url: request.url,
-      media: {
-        type: 'image' as const,
-        url: `${origin}/images/hero.jpg`,
-        altText: 'STYX Gold — The Journal',
+  return data(
+    {
+      seo: {
+        title: 'The Journal',
+        titleTemplate: '%s | STYX Gold',
+        description:
+          "Explore the history, engineering, and cultural significance of the world's most iconic gold chains.",
+        url: request.url,
+        media: {
+          type: 'image' as const,
+          url: `${origin}/images/hero.jpg`,
+          altText: 'STYX Gold — The Journal',
+        },
       },
     },
-  });
+    {headers: {'Cache-Control': CACHE_LONG}},
+  );
 }
 
 export const meta = ({data}: {data: any}) => {

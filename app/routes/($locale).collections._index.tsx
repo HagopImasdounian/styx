@@ -2,11 +2,12 @@ import {
     type MetaArgs,
   type LoaderFunctionArgs,
 } from 'react-router';
-import {useLoaderData, Link} from 'react-router';
+import {data, useLoaderData, Link} from 'react-router';
 import {Image, getSeoMeta} from '@shopify/hydrogen';
 import {seoPayload} from '~/lib/seo.server';
 import {getStyxSeoMeta} from '~/lib/seo-meta';
-import {routeHeaders} from '~/data/cache';
+import {validateLocale} from '~/lib/utils';
+import {CACHE_LONG, routeHeaders} from '~/data/cache';
 import {
   STYX,
   FONT,
@@ -23,8 +24,11 @@ export const headers = routeHeaders;
 
 export const loader = async ({
   request,
+  params,
   context: {storefront},
 }: LoaderFunctionArgs) => {
+  validateLocale(params);
+
   const {collections} = await storefront.query(COLLECTIONS_QUERY, {
     variables: {
       country: storefront.i18n.country,
@@ -37,7 +41,10 @@ export const loader = async ({
     url: request.url,
   });
 
-  return {collections: collections.nodes as any[], seo};
+  return data(
+    {collections: collections.nodes as any[], seo},
+    {headers: {'Cache-Control': CACHE_LONG}},
+  );
 };
 
 export const meta = ({matches}: MetaArgs<typeof loader>) => {

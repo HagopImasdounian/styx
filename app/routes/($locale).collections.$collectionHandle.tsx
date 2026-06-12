@@ -103,15 +103,16 @@ const CHAIN_INTROS: Record<string, {intro: string; journal: string; journalTitle
 };
 import {type SortParam} from '~/components/SortFilter';
 import {PRODUCT_CARD_FRAGMENT} from '~/data/fragments';
-import {routeHeaders} from '~/data/cache';
+import {CACHE_SHORT, routeHeaders} from '~/data/cache';
 import {seoPayload} from '~/lib/seo.server';
 import {getStyxSeoMeta} from '~/lib/seo-meta';
 import {FILTER_URL_PREFIX} from '~/components/SortFilter';
-import {parseAsCurrency} from '~/lib/utils';
+import {parseAsCurrency, validateLocale} from '~/lib/utils';
 
 export const headers = routeHeaders;
 
 export async function loader({params, request, context}: LoaderFunctionArgs) {
+  validateLocale(params);
   const paginationVariables = getPaginationVariables(request, {
     pageBy: 24,
   });
@@ -206,12 +207,15 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     })
     .filter((filter): filter is NonNullable<typeof filter> => filter !== null);
 
-  return data({
-    collection,
-    appliedFilters,
-    collections: flattenConnection(collections),
-    seo,
-  });
+  return data(
+    {
+      collection,
+      appliedFilters,
+      collections: flattenConnection(collections),
+      seo,
+    },
+    {headers: {'Cache-Control': CACHE_SHORT}},
+  );
 }
 
 export const meta = ({matches}: MetaArgs<typeof loader>) => {

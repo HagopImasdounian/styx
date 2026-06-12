@@ -6,8 +6,8 @@ permissions:
   deployments: write
 
 jobs:
-  deploy:
-    name: Deploy to Oxygen
+  checks:
+    name: Typecheck, Lint & Test
     timeout-minutes: 30
     runs-on: ubuntu-latest
     steps:
@@ -33,7 +33,46 @@ jobs:
             ${{ runner.os }}-
 
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps
+        run: npm ci
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
+  deploy:
+    name: Deploy to Oxygen
+    needs: checks
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+          check-latest: true
+
+      - name: Cache node modules
+        id: cache-npm
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Build and Publish to Oxygen
         run: npx shopify hydrogen deploy

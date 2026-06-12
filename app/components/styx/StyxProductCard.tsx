@@ -84,6 +84,15 @@ export function StyxProductCard({
   const [isHovered, setIsHovered] = useState(false);
   if (!variant) return null;
 
+  // First 4 cards are above the fold on collection grids — load them eagerly,
+  // and give the very first card top fetch priority (lowercase attribute:
+  // React 18 doesn't forward camelCase fetchPriority to the DOM).
+  const eager = index < 4;
+  const priorityProps = (index === 0 ? {fetchpriority: 'high'} : {}) as Record<
+    string,
+    string
+  >;
+
   // Hover image from a different variant
   const hoverImage = (() => {
     const primaryUrl = variant.image?.url;
@@ -178,6 +187,8 @@ export function StyxProductCard({
             alt={variant.image.altText ?? (colorLabel ? `${product.title} · ${colorLabel}` : product.title)}
             aspectRatio="4/5"
             sizes="(min-width: 1200px) 25vw, 50vw"
+            loading={eager ? 'eager' : 'lazy'}
+            {...priorityProps}
             style={{
               width: '100%',
               height: '100%',

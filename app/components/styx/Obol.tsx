@@ -42,11 +42,15 @@ export function Obol({
       <circle cx="50" cy="50" r="47" fill={`url(#obol-face-${id})`} />
       {Array.from({length: teeth}).map((_, i) => {
         const a = (i * (360 / teeth) * Math.PI) / 180;
+        // Round so server and client render identical attribute strings —
+        // raw trig floats differ in the last bits across JS engines and
+        // cause hydration mismatches.
+        const r3 = (n: number) => Math.round(n * 1000) / 1000;
         return (
           <line
             key={`t-${i}`}
-            x1={50 + Math.cos(a) * 45.5} y1={50 + Math.sin(a) * 45.5}
-            x2={50 + Math.cos(a) * 48} y2={50 + Math.sin(a) * 48}
+            x1={r3(50 + Math.cos(a) * 45.5)} y1={r3(50 + Math.sin(a) * 45.5)}
+            x2={r3(50 + Math.cos(a) * 48)} y2={r3(50 + Math.sin(a) * 48)}
             stroke={color} strokeWidth="0.6"
           />
         );
@@ -56,8 +60,10 @@ export function Obol({
       <circle cx="50" cy="50" r="38.5" fill="none" stroke={color} strokeWidth="0.4" opacity="0.55" />
       {Array.from({length: 11}).map((_, i) => {
         const a = ((-140 + i * 8) * Math.PI) / 180;
+        // Rounded for SSR/client parity (see tooth comment above).
+        const r3 = (n: number) => Math.round(n * 1000) / 1000;
         return (
-          <circle key={`d-${i}`} cx={50 + Math.cos(a) * 34} cy={50 + Math.sin(a) * 34} r="0.6" fill={color} opacity="0.8" />
+          <circle key={`d-${i}`} cx={r3(50 + Math.cos(a) * 34)} cy={r3(50 + Math.sin(a) * 34)} r="0.6" fill={color} opacity="0.8" />
         );
       })}
       <text x="50" y="28" textAnchor="middle" fontFamily="Cinzel, serif" fontSize="5.5" fill={color} letterSpacing="1.5" opacity="0.85">ΣΤΥΞ</text>

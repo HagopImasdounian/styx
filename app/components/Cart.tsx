@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import {useRef} from 'react';
+import {useRouteLoaderData} from 'react-router';
 import {
   flattenConnection,
   CartForm,
@@ -18,6 +19,8 @@ import type {
 
 import {Link} from '~/components/Link';
 import {IconRemove} from '~/components/Icon';
+import {trackBeginCheckout} from '~/components/GTMDataLayer';
+import type {RootLoader} from '~/root';
 
 const STYX = {
   bone: '#EFEAE0',
@@ -67,6 +70,14 @@ export function CartDetails({
   cart: CartType | null;
   onClose?: () => void;
 }) {
+  // Gold spot price for the drawer strip — from the root loader's goldData.
+  const rootData = useRouteLoaderData<RootLoader>('root');
+  const goldData = (rootData as any)?.goldData as
+    | {spotPerOz?: number; isFallback?: boolean}
+    | undefined;
+  const spotPerOz = goldData?.spotPerOz;
+  const spotIsFallback = Boolean(goldData?.isFallback);
+
   const cartHasItems = !!cart && cart.totalQuantity > 0;
 
   if (!cartHasItems) return null;
@@ -74,50 +85,58 @@ export function CartDetails({
   if (layout === 'drawer') {
     return (
       <div style={{display: 'flex', flexDirection: 'column', height: '100%'}}>
-        {/* Spot price strip */}
-        <div
-          style={{
-            padding: '12px 24px',
-            background: STYX.ink,
-            color: STYX.bone,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <div style={{display: 'flex', alignItems: 'center', gap: 10}}>
-            <span
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: '50%',
-                background: '#4CAF50',
-                boxShadow: '0 0 6px #4CAF50',
-              }}
-            />
-            <span
-              style={{
-                fontFamily: FONT.cinzel,
-                fontSize: 9,
-                letterSpacing: '0.25em',
-                color: STYX.gold,
-                textTransform: 'uppercase',
-              }}
-            >
-              Spot · Live
-            </span>
-          </div>
-          <span
+        {/* Spot price strip — live gold spot from the root loader. When the
+            price is a fallback (API unreachable), drop the pulse + "Live". */}
+        {spotPerOz ? (
+          <div
             style={{
-              fontFamily: FONT.mono,
-              fontSize: 11,
+              padding: '12px 24px',
+              background: STYX.ink,
               color: STYX.bone,
-              letterSpacing: '0.05em',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
             }}
           >
-            {cart.totalQuantity} {cart.totalQuantity === 1 ? 'piece' : 'pieces'}
-          </span>
-        </div>
+            <div style={{display: 'flex', alignItems: 'center', gap: 10}}>
+              <span
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: '50%',
+                  background: spotIsFallback
+                    ? 'rgba(239,234,224,0.35)'
+                    : '#4CAF50',
+                  boxShadow: spotIsFallback ? 'none' : '0 0 6px #4CAF50',
+                }}
+              />
+              <span
+                style={{
+                  fontFamily: FONT.cinzel,
+                  fontSize: 9,
+                  letterSpacing: '0.25em',
+                  color: STYX.gold,
+                  textTransform: 'uppercase',
+                }}
+              >
+                {spotIsFallback ? 'Spot' : 'Spot · Live'}
+              </span>
+            </div>
+            <span
+              style={{
+                fontFamily: FONT.mono,
+                fontSize: 11,
+                color: STYX.bone,
+                letterSpacing: '0.05em',
+                fontVariantNumeric: 'tabular-nums',
+              }}
+            >
+              $
+              {spotPerOz.toLocaleString('en-US', {maximumFractionDigits: 0})}
+              /oz
+            </span>
+          </div>
+        ) : null}
 
         {/* Cart items */}
         <div style={{flex: 1, overflowY: 'auto'}}>
@@ -126,7 +145,7 @@ export function CartDetails({
 
         {/* Footer: totals + checkout */}
         <CartSummary cost={cart.cost} layout={layout}>
-          <CartCheckoutActions checkoutUrl={cart.checkoutUrl} />
+          <CartCheckoutActions cart={cart} />
         </CartSummary>
       </div>
     );
@@ -139,7 +158,7 @@ export function CartDetails({
       {cartHasItems && (
         <CartSummary cost={cart.cost} layout={layout}>
           <CartDiscounts discountCodes={cart.discountCodes} />
-          <CartCheckoutActions checkoutUrl={cart.checkoutUrl} />
+          <CartCheckoutActions cart={cart} />
         </CartSummary>
       )}
     </div>
@@ -440,41 +459,85 @@ function StyxCartLineItem({line}: {line: CartLine}) {
   );
 }
 
-function CartCheckoutActions({checkoutUrl}: {checkoutUrl: string}) {
+/**
+ * Map a Shopify cart to the GA4 payload shape used by
+ * trackBeginCheckout / trackCartView in GTMDataLayer.tsx.
+ */
+export function cartToAnalyticsPayload(cart: CartType) {
+  const lines = cart.lines ? flattenConnection(cart.lines) : [];
+  return {
+    totalAmount: cart.cost?.subtotalAmount?.amount || '0',
+    currency: cart.cost?.subtotalAmount?.currencyCode || 'USD',
+    lines: (lines as CartLine[]).map((line) => ({
+      id: line.merchandise?.id || line.id,
+      title: line.merchandise?.product?.title || '',
+      price:
+        line.cost?.amountPerQuantity?.amount ||
+        line.cost?.totalAmount?.amount ||
+        '0',
+      quantity: line.quantity || 1,
+      variantTitle: line.merchandise?.title,
+    })),
+  };
+}
+
+function CartCheckoutActions({cart}: {cart: CartType}) {
+  const checkoutUrl = cart.checkoutUrl;
   if (!checkoutUrl) return null;
 
   return (
     <a
       href={checkoutUrl}
       target="_self"
+      onClick={() => trackBeginCheckout(cartToAnalyticsPayload(cart))}
       style={{
         display: 'block',
         width: '100%',
-        padding: '18px',
+        padding: '16px 18px',
         background: STYX.ink,
         color: STYX.bone,
         border: 'none',
         cursor: 'pointer',
-        fontFamily: FONT.cinzel,
-        fontSize: 12,
-        letterSpacing: '0.3em',
-        textTransform: 'uppercase',
         textAlign: 'center',
         textDecoration: 'none',
       }}
     >
-      Pay the Toll
       <span
         style={{
-          display: 'inline-block',
-          width: 8,
-          height: 8,
-          borderRadius: '50%',
-          background: STYX.gold,
-          marginLeft: 14,
-          verticalAlign: 'middle',
+          display: 'block',
+          fontFamily: FONT.cinzel,
+          fontSize: 12,
+          letterSpacing: '0.3em',
+          textTransform: 'uppercase',
         }}
-      />
+      >
+        Secure Checkout
+        <span
+          style={{
+            display: 'inline-block',
+            width: 8,
+            height: 8,
+            borderRadius: '50%',
+            background: STYX.gold,
+            marginLeft: 14,
+            verticalAlign: 'middle',
+          }}
+        />
+      </span>
+      <span
+        style={{
+          display: 'block',
+          marginTop: 4,
+          fontFamily: FONT.cinzel,
+          fontSize: 9,
+          letterSpacing: '0.3em',
+          textTransform: 'uppercase',
+          color: STYX.gold,
+          opacity: 0.9,
+        }}
+      >
+        Pay the Toll
+      </span>
     </a>
   );
 }
@@ -520,16 +583,29 @@ function CartSummary({
               borderTop: `1px dashed ${STYX.line}`,
             }}
           >
-            <div
-              style={{
-                fontFamily: FONT.cinzel,
-                fontSize: 13,
-                letterSpacing: '0.15em',
-                color: STYX.ink,
-                textTransform: 'uppercase',
-              }}
-            >
-              The Toll
+            <div>
+              <div
+                style={{
+                  fontFamily: FONT.cinzel,
+                  fontSize: 13,
+                  letterSpacing: '0.15em',
+                  color: STYX.ink,
+                  textTransform: 'uppercase',
+                }}
+              >
+                Total
+              </div>
+              <div
+                style={{
+                  fontFamily: FONT.cormorant,
+                  fontSize: 12,
+                  fontStyle: 'italic',
+                  color: STYX.silt2,
+                  marginTop: 1,
+                }}
+              >
+                the Toll
+              </div>
             </div>
             <div
               style={{
@@ -551,9 +627,60 @@ function CartSummary({
 
         {children}
 
+        {/* Payment reassurance */}
         <div
           style={{
             marginTop: 12,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 7,
+            color: STYX.silt2,
+          }}
+        >
+          <svg
+            width="10"
+            height="12"
+            viewBox="0 0 12 14"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.2"
+            aria-hidden="true"
+            style={{flexShrink: 0}}
+          >
+            <rect x="1.5" y="6" width="9" height="7" rx="1" />
+            <path d="M3.5 6V4.5a2.5 2.5 0 0 1 5 0V6" />
+          </svg>
+          <span
+            style={{
+              fontFamily: FONT.cinzel,
+              fontSize: 8.5,
+              letterSpacing: '0.16em',
+              textTransform: 'uppercase',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            Secure checkout · Visa · Mastercard · Amex · Shop Pay
+          </span>
+        </div>
+        <div
+          style={{
+            marginTop: 8,
+            textAlign: 'center',
+            fontFamily: FONT.cormorant,
+            fontSize: 13,
+            fontStyle: 'italic',
+            color: STYX.silt,
+            lineHeight: 1.45,
+          }}
+        >
+          Paying by wire transfer? Save 4% off the card price — wire pricing
+          is shown on every product page.
+        </div>
+
+        <div
+          style={{
+            marginTop: 6,
             textAlign: 'center',
             fontFamily: FONT.cormorant,
             fontSize: 13,
@@ -572,7 +699,20 @@ function CartSummary({
     <section className="sticky top-nav grid gap-6 p-4 md:px-6 md:translate-y-4 bg-primary/5 rounded w-full">
       <dl className="grid">
         <div className="flex items-center justify-between font-medium">
-          <span>Subtotal</span>
+          <span>
+            Total{' '}
+            <span
+              style={{
+                fontFamily: FONT.cormorant,
+                fontStyle: 'italic',
+                fontWeight: 400,
+                fontSize: '0.85em',
+                color: STYX.silt2,
+              }}
+            >
+              · the Toll
+            </span>
+          </span>
           <span>
             {cost?.subtotalAmount?.amount ? (
               <Money data={cost?.subtotalAmount} />

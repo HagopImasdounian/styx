@@ -17,6 +17,7 @@ import {PRODUCT_CARD_FRAGMENT} from '~/data/fragments';
 import {getImageLoadingPriority} from '~/lib/const';
 import {seoPayload} from '~/lib/seo.server';
 import {getStyxSeoMeta} from '~/lib/seo-meta';
+import {validateLocale} from '~/lib/utils';
 import {routeHeaders} from '~/data/cache';
 
 const PAGE_BY = 8;
@@ -25,8 +26,10 @@ export const headers = routeHeaders;
 
 export async function loader({
   request,
+  params,
   context: {storefront},
 }: LoaderFunctionArgs) {
+  validateLocale(params);
   const variables = getPaginationVariables(request, {pageBy: PAGE_BY});
 
   const result = await storefront.query(ALL_PRODUCTS_QUERY, {

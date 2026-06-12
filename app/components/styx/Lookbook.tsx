@@ -7,6 +7,21 @@ import {Obol} from './Obol';
 // Lifestyle images come from each collection's image in Shopify (no hardcoding)
 const COLLECTION_ORDER = ['cuban', 'curb', 'rope', 'box', 'figaro', 'cable', 'wheat', 'rolo', 'singapore'];
 
+/**
+ * Shopify CDN images arrive full-resolution — request a resized rendition
+ * instead. Tiles render at ~25vw, so 800px wide is plenty. Preserves any
+ * existing query params (e.g. ?v=cache-buster).
+ */
+function resizedCdnUrl(url: string, width = 800): string {
+  try {
+    const u = new URL(url);
+    u.searchParams.set('width', String(width));
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
 export function Lookbook({collections = []}: {collections?: CollectionNode[]}) {
   // Match collections to our ordered list
   const matched = COLLECTION_ORDER
@@ -16,7 +31,7 @@ export function Lookbook({collections = []}: {collections?: CollectionNode[]}) {
       return {
         handle,
         title: coll.title,
-        src: coll.image.url,
+        src: resizedCdnUrl(coll.image.url),
         alt: coll.image.altText ?? coll.title,
       };
     })

@@ -13,8 +13,10 @@ import {WeighIn, type WeighInChain} from '~/components/styx/WeighIn';
 import {KARAT_PURITY} from '~/lib/gold';
 import {getComparisonBySlug, getRelatedComparisons} from '~/data/comparisons';
 import type {RootLoader} from '~/root';
+import {validateLocale} from '~/lib/utils';
 
 export async function loader({params, request, context}: LoaderFunctionArgs) {
+  validateLocale(params);
   const {slug} = params;
   if (!slug) throw new Response('Not Found', {status: 404});
 

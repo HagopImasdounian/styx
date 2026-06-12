@@ -13,6 +13,10 @@ import {getStyxSeoMeta} from '~/lib/seo-meta';
 import {KARAT_PURITY} from '~/lib/gold';
 import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel, CTAButton, StyxProductCard} from '~/components/styx';
 import {PLACEHOLDER_ARTICLES, HIDDEN_ARTICLE_HANDLES} from '~/data/journal-articles';
+import {validateLocale} from '~/lib/utils';
+import {CACHE_LONG, routeHeaders} from '~/data/cache';
+
+export const headers = routeHeaders;
 
 const BLOG_HANDLE = 'journal';
 
@@ -69,6 +73,7 @@ const COLLECTION_MAP: Record<string, {name: string; handle: string}> = {
 };
 
 export async function loader({request, params, context}: LoaderFunctionArgs) {
+  validateLocale(params);
   const {language, country} = context.storefront.i18n;
 
   invariant(params.journalHandle, 'Missing journal handle');
@@ -114,7 +119,10 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
 
     const seo = seoPayload.article({article, url: request.url});
 
-    return data({article, formattedDate, seo, isPlaceholder: false, shopProducts});
+    return data(
+      {article, formattedDate, seo, isPlaceholder: false, shopProducts},
+      {headers: {'Cache-Control': CACHE_LONG}},
+    );
   }
 
   const placeholder = PLACEHOLDER_ARTICLES[params.journalHandle];
@@ -122,7 +130,8 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
     throw new Response(null, {status: 404});
   }
 
-  return data({
+  return data(
+    {
     article: {
       title: placeholder.title,
       contentHtml: placeholder.content,
@@ -147,7 +156,9 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
     category: placeholder.category,
     vol: placeholder.vol,
     shopProducts,
-  });
+    },
+    {headers: {'Cache-Control': CACHE_LONG}},
+  );
 }
 
 export const meta = ({matches}: MetaArgs<typeof loader>) => {

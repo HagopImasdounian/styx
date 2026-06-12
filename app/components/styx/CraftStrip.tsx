@@ -179,8 +179,8 @@ export function CraftStrip() {
                 maxWidth: 320,
               }}
             >
-              We don't do sales. Instead, we give you more gold. Spend $3,000,
-              get 2g free. Spend $7,500, get 5g. Real weight, real value.
+              We don't do sales. Instead, we give you more gold. Spend $4,000,
+              get 2g free. Spend $10,000, get 5g. Real weight, real value.
             </div>
           </div>
         </div>

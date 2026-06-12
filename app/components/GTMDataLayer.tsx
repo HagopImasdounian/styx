@@ -24,6 +24,9 @@ declare global {
   }
 }
 
+/** Single source of truth for the GTM container id. */
+export const GTM_ID = 'GTM-P56TCMJ';
+
 function push(event: string, data?: Record<string, any>) {
   if (typeof window === 'undefined') return;
   window.dataLayer = window.dataLayer || [];
@@ -31,10 +34,58 @@ function push(event: string, data?: Record<string, any>) {
 }
 
 /**
+ * Inject the GTM container script after React hydration.
+ *
+ * GTM used to be bootstrapped from an inline <script> in the SSR <head>,
+ * but GTM mutates the DOM (injects scripts) before React hydrates, which
+ * caused hydration mismatches. Loading it from an effect runs strictly
+ * post-hydration, so the server and client trees match.
+ *
+ * Google Consent Mode v2 defaults are pushed BEFORE the container loads
+ * so tags inside GTM see the consent state on their first evaluation.
+ */
+let gtmInjected = false;
+
+function loadGTM() {
+  if (typeof window === 'undefined' || gtmInjected) return;
+  gtmInjected = true;
+
+  window.dataLayer = window.dataLayer || [];
+
+  // gtag shim — must push the `arguments` object itself (not an array)
+  // for GTM/gtag.js to recognize consent commands.
+  function gtag(..._args: any[]) {
+    // eslint-disable-next-line prefer-rest-params
+    window.dataLayer.push(arguments as any);
+  }
+  gtag('consent', 'default', {
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    analytics_storage: 'granted',
+  });
+
+  window.dataLayer.push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+
+  const script = document.createElement('script');
+  script.async = true;
+  script.src = `https://www.googletagmanager.com/gtm.js?id=${GTM_ID}`;
+  document.head.appendChild(script);
+}
+
+/**
  * PageView tracker — fires on every route change.
+ * Also responsible for injecting GTM itself post-hydration (this component
+ * is rendered app-wide from root.tsx).
  */
 export function GTMPageView() {
   const location = useLocation();
+
+  // Declared first so consent defaults + gtm.start enter the dataLayer
+  // before the initial page_view push below.
+  useEffect(() => {
+    loadGTM();
+  }, []);
 
   useEffect(() => {
     push('page_view', {

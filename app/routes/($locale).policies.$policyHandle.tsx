@@ -10,10 +10,12 @@ import {PageHeader, Section} from '~/components/Text';
 import {Button} from '~/components/Button';
 import {routeHeaders} from '~/data/cache';
 import {seoPayload} from '~/lib/seo.server';
+import {validateLocale} from '~/lib/utils';
 
 export const headers = routeHeaders;
 
 export async function loader({request, params, context}: LoaderFunctionArgs) {
+  validateLocale(params);
   invariant(params.policyHandle, 'Missing policy handle');
 
   const policyName = params.policyHandle.replace(
