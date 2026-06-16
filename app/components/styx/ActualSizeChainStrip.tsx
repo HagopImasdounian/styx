@@ -6,8 +6,9 @@ import {styleToSlug, parseMm} from '~/lib/chains';
 
 /**
  * Product-page block: lets a shopper see this exact chain at its true physical
- * width on their own screen (after a one-time card calibration). Self-contained
- * — derives the weave slug + mm from the product's spec fields.
+ * width on their own screen. Works instantly off an auto-estimate of the
+ * screen's pixel density; a card calibration is offered as optional validation.
+ * Self-contained — derives the weave slug + mm from the product's spec fields.
  */
 export function ActualSizeChainStrip({
   thickness,
@@ -18,7 +19,17 @@ export function ActualSizeChainStrip({
   chainStyle?: string | null;
   title: string;
 }) {
-  const {actualSizeOn, pxPerMm, staleZoom, openCalibration} = useScaleCalibration();
+  const {
+    actualSizeOn,
+    pxPerMm,
+    source,
+    isCalibrated,
+    estimateConfidence,
+    staleZoom,
+    openCalibration,
+    adjustScale,
+    clearCalibration,
+  } = useScaleCalibration();
   const mm = parseMm(thickness, title);
   const slug = styleToSlug(chainStyle, title);
 
@@ -26,6 +37,10 @@ export function ActualSizeChainStrip({
   if (mm == null) return null;
 
   const showing = actualSizeOn && pxPerMm != null;
+  // On desktop the estimate is a guess (the monitor's real size is unknowable),
+  // so we nudge those shoppers toward validating with a card.
+  const lowConfidence = source === 'estimate' && estimateConfidence === 'low';
+  const userSet = source === 'calibration' || source === 'manual';
 
   return (
     <div style={{marginTop: 40, paddingTop: 32, borderTop: `1px solid ${STYX.line}`}}>
@@ -60,8 +75,12 @@ export function ActualSizeChainStrip({
             }}
           >
             {showing
-              ? `${mm} mm — shown at true size on your screen`
-              : 'Match a bank card to your screen and view this chain at its real width.'}
+              ? source === 'calibration'
+                ? `${mm} mm — true size, calibrated to your screen`
+                : source === 'manual'
+                  ? `${mm} mm — true size, adjusted to your screen`
+                  : `${mm} mm — shown at true size on your screen`
+              : 'See this exact chain at its real width on your screen — turn it on.'}
           </div>
         </div>
         <ActualSizeToggle />
@@ -94,10 +113,11 @@ export function ActualSizeChainStrip({
               marginTop: 14,
               display: 'flex',
               flexDirection: 'column',
-              gap: 6,
+              alignItems: 'center',
+              gap: 12,
             }}
           >
-            {staleZoom && (
+            {(staleZoom || lowConfidence) && (
               <div
                 style={{
                   fontFamily: FONT.mono,
@@ -107,29 +127,85 @@ export function ActualSizeChainStrip({
                   color: STYX.goldDeep,
                 }}
               >
-                Your browser zoom changed — re-calibrate for accuracy
+                {staleZoom
+                  ? 'Your browser zoom changed — re-check against a card'
+                  : 'Estimated for this screen — fine-tune it below or check with a card'}
               </div>
             )}
-            <button
-              type="button"
-              onClick={() => openCalibration()}
-              style={{
-                fontFamily: FONT.mono,
-                fontSize: 9,
-                letterSpacing: '0.1em',
-                textTransform: 'uppercase',
-                color: STYX.silt,
-                background: 'none',
-                border: 'none',
-                textDecoration: 'underline',
-                cursor: 'pointer',
-              }}
-            >
-              Re-calibrate screen
-            </button>
+
+            {/* Eyeball fine-tune: nudge the rendered width up or down without a
+                card. Persists as a manual adjustment. */}
+            <div style={{display: 'flex', alignItems: 'center', gap: 10}}>
+              <span
+                style={{
+                  fontFamily: FONT.mono,
+                  fontSize: 9,
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase',
+                  color: STYX.silt,
+                }}
+              >
+                Looks off?
+              </span>
+              <NudgeBtn label="−" title="Slightly smaller" onClick={() => adjustScale(-1)} />
+              <NudgeBtn label="+" title="Slightly larger" onClick={() => adjustScale(1)} />
+            </div>
+
+            <div style={{display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap', justifyContent: 'center'}}>
+              <button
+                type="button"
+                onClick={() => openCalibration()}
+                style={LINK_STYLE}
+              >
+                {isCalibrated ? 'Re-check with a bank card' : 'Match a bank card exactly'}
+              </button>
+              {userSet && (
+                <button type="button" onClick={clearCalibration} style={LINK_STYLE}>
+                  Reset to auto
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}
     </div>
+  );
+}
+
+const LINK_STYLE: React.CSSProperties = {
+  fontFamily: FONT.mono,
+  fontSize: 9,
+  letterSpacing: '0.1em',
+  textTransform: 'uppercase',
+  color: STYX.silt,
+  background: 'none',
+  border: 'none',
+  textDecoration: 'underline',
+  cursor: 'pointer',
+};
+
+function NudgeBtn({label, title, onClick}: {label: string; title: string; onClick: () => void}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={title}
+      title={title}
+      style={{
+        width: 30,
+        height: 30,
+        flexShrink: 0,
+        borderRadius: '50%',
+        border: `1px solid ${STYX.line}`,
+        background: 'transparent',
+        color: STYX.ink,
+        fontSize: 16,
+        lineHeight: 1,
+        cursor: 'pointer',
+        touchAction: 'manipulation',
+      }}
+    >
+      {label}
+    </button>
   );
 }
