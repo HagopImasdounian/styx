@@ -1345,19 +1345,6 @@ export default function Collection() {
                   </div>
                 )}
 
-                {!storyBody && collection.description && (
-                  <div
-                    style={{
-                      fontFamily: FONT.cormorant,
-                      fontSize: 19,
-                      lineHeight: 1.75,
-                      color: STYX.ink,
-                      marginTop: 40,
-                    }}
-                  >
-                    {collection.description}
-                  </div>
-                )}
               </div>
             </div>
           </div>

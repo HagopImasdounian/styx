@@ -242,13 +242,14 @@ export default function FAQ() {
             <h2
               style={{
                 fontFamily: FONT.cinzel,
-                fontSize: 12,
-                letterSpacing: '0.25em',
+                fontSize: 20,
+                fontWeight: 700,
+                letterSpacing: '0.2em',
                 textTransform: 'uppercase',
-                color: STYX.gold,
+                color: STYX.ink,
                 marginBottom: 24,
                 paddingBottom: 16,
-                borderBottom: `1px solid ${STYX.line}`,
+                borderBottom: `2px solid ${STYX.gold}`,
               }}
             >
               {section.heading}
