@@ -45,7 +45,7 @@ import {
   StyxFooter,
   StyxLabel,
   CTAButton,
-  StyxProductCard,
+  ProductGridSection,
   RecommendedProducts,
   Obol,
   ActualSizeChainStrip,
@@ -463,9 +463,9 @@ export default function Product() {
                   position: 'relative',
                   overflow: 'hidden',
                   background: '#FFFFFF',
-                  ...(leadImage?.width && leadImage?.height && leadImage.width / leadImage.height > 1.3
-                    ? {aspectRatio: '1/1', display: 'flex', alignItems: 'center', justifyContent: 'center'}
-                    : {}),
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
               >
                 {leadImage ? (
@@ -2056,6 +2056,9 @@ export default function Product() {
         </section>
       )}
 
+      {/* ── Recently Viewed (localStorage, client-only) — above the Pact ── */}
+      <RecentlyViewed excludeHandle={product.handle} />
+
       {/* ── Ferryman's Pact Banner ── */}
       <section
         id="ferrymans-pact"
@@ -2122,44 +2125,16 @@ export default function Product() {
           resolve={recommended}
         >
           {(products) =>
-            products &&
-            products.nodes &&
-            products.nodes.length > 0 && (
-              <section className="styx-product-related" style={{maxWidth: 1440, margin: '0 auto', padding: '80px 56px'}}>
-                <StyxLabel>Continue the Crossing</StyxLabel>
-                <h2
-                  style={{
-                    fontFamily: FONT.cinzel,
-                    fontSize: 36,
-                    fontWeight: 400,
-                    color: STYX.ink,
-                    margin: '8px 0 40px',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.04em',
-                  }}
-                >
-                  You Might Also Carry
-                </h2>
-                <div
-                  className="styx-product-related-grid"
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(4, 1fr)',
-                    gap: 24,
-                  }}
-                >
-                  {products.nodes.slice(0, 4).map((product: any, i: number) => (
-                    <StyxProductCard key={product.id} product={product} index={i} />
-                  ))}
-                </div>
-              </section>
-            )
+            products && products.nodes && products.nodes.length > 0 ? (
+              <ProductGridSection
+                label="Continue the Crossing"
+                heading="You Might Also Like"
+                products={products.nodes}
+              />
+            ) : null
           }
         </Await>
       </Suspense>
-
-      {/* ── Recently Viewed (localStorage, client-only) ── */}
-      <RecentlyViewed excludeHandle={product.handle} />
 
       <Analytics.ProductView
         data={{
@@ -2300,9 +2275,7 @@ function ZoomableImage({
           sizes={sizes}
           loading={loading}
           style={{
-            maxWidth: '100%',
-            maxHeight: '100%',
-            width: 'auto',
+            width: '100%',
             height: 'auto',
             objectFit: 'contain',
             display: 'block',

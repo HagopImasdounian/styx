@@ -8,6 +8,7 @@ export {Ribbon} from './Ribbon';
 export {CategoryTiles} from './CategoryTiles';
 export {FeaturedRow} from './FeaturedRow';
 export {StyxProductCard} from './StyxProductCard';
+export {ProductGridSection} from './ProductGridSection';
 export {RecommendedProducts} from './RecommendedProducts';
 export type {CrossSellProduct} from './RecommendedProducts';
 export {Lookbook} from './Lookbook';
