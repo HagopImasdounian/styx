@@ -49,6 +49,7 @@ import {
   RecommendedProducts,
   Obol,
   ActualSizeChainStrip,
+  ActualSizeImageButton,
   RecentlyViewed,
   recordRecentlyViewed,
   ImageLightbox,
@@ -490,6 +491,12 @@ export default function Product() {
                   >
                     No Image
                   </div>
+                )}
+
+                {/* Actual-size overlay button — surfaces the true-size tool on
+                    the image so it isn't buried in the spec column below */}
+                {leadImage && chainThickness && (
+                  <ActualSizeImageButton targetId="actual-size-strip" />
                 )}
 
                 {/* Year / Origin Badge */}
@@ -1743,11 +1750,13 @@ export default function Product() {
           </div>
 
           {/* ── See it at actual size on your screen (card-calibrated) ── */}
-          <ActualSizeChainStrip
-            thickness={chainThickness}
-            chainStyle={chainStyle}
-            title={title}
-          />
+          <div id="actual-size-strip" style={{scrollMarginTop: 'var(--header-offset, 80px)'}}>
+            <ActualSizeChainStrip
+              thickness={chainThickness}
+              chainStyle={chainStyle}
+              title={title}
+            />
+          </div>
 
           {/* ── Shipping / Returns Disclosure ── */}
           <div style={{marginTop: 40, paddingTop: 32, borderTop: `1px solid ${STYX.line}`}}>

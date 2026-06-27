@@ -30,6 +30,7 @@ export type {RecentlyViewedEntry} from './RecentlyViewed';
 export {ChainSilhouette} from './ChainSilhouette';
 export {ActualSizeToggle} from './ActualSizeToggle';
 export {ActualSizeChainStrip} from './ActualSizeChainStrip';
+export {ActualSizeImageButton} from './ActualSizeImageButton';
 export {CalibrationOverlay} from './CalibrationOverlay';
 export {PredictiveSearchPanel, MobileMenuSearch} from './PredictiveSearch';
 export {ImageLightbox} from './ImageLightbox';
