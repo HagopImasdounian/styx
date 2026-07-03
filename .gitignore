@@ -28,3 +28,6 @@ TODO_FIXES.md
 
 # Working product photos — served from Shopify CDN, not part of the app
 /_product-images/
+
+# archived one-off snapshots
+archive/
