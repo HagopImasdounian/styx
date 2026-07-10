@@ -195,7 +195,6 @@ const STYX_ALL_PRODUCTS_QUERY = `#graphql
         id
         title
         handle
-        vendor
         variants(first: 10) {
           nodes {
             id

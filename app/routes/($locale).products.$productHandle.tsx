@@ -170,7 +170,7 @@ export const meta = ({matches}: MetaArgs<typeof loader>) => {
 export default function Product() {
   const {product, shop, recommended, crossSell, variants} =
     useLoaderData<typeof loader>();
-  const {media, title, vendor, descriptionHtml} = product;
+  const {media, title, descriptionHtml} = product;
   const {shippingPolicy, refundPolicy} = shop;
   const [offerOpen, setOfferOpen] = useState(false);
   // 'offer' = haggling on an in-stock piece; 'request' = backorder a sold-out size
@@ -202,7 +202,6 @@ export default function Product() {
     trackProductView({
       id: product.id,
       title: product.title,
-      vendor: product.vendor,
       price: selectedVariant?.price?.amount || '0',
       variantId: selectedVariant?.id,
       variantTitle: selectedVariant?.title,
@@ -2601,7 +2600,7 @@ export default function Product() {
               id: product.id,
               title: product.title,
               price: selectedVariant?.price.amount || '0',
-              vendor: product.vendor,
+              vendor: 'STYX Gold',
               variantId: selectedVariant?.id || '',
               variantTitle: selectedVariant?.title || '',
               quantity: 1,
@@ -2920,7 +2919,6 @@ const PRODUCT_FRAGMENT = `#graphql
   fragment Product on Product {
     id
     title
-    vendor
     handle
     productType
     tags
