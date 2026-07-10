@@ -1,41 +1,24 @@
-import type {MouseEvent} from 'react';
 import {STYX, FONT} from './constants';
 import {useScaleCalibration} from '~/context/ScaleCalibrationContext';
 
 /**
- * Overlay button pinned to the product lead image so the "see it at true size"
- * tool is discoverable without scrolling down into the spec column. Toggles the
- * site-wide actual-size state (opening calibration first if needed, handled in
- * the context) and scrolls the full ActualSizeChainStrip into view so the
- * shopper sees the result of the tap.
+ * Overlay button pinned to the product lead image. Toggles the site-wide
+ * actual-size state: when on, the lead photo is swapped IN PLACE for the
+ * true-size ActualSizeImagePanel (no scrolling anywhere); tapping again
+ * restores the photo.
  */
-export function ActualSizeImageButton({
-  targetId = 'actual-size-strip',
-}: {
-  targetId?: string;
-}) {
+export function ActualSizeImageButton() {
   const {actualSizeOn, setActualSizeOn} = useScaleCalibration();
-
-  const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    const turningOn = !actualSizeOn;
-    setActualSizeOn(turningOn);
-    if (turningOn && typeof document !== 'undefined') {
-      // let the strip mount/expand, then bring it into view
-      window.setTimeout(() => {
-        document
-          .getElementById(targetId)
-          ?.scrollIntoView({behavior: 'smooth', block: 'center'});
-      }, 60);
-    }
-  };
 
   return (
     <button
       type="button"
       role="switch"
       aria-checked={actualSizeOn}
-      onClick={handleClick}
+      onClick={(e) => {
+        e.stopPropagation();
+        setActualSizeOn(!actualSizeOn);
+      }}
       style={{
         position: 'absolute',
         bottom: 18,

@@ -41,7 +41,7 @@ import {
   ProductGridSection,
   RecommendedProducts,
   Obol,
-  ActualSizeChainStrip,
+  ActualSizeImagePanel,
   ActualSizeImageButton,
   RecentlyViewed,
   recordRecentlyViewed,
@@ -51,6 +51,8 @@ import type {CrossSellProduct} from '~/components/styx';
 import {CompareButton} from '~/components/styx/CompareButton';
 import {PrintListButton} from '~/components/styx/PrintListButton';
 import {useWishlist} from '~/context/WishlistContext';
+import {useScaleCalibration} from '~/context/ScaleCalibrationContext';
+import {parseMm as parseThicknessMm} from '~/lib/chains';
 
 export const headers = routeHeaders;
 
@@ -176,6 +178,9 @@ export default function Product() {
     'idle' | 'submitting' | 'success' | 'error'
   >('idle');
   const wishlist = useWishlist();
+  // Actual-size swaps the LEAD IMAGE in place (Alex Moss pattern) — no strip
+  // in the spec column, no scrolling. Off (or unparseable width) → photo.
+  const {actualSizeOn, pxPerMm} = useScaleCalibration();
   const wished = wishlist.has(product.handle);
 
   // Gold data from root loader
@@ -253,6 +258,10 @@ export default function Product() {
   const chainThickness =
     p.chain_thickness?.value ||
     (title.match(/(\d+(?:\.\d+)?)\s*mm/i)?.[0] ?? null);
+  const showActualSize =
+    actualSizeOn &&
+    pxPerMm != null &&
+    parseThicknessMm(chainThickness, title) != null;
   const chainConstruction = p.chain_construction?.value || null;
   const chainStyle = p.chain_style?.value || null;
   const laborCost = p.labor_cost?.value ? parseFloat(p.labor_cost.value) : 280;
@@ -449,53 +458,59 @@ export default function Product() {
             phones swipe through every image/video instead of scrolling a
             stacked column) ── */}
         <div className="styx-gallery-carousel">
-          <MobileMediaCarousel
-            slides={gallerySlides}
-            title={title}
-            firstSlideOverlay={
-              <>
-                {chainThickness && (
-                  <ActualSizeImageButton targetId="actual-size-strip" />
-                )}
-                {(romanNumeral || yearInvented) && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: 16,
-                      left: 16,
-                      background: STYX.bone,
-                      border: `1px solid ${STYX.line}`,
-                      padding: '10px 14px',
-                    }}
-                  >
+          {showActualSize ? (
+            <ActualSizeImagePanel
+              thickness={chainThickness}
+              chainStyle={chainStyle}
+              title={title}
+            />
+          ) : (
+            <MobileMediaCarousel
+              slides={gallerySlides}
+              title={title}
+              firstSlideOverlay={
+                <>
+                  {chainThickness && <ActualSizeImageButton />}
+                  {(romanNumeral || yearInvented) && (
                     <div
                       style={{
-                        fontFamily: FONT.cinzel,
-                        fontSize: 9,
-                        letterSpacing: '0.3em',
-                        color: STYX.silt,
-                        textTransform: 'uppercase',
-                        marginBottom: 3,
+                        position: 'absolute',
+                        top: 16,
+                        left: 16,
+                        background: STYX.bone,
+                        border: `1px solid ${STYX.line}`,
+                        padding: '10px 14px',
                       }}
                     >
-                      Invented
+                      <div
+                        style={{
+                          fontFamily: FONT.cinzel,
+                          fontSize: 9,
+                          letterSpacing: '0.3em',
+                          color: STYX.silt,
+                          textTransform: 'uppercase',
+                          marginBottom: 3,
+                        }}
+                      >
+                        Invented
+                      </div>
+                      <div
+                        style={{
+                          fontFamily: FONT.cinzel,
+                          fontSize: 18,
+                          letterSpacing: '0.12em',
+                          color: STYX.ink,
+                          fontWeight: 600,
+                        }}
+                      >
+                        {romanNumeral || yearInvented}
+                      </div>
                     </div>
-                    <div
-                      style={{
-                        fontFamily: FONT.cinzel,
-                        fontSize: 18,
-                        letterSpacing: '0.12em',
-                        color: STYX.ink,
-                        fontWeight: 600,
-                      }}
-                    >
-                      {romanNumeral || yearInvented}
-                    </div>
-                  </div>
-                )}
-              </>
-            }
-          />
+                  )}
+                </>
+              }
+            />
+          )}
         </div>
 
         {/* ── Gallery — Lead Image (desktop stacked gallery) ── */}
@@ -503,108 +518,116 @@ export default function Product() {
           className="styx-gallery-lead"
           style={{gridColumn: '1 / 2', gridRow: '1', background: '#FFFFFF'}}
         >
-          {/* Lead image — variant image if available, else first color-matched media */}
-          {(() => {
-            const variantImg = (selectedVariant as any)?.image;
-            const firstMedia = colorFilteredMedia[0];
-            const leadImage =
-              variantImg ||
-              (firstMedia && 'image' in firstMedia
-                ? firstMedia.image
-                : firstMedia?.previewImage);
-            return (
-              <div
-                style={{
-                  position: 'relative',
-                  overflow: 'hidden',
-                  background: '#FFFFFF',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                {leadImage ? (
-                  <ZoomableImage
-                    data={leadImage}
-                    alt={title}
-                    sizes="(min-width: 1200px) 55vw, 90vw"
-                    loading="eager"
-                  />
-                ) : (
-                  <div
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: STYX.silt2,
-                      fontFamily: FONT.cinzel,
-                      fontSize: 14,
-                    }}
-                  >
-                    No Image
-                  </div>
-                )}
-
-                {/* Actual-size overlay button — surfaces the true-size tool on
-                    the image so it isn't buried in the spec column below */}
-                {leadImage && chainThickness && (
-                  <ActualSizeImageButton targetId="actual-size-strip" />
-                )}
-
-                {/* Year / Origin Badge */}
-                {(romanNumeral || yearInvented) && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: 24,
-                      left: 24,
-                      background: STYX.bone,
-                      border: `1px solid ${STYX.line}`,
-                      padding: '14px 18px',
-                    }}
-                  >
+          {/* Lead image — variant image if available, else first color-matched
+              media. When actual-size is on, the true-size panel swaps in where
+              the photo was. */}
+          {showActualSize ? (
+            <ActualSizeImagePanel
+              thickness={chainThickness}
+              chainStyle={chainStyle}
+              title={title}
+            />
+          ) : (
+            (() => {
+              const variantImg = (selectedVariant as any)?.image;
+              const firstMedia = colorFilteredMedia[0];
+              const leadImage =
+                variantImg ||
+                (firstMedia && 'image' in firstMedia
+                  ? firstMedia.image
+                  : firstMedia?.previewImage);
+              return (
+                <div
+                  style={{
+                    position: 'relative',
+                    overflow: 'hidden',
+                    background: '#FFFFFF',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  {leadImage ? (
+                    <ZoomableImage
+                      data={leadImage}
+                      alt={title}
+                      sizes="(min-width: 1200px) 55vw, 90vw"
+                      loading="eager"
+                    />
+                  ) : (
                     <div
                       style={{
+                        width: '100%',
+                        height: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: STYX.silt2,
                         fontFamily: FONT.cinzel,
-                        fontSize: 10,
-                        letterSpacing: '0.3em',
-                        color: STYX.silt,
-                        textTransform: 'uppercase',
-                        marginBottom: 4,
+                        fontSize: 14,
                       }}
                     >
-                      Invented
+                      No Image
                     </div>
+                  )}
+
+                  {/* Actual-size overlay button — swaps this photo for the
+                    true-size panel in place */}
+                  {leadImage && chainThickness && <ActualSizeImageButton />}
+
+                  {/* Year / Origin Badge */}
+                  {(romanNumeral || yearInvented) && (
                     <div
                       style={{
-                        fontFamily: FONT.cinzel,
-                        fontSize: 22,
-                        letterSpacing: '0.12em',
-                        color: STYX.ink,
-                        fontWeight: 600,
+                        position: 'absolute',
+                        top: 24,
+                        left: 24,
+                        background: STYX.bone,
+                        border: `1px solid ${STYX.line}`,
+                        padding: '14px 18px',
                       }}
                     >
-                      {romanNumeral || yearInvented}
-                    </div>
-                    {yearInvented && romanNumeral && (
                       <div
                         style={{
-                          fontFamily: FONT.mono,
+                          fontFamily: FONT.cinzel,
                           fontSize: 10,
+                          letterSpacing: '0.3em',
                           color: STYX.silt,
-                          marginTop: 6,
+                          textTransform: 'uppercase',
+                          marginBottom: 4,
                         }}
                       >
-                        = {yearInvented}
+                        Invented
                       </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            );
-          })()}
+                      <div
+                        style={{
+                          fontFamily: FONT.cinzel,
+                          fontSize: 22,
+                          letterSpacing: '0.12em',
+                          color: STYX.ink,
+                          fontWeight: 600,
+                        }}
+                      >
+                        {romanNumeral || yearInvented}
+                      </div>
+                      {yearInvented && romanNumeral && (
+                        <div
+                          style={{
+                            fontFamily: FONT.mono,
+                            fontSize: 10,
+                            color: STYX.silt,
+                            marginTop: 6,
+                          }}
+                        >
+                          = {yearInvented}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })()
+          )}
         </div>
 
         {/* ── Gallery — Remaining Media (desktop stacked gallery) ── */}
@@ -2214,18 +2237,6 @@ export default function Product() {
               </div>
             </div>
           )}
-
-          {/* ── See it at actual size on your screen (card-calibrated) ── */}
-          <div
-            id="actual-size-strip"
-            style={{scrollMarginTop: 'var(--header-offset, 80px)'}}
-          >
-            <ActualSizeChainStrip
-              thickness={chainThickness}
-              chainStyle={chainStyle}
-              title={title}
-            />
-          </div>
 
           {/* ── Shipping / Returns Disclosure ── */}
           <div

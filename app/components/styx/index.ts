@@ -29,7 +29,7 @@ export {RecentlyViewed, recordRecentlyViewed} from './RecentlyViewed';
 export type {RecentlyViewedEntry} from './RecentlyViewed';
 export {ChainSilhouette} from './ChainSilhouette';
 export {ActualSizeToggle} from './ActualSizeToggle';
-export {ActualSizeChainStrip} from './ActualSizeChainStrip';
+export {ActualSizeImagePanel} from './ActualSizeImagePanel';
 export {ActualSizeImageButton} from './ActualSizeImageButton';
 export {CalibrationOverlay} from './CalibrationOverlay';
 export {PredictiveSearchPanel, MobileMenuSearch} from './PredictiveSearch';
