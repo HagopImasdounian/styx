@@ -1,6 +1,6 @@
 import {type MetaArgs, type LoaderFunctionArgs} from 'react-router';
 import {data, useLoaderData, Link} from 'react-router';
-import {Image, getSeoMeta} from '@shopify/hydrogen';
+import {Image} from '@shopify/hydrogen';
 import {seoPayload} from '~/lib/seo.server';
 import {getStyxSeoMeta} from '~/lib/seo-meta';
 import {validateLocale} from '~/lib/utils';
@@ -12,10 +12,8 @@ import {
   StyxNav,
   StyxFooter,
   StyxLabel,
-  Obol,
   PlaceholderImage,
 } from '~/components/styx';
-import type {CollectionNode} from '~/components/styx/constants';
 
 export const headers = routeHeaders;
 
@@ -109,60 +107,6 @@ export default function CollectionsIndex() {
       <GoldTicker />
       <StyxNav collections={collections} />
 
-      {/* Hero */}
-      <section
-        className="styx-ci-hero"
-        style={{
-          background: STYX.bone,
-          padding: '96px 56px 64px',
-          borderBottom: `1px solid ${STYX.line}`,
-        }}
-      >
-        <StyxLabel>The Vault</StyxLabel>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-end',
-            gap: 40,
-          }}
-        >
-          <h1
-            style={{
-              fontFamily: FONT.cinzel,
-              fontSize: 56,
-              fontWeight: 400,
-              letterSpacing: '0.03em',
-              lineHeight: 1,
-              margin: '16px 0 0',
-              color: STYX.ink,
-              textTransform: 'uppercase',
-            }}
-          >
-            Collections
-          </h1>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 16,
-            }}
-          >
-            <span
-              style={{
-                fontFamily: FONT.cormorant,
-                fontStyle: 'italic',
-                fontSize: 16,
-                color: STYX.silt,
-              }}
-            >
-              {live.length} collections · {chainTypes.length} chain families
-            </span>
-            <Obol size={32} color={STYX.gold} speed={14} />
-          </div>
-        </div>
-      </section>
-
       {/* All Chains banner */}
       {allChains && (
         <Link
@@ -219,21 +163,41 @@ export default function CollectionsIndex() {
       )}
 
       {/* Chain families grid */}
-      <section className="styx-ci-families" style={{padding: '80px 56px'}}>
-        <StyxLabel>By Chain Family</StyxLabel>
-        <h2
+      <section className="styx-ci-families" style={{padding: '40px 56px 48px'}}>
+        {/* "Collections" is the page's eyebrow — the old full-height hero is gone */}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'baseline',
+            gap: 24,
+          }}
+        >
+          <StyxLabel>Collections</StyxLabel>
+          <span
+            style={{
+              fontFamily: FONT.cormorant,
+              fontStyle: 'italic',
+              fontSize: 16,
+              color: STYX.silt,
+            }}
+          >
+            {live.length} collections · {chainTypes.length} chain families
+          </span>
+        </div>
+        <h1
           style={{
             fontFamily: FONT.cinzel,
             fontSize: 36,
             fontWeight: 400,
             color: STYX.ink,
-            margin: '12px 0 48px',
+            margin: '12px 0 36px',
             textTransform: 'uppercase',
             letterSpacing: '0.04em',
           }}
         >
           Every weave we carry.
-        </h2>
+        </h1>
 
         <div
           className="styx-ci-families-grid"
@@ -243,12 +207,8 @@ export default function CollectionsIndex() {
             gap: 20,
           }}
         >
-          {chainTypes.map((collection: any, i: number) => (
-            <CollectionTile
-              key={collection.id}
-              collection={collection}
-              index={i}
-            />
+          {chainTypes.map((collection: any) => (
+            <CollectionTile key={collection.id} collection={collection} />
           ))}
         </div>
       </section>
@@ -258,19 +218,18 @@ export default function CollectionsIndex() {
         <section
           className="styx-ci-karat"
           style={{
-            padding: '64px 56px 80px',
+            padding: '48px 56px 64px',
             background: STYX.bone,
             borderTop: `1px solid ${STYX.line}`,
           }}
         >
-          <StyxLabel>By Metal & Karat</StyxLabel>
           <h2
             style={{
               fontFamily: FONT.cinzel,
               fontSize: 28,
               fontWeight: 400,
               color: STYX.ink,
-              margin: '12px 0 40px',
+              margin: '0 0 32px',
               textTransform: 'uppercase',
               letterSpacing: '0.04em',
             }}
@@ -339,7 +298,7 @@ export default function CollectionsIndex() {
   );
 }
 
-function CollectionTile({collection, index}: {collection: any; index: number}) {
+function CollectionTile({collection}: {collection: any}) {
   return (
     <Link
       to={`/collections/${collection.handle}`}

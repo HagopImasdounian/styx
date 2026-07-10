@@ -1,8 +1,5 @@
 import {useEffect, useMemo} from 'react';
-import {
-    type MetaArgs,
-  type LoaderFunctionArgs,
-} from 'react-router';
+import {type MetaArgs, type LoaderFunctionArgs} from 'react-router';
 import {data, useLoaderData, useNavigate, useSearchParams} from 'react-router';
 import {useInView} from 'react-intersection-observer';
 import type {
@@ -20,83 +17,109 @@ import invariant from 'tiny-invariant';
 
 import {Image} from '@shopify/hydrogen';
 import {Link} from '~/components/Link';
-import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel, StyxProductCard, Obol} from '~/components/styx';
+import {
+  STYX,
+  FONT,
+  GoldTicker,
+  StyxNav,
+  StyxFooter,
+  StyxProductCard,
+  Obol,
+} from '~/components/styx';
 import {trackCollectionView} from '~/components/GTMDataLayer';
 
 /* ─── Chain type intros + journal links ─── */
-const CHAIN_INTROS: Record<string, {intro: string; journal: string; journalTitle: string}> = {
+const CHAIN_INTROS: Record<
+  string,
+  {intro: string; journal: string; journalTitle: string}
+> = {
   cuban: {
-    intro: 'The Cuban Link is the undisputed heavyweight of gold chains. Born in Miami in the 1970s, its flat-filed interlocking links create a mirror-smooth surface that catches light from every angle. Solid, dense, and engineered to lay flat against the chest — this is the chain that built a culture.',
+    intro:
+      'The Cuban Link is the undisputed heavyweight of gold chains. Born in Miami in the 1970s, its flat-filed interlocking links create a mirror-smooth surface that catches light from every angle. Solid, dense, and engineered to lay flat against the chest — this is the chain that built a culture.',
     journal: 'history-of-the-cuban-link',
     journalTitle: 'Read: The History of the Cuban Link →',
   },
   curb: {
-    intro: 'The Curb Chain is the oldest and most universal chain design in existence, dating back to 2600 BC in ancient Sumer. Its flat, twisted links were inspired by horse curb bits — the same geometry that controls a stallion now adorns the neck. From Victorian pocket watches to modern streetwear, the curb has never gone out of style.',
+    intro:
+      'The Curb Chain is the oldest and most universal chain design in existence, dating back to 2600 BC in ancient Sumer. Its flat, twisted links were inspired by horse curb bits — the same geometry that controls a stallion now adorns the neck. From Victorian pocket watches to modern streetwear, the curb has never gone out of style.',
     journal: 'history-of-the-curb-chain',
     journalTitle: 'Read: The History of the Curb Chain →',
   },
   box: {
-    intro: 'The Box Chain originated in 6th-century Venice, where goldsmiths discovered that square links interlocked at 90-degree angles create a chain with perfect geometric precision. Clean, architectural, and virtually kink-proof — the box chain is the engineer\'s choice.',
+    intro:
+      "The Box Chain originated in 6th-century Venice, where goldsmiths discovered that square links interlocked at 90-degree angles create a chain with perfect geometric precision. Clean, architectural, and virtually kink-proof — the box chain is the engineer's choice.",
     journal: 'history-of-the-box-chain',
     journalTitle: 'Read: The History of the Box Chain →',
   },
   rope: {
-    intro: 'The Rope Chain traces its origins to ancient Egypt, circa 2500 BCE, where artisans twisted gold wire into helical spirals that mimicked the hemp ropes of Nile river boats. Its signature twist catches light in a continuous sparkle that no flat chain can replicate. From pharaohs to hip-hop, the rope endures.',
+    intro:
+      'The Rope Chain traces its origins to ancient Egypt, circa 2500 BCE, where artisans twisted gold wire into helical spirals that mimicked the hemp ropes of Nile river boats. Its signature twist catches light in a continuous sparkle that no flat chain can replicate. From pharaohs to hip-hop, the rope endures.',
     journal: 'history-of-the-rope-chain',
     journalTitle: 'Read: The History of the Rope Chain →',
   },
   cable: {
-    intro: 'The Cable Chain is the DNA of all chain designs — simple interlocking oval links, unchanged since the Royal Tombs of Ur. Its strength lies in its simplicity: lightweight, versatile, and nearly indestructible. The cable chain is the foundation upon which every other weave was built.',
+    intro:
+      'The Cable Chain is the DNA of all chain designs — simple interlocking oval links, unchanged since the Royal Tombs of Ur. Its strength lies in its simplicity: lightweight, versatile, and nearly indestructible. The cable chain is the foundation upon which every other weave was built.',
     journal: 'history-of-the-cable-chain',
     journalTitle: 'Read: The History of the Cable Chain →',
   },
   figaro: {
-    intro: 'The Figaro Chain was born in the goldsmithing workshops of Vicenza, Italy, around 1885. Its distinctive pattern — three small links followed by one elongated link — creates a visual rhythm unlike any other chain. Named after the clever barber of Seville, the Figaro is Italian craftsmanship at its most playful.',
+    intro:
+      'The Figaro Chain was born in the goldsmithing workshops of Vicenza, Italy, around 1885. Its distinctive pattern — three small links followed by one elongated link — creates a visual rhythm unlike any other chain. Named after the clever barber of Seville, the Figaro is Italian craftsmanship at its most playful.',
     journal: 'history-of-the-figaro-chain',
     journalTitle: 'Read: The History of the Figaro Chain →',
   },
   wheat: {
-    intro: 'The Wheat Chain, known in Italy as the Spiga, mimics the overlapping husks of a wheat ear — four strands of oval links woven into a tight, flexible tube. Born during the Renaissance in Vicenza, it is one of the strongest chain weaves per gram. Substantial enough to carry a heavy pendant, elegant enough to wear alone.',
+    intro:
+      'The Wheat Chain, known in Italy as the Spiga, mimics the overlapping husks of a wheat ear — four strands of oval links woven into a tight, flexible tube. Born during the Renaissance in Vicenza, it is one of the strongest chain weaves per gram. Substantial enough to carry a heavy pendant, elegant enough to wear alone.',
     journal: 'history-of-the-wheat-chain',
     journalTitle: 'Read: The History of the Wheat Chain →',
   },
   rolo: {
-    intro: 'The Rolo Chain emerged in Victorian London around 1850 — perfectly round, symmetrical links that interlock in a clean, modern pattern. Heavier and more substantial than a cable chain, the rolo carries a satisfying weight that you feel against your chest. Minimal, bold, timeless.',
+    intro:
+      'The Rolo Chain emerged in Victorian London around 1850 — perfectly round, symmetrical links that interlock in a clean, modern pattern. Heavier and more substantial than a cable chain, the rolo carries a satisfying weight that you feel against your chest. Minimal, bold, timeless.',
     journal: 'history-of-the-rolo-chain',
     journalTitle: 'Read: The History of the Rolo Chain →',
   },
   singapore: {
-    intro: 'The Singapore Chain was developed by Italian chain-makers in the 1970s and named for its popularity in Southeast Asian gold markets. Its twisted, braided links create a diamond-cut surface that shimmers with every movement — a chain that sparkles like no other, even in the thinnest widths.',
+    intro:
+      'The Singapore Chain was developed by Italian chain-makers in the 1970s and named for its popularity in Southeast Asian gold markets. Its twisted, braided links create a diamond-cut surface that shimmers with every movement — a chain that sparkles like no other, even in the thinnest widths.',
     journal: 'history-of-the-singapore-chain',
     journalTitle: 'Read: The History of the Singapore Chain →',
   },
   franco: {
-    intro: 'The Franco Chain was born in the goldsmithing workshops of Northern Italy in the late 1970s — a flat-sided square weave so dense it reads as a solid bar of gold. It is the chain you choose when you need mass that can carry serious pendant weight and still lie flat against the chest.',
+    intro:
+      'The Franco Chain was born in the goldsmithing workshops of Northern Italy in the late 1970s — a flat-sided square weave so dense it reads as a solid bar of gold. It is the chain you choose when you need mass that can carry serious pendant weight and still lie flat against the chest.',
     journal: 'history-of-the-franco-chain',
     journalTitle: 'Read: The History of the Franco Chain →',
   },
   herringbone: {
-    intro: 'The Herringbone traces back to ancient Egypt around 3000 BCE — flat, slanted links laid in a tight fishbone pattern that turns the entire chain into a mirror-smooth ribbon of liquid gold. Sleek, flexible, and unmistakable under light, it lies perfectly flat against the skin.',
+    intro:
+      'The Herringbone traces back to ancient Egypt around 3000 BCE — flat, slanted links laid in a tight fishbone pattern that turns the entire chain into a mirror-smooth ribbon of liquid gold. Sleek, flexible, and unmistakable under light, it lies perfectly flat against the skin.',
     journal: 'history-of-the-herringbone-chain',
     journalTitle: 'Read: The History of the Herringbone →',
   },
   snake: {
-    intro: 'The Snake Chain emerged in Victorian London around 1840 — tightly fitted links that form a smooth, round, flexible tube with the faint banding of a serpent\'s skin. Completely seamless to the touch, it catches the light in one continuous, unbroken line.',
+    intro:
+      "The Snake Chain emerged in Victorian London around 1840 — tightly fitted links that form a smooth, round, flexible tube with the faint banding of a serpent's skin. Completely seamless to the touch, it catches the light in one continuous, unbroken line.",
     journal: 'history-of-the-snake-chain',
     journalTitle: 'Read: The History of the Snake Chain →',
   },
   paperclip: {
-    intro: 'The Paperclip Chain is the modern minimalist — elongated, uniform oval links inspired by the humble office clip, first popularized in Oslo around 1940. Clean, architectural, and effortlessly contemporary, it wears as well on its own as it does carrying a charm.',
+    intro:
+      'The Paperclip Chain is the modern minimalist — elongated, uniform oval links inspired by the humble office clip, first popularized in Oslo around 1940. Clean, architectural, and effortlessly contemporary, it wears as well on its own as it does carrying a charm.',
     journal: 'history-of-the-paperclip-chain',
     journalTitle: 'Read: The History of the Paperclip →',
   },
   '10k-gold': {
-    intro: '10K gold is 41.7% pure gold alloyed with copper, silver, and zinc — making it the most durable karat we carry. Its hardness means thinner chains hold up to daily wear without stretching or deforming. The color is a refined, pale champagne-gold. For everyday chains, 10K is the workhorse: real gold, built to last, priced honestly.',
+    intro:
+      '10K gold is 41.7% pure gold alloyed with copper, silver, and zinc — making it the most durable karat we carry. Its hardness means thinner chains hold up to daily wear without stretching or deforming. The color is a refined, pale champagne-gold. For everyday chains, 10K is the workhorse: real gold, built to last, priced honestly.',
     journal: 'understanding-gold-karats',
     journalTitle: 'Read: Understanding Gold Karats — 10K to 24K →',
   },
   '14k-gold': {
-    intro: '14K gold is 58.3% pure gold — the American standard for fine jewelry. Richer and warmer in color than 10K, with enough alloy to remain durable for daily wear. This is the sweet spot: unmistakably gold, strong enough for any chain style, and the most popular karat in the United States for good reason.',
+    intro:
+      '14K gold is 58.3% pure gold — the American standard for fine jewelry. Richer and warmer in color than 10K, with enough alloy to remain durable for daily wear. This is the sweet spot: unmistakably gold, strong enough for any chain style, and the most popular karat in the United States for good reason.',
     journal: 'understanding-gold-karats',
     journalTitle: 'Read: Understanding Gold Karats — 10K to 24K →',
   },
@@ -184,22 +207,23 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 
   const appliedFilters = filters
     .map((filter) => {
-      const foundValue = allFilterValues.find((value: Filter['values'][number]) => {
-        const valueInput = JSON.parse(value.input as string) as ProductFilter;
-        // special case for price, the user can enter something freeform (still a number, though)
-        // that may not make sense for the locale/currency.
-        // Basically just check if the price filter is applied at all.
-        if (valueInput.price && filter.price) {
-          return true;
-        }
-        return (
-          // This comparison should be okay as long as we're not manipulating the input we
-          // get from the API before using it as a URL param.
-          JSON.stringify(valueInput) === JSON.stringify(filter)
-        );
-      });
+      const foundValue = allFilterValues.find(
+        (value: Filter['values'][number]) => {
+          const valueInput = JSON.parse(value.input as string) as ProductFilter;
+          // special case for price, the user can enter something freeform (still a number, though)
+          // that may not make sense for the locale/currency.
+          // Basically just check if the price filter is applied at all.
+          if (valueInput.price && filter.price) {
+            return true;
+          }
+          return (
+            // This comparison should be okay as long as we're not manipulating the input we
+            // get from the API before using it as a URL param.
+            JSON.stringify(valueInput) === JSON.stringify(filter)
+          );
+        },
+      );
       if (!foundValue) {
-        // eslint-disable-next-line no-console
         console.error('Could not find filter value for filter', filter);
         return null;
       }
@@ -230,7 +254,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
       collection,
       // Lightweight full-collection index (null in full-set mode, where
       // collection.products already contains every product).
-      allProductIndex: fullSet ? null : (allIndex?.products?.nodes ?? null),
+      allProductIndex: fullSet ? null : allIndex?.products?.nodes ?? null,
       fullSet,
       appliedFilters,
       collections: flattenConnection(collections),
@@ -418,9 +442,9 @@ function extractFilters(cards: ReturnType<typeof explodeByColor>) {
   }
 
   // Return thickness ranges in order, only those that have products
-  const thicknesses = THICKNESS_RANGES
-    .filter((r) => thicknessRangesPresent.has(r.label))
-    .map((r) => r.label);
+  const thicknesses = THICKNESS_RANGES.filter((r) =>
+    thicknessRangesPresent.has(r.label),
+  ).map((r) => r.label);
 
   return {
     colors: [...colors].sort(),
@@ -434,7 +458,13 @@ function extractFilters(cards: ReturnType<typeof explodeByColor>) {
 
 function applyFilters(
   cards: ReturnType<typeof explodeByColor>,
-  filters: {color: string | null; karat: string | null; thickness: string | null; construction: string | null; type?: string | null},
+  filters: {
+    color: string | null;
+    karat: string | null;
+    thickness: string | null;
+    construction: string | null;
+    type?: string | null;
+  },
 ) {
   return cards.filter(({product, variantIndex}) => {
     const variant = product.variants?.nodes?.[variantIndex];
@@ -579,9 +609,7 @@ export default function Collection() {
   // Drives the result count + which pills are shown — never just loaded pages.
   const fullSetCards = useMemo(() => {
     const nodes =
-      fullSet || !allProductIndex
-        ? collection.products.nodes
-        : allProductIndex;
+      fullSet || !allProductIndex ? collection.products.nodes : allProductIndex;
     return explodeByColor(nodes as any[]);
   }, [fullSet, allProductIndex, collection.products.nodes]);
 
@@ -600,7 +628,14 @@ export default function Collection() {
         construction: filterConstruction,
         type: filterType,
       }).length,
-    [fullSetCards, filterColor, filterKarat, filterThickness, filterConstruction, filterType],
+    [
+      fullSetCards,
+      filterColor,
+      filterKarat,
+      filterThickness,
+      filterConstruction,
+      filterType,
+    ],
   );
 
   const activeFilterCount =
@@ -692,7 +727,7 @@ export default function Collection() {
           style={{
             maxWidth: 1440,
             margin: '0 auto',
-            padding: '64px 56px 48px',
+            padding: '28px 56px 28px',
             display: 'grid',
             gridTemplateColumns: '1.2fr 1fr',
             alignItems: 'end',
@@ -705,13 +740,18 @@ export default function Collection() {
               <img
                 src={heroChainImage}
                 alt={`${collection.title} close-up`}
-                style={{height: 80, width: 'auto', display: 'block', marginBottom: 20}}
+                style={{
+                  height: 64,
+                  width: 'auto',
+                  display: 'block',
+                  marginBottom: 16,
+                }}
               />
             )}
             <h1
               style={{
                 fontFamily: FONT.cinzel,
-                fontSize: (collection as any).handle === 'chains' ? 56 : 80,
+                fontSize: (collection as any).handle === 'chains' ? 44 : 56,
                 fontWeight: 400,
                 textTransform: 'uppercase',
                 letterSpacing: '0.02em',
@@ -723,16 +763,24 @@ export default function Collection() {
               {collection.title}
             </h1>
           </div>
-
         </div>
       </div>
 
       {/* ── Shop by Weave — every chain family, on the all-chains archive ── */}
       {(collection as any).handle === 'chains' && (
-        <div style={{borderBottom: `1px solid ${STYX.line}`, background: STYX.paper}}>
+        <div
+          style={{
+            borderBottom: `1px solid ${STYX.line}`,
+            background: STYX.paper,
+          }}
+        >
           <div
             className="styx-weave-strip"
-            style={{maxWidth: 1440, margin: '0 auto', padding: '32px 56px 36px'}}
+            style={{
+              maxWidth: 1440,
+              margin: '0 auto',
+              padding: '32px 56px 36px',
+            }}
           >
             <div
               style={{
@@ -783,7 +831,11 @@ export default function Collection() {
                       src={weaveCutout(w.handle)}
                       alt={`${w.label} chain close-up`}
                       loading="lazy"
-                      style={{height: 30, maxWidth: '100%', objectFit: 'contain'}}
+                      style={{
+                        height: 30,
+                        maxWidth: '100%',
+                        objectFit: 'contain',
+                      }}
                     />
                   ) : (
                     <div style={{height: 30}} />
@@ -819,7 +871,7 @@ export default function Collection() {
             style={{
               maxWidth: 1440,
               margin: '0 auto',
-              padding: '40px 56px',
+              padding: '28px 56px',
               display: 'flex',
               gap: 32,
               alignItems: 'baseline',
@@ -924,7 +976,10 @@ export default function Collection() {
               )}
             </div>
 
-            <div className="styx-collection-sort" style={{display: 'flex', alignItems: 'center', gap: 0}}>
+            <div
+              className="styx-collection-sort"
+              style={{display: 'flex', alignItems: 'center', gap: 0}}
+            >
               {SORT_OPTIONS.map((opt, i) => {
                 const isActive = currentSort === opt.value;
                 return (
@@ -951,7 +1006,8 @@ export default function Collection() {
                       color: isActive ? STYX.bone : STYX.silt,
                       background: isActive ? STYX.ink : 'transparent',
                       border: `1px solid ${isActive ? STYX.ink : STYX.line}`,
-                      borderRight: i < SORT_OPTIONS.length - 1 ? 'none' : undefined,
+                      borderRight:
+                        i < SORT_OPTIONS.length - 1 ? 'none' : undefined,
                       padding: '7px 14px',
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
@@ -1083,10 +1139,7 @@ export default function Collection() {
                     label={t}
                     active={filterThickness === t}
                     onClick={() =>
-                      setClientFilter(
-                        'width',
-                        filterThickness === t ? null : t,
-                      )
+                      setClientFilter('width', filterThickness === t ? null : t)
                     }
                   />
                 ))}
@@ -1165,7 +1218,14 @@ export default function Collection() {
           hasNextPage,
           state,
         }) => (
-          <div className="styx-collection-products" style={{maxWidth: 1440, margin: '0 auto', padding: '48px 56px 120px'}}>
+          <div
+            className="styx-collection-products"
+            style={{
+              maxWidth: 1440,
+              margin: '0 auto',
+              padding: '32px 56px 120px',
+            }}
+          >
             <div
               style={{
                 display: 'flex',
@@ -1260,16 +1320,33 @@ export default function Collection() {
               {/* Left: Image or decoration */}
               {collection.image && (
                 <div>
-                  <div style={{position: 'relative', aspectRatio: '4/5', overflow: 'hidden'}}>
+                  <div
+                    style={{
+                      position: 'relative',
+                      aspectRatio: '4/5',
+                      overflow: 'hidden',
+                    }}
+                  >
                     <Image
                       data={collection.image}
                       alt={collection.image.altText ?? collection.title}
                       aspectRatio="4/5"
                       sizes="(min-width: 1200px) 40vw, 80vw"
-                      style={{width: '100%', height: '100%', objectFit: 'cover'}}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                      }}
                     />
                   </div>
-                  <div style={{marginTop: 20, display: 'flex', alignItems: 'center', gap: 14}}>
+                  <div
+                    style={{
+                      marginTop: 20,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 14,
+                    }}
+                  >
                     <Obol size={44} color={STYX.ink} speed={6} />
                     {eraLabel && (
                       <span
@@ -1344,7 +1421,6 @@ export default function Collection() {
                     {storyBody}
                   </div>
                 )}
-
               </div>
             </div>
           </div>

@@ -1,9 +1,8 @@
 import {useState, useRef, useCallback, useEffect, Suspense} from 'react';
-import {Disclosure, Listbox} from '@headlessui/react';
+import {Disclosure} from '@headlessui/react';
 import {type MetaArgs, type LoaderFunctionArgs} from 'react-router';
 import {data, useLoaderData, Await, useRouteLoaderData} from 'react-router';
 import {
-  getSeoMeta,
   Money,
   Image,
   getSelectedProductOptions,
@@ -12,7 +11,6 @@ import {
   getAdjacentAndFirstAvailableVariants,
   useSelectedOptionInUrlParam,
   getProductOptions,
-  type MappedProductOptions,
 } from '@shopify/hydrogen';
 import invariant from 'tiny-invariant';
 import clsx from 'clsx';
@@ -21,11 +19,10 @@ import type {
   ProductOptionValueSwatch,
 } from '@shopify/hydrogen/storefront-api-types';
 
-import type {ProductFragment} from 'storefrontapi.generated';
 import type {RootLoader} from '~/root';
 import {Link} from '~/components/Link';
 import {AddToCartButton} from '~/components/AddToCartButton';
-import {IconCaret, IconCheck, IconClose} from '~/components/Icon';
+import {IconClose} from '~/components/Icon';
 import {getExcerpt, validateLocale} from '~/lib/utils';
 import {seoPayload} from '~/lib/seo.server';
 import {getStyxSeoMeta} from '~/lib/seo-meta';
@@ -41,7 +38,6 @@ import {
   StyxNav,
   StyxFooter,
   StyxLabel,
-  CTAButton,
   ProductGridSection,
   RecommendedProducts,
   Obol,
@@ -154,7 +150,7 @@ async function loadCriticalData({
  * fetched after the initial page load. If it's unavailable, the page should still 200.
  * Make sure to not throw any errors here, as it will cause the page to 500.
  */
-function loadDeferredData(args: LoaderFunctionArgs) {
+function loadDeferredData(_args: LoaderFunctionArgs) {
   // Put any API calls that are not critical to be available on first page render
   // For example: product reviews, product recommendations, social feeds.
 
@@ -267,7 +263,6 @@ export default function Product() {
   const yearInvented = p.year_invented?.value || null;
   const romanNumeral = p.roman_numeral?.value || null;
   const chainBlurb = p.chain_blurb?.value || null;
-  const storyHeading = p.story_heading?.value || null;
   const storyBody = p.story_body?.value || null;
   const pullQuote = p.pull_quote?.value || null;
   const pullQuoteAttr = p.pull_quote_attr?.value || null;
@@ -382,104 +377,51 @@ export default function Product() {
       })
     : mediaNodes;
 
+  // Mobile swipe-carousel slides: selected-variant image leads, then every
+  // color-matched media node (images and hosted videos), deduped by URL.
+  const gallerySlides = (() => {
+    const variantImg = (selectedVariant as any)?.image;
+    const slides: Array<{key: string; kind: 'image' | 'video'; media: any}> =
+      [];
+    const seen = new Set<string>();
+    if (variantImg?.url) {
+      slides.push({key: 'variant', kind: 'image', media: variantImg});
+      seen.add(variantImg.url);
+    }
+    for (const m of colorFilteredMedia as any[]) {
+      if (m?.mediaContentType === 'VIDEO' && m.sources?.length) {
+        const url = m.sources[0]?.url;
+        if (url && !seen.has(url)) {
+          seen.add(url);
+          slides.push({key: m.id || url, kind: 'video', media: m});
+        }
+        continue;
+      }
+      const img = m?.image || m?.previewImage;
+      if (img?.url && !seen.has(img.url)) {
+        seen.add(img.url);
+        slides.push({key: m.id || img.url, kind: 'image', media: img});
+      }
+    }
+    return slides.slice(0, 10);
+  })();
+
+  // Chain-type collection for the breadcrumb (exclude umbrella/karat collections)
+  const breadcrumbExclude = new Set([
+    'chains',
+    '10k-gold',
+    '14k-gold',
+    'frontpage',
+    'automated-collection',
+  ]);
+  const chainCollection = (product as any).collections?.nodes?.find(
+    (c: any) => !breadcrumbExclude.has(c.handle),
+  );
+
   return (
     <div style={{background: STYX.bone, minHeight: '100vh'}}>
       <GoldTicker />
       <StyxNav />
-
-      {/* ── Breadcrumb Bar ── */}
-      {(() => {
-        // Find the chain-type collection (exclude chains, 10k-gold, 14k-gold, frontpage)
-        const exclude = new Set([
-          'chains',
-          '10k-gold',
-          '14k-gold',
-          'frontpage',
-          'automated-collection',
-        ]);
-        const chainCollection = (product as any).collections?.nodes?.find(
-          (c: any) => !exclude.has(c.handle),
-        );
-        return (
-          <div style={{borderBottom: `1px solid ${STYX.line}`}}>
-            <div
-              className="styx-product-breadcrumb"
-              style={{maxWidth: 1440, margin: '0 auto', padding: '20px 56px'}}
-            >
-              {/* Full trail — desktop / tablet */}
-              <nav
-                className="styx-breadcrumb-full"
-                style={{
-                  fontFamily: FONT.cinzel,
-                  fontSize: 11,
-                  letterSpacing: '0.2em',
-                  textTransform: 'uppercase',
-                  color: STYX.silt,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8,
-                }}
-              >
-                <Link to="/" style={{color: STYX.silt, textDecoration: 'none'}}>
-                  Home
-                </Link>
-                <span style={{opacity: 0.4}}>/</span>
-                {chainCollection ? (
-                  <>
-                    <Link
-                      to={`/collections/${chainCollection.handle}`}
-                      style={{color: STYX.silt, textDecoration: 'none'}}
-                    >
-                      {chainCollection.title}
-                    </Link>
-                    <span style={{opacity: 0.4}}>/</span>
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      to="/collections"
-                      style={{color: STYX.silt, textDecoration: 'none'}}
-                    >
-                      Collections
-                    </Link>
-                    <span style={{opacity: 0.4}}>/</span>
-                  </>
-                )}
-                <span style={{color: STYX.ink}}>{title}</span>
-              </nav>
-              {/* Single back link — mobile (product name is in the H1 right below) */}
-              <nav
-                className="styx-breadcrumb-back"
-                style={{
-                  display: 'none',
-                  fontFamily: FONT.cinzel,
-                  fontSize: 11,
-                  letterSpacing: '0.2em',
-                  textTransform: 'uppercase',
-                }}
-              >
-                <Link
-                  to={
-                    chainCollection
-                      ? `/collections/${chainCollection.handle}`
-                      : '/collections'
-                  }
-                  style={{
-                    color: STYX.silt,
-                    textDecoration: 'none',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 8,
-                  }}
-                >
-                  <span aria-hidden>&larr;</span>
-                  {chainCollection ? chainCollection.title : 'Collections'}
-                </Link>
-              </nav>
-            </div>
-          </div>
-        );
-      })()}
 
       {/* ── Main Two-Column Grid ──
           Three direct grid children so mobile can interleave with CSS `order`:
@@ -493,16 +435,73 @@ export default function Product() {
           margin: '0 auto',
           display: 'grid',
           gridTemplateColumns: '1.15fr 1fr',
+          // Row 1 hugs the lead image; the tall spanning info column dumps all
+          // its extra height into row 2 — otherwise row 1 stretches and opens
+          // a gap between the lead image and the rest of the gallery.
+          gridTemplateRows: 'auto 1fr',
           columnGap: 80,
           rowGap: 8,
-          padding: '64px 56px 100px',
+          padding: '24px 56px 100px',
           alignItems: 'start',
         }}
       >
-        {/* ── Gallery — Lead Image (first on mobile) ── */}
+        {/* ── Gallery — Mobile swipe carousel (hidden on desktop via CSS;
+            phones swipe through every image/video instead of scrolling a
+            stacked column) ── */}
+        <div className="styx-gallery-carousel">
+          <MobileMediaCarousel
+            slides={gallerySlides}
+            title={title}
+            firstSlideOverlay={
+              <>
+                {chainThickness && (
+                  <ActualSizeImageButton targetId="actual-size-strip" />
+                )}
+                {(romanNumeral || yearInvented) && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: 16,
+                      left: 16,
+                      background: STYX.bone,
+                      border: `1px solid ${STYX.line}`,
+                      padding: '10px 14px',
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontFamily: FONT.cinzel,
+                        fontSize: 9,
+                        letterSpacing: '0.3em',
+                        color: STYX.silt,
+                        textTransform: 'uppercase',
+                        marginBottom: 3,
+                      }}
+                    >
+                      Invented
+                    </div>
+                    <div
+                      style={{
+                        fontFamily: FONT.cinzel,
+                        fontSize: 18,
+                        letterSpacing: '0.12em',
+                        color: STYX.ink,
+                        fontWeight: 600,
+                      }}
+                    >
+                      {romanNumeral || yearInvented}
+                    </div>
+                  </div>
+                )}
+              </>
+            }
+          />
+        </div>
+
+        {/* ── Gallery — Lead Image (desktop stacked gallery) ── */}
         <div
           className="styx-gallery-lead"
-          style={{gridColumn: '1 / 2', gridRow: '1'}}
+          style={{gridColumn: '1 / 2', gridRow: '1', background: '#FFFFFF'}}
         >
           {/* Lead image — variant image if available, else first color-matched media */}
           {(() => {
@@ -608,7 +607,7 @@ export default function Product() {
           })()}
         </div>
 
-        {/* ── Gallery — Remaining Images (after buy box on mobile) ── */}
+        {/* ── Gallery — Remaining Media (desktop stacked gallery) ── */}
         <div
           className="styx-gallery-rest"
           style={{
@@ -617,9 +616,12 @@ export default function Product() {
             display: 'flex',
             flexDirection: 'column',
             gap: 8,
+            background: '#FFFFFF',
           }}
         >
-          {/* Remaining media — large, stacked; skip whichever image leads */}
+          {/* Remaining media — large, stacked; skip whichever image leads.
+              Videos always stay in the list (their preview may double as
+              the lead image, but the playable file is only here). */}
           {(() => {
             const variantImg = (selectedVariant as any)?.image;
             const leadUrl =
@@ -628,17 +630,26 @@ export default function Product() {
               colorFilteredMedia[0]?.previewImage?.url;
             return colorFilteredMedia
               .filter(
-                (m: any) => (m.image?.url || m.previewImage?.url) !== leadUrl,
+                (m: any) =>
+                  m.mediaContentType === 'VIDEO' ||
+                  (m.image?.url || m.previewImage?.url) !== leadUrl,
               )
-              .slice(0, 7);
+              .slice(0, 9);
           })().map((m: any, i: number) => {
+            if (m.mediaContentType === 'VIDEO' && m.sources?.length) {
+              return (
+                <div key={m.id || i} style={{background: '#FFFFFF'}}>
+                  <AutoplayVideo media={m} />
+                </div>
+              );
+            }
             const img = m.image || m.previewImage;
             if (!img) return null;
             return (
               <div
                 key={m.id || i}
                 style={{
-                  background: STYX.paper,
+                  background: '#FFFFFF',
                 }}
               >
                 <ZoomableImage
@@ -663,6 +674,77 @@ export default function Product() {
             paddingTop: 8,
           }}
         >
+          {/* ── Breadcrumb — lives above the title (not in its own top bar)
+              so the lead image stays fully above the fold ── */}
+          <div style={{marginBottom: 18}}>
+            {/* Full trail — desktop / tablet */}
+            <nav
+              className="styx-breadcrumb-full"
+              style={{
+                fontFamily: FONT.cinzel,
+                fontSize: 11,
+                letterSpacing: '0.2em',
+                textTransform: 'uppercase',
+                color: STYX.silt,
+                display: 'flex',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: 8,
+              }}
+            >
+              <Link to="/" style={{color: STYX.silt, textDecoration: 'none'}}>
+                Home
+              </Link>
+              <span style={{opacity: 0.4}}>/</span>
+              {chainCollection ? (
+                <Link
+                  to={`/collections/${chainCollection.handle}`}
+                  style={{color: STYX.silt, textDecoration: 'none'}}
+                >
+                  {chainCollection.title}
+                </Link>
+              ) : (
+                <Link
+                  to="/collections"
+                  style={{color: STYX.silt, textDecoration: 'none'}}
+                >
+                  Collections
+                </Link>
+              )}
+              <span style={{opacity: 0.4}}>/</span>
+              <span style={{color: STYX.ink}}>{title}</span>
+            </nav>
+            {/* Single back link — mobile (product name is in the H1 right below) */}
+            <nav
+              className="styx-breadcrumb-back"
+              style={{
+                display: 'none',
+                fontFamily: FONT.cinzel,
+                fontSize: 11,
+                letterSpacing: '0.2em',
+                textTransform: 'uppercase',
+              }}
+            >
+              <Link
+                to={
+                  chainCollection
+                    ? `/collections/${chainCollection.handle}`
+                    : '/collections'
+                }
+                style={{
+                  color: STYX.silt,
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 8,
+                }}
+              >
+                <span aria-hidden>&larr;</span>
+                {chainCollection ? chainCollection.title : 'Collections'}
+              </Link>
+            </nav>
+          </div>
+
           {/* Origin Label (no collection name) */}
           {chainOrigin && (
             <div
@@ -684,7 +766,7 @@ export default function Product() {
           <h1
             style={{
               fontFamily: FONT.cinzel,
-              fontSize: 48,
+              fontSize: 38,
               fontWeight: 400,
               textTransform: 'uppercase',
               letterSpacing: '0.03em',
@@ -724,9 +806,6 @@ export default function Product() {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
                   }).format(n);
-                const pureGoldWeight = displayWeight
-                  ? +(displayWeight * selectedPurity).toFixed(1)
-                  : null;
                 // $0 = catalog error; "$0.00" price cards would read as free.
                 const priceLabel = (n: number) => (isUnpriced ? '—' : fmt(n));
                 return (
@@ -881,7 +960,7 @@ export default function Product() {
                 }
                 return true;
               })
-              .map((option, optionIndex) => {
+              .map((option) => {
                 const isKarat = option.name.toLowerCase() === 'karat';
                 const isColor = option.name.toLowerCase() === 'color';
 
@@ -1507,112 +1586,192 @@ export default function Product() {
                   style={{width: '100%', justifyContent: 'center'}}
                 />
               </div>
+            </div>
+          )}
 
-              {/* ── Divider ── */}
-              <div
-                style={{
-                  marginTop: 24,
-                  borderTop: `1px solid ${STYX.line}`,
-                  paddingTop: 20,
-                }}
-              />
-
-              {/* ── Trust Signals ── */}
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  gap: '12px 16px',
-                }}
-              >
-                {[
-                  {text: `Authentic ${karat}K Gold`},
-                  {text: 'Free Insured Shipping'},
-                  {text: '14-Day Returns'},
-                  {text: 'Hallmarked & Tested'},
-                  {text: '5-Year Buyback Guarantee', href: '#ferrymans-pact'},
-                ].map(({text, href}) => {
-                  const rowStyle: React.CSSProperties = {
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    fontFamily: FONT.inter,
-                    fontSize: 11,
-                    color: STYX.silt,
-                    letterSpacing: '0.02em',
-                  };
-                  return href ? (
-                    <a
-                      key={text}
-                      href={href}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        document
-                          .getElementById(href.slice(1))
-                          ?.scrollIntoView({behavior: 'smooth'});
-                      }}
+          {/* ── Product Details — the piece's specs come before the boilerplate
+              trust signals ── */}
+          <div
+            style={{
+              marginTop: 40,
+              paddingTop: 32,
+              borderTop: `1px solid ${STYX.line}`,
+            }}
+          >
+            <div
+              style={{
+                fontFamily: FONT.cinzel,
+                fontSize: 10,
+                letterSpacing: '0.3em',
+                textTransform: 'uppercase',
+                color: STYX.silt,
+                marginBottom: 20,
+              }}
+            >
+              Product Details
+            </div>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '14px 24px',
+              }}
+            >
+              {[
+                {label: 'Chain Style', value: chainStyle},
+                {label: 'Thickness', value: chainThickness},
+                {label: 'Construction', value: chainConstruction},
+                {
+                  label: 'Weight',
+                  value: displayWeight ? `${displayWeight}g` : null,
+                },
+                {
+                  label: 'Karat',
+                  value: karat
+                    ? `${karat}k Gold (${(selectedPurity * 100).toFixed(
+                        1,
+                      )}% pure)`
+                    : null,
+                },
+                {label: 'Color', value: selectedColor || 'Yellow Gold'},
+                {label: 'Clasp', value: specClasp},
+                {label: 'Our Cast', value: specCast},
+                {label: 'Origin', value: chainOrigin},
+                {label: 'Invented', value: yearInvented},
+              ]
+                .filter((row) => row.value)
+                .map((row) => (
+                  <div key={row.label}>
+                    <div
                       style={{
-                        ...rowStyle,
-                        textDecoration: 'underline',
-                        textDecorationColor: STYX.gold,
-                        textUnderlineOffset: 3,
-                        cursor: 'pointer',
+                        fontFamily: FONT.cinzel,
+                        fontSize: 9,
+                        letterSpacing: '0.25em',
+                        textTransform: 'uppercase',
+                        color: STYX.silt,
+                        marginBottom: 4,
                       }}
                     >
-                      <span style={{color: STYX.gold, flexShrink: 0}}>
-                        &bull;
-                      </span>
-                      {text}
-                    </a>
-                  ) : (
-                    <div key={text} style={rowStyle}>
-                      <span style={{color: STYX.gold, flexShrink: 0}}>
-                        &bull;
-                      </span>
-                      {text}
+                      {row.label}
                     </div>
-                  );
-                })}
-              </div>
+                    <div
+                      style={{
+                        fontFamily: FONT.cormorant,
+                        fontSize: 17,
+                        color: STYX.ink,
+                        // Cormorant defaults to old-style figures, where "1"
+                        // reads as a dotless i ("1mm" → "ımm") — force lining
+                        // numerals so spec values stay unambiguous.
+                        fontVariantNumeric: 'lining-nums',
+                      }}
+                    >
+                      {row.value}
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
 
-              {/* Delivery promise — exact terms from the shipping policy:
+          {/* ── Trust Signals ── */}
+          <div
+            style={{
+              marginTop: 32,
+              borderTop: `1px solid ${STYX.line}`,
+              paddingTop: 24,
+            }}
+          >
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '12px 16px',
+              }}
+            >
+              {[
+                {text: 'Free Insured Shipping'},
+                {text: '14-Day Returns'},
+                {text: 'Hallmarked & Tested'},
+                {text: '5-Year Buyback Guarantee', href: '#ferrymans-pact'},
+              ].map(({text, href}) => {
+                const rowStyle: React.CSSProperties = {
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  fontFamily: FONT.inter,
+                  fontSize: 11,
+                  color: STYX.silt,
+                  letterSpacing: '0.02em',
+                };
+                return href ? (
+                  <a
+                    key={text}
+                    href={href}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      document
+                        .getElementById(href.slice(1))
+                        ?.scrollIntoView({behavior: 'smooth'});
+                    }}
+                    style={{
+                      ...rowStyle,
+                      textDecoration: 'underline',
+                      textDecorationColor: STYX.gold,
+                      textUnderlineOffset: 3,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <span style={{color: STYX.gold, flexShrink: 0}}>
+                      &bull;
+                    </span>
+                    {text}
+                  </a>
+                ) : (
+                  <div key={text} style={rowStyle}>
+                    <span style={{color: STYX.gold, flexShrink: 0}}>
+                      &bull;
+                    </span>
+                    {text}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Delivery promise — exact terms from the shipping policy:
                   ships in 1–2 business days, domestic transit 3–5,
                   fully insured with signature on delivery. */}
-              <div
+            <div
+              style={{
+                marginTop: 16,
+                textAlign: 'center',
+                fontFamily: FONT.cormorant,
+                fontSize: 14,
+                fontStyle: 'italic',
+                color: STYX.silt,
+                lineHeight: 1.5,
+              }}
+            >
+              Ships fully insured in 1&ndash;2 business days &mdash; domestic
+              delivery typically 3&ndash;5 business days, signature on arrival.
+            </div>
+
+            {/* FAQ link — same quiet idiom as the Make-an-Offer link */}
+            <div style={{marginTop: 8, textAlign: 'center'}}>
+              <Link
+                to="/faq"
                 style={{
-                  marginTop: 16,
-                  textAlign: 'center',
                   fontFamily: FONT.cormorant,
                   fontSize: 14,
                   fontStyle: 'italic',
                   color: STYX.silt,
-                  lineHeight: 1.5,
+                  textDecoration: 'underline',
+                  textUnderlineOffset: 3,
+                  textDecorationColor: 'rgba(74,68,59,0.45)',
                 }}
               >
-                Ships fully insured in 1&ndash;2 business days &mdash; domestic
-                delivery typically 3&ndash;5 business days, signature on
-                arrival.
-              </div>
-
-              {/* FAQ link — same quiet idiom as the Make-an-Offer link */}
-              <div style={{marginTop: 8, textAlign: 'center'}}>
-                <Link
-                  to="/faq"
-                  style={{
-                    fontFamily: FONT.cormorant,
-                    fontSize: 14,
-                    fontStyle: 'italic',
-                    color: STYX.silt,
-                    textDecoration: 'underline',
-                    textUnderlineOffset: 3,
-                    textDecorationColor: 'rgba(74,68,59,0.45)',
-                  }}
-                >
-                  Questions? Read the FAQ
-                </Link>
-              </div>
+                Questions? Read the FAQ
+              </Link>
             </div>
-          )}
+          </div>
 
           {/* ── Make an Offer Modal ── */}
           {offerOpen && (
@@ -2056,84 +2215,6 @@ export default function Product() {
             </div>
           )}
 
-          {/* ── Product Details ── */}
-          <div
-            style={{
-              marginTop: 40,
-              paddingTop: 32,
-              borderTop: `1px solid ${STYX.line}`,
-            }}
-          >
-            <div
-              style={{
-                fontFamily: FONT.cinzel,
-                fontSize: 10,
-                letterSpacing: '0.3em',
-                textTransform: 'uppercase',
-                color: STYX.silt,
-                marginBottom: 20,
-              }}
-            >
-              Product Details
-            </div>
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '14px 24px',
-              }}
-            >
-              {[
-                {label: 'Chain Style', value: chainStyle},
-                {label: 'Thickness', value: chainThickness},
-                {label: 'Construction', value: chainConstruction},
-                {
-                  label: 'Weight',
-                  value: displayWeight ? `${displayWeight}g` : null,
-                },
-                {
-                  label: 'Karat',
-                  value: karat
-                    ? `${karat}k Gold (${(selectedPurity * 100).toFixed(
-                        1,
-                      )}% pure)`
-                    : null,
-                },
-                {label: 'Color', value: selectedColor || 'Yellow Gold'},
-                {label: 'Clasp', value: specClasp},
-                {label: 'Our Cast', value: specCast},
-                {label: 'Origin', value: chainOrigin},
-                {label: 'Invented', value: yearInvented},
-              ]
-                .filter((row) => row.value)
-                .map((row) => (
-                  <div key={row.label}>
-                    <div
-                      style={{
-                        fontFamily: FONT.cinzel,
-                        fontSize: 9,
-                        letterSpacing: '0.25em',
-                        textTransform: 'uppercase',
-                        color: STYX.silt,
-                        marginBottom: 4,
-                      }}
-                    >
-                      {row.label}
-                    </div>
-                    <div
-                      style={{
-                        fontFamily: FONT.cormorant,
-                        fontSize: 17,
-                        color: STYX.ink,
-                      }}
-                    >
-                      {row.value}
-                    </div>
-                  </div>
-                ))}
-            </div>
-          </div>
-
           {/* ── See it at actual size on your screen (card-calibrated) ── */}
           <div
             id="actual-size-strip"
@@ -2178,161 +2259,7 @@ export default function Product() {
             </div>
           </div>
 
-          {/* ── Transparency Receipt (below cart) — only with real weight data.
-              Hidden for unpriced ($0) variants: the math would show negative
-              labor and a $0.00 toll. ── */}
-          {selectedVariant?.price && displayWeight && !isUnpriced && (
-            <div
-              style={{
-                marginTop: 40,
-                background: STYX.ink,
-                color: STYX.bone,
-                padding: '28px 32px',
-              }}
-            >
-              {/* Header */}
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  marginBottom: 20,
-                  paddingBottom: 16,
-                  borderBottom: '1px solid rgba(239,234,224,0.12)',
-                }}
-              >
-                <div style={{display: 'flex', alignItems: 'center', gap: 10}}>
-                  <span
-                    style={{
-                      width: 6,
-                      height: 6,
-                      borderRadius: '50%',
-                      background: '#7DB86F',
-                      boxShadow: '0 0 8px #7DB86F',
-                      display: 'inline-block',
-                    }}
-                  />
-                  <span
-                    style={{
-                      fontFamily: FONT.cinzel,
-                      fontSize: 10,
-                      letterSpacing: '0.25em',
-                      textTransform: 'uppercase',
-                      color: STYX.gold,
-                    }}
-                  >
-                    Live Price &middot; No Hidden Math
-                  </span>
-                </div>
-                <span
-                  style={{
-                    fontFamily: FONT.cinzel,
-                    fontSize: 10,
-                    letterSpacing: '0.2em',
-                    textTransform: 'uppercase',
-                    color: 'rgba(239,234,224,0.45)',
-                  }}
-                >
-                  Live Gold Price
-                </span>
-              </div>
-
-              {/* Receipt Rows */}
-              <div style={{fontFamily: FONT.mono, fontSize: 13, lineHeight: 1}}>
-                {(() => {
-                  const ourPrice = parseFloat(selectedVariant.price.amount);
-                  const pureGoldGrams = displayWeight * selectedPurity;
-                  const meltValue = pureGoldGrams * (spotPerOz / 31.1035);
-                  const difference = ourPrice - meltValue;
-                  const wirePrice = Math.round(ourPrice * 0.96 * 100) / 100;
-                  return (
-                    <>
-                      <ReceiptSection label="MELT VALUE" />
-                      <ReceiptRow
-                        label={`${displayWeight}g total weight`}
-                        value={`${karat}K gold`}
-                      />
-                      <ReceiptRow
-                        label={`${pureGoldGrams.toFixed(2)}g pure gold (${(
-                          selectedPurity * 100
-                        ).toFixed(0)}%)`}
-                        value={`@ $${(spotPerOz / 31.1035).toFixed(2)}/g`}
-                      />
-                      <ReceiptRow
-                        label="Gold melt value"
-                        value={formatUSD(meltValue)}
-                        highlight
-                      />
-
-                      <div style={{height: 20}} />
-                      <ReceiptSection label="DIFFERENCE" />
-                      <ReceiptRow
-                        label="Labor, craftsmanship, overhead"
-                        value={formatUSD(difference)}
-                        highlight
-                      />
-
-                      <div style={{height: 20}} />
-                      <ReceiptSection label="OUR PRICE" />
-                      <ReceiptRow
-                        label="Melt value + markup"
-                        value={formatUSD(ourPrice)}
-                        highlight
-                      />
-
-                      <div style={{height: 12}} />
-                      <ReceiptRow
-                        label="Wire transfer (save 4%)"
-                        value={formatUSD(wirePrice)}
-                      />
-                    </>
-                  );
-                })()}
-              </div>
-
-              {/* Divider */}
-              <div
-                style={{
-                  borderTop: '1px dashed rgba(239,234,224,0.2)',
-                  margin: '18px 0',
-                }}
-              />
-
-              {/* Total */}
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'baseline',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <span
-                  style={{
-                    fontFamily: FONT.cinzel,
-                    fontSize: 13,
-                    letterSpacing: '0.2em',
-                    textTransform: 'uppercase',
-                    color: STYX.bone,
-                  }}
-                >
-                  Your Toll
-                </span>
-                <span
-                  style={{
-                    fontFamily: FONT.cinzel,
-                    fontSize: 32,
-                    fontWeight: 600,
-                    color: STYX.bone,
-                    fontVariantNumeric: 'tabular-nums',
-                  }}
-                >
-                  <Money data={selectedVariant.price} as="span" />
-                </span>
-              </div>
-            </div>
-          )}
-
-          {/* ── Cross-Sell: Pairs Well With (below cart + live price receipt) ── */}
+          {/* ── Cross-Sell: Pairs Well With (below cart) ── */}
           <Suspense fallback={null}>
             <Await resolve={crossSell} errorElement={null}>
               {(products) =>
@@ -2394,44 +2321,61 @@ export default function Product() {
                 marginTop: 48,
               }}
             >
-              <div
-                style={{
-                  fontFamily: FONT.cormorant,
-                  fontSize: 19,
-                  fontStyle: 'italic',
-                  color: STYX.ink,
-                  lineHeight: 1.7,
-                }}
-              >
-                {storyBody || (
-                  <>
-                    Most jewelers mark gold up 8 to 12 times. That is not
-                    because gold is expensive &mdash; gold is a commodity,
-                    priced openly on global markets &mdash; it is because the
-                    business is built on mystery. We are not.
-                  </>
-                )}
+              {/* Narrative — story + the plain-math paragraph, stacked */}
+              <div style={{display: 'flex', flexDirection: 'column', gap: 28}}>
+                <div
+                  style={{
+                    fontFamily: FONT.cormorant,
+                    fontSize: 19,
+                    fontStyle: 'italic',
+                    color: STYX.ink,
+                    lineHeight: 1.7,
+                  }}
+                >
+                  {storyBody || (
+                    <>
+                      Most jewelers mark gold up 8 to 12 times. That is not
+                      because gold is expensive &mdash; gold is a commodity,
+                      priced openly on global markets &mdash; it is because the
+                      business is built on mystery. We are not.
+                    </>
+                  )}
+                </div>
+                <div
+                  style={{
+                    fontFamily: FONT.inter,
+                    fontSize: 15,
+                    color: STYX.ink,
+                    lineHeight: 1.75,
+                  }}
+                >
+                  This piece weighs {displayWeight}g of solid {karat}k gold. At
+                  today&rsquo;s live market price, that is{' '}
+                  {formatUSD(
+                    goldBreakdown
+                      ? goldBreakdown.materialCost
+                      : displayWeight * perGramSelected,
+                  )}{' '}
+                  in raw material. We add{' '}
+                  {formatUSD(
+                    goldBreakdown ? goldBreakdown.laborCost : laborCost,
+                  )}{' '}
+                  for manufacturing and finishing, and our margin keeps the
+                  lights on. That is the whole math. Nothing hidden in a velvet
+                  box.
+                </div>
               </div>
-              <div
-                style={{
-                  fontFamily: FONT.inter,
-                  fontSize: 15,
-                  color: STYX.ink,
-                  lineHeight: 1.75,
-                }}
-              >
-                This piece weighs {displayWeight}g of solid {karat}k gold. At
-                today&rsquo;s live market price, that is{' '}
-                {formatUSD(
-                  goldBreakdown
-                    ? goldBreakdown.materialCost
-                    : displayWeight * perGramSelected,
-                )}{' '}
-                in raw material. We add{' '}
-                {formatUSD(goldBreakdown ? goldBreakdown.laborCost : laborCost)}{' '}
-                for manufacturing and finishing, and our margin keeps the lights
-                on. That is the whole math. Nothing hidden in a velvet box.
-              </div>
+
+              {/* Live-price receipt — the numbers behind the narrative */}
+              {selectedVariant?.price && (
+                <LivePriceReceipt
+                  price={selectedVariant.price}
+                  displayWeight={displayWeight}
+                  selectedPurity={selectedPurity}
+                  karat={karat}
+                  spotPerOz={spotPerOz}
+                />
+              )}
             </div>
           </div>
         </section>
@@ -2616,6 +2560,167 @@ export default function Product() {
 
 /* ─────────────────────────── Helper Components ─────────────────────────── */
 
+/** Dark "Live Price · No Hidden Math" receipt — the itemized melt-value math.
+    Lives in the transparency section, beside the narrative it substantiates. */
+function LivePriceReceipt({
+  price,
+  displayWeight,
+  selectedPurity,
+  karat,
+  spotPerOz,
+}: {
+  price: {amount: string; currencyCode: string};
+  displayWeight: number;
+  selectedPurity: number;
+  karat: number;
+  spotPerOz: number;
+}) {
+  const ourPrice = parseFloat(price.amount);
+  const pureGoldGrams = displayWeight * selectedPurity;
+  const meltValue = pureGoldGrams * (spotPerOz / 31.1035);
+  const difference = ourPrice - meltValue;
+  const wirePrice = Math.round(ourPrice * 0.96 * 100) / 100;
+
+  return (
+    <div
+      style={{
+        background: STYX.ink,
+        color: STYX.bone,
+        padding: '28px 32px',
+      }}
+    >
+      {/* Header */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginBottom: 20,
+          paddingBottom: 16,
+          borderBottom: '1px solid rgba(239,234,224,0.12)',
+        }}
+      >
+        <div style={{display: 'flex', alignItems: 'center', gap: 10}}>
+          <span
+            style={{
+              width: 6,
+              height: 6,
+              borderRadius: '50%',
+              background: '#7DB86F',
+              boxShadow: '0 0 8px #7DB86F',
+              display: 'inline-block',
+            }}
+          />
+          <span
+            style={{
+              fontFamily: FONT.cinzel,
+              fontSize: 10,
+              letterSpacing: '0.25em',
+              textTransform: 'uppercase',
+              color: STYX.gold,
+            }}
+          >
+            Live Price &middot; No Hidden Math
+          </span>
+        </div>
+        <span
+          style={{
+            fontFamily: FONT.cinzel,
+            fontSize: 10,
+            letterSpacing: '0.2em',
+            textTransform: 'uppercase',
+            color: 'rgba(239,234,224,0.45)',
+          }}
+        >
+          Live Gold Price
+        </span>
+      </div>
+
+      {/* Receipt Rows */}
+      <div style={{fontFamily: FONT.mono, fontSize: 13, lineHeight: 1}}>
+        <ReceiptSection label="MELT VALUE" />
+        <ReceiptRow
+          label={`${displayWeight}g total weight`}
+          value={`${karat}K gold`}
+        />
+        <ReceiptRow
+          label={`${pureGoldGrams.toFixed(2)}g pure gold (${(
+            selectedPurity * 100
+          ).toFixed(0)}%)`}
+          value={`@ $${(spotPerOz / 31.1035).toFixed(2)}/g`}
+        />
+        <ReceiptRow
+          label="Gold melt value"
+          value={formatUSD(meltValue)}
+          highlight
+        />
+
+        <div style={{height: 20}} />
+        <ReceiptSection label="DIFFERENCE" />
+        <ReceiptRow
+          label="Labor, craftsmanship, overhead"
+          value={formatUSD(difference)}
+          highlight
+        />
+
+        <div style={{height: 20}} />
+        <ReceiptSection label="OUR PRICE" />
+        <ReceiptRow
+          label="Melt value + markup"
+          value={formatUSD(ourPrice)}
+          highlight
+        />
+
+        <div style={{height: 12}} />
+        <ReceiptRow
+          label="Wire transfer (save 4%)"
+          value={formatUSD(wirePrice)}
+        />
+      </div>
+
+      {/* Divider */}
+      <div
+        style={{
+          borderTop: '1px dashed rgba(239,234,224,0.2)',
+          margin: '18px 0',
+        }}
+      />
+
+      {/* Total */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'baseline',
+          justifyContent: 'space-between',
+        }}
+      >
+        <span
+          style={{
+            fontFamily: FONT.cinzel,
+            fontSize: 13,
+            letterSpacing: '0.2em',
+            textTransform: 'uppercase',
+            color: STYX.bone,
+          }}
+        >
+          Your Toll
+        </span>
+        <span
+          style={{
+            fontFamily: FONT.cinzel,
+            fontSize: 32,
+            fontWeight: 600,
+            color: STYX.bone,
+            fontVariantNumeric: 'tabular-nums',
+          }}
+        >
+          <Money data={price as any} as="span" />
+        </span>
+      </div>
+    </div>
+  );
+}
+
 function ReceiptSection({label}: {label: string}) {
   return (
     <div
@@ -2675,6 +2780,213 @@ function ReceiptRow({
       >
         {value}
       </span>
+    </div>
+  );
+}
+
+/** Shopify-hosted product video: muted loop that plays only while on screen. */
+function AutoplayVideo({media}: {media: any}) {
+  const ref = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = ref.current;
+    if (!video) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const el = entry.target as HTMLVideoElement;
+          if (entry.isIntersecting) {
+            el.play().catch(() => {});
+          } else {
+            el.pause();
+          }
+        }
+      },
+      {threshold: 0.5},
+    );
+    io.observe(video);
+    return () => io.disconnect();
+  }, []);
+
+  const source =
+    media.sources?.find((s: any) => s.mimeType === 'video/mp4') ??
+    media.sources?.[0];
+  if (!source) return null;
+
+  return (
+    <video
+      ref={ref}
+      playsInline
+      muted
+      loop
+      preload="metadata"
+      poster={media.previewImage?.url}
+      aria-label={media.alt || 'Product video'}
+      style={{width: '100%', height: 'auto', display: 'block'}}
+    >
+      <source src={source.url} type={source.mimeType} />
+    </video>
+  );
+}
+
+/**
+ * Mobile gallery: one full-width scroll-snap carousel. Swipe left/right is
+ * native touch scrolling (works pre-hydration); JS only adds the counter,
+ * tappable dots, and pausing off-screen videos.
+ */
+function MobileMediaCarousel({
+  slides,
+  title,
+  firstSlideOverlay,
+}: {
+  slides: Array<{key: string; kind: 'image' | 'video'; media: any}>;
+  title: string;
+  firstSlideOverlay?: React.ReactNode;
+}) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [index, setIndex] = useState(0);
+  const rafRef = useRef(0);
+
+  const onScroll = useCallback(() => {
+    cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(() => {
+      const track = trackRef.current;
+      if (!track || track.clientWidth === 0) return;
+      setIndex(
+        Math.max(
+          0,
+          Math.min(
+            slides.length - 1,
+            Math.round(track.scrollLeft / track.clientWidth),
+          ),
+        ),
+      );
+    });
+  }, [slides.length]);
+
+  const scrollToSlide = useCallback((i: number) => {
+    const track = trackRef.current;
+    if (!track) return;
+    track.scrollTo({left: i * track.clientWidth, behavior: 'smooth'});
+  }, []);
+
+  // Reset to the first slide when the slide set changes (variant/color switch).
+  useEffect(() => {
+    trackRef.current?.scrollTo({left: 0});
+    setIndex(0);
+  }, [slides.map((s) => s.key).join('|')]);
+
+  if (slides.length === 0) {
+    return (
+      <div
+        style={{
+          aspectRatio: '4/5',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: '#FFFFFF',
+          color: STYX.silt2,
+          fontFamily: FONT.cinzel,
+          fontSize: 14,
+        }}
+      >
+        No Image
+      </div>
+    );
+  }
+
+  return (
+    <div style={{position: 'relative'}}>
+      <div
+        ref={trackRef}
+        className="styx-carousel-track"
+        onScroll={onScroll}
+        aria-label={`${title} media gallery, ${slides.length} items`}
+        aria-roledescription="carousel"
+      >
+        {slides.map((slide, i) => (
+          <div key={slide.key} className="styx-carousel-slide">
+            {slide.kind === 'video' ? (
+              <AutoplayVideo media={slide.media} />
+            ) : (
+              <ZoomableImage
+                data={slide.media}
+                alt={title}
+                // Same sizes as the desktop lead so the eager first slide
+                // resolves to the identical srcset URL (one shared download
+                // even though both galleries render it).
+                sizes="(min-width: 1200px) 55vw, 90vw"
+                loading={i === 0 ? 'eager' : 'lazy'}
+              />
+            )}
+            {i === 0 ? firstSlideOverlay : null}
+          </div>
+        ))}
+      </div>
+
+      {slides.length > 1 && (
+        <>
+          {/* Counter — top right, ledger style */}
+          <div
+            style={{
+              position: 'absolute',
+              top: 12,
+              right: 12,
+              background: 'rgba(26,24,21,0.72)',
+              color: STYX.bone,
+              fontFamily: FONT.mono,
+              fontSize: 10,
+              letterSpacing: '0.1em',
+              padding: '4px 8px',
+              pointerEvents: 'none',
+              fontVariantNumeric: 'tabular-nums',
+            }}
+          >
+            {index + 1} / {slides.length}
+          </div>
+
+          {/* Dots — tappable, 24px hit targets */}
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: 4,
+              paddingTop: 10,
+            }}
+          >
+            {slides.map((slide, i) => (
+              <button
+                key={slide.key}
+                type="button"
+                aria-label={`Go to media ${i + 1} of ${slides.length}`}
+                aria-current={i === index}
+                onClick={() => scrollToSlide(i)}
+                style={{
+                  width: 24,
+                  height: 24,
+                  padding: 0,
+                  border: 'none',
+                  background: 'transparent',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <span
+                  style={{
+                    width: i === index ? 18 : 6,
+                    height: 6,
+                    borderRadius: 3,
+                    background: i === index ? STYX.gold : STYX.line,
+                    transition: 'all 0.25s ease',
+                  }}
+                />
+              </button>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }
@@ -2959,7 +3271,7 @@ const PRODUCT_FRAGMENT = `#graphql
       description
       title
     }
-    media(first: 7) {
+    media(first: 12) {
       nodes {
         ...Media
       }

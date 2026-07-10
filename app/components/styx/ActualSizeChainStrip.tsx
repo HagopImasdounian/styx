@@ -36,6 +36,11 @@ export function ActualSizeChainStrip({
   // No usable width → nothing meaningful to scale.
   if (mm == null) return null;
 
+  // Discovery lives on the lead image (ActualSizeImageButton); the strip only
+  // appears once actual-size is on, so it doesn't sit as a dead block low in
+  // the spec column.
+  if (!actualSizeOn) return null;
+
   const showing = actualSizeOn && pxPerMm != null;
   // On desktop the estimate is a guess (the monitor's real size is unknowable),
   // so we nudge those shoppers toward validating with a card.
@@ -43,7 +48,13 @@ export function ActualSizeChainStrip({
   const userSet = source === 'calibration' || source === 'manual';
 
   return (
-    <div style={{marginTop: 40, paddingTop: 32, borderTop: `1px solid ${STYX.line}`}}>
+    <div
+      style={{
+        marginTop: 40,
+        paddingTop: 32,
+        borderTop: `1px solid ${STYX.line}`,
+      }}
+    >
       <div
         style={{
           display: 'flex',
@@ -78,8 +89,8 @@ export function ActualSizeChainStrip({
               ? source === 'calibration'
                 ? `${mm} mm — true size, calibrated to your screen`
                 : source === 'manual'
-                  ? `${mm} mm — true size, adjusted to your screen`
-                  : `${mm} mm — shown at true size on your screen`
+                ? `${mm} mm — true size, adjusted to your screen`
+                : `${mm} mm — shown at true size on your screen`
               : 'See this exact chain at its real width on your screen — turn it on.'}
           </div>
         </div>
@@ -147,20 +158,42 @@ export function ActualSizeChainStrip({
               >
                 Looks off?
               </span>
-              <NudgeBtn label="−" title="Slightly smaller" onClick={() => adjustScale(-1)} />
-              <NudgeBtn label="+" title="Slightly larger" onClick={() => adjustScale(1)} />
+              <NudgeBtn
+                label="−"
+                title="Slightly smaller"
+                onClick={() => adjustScale(-1)}
+              />
+              <NudgeBtn
+                label="+"
+                title="Slightly larger"
+                onClick={() => adjustScale(1)}
+              />
             </div>
 
-            <div style={{display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap', justifyContent: 'center'}}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 16,
+                flexWrap: 'wrap',
+                justifyContent: 'center',
+              }}
+            >
               <button
                 type="button"
                 onClick={() => openCalibration()}
                 style={LINK_STYLE}
               >
-                {isCalibrated ? 'Re-check with a bank card' : 'Match a bank card exactly'}
+                {isCalibrated
+                  ? 'Re-check with a bank card'
+                  : 'Match a bank card exactly'}
               </button>
               {userSet && (
-                <button type="button" onClick={clearCalibration} style={LINK_STYLE}>
+                <button
+                  type="button"
+                  onClick={clearCalibration}
+                  style={LINK_STYLE}
+                >
                   Reset to auto
                 </button>
               )}
@@ -184,7 +217,15 @@ const LINK_STYLE: React.CSSProperties = {
   cursor: 'pointer',
 };
 
-function NudgeBtn({label, title, onClick}: {label: string; title: string; onClick: () => void}) {
+function NudgeBtn({
+  label,
+  title,
+  onClick,
+}: {
+  label: string;
+  title: string;
+  onClick: () => void;
+}) {
   return (
     <button
       type="button"

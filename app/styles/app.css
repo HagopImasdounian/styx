@@ -12,32 +12,60 @@
    stops that without turning the body into a scroll container the way
    `overflow: hidden` would — so the sticky nav keeps working.
    ─────────────────────────────────────────────────────────────── */
-html, body { overflow-x: clip; max-width: 100%; }
+html,
+body {
+  overflow-x: clip;
+  max-width: 100%;
+}
 
 /* STYX Keyframe Animations */
 @keyframes styx-coinflip {
-  0% { transform: rotateX(0deg); }
-  100% { transform: rotateX(360deg); }
+  0% {
+    transform: rotateX(0deg);
+  }
+  100% {
+    transform: rotateX(360deg);
+  }
 }
 
 @keyframes styx-marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-33.33%); }
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.33%);
+  }
 }
 
 @keyframes styx-fade-up {
-  0% { opacity: 0; transform: translateY(16px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes styx-menu-in {
-  0% { opacity: 0; transform: translateY(-8px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes styx-scrim-in {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 /* Coin fly-in: launches from bottom, overshoots slightly above center, settles into place */
@@ -60,14 +88,18 @@ html, body { overflow-x: clip; max-width: 100%; }
 }
 
 @keyframes styx-shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
 }
 
 /* STYX Selection Colors */
 ::selection {
-  background: #B8924A;
-  color: #EFEAE0;
+  background: #b8924a;
+  color: #efeae0;
 }
 
 /* Tokens */
@@ -204,12 +236,45 @@ shop-pay-button {
   }
 }
 
-.styx-hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
-.styx-hide-scrollbar::-webkit-scrollbar { display: none; }
+.styx-hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.styx-hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
 
 /* Product gallery: when there are no remaining images, drop the empty grid
    item so it doesn't add a phantom row/gap on either breakpoint. */
-.styx-gallery-rest:empty { display: none; }
+.styx-gallery-rest:empty {
+  display: none;
+}
+
+/* Mobile swipe carousel — desktop uses the stacked lead/rest gallery instead.
+   display:none keeps its lazy images from ever loading on desktop. */
+.styx-gallery-carousel {
+  display: none;
+}
+.styx-carousel-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.styx-carousel-track::-webkit-scrollbar {
+  display: none;
+}
+.styx-carousel-slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  position: relative;
+  background: #ffffff;
+}
 
 /* ═══════════════════════════════════════════════════════════════
    STYX Responsive Overrides
@@ -219,33 +284,70 @@ shop-pay-button {
 /* Tablet: ≤ 48em (768px) */
 @media (max-width: 48em) {
   /* Nav */
-  .styx-nav nav { padding: 0 20px !important; }
-  .styx-nav-links { display: none !important; }
-  .styx-nav-hamburger { display: flex !important; }
-  .styx-nav-right { flex: 0 0 auto !important; gap: 18px !important; margin-left: auto !important; }
-  .styx-nav-right a[href*="contact"] { display: none !important; }
+  .styx-nav nav {
+    padding: 0 20px !important;
+  }
+  .styx-nav-links {
+    display: none !important;
+  }
+  .styx-nav-hamburger {
+    display: flex !important;
+  }
+  .styx-nav-right {
+    flex: 0 0 auto !important;
+    gap: 18px !important;
+    margin-left: auto !important;
+  }
+  .styx-nav-right a[href*='contact'] {
+    display: none !important;
+  }
 
   /* Chain length guide — stack on mobile */
   .styx-chain-guide-layout {
     grid-template-columns: 1fr !important;
     padding: 0 !important;
   }
-  .styx-chain-guide-layout > div:first-child { min-height: 400px !important; }
-  .styx-chain-guide-layout > div:last-child { border-left: none !important; border-top: 1px solid #e2ded6 !important; padding: 24px 20px !important; }
-  .styx-chain-ref-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .styx-chain-guide-layout > div:first-child {
+    min-height: 400px !important;
+  }
+  .styx-chain-guide-layout > div:last-child {
+    border-left: none !important;
+    border-top: 1px solid #e2ded6 !important;
+    padding: 24px 20px !important;
+  }
+  .styx-chain-ref-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
 
   /* Ticker */
-  .styx-ticker { padding: 8px 16px !important; gap: 16px !important; }
-  .styx-ticker [data-cell-extra] { display: none !important; }
+  .styx-ticker {
+    padding: 8px 16px !important;
+    gap: 16px !important;
+  }
+  .styx-ticker [data-cell-extra] {
+    display: none !important;
+  }
 
   /* Hero — full-bleed background */
-  .styx-hero { min-height: 65vh !important; }
-  .styx-hero-content { padding: 100px 24px 60px !important; max-width: 100% !important; }
-  .styx-hero h1 { font-size: 44px !important; }
+  .styx-hero {
+    min-height: 65vh !important;
+  }
+  .styx-hero-content {
+    padding: 100px 24px 60px !important;
+    max-width: 100% !important;
+  }
+  .styx-hero h1 {
+    font-size: 44px !important;
+  }
 
   /* Categories */
-  .styx-categories { padding: 60px 20px !important; }
-  .styx-categories > div:first-child { flex-direction: column !important; gap: 16px !important; }
+  .styx-categories {
+    padding: 60px 20px !important;
+  }
+  .styx-categories > div:first-child {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
   .styx-categories-grid {
     display: flex !important;
     overflow-x: auto !important;
@@ -254,8 +356,12 @@ shop-pay-button {
     gap: 16px !important;
     padding-bottom: 8px !important;
   }
-  .styx-categories-grid::-webkit-scrollbar { display: none; }
-  .styx-categories-grid { scrollbar-width: none; }
+  .styx-categories-grid::-webkit-scrollbar {
+    display: none;
+  }
+  .styx-categories-grid {
+    scrollbar-width: none;
+  }
   .styx-categories-grid > * {
     flex: 0 0 75vw !important;
     max-width: 300px;
@@ -263,8 +369,13 @@ shop-pay-button {
   }
 
   /* Featured */
-  .styx-featured { padding: 60px 20px !important; }
-  .styx-featured h2 { font-size: 28px !important; margin-bottom: 28px !important; }
+  .styx-featured {
+    padding: 60px 20px !important;
+  }
+  .styx-featured h2 {
+    font-size: 28px !important;
+    margin-bottom: 28px !important;
+  }
   .styx-featured-grid {
     display: flex !important;
     overflow-x: auto !important;
@@ -273,8 +384,12 @@ shop-pay-button {
     gap: 14px !important;
     padding-bottom: 8px !important;
   }
-  .styx-featured-grid::-webkit-scrollbar { display: none; }
-  .styx-featured-grid { scrollbar-width: none; }
+  .styx-featured-grid::-webkit-scrollbar {
+    display: none;
+  }
+  .styx-featured-grid {
+    scrollbar-width: none;
+  }
   .styx-featured-grid > * {
     flex: 0 0 60vw !important;
     max-width: 240px;
@@ -282,73 +397,173 @@ shop-pay-button {
   }
 
   /* Lookbook — static grid, rows of 2 on mobile */
-  .styx-lookbook { padding: 80px 0 80px !important; }
-  .styx-lookbook > div:first-child { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; padding: 0 20px !important; }
-  .styx-lookbook-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; padding: 0 20px !important; }
-  .styx-lookbook-tile-meta { padding: 12px !important; }
-  .styx-lookbook-tile-title { font-size: 14px !important; letter-spacing: 0.06em !important; }
-  .styx-lookbook h2 { font-size: 36px !important; }
+  .styx-lookbook {
+    padding: 80px 0 80px !important;
+  }
+  .styx-lookbook > div:first-child {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 16px !important;
+    padding: 0 20px !important;
+  }
+  .styx-lookbook-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+    padding: 0 20px !important;
+  }
+  .styx-lookbook-tile-meta {
+    padding: 12px !important;
+  }
+  .styx-lookbook-tile-title {
+    font-size: 14px !important;
+    letter-spacing: 0.06em !important;
+  }
+  .styx-lookbook h2 {
+    font-size: 36px !important;
+  }
 
   /* Craft / Promise */
-  .styx-craft { padding: 60px 20px !important; }
-  .styx-craft [data-grid] { grid-template-columns: 1fr !important; gap: 40px !important; }
+  .styx-craft {
+    padding: 60px 20px !important;
+  }
+  .styx-craft [data-grid] {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
 
   /* Newsletter */
-  .styx-newsletter { padding: 60px 20px !important; }
+  .styx-newsletter {
+    padding: 60px 20px !important;
+  }
 
   /* Footer — brand column spans full width on top, 3 link groups flow 2-up below */
-  .styx-footer { padding: 48px 20px 32px !important; }
-  .styx-footer [data-grid] { grid-template-columns: repeat(2, 1fr) !important; gap: 28px 24px !important; }
-  .styx-footer [data-grid] > :first-child { grid-column: 1 / -1 !important; }
+  .styx-footer {
+    padding: 48px 20px 32px !important;
+  }
+  .styx-footer [data-grid] {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 28px 24px !important;
+  }
+  .styx-footer [data-grid] > :first-child {
+    grid-column: 1 / -1 !important;
+  }
 
   /* About page */
-  .styx-about-hero { grid-template-columns: 1fr !important; padding: 60px 20px 48px !important; gap: 32px !important; }
-  .styx-about-hero h1 { font-size: 42px !important; }
-  .styx-about-values { grid-template-columns: 1fr !important; }
-  .styx-about-story { padding: 60px 20px !important; }
-  .styx-about-story > div { grid-template-columns: 1fr !important; gap: 24px !important; }
-  .styx-about-problem { padding: 60px 20px !important; }
-  .styx-about-future { padding: 60px 20px !important; }
-  .styx-about-cta { flex-direction: column !important; padding: 48px 20px !important; text-align: center !important; }
+  .styx-about-hero {
+    grid-template-columns: 1fr !important;
+    padding: 60px 20px 48px !important;
+    gap: 32px !important;
+  }
+  .styx-about-hero h1 {
+    font-size: 42px !important;
+  }
+  .styx-about-values {
+    grid-template-columns: 1fr !important;
+  }
+  .styx-about-story {
+    padding: 60px 20px !important;
+  }
+  .styx-about-story > div {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+  .styx-about-problem {
+    padding: 60px 20px !important;
+  }
+  .styx-about-future {
+    padding: 60px 20px !important;
+  }
+  .styx-about-cta {
+    flex-direction: column !important;
+    padding: 48px 20px !important;
+    text-align: center !important;
+  }
 
   /* Contact page */
-  .styx-contact-grid { grid-template-columns: 1fr !important; padding: 48px 20px 80px !important; gap: 48px !important; }
+  .styx-contact-grid {
+    grid-template-columns: 1fr !important;
+    padding: 48px 20px 80px !important;
+    gap: 48px !important;
+  }
 
   /* ── Product page ── */
-  .styx-product-breadcrumb { padding: 12px 20px !important; }
   /* Breadcrumb: full trail wraps awkwardly on phones — show a single back link */
-  .styx-breadcrumb-full { display: none !important; }
-  .styx-breadcrumb-back { display: block !important; }
+  .styx-breadcrumb-full {
+    display: none !important;
+  }
+  .styx-breadcrumb-back {
+    display: block !important;
+  }
   /* Color pills: three letter-spaced pills can't share one phone-width row — stack them */
-  .styx-color-pills { flex-direction: column !important; }
+  .styx-color-pills {
+    flex-direction: column !important;
+  }
   .styx-color-pills > a {
     border-right: none !important;
-    border-bottom: 1px solid rgba(26,24,21,0.12) !important;
+    border-bottom: 1px solid rgba(26, 24, 21, 0.12) !important;
   }
-  .styx-color-pills > a:last-child { border-bottom: none !important; }
+  .styx-color-pills > a:last-child {
+    border-bottom: none !important;
+  }
   /* minmax(0,1fr) (not plain 1fr) so the gallery image's intrinsic max-content
      width can't force the single grid track wider than the viewport (was causing
      ~21px horizontal overflow at 390px / ~91px at 320px). */
-  .styx-product-grid { grid-template-columns: minmax(0, 1fr) !important; gap: 32px !important; padding: 40px 20px 60px !important; }
-  .styx-product-grid h1 { font-size: 32px !important; }
-  .styx-product-info { position: static !important; }
+  .styx-product-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 32px !important;
+    padding: 40px 20px 60px !important;
+  }
+  .styx-product-grid h1 {
+    font-size: 32px !important;
+  }
+  .styx-product-info {
+    position: static !important;
+  }
   /* Interleave (CRO): first gallery image → buy box → remaining gallery images.
      The route sets explicit desktop grid placements inline (col/row), so reset
      them to auto here and let `order` drive the single-column flow. */
   .styx-gallery-lead,
   .styx-gallery-rest,
-  .styx-product-info { grid-column: auto !important; grid-row: auto !important; }
-  .styx-gallery-lead { order: 1 !important; }
-  .styx-product-info { order: 2 !important; }
-  .styx-gallery-rest { order: 3 !important; }
-  .styx-product-price { font-size: 32px !important; }
+  .styx-gallery-carousel,
+  .styx-product-info {
+    grid-column: auto !important;
+    grid-row: auto !important;
+  }
+  /* Phones swipe one carousel instead of scrolling a stacked gallery */
+  .styx-gallery-lead {
+    display: none !important;
+  }
+  .styx-gallery-rest {
+    display: none !important;
+  }
+  .styx-gallery-carousel {
+    display: block;
+    order: 1 !important;
+  }
+  .styx-product-info {
+    order: 2 !important;
+  }
+  .styx-product-price {
+    font-size: 32px !important;
+  }
   /* Product details grid — 2 col on tablet */
-  .styx-product-specs-grid { grid-template-columns: 1fr !important; gap: 48px !important; padding: 60px 20px !important; }
+  .styx-product-specs-grid {
+    grid-template-columns: 1fr !important;
+    gap: 48px !important;
+    padding: 60px 20px !important;
+  }
   /* Transparency section */
-  .styx-product-transparency { padding: 60px 20px !important; }
-  .styx-product-transparency h2 { font-size: 32px !important; }
+  .styx-product-transparency {
+    padding: 60px 20px !important;
+  }
+  .styx-product-transparency h2 {
+    font-size: 32px !important;
+  }
   /* "Every number, in the open" — single column on phones (two-up is too cramped) */
-  .styx-transparency-grid { grid-template-columns: 1fr !important; gap: 28px !important; }
+  .styx-transparency-grid {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
+  }
   /* Ferryman's Pact banner — stack to one column: text on top, Obol centered below;
      drop the heavy 56px desktop padding. Obol is the first child, so column-reverse. */
   .styx-pact-banner {
@@ -359,27 +574,69 @@ shop-pay-button {
     padding: 40px 20px !important;
   }
   /* Related products */
-  .styx-product-related { padding: 48px 20px !important; }
-  .styx-product-related h2 { font-size: 28px !important; }
-  .styx-product-related-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 16px !important; }
+  .styx-product-related {
+    padding: 48px 20px !important;
+  }
+  .styx-product-related h2 {
+    font-size: 28px !important;
+  }
+  .styx-product-related-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 16px !important;
+  }
 
   /* ── Collection page ── */
-  .styx-collection-hero { padding: 40px 20px 32px !important; grid-template-columns: 1fr !important; }
+  .styx-collection-hero {
+    padding: 24px 20px 24px !important;
+    grid-template-columns: 1fr !important;
+  }
   /* Shop by Weave strip (chains archive) */
-  .styx-weave-strip { padding: 24px 16px 28px !important; }
-  .styx-weave-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; }
-  .styx-weave-grid a { padding: 12px 6px 10px !important; }
-  .styx-weave-grid a span { font-size: 8.5px !important; letter-spacing: 0.08em !important; }
-  .styx-collection-hero h1 { font-size: clamp(32px, 10vw, 80px) !important; }
-  .styx-collection-hero img { height: 48px !important; }
-  .styx-collection-intro { padding: 24px 20px !important; flex-direction: column !important; gap: 16px !important; }
-  .styx-collection-intro a { white-space: normal !important; }
+  .styx-weave-strip {
+    padding: 24px 16px 28px !important;
+  }
+  .styx-weave-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px !important;
+  }
+  .styx-weave-grid a {
+    padding: 12px 6px 10px !important;
+  }
+  .styx-weave-grid a span {
+    font-size: 8.5px !important;
+    letter-spacing: 0.08em !important;
+  }
+  .styx-collection-hero h1 {
+    font-size: clamp(30px, 8vw, 56px) !important;
+  }
+  .styx-collection-hero img {
+    height: 48px !important;
+  }
+  .styx-collection-intro {
+    padding: 24px 20px !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+  .styx-collection-intro a {
+    white-space: normal !important;
+  }
   /* Toolbar: stack count/sort vertically */
-  .styx-collection-toolbar { padding: 12px 16px !important; }
-  .styx-collection-toolbar > div:first-child { flex-direction: column !important; align-items: flex-start !important; gap: 10px !important; }
-  .styx-collection-sort { flex-wrap: wrap !important; gap: 8px !important; }
+  .styx-collection-toolbar {
+    padding: 12px 16px !important;
+  }
+  .styx-collection-toolbar > div:first-child {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+  }
+  .styx-collection-sort {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
   /* Larger, easier-to-read/tap sort pills (were 9px / ~28px tall). */
-  .styx-collection-sort button { font-size: 11px !important; padding: 9px 14px !important; }
+  .styx-collection-sort button {
+    font-size: 11px !important;
+    padding: 9px 14px !important;
+  }
   /* Filters: horizontal scroll on mobile */
   .styx-collection-filters {
     flex-wrap: nowrap !important;
@@ -389,139 +646,348 @@ shop-pay-button {
     scrollbar-width: none;
     padding-bottom: 4px !important;
   }
-  .styx-collection-filters::-webkit-scrollbar { display: none; }
-  .styx-collection-filters > div { flex-shrink: 0 !important; }
-  .styx-collection-products { padding: 32px 16px 80px !important; }
-  .styx-collection-product-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
-  .styx-collection-story { padding: 60px 20px !important; }
-  .styx-collection-story h2 { font-size: 32px !important; }
-  .styx-collection-story [data-grid] { grid-template-columns: 1fr !important; }
+  .styx-collection-filters::-webkit-scrollbar {
+    display: none;
+  }
+  .styx-collection-filters > div {
+    flex-shrink: 0 !important;
+  }
+  .styx-collection-products {
+    padding: 32px 16px 80px !important;
+  }
+  .styx-collection-product-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+  .styx-collection-story {
+    padding: 60px 20px !important;
+  }
+  .styx-collection-story h2 {
+    font-size: 32px !important;
+  }
+  .styx-collection-story [data-grid] {
+    grid-template-columns: 1fr !important;
+  }
 
   /* ── Journal article page ── */
-  .styx-journal-hero { padding: 24px 20px 20px !important; }
-  .styx-journal-title-grid { grid-template-columns: 1fr !important; }
-  .styx-journal-title-grid h1 { font-size: 32px !important; }
-  .styx-journal-meta-col { flex-direction: row !important; flex-wrap: wrap !important; gap: 12px !important; }
-  .styx-journal-hero-img { padding: 0 20px !important; }
-  .styx-journal-body { padding: 48px 20px !important; }
-  .styx-journal-body img { max-width: 100% !important; height: auto !important; }
-  .styx-journal-shop { padding: 48px 20px !important; }
-  .styx-journal-shop-header { flex-direction: column !important; gap: 12px !important; align-items: flex-start !important; }
-  .styx-journal-shop-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 16px !important; }
-  .styx-journal-chapters { padding: 48px 20px !important; }
-  .styx-journal-chapters-header { flex-direction: column !important; gap: 12px !important; align-items: flex-start !important; }
-  .styx-journal-chapter-row { grid-template-columns: 40px 1fr !important; gap: 8px 12px !important; }
+  .styx-journal-hero {
+    padding: 24px 20px 20px !important;
+  }
+  .styx-journal-title-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .styx-journal-title-grid h1 {
+    font-size: 32px !important;
+  }
+  .styx-journal-meta-col {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 12px !important;
+  }
+  .styx-journal-hero-img {
+    padding: 0 20px !important;
+  }
+  .styx-journal-body {
+    padding: 48px 20px !important;
+  }
+  .styx-journal-body img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+  .styx-journal-shop {
+    padding: 48px 20px !important;
+  }
+  .styx-journal-shop-header {
+    flex-direction: column !important;
+    gap: 12px !important;
+    align-items: flex-start !important;
+  }
+  .styx-journal-shop-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 16px !important;
+  }
+  .styx-journal-chapters {
+    padding: 48px 20px !important;
+  }
+  .styx-journal-chapters-header {
+    flex-direction: column !important;
+    gap: 12px !important;
+    align-items: flex-start !important;
+  }
+  .styx-journal-chapter-row {
+    grid-template-columns: 40px 1fr !important;
+    gap: 8px 12px !important;
+  }
   .styx-journal-chapter-row > *:nth-child(3),
-  .styx-journal-chapter-row > *:nth-child(4) { grid-column: 2 !important; font-size: 11px !important; }
+  .styx-journal-chapter-row > *:nth-child(4) {
+    grid-column: 2 !important;
+    font-size: 11px !important;
+  }
 
   /* ── Collections index ── */
-  .styx-ci-hero { padding: 60px 20px 40px !important; }
-  .styx-ci-hero h1 { font-size: 36px !important; }
-  .styx-ci-hero > div { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; }
-  .styx-ci-banner { padding: 20px !important; }
-  .styx-ci-families { padding: 48px 20px !important; }
-  .styx-ci-families h2 { font-size: 28px !important; }
-  .styx-ci-families-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
-  .styx-ci-karat { padding: 48px 20px !important; }
-  .styx-ci-karat-grid { grid-template-columns: 1fr !important; }
+  .styx-ci-banner {
+    padding: 20px !important;
+  }
+  .styx-ci-families {
+    padding: 32px 20px 40px !important;
+  }
+  .styx-ci-families h1 {
+    font-size: 28px !important;
+  }
+  .styx-ci-families-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+  .styx-ci-karat {
+    padding: 48px 20px !important;
+  }
+  .styx-ci-karat-grid {
+    grid-template-columns: 1fr !important;
+  }
 
   /* Chains pages */
-  .styx-chains-hero { padding: 60px 20px 40px !important; }
-  .styx-chains-hero h1 { font-size: 36px !important; }
-  .styx-chains-hero > div { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; }
-  .styx-chains-grid { padding: 48px 20px !important; }
-  .styx-chains-category-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
-  .styx-chain-cat-hero { padding: 60px 20px 40px !important; }
-  .styx-chain-cat-hero h1 { font-size: 36px !important; }
-  .styx-chain-cat-hero > div { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; }
-  .styx-chain-filters { padding: 16px 20px !important; }
-  .styx-chain-grid { padding: 32px 20px 60px !important; }
-  .styx-chain-product-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 16px !important; }
+  .styx-chains-hero {
+    padding: 60px 20px 40px !important;
+  }
+  .styx-chains-hero h1 {
+    font-size: 36px !important;
+  }
+  .styx-chains-hero > div {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 16px !important;
+  }
+  .styx-chains-grid {
+    padding: 48px 20px !important;
+  }
+  .styx-chains-category-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+  .styx-chain-cat-hero {
+    padding: 60px 20px 40px !important;
+  }
+  .styx-chain-cat-hero h1 {
+    font-size: 36px !important;
+  }
+  .styx-chain-cat-hero > div {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 16px !important;
+  }
+  .styx-chain-filters {
+    padding: 16px 20px !important;
+  }
+  .styx-chain-grid {
+    padding: 32px 20px 60px !important;
+  }
+  .styx-chain-product-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 16px !important;
+  }
 
   /* ── Journal index ── */
-  .styx-ja-masthead { padding: 48px 20px 32px !important; }
-  .styx-ja-title-grid { grid-template-columns: 1fr !important; }
-  .styx-ja-title-grid h1 { font-size: 36px !important; }
-  .styx-ja-filters { padding: 16px 20px !important; }
-  .styx-ja-filters-inner { flex-wrap: nowrap !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-  .styx-ja-filters-inner::-webkit-scrollbar { display: none; }
-  .styx-ja-featured { padding: 48px 20px 40px !important; }
-  .styx-ja-featured-grid { grid-template-columns: 1fr !important; }
-  .styx-ja-grid-section { padding: 24px 20px 60px !important; }
-  .styx-ja-grid { grid-template-columns: 1fr !important; }
+  .styx-ja-masthead {
+    padding: 48px 20px 32px !important;
+  }
+  .styx-ja-title-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .styx-ja-title-grid h1 {
+    font-size: 36px !important;
+  }
+  .styx-ja-filters {
+    padding: 16px 20px !important;
+  }
+  .styx-ja-filters-inner {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .styx-ja-filters-inner::-webkit-scrollbar {
+    display: none;
+  }
+  .styx-ja-featured {
+    padding: 48px 20px 40px !important;
+  }
+  .styx-ja-featured-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .styx-ja-grid-section {
+    padding: 24px 20px 60px !important;
+  }
+  .styx-ja-grid {
+    grid-template-columns: 1fr !important;
+  }
 
   /* Footer bottom bar */
-  .styx-footer-bottom { flex-direction: column !important; gap: 16px !important; text-align: center !important; }
+  .styx-footer-bottom {
+    flex-direction: column !important;
+    gap: 16px !important;
+    text-align: center !important;
+  }
 
   /* ── Compare bar — compact: count + actions only, no name chips ── */
-  .styx-compare-bar { padding: 10px 16px !important; gap: 10px !important; }
-  .styx-compare-chips { display: none !important; }
+  .styx-compare-bar {
+    padding: 10px 16px !important;
+    gap: 10px !important;
+  }
+  .styx-compare-chips {
+    display: none !important;
+  }
 
   /* ── Tools of the Trade (homepage) ── */
-  .styx-tools { padding: 60px 20px !important; }
-  .styx-tools h2 { font-size: 32px !important; }
-  .styx-tools-grid { grid-template-columns: 1fr !important; gap: 16px !important; }
-  .styx-tools-grid > a { padding: 28px 22px !important; }
+  .styx-tools {
+    padding: 60px 20px !important;
+  }
+  .styx-tools h2 {
+    font-size: 32px !important;
+  }
+  .styx-tools-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .styx-tools-grid > a {
+    padding: 28px 22px !important;
+  }
 }
 
 /* Small mobile: ≤ 32em (512px) */
 @media (max-width: 32em) {
   /* Hero */
-  .styx-hero { min-height: 60vh !important; }
-  .styx-hero-content { padding: 80px 16px 48px !important; }
-  .styx-hero h1 { font-size: 36px !important; }
-  .styx-hero p { font-size: 17px !important; }
+  .styx-hero {
+    min-height: 60vh !important;
+  }
+  .styx-hero-content {
+    padding: 80px 16px 48px !important;
+  }
+  .styx-hero h1 {
+    font-size: 36px !important;
+  }
+  .styx-hero p {
+    font-size: 17px !important;
+  }
 
   /* Homepage sections */
-  .styx-featured-grid > * { flex: 0 0 70vw !important; }
-  .styx-lookbook h2 { font-size: 28px !important; }
-  .styx-categories h2 { font-size: 28px !important; }
+  .styx-featured-grid > * {
+    flex: 0 0 70vw !important;
+  }
+  .styx-lookbook h2 {
+    font-size: 28px !important;
+  }
+  .styx-categories h2 {
+    font-size: 28px !important;
+  }
 
   /* Product page */
-  .styx-product-grid { padding: 24px 16px 48px !important; }
-  .styx-product-grid h1 { font-size: 28px !important; }
-  .styx-product-breadcrumb { padding: 10px 16px !important; }
-  .styx-product-transparency { padding: 40px 16px !important; }
-  .styx-product-transparency h2 { font-size: 26px !important; }
-  .styx-product-related { padding: 40px 16px !important; }
-  .styx-product-related-grid { grid-template-columns: 1fr !important; }
-  .styx-product-specs-grid { padding: 40px 16px !important; }
+  .styx-product-grid {
+    padding: 24px 16px 48px !important;
+  }
+  .styx-product-grid h1 {
+    font-size: 28px !important;
+  }
+  .styx-product-transparency {
+    padding: 40px 16px !important;
+  }
+  .styx-product-transparency h2 {
+    font-size: 26px !important;
+  }
+  .styx-product-related {
+    padding: 40px 16px !important;
+  }
+  .styx-product-related-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .styx-product-specs-grid {
+    padding: 40px 16px !important;
+  }
 
   /* Collection page */
-  .styx-collection-product-grid { grid-template-columns: 1fr !important; }
-  .styx-collection-toolbar { padding: 10px 16px !important; }
+  .styx-collection-product-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .styx-collection-toolbar {
+    padding: 10px 16px !important;
+  }
 
   /* Journal article */
-  .styx-journal-shop-grid { grid-template-columns: 1fr !important; }
-  .styx-journal-hero { padding: 16px 16px !important; }
-  .styx-journal-title-grid h1 { font-size: 26px !important; }
-  .styx-journal-body { padding: 32px 16px !important; }
-  .styx-journal-shop { padding: 32px 16px !important; }
-  .styx-journal-chapters { padding: 32px 16px !important; }
+  .styx-journal-shop-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .styx-journal-hero {
+    padding: 16px 16px !important;
+  }
+  .styx-journal-title-grid h1 {
+    font-size: 26px !important;
+  }
+  .styx-journal-body {
+    padding: 32px 16px !important;
+  }
+  .styx-journal-shop {
+    padding: 32px 16px !important;
+  }
+  .styx-journal-chapters {
+    padding: 32px 16px !important;
+  }
 
   /* Collections index */
-  .styx-ci-hero { padding: 48px 16px 32px !important; }
-  .styx-ci-hero h1 { font-size: 28px !important; }
-  .styx-ci-families { padding: 40px 16px !important; }
-  .styx-ci-families-grid { grid-template-columns: 1fr !important; }
-  .styx-ci-karat { padding: 40px 16px !important; }
+  .styx-ci-families {
+    padding: 28px 16px 32px !important;
+  }
+  .styx-ci-families h1 {
+    font-size: 26px !important;
+  }
+  .styx-ci-families-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .styx-ci-karat {
+    padding: 40px 16px !important;
+  }
 
   /* Chains pages */
-  .styx-chains-hero { padding: 48px 16px 32px !important; }
-  .styx-chains-hero h1 { font-size: 28px !important; }
-  .styx-chains-grid { padding: 40px 16px !important; }
-  .styx-chains-category-grid { grid-template-columns: 1fr !important; }
-  .styx-chain-cat-hero { padding: 48px 16px 32px !important; }
-  .styx-chain-cat-hero h1 { font-size: 28px !important; }
-  .styx-chain-filters { padding: 12px 16px !important; flex-direction: column !important; }
-  .styx-chain-grid { padding: 24px 16px 48px !important; }
-  .styx-chain-product-grid { grid-template-columns: 1fr !important; }
+  .styx-chains-hero {
+    padding: 48px 16px 32px !important;
+  }
+  .styx-chains-hero h1 {
+    font-size: 28px !important;
+  }
+  .styx-chains-grid {
+    padding: 40px 16px !important;
+  }
+  .styx-chains-category-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .styx-chain-cat-hero {
+    padding: 48px 16px 32px !important;
+  }
+  .styx-chain-cat-hero h1 {
+    font-size: 28px !important;
+  }
+  .styx-chain-filters {
+    padding: 12px 16px !important;
+    flex-direction: column !important;
+  }
+  .styx-chain-grid {
+    padding: 24px 16px 48px !important;
+  }
+  .styx-chain-product-grid {
+    grid-template-columns: 1fr !important;
+  }
 
   /* Journal index */
-  .styx-ja-masthead { padding: 40px 16px 24px !important; }
-  .styx-ja-title-grid h1 { font-size: 28px !important; }
-  .styx-ja-featured { padding: 32px 16px !important; }
-  .styx-ja-grid-section { padding: 16px 16px 48px !important; }
+  .styx-ja-masthead {
+    padding: 40px 16px 24px !important;
+  }
+  .styx-ja-title-grid h1 {
+    font-size: 28px !important;
+  }
+  .styx-ja-featured {
+    padding: 32px 16px !important;
+  }
+  .styx-ja-grid-section {
+    padding: 16px 16px 48px !important;
+  }
 }
 
 @layer utilities {
