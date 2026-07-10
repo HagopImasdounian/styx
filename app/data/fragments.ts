@@ -48,7 +48,6 @@ export const PRODUCT_CARD_FRAGMENT = `#graphql
     title
     publishedAt
     handle
-    vendor
     productType
     tags
     variants(first: 30) {
