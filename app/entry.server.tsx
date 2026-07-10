@@ -86,6 +86,14 @@ export default async function handleRequest(
       'https://fonts.gstatic.com',
       'data:',
     ],
+    // form-action does NOT fall back to default-src — without it, an injected
+    // form could submit anywhere. Checkout posts to the myshopify domain.
+    formAction: [
+      "'self'",
+      `https://${context.env.PUBLIC_CHECKOUT_DOMAIN}`,
+      `https://${context.env.PUBLIC_STORE_DOMAIN}`,
+    ],
+    objectSrc: ["'none'"],
   });
 
   const body = await renderToReadableStream(
@@ -114,7 +122,7 @@ export default async function handleRequest(
   if (process.env.NODE_ENV === 'production') {
     responseHeaders.set(
       'Strict-Transport-Security',
-      'max-age=31536000; includeSubDomains',
+      'max-age=31536000; includeSubDomains; preload',
     );
   }
   responseHeaders.set('X-Content-Type-Options', 'nosniff');

@@ -140,22 +140,37 @@ export function HeroGallery({products = []}: {products?: any[]}) {
             margin: '28px 0 40px',
           }}
         >
-          Solid gold chains priced at what they're worth — not what the
-          industry pretends. Every piece weighed, tested, and priced from the
-          London fix. No markup mystery.
+          Solid gold chains priced at what they're worth — not what the industry
+          pretends. Every piece weighed, tested, and priced from the London fix.
+          No markup mystery.
         </p>
 
-        {/* CTAs */}
+        {/* CTAs — the default variants use ink text/borders, which vanish on
+            the dark hero photo, so both get dark-background overrides. */}
         <div style={{display: 'flex', gap: 16}}>
-          <CTAButton variant="primary" href="/collections/chains">
+          <CTAButton
+            variant="primary"
+            href="/collections/chains"
+            style={{
+              background: STYX.gold,
+              border: `1px solid ${STYX.gold}`,
+              color: STYX.ink,
+            }}
+          >
             Shop Chains
           </CTAButton>
-          <CTAButton variant="ghost" href="/about">
+          <CTAButton
+            variant="ghost"
+            href="/about"
+            style={{
+              color: STYX.bone,
+              borderBottom: '1px solid rgba(239,234,224,0.45)',
+            }}
+          >
             Our Promise
           </CTAButton>
         </div>
       </div>
-
     </section>
   );
 }

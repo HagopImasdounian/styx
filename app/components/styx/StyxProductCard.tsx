@@ -84,7 +84,8 @@ export function StyxProductCard({
    * keeps its images lazy so they don't compete with the page's LCP image. */
   belowFold?: boolean;
 }) {
-  const variant = product.variants.nodes[variantIndex] ?? product.variants.nodes[0];
+  const variant =
+    product.variants.nodes[variantIndex] ?? product.variants.nodes[0];
   const [isHovered, setIsHovered] = useState(false);
   if (!variant) return null;
 
@@ -92,9 +93,9 @@ export function StyxProductCard({
   // and give the very first card top fetch priority (lowercase attribute:
   // React 18 doesn't forward camelCase fetchPriority to the DOM).
   const eager = !belowFold && index < 4;
-  const priorityProps = (!belowFold && index === 0
-    ? {fetchpriority: 'high'}
-    : {}) as Record<string, string>;
+  const priorityProps = (
+    !belowFold && index === 0 ? {fetchpriority: 'high'} : {}
+  ) as Record<string, string>;
 
   // Hover image from a different variant
   const hoverImage = (() => {
@@ -112,8 +113,10 @@ export function StyxProductCard({
   );
   const karat = karatOpt
     ? parseInt(karatOpt.value, 10)
-    : /18\s*k/i.test(product.title) ? 18
-    : /14\s*k/i.test(product.title) ? 14
+    : /18\s*k/i.test(product.title)
+    ? 18
+    : /14\s*k/i.test(product.title)
+    ? 14
     : 10;
 
   // Color
@@ -124,14 +127,17 @@ export function StyxProductCard({
   const swatchHex = colorLabel ? COLOR_HEX[colorLabel] : null;
 
   // Weight — use displayed variant's weight, or fall back to any variant with weight
-  const rawWeight = variant.weight != null && variant.weight > 0
-    ? {w: variant.weight, u: variant.weightUnit}
-    : (() => {
-        const fallback = product.variants.nodes.find(
-          (v) => v.weight != null && v.weight > 0,
-        );
-        return fallback ? {w: fallback.weight!, u: fallback.weightUnit} : null;
-      })();
+  const rawWeight =
+    variant.weight != null && variant.weight > 0
+      ? {w: variant.weight, u: variant.weightUnit}
+      : (() => {
+          const fallback = product.variants.nodes.find(
+            (v) => v.weight != null && v.weight > 0,
+          );
+          return fallback
+            ? {w: fallback.weight!, u: fallback.weightUnit}
+            : null;
+        })();
   const weightGrams = rawWeight ? toGrams(rawWeight.w, rawWeight.u) : null;
 
   // Pure gold content
@@ -140,7 +146,8 @@ export function StyxProductCard({
 
   // Construction from metafield (fallback to title)
   const constructionMeta = product.chain_construction?.value;
-  const construction = constructionMeta || (/hollow/i.test(product.title) ? 'Hollow' : 'Solid');
+  const construction =
+    constructionMeta || (/hollow/i.test(product.title) ? 'Hollow' : 'Solid');
 
   // Prices
   const sameColorVariants = colorLabel
@@ -151,9 +158,12 @@ export function StyxProductCard({
       )
     : product.variants.nodes;
 
-  const prices = sameColorVariants.map((v) => parseFloat(v.price.amount));
-  const minPrice = Math.min(...prices);
-  const hasRange = Math.max(...prices) > minPrice;
+  // $0 variants are catalog errors — never let them set a "from $0.00" floor.
+  const prices = sameColorVariants
+    .map((v) => parseFloat(v.price.amount))
+    .filter((p) => p > 0);
+  const minPrice = prices.length ? Math.min(...prices) : 0;
+  const hasRange = prices.length ? Math.max(...prices) > minPrice : false;
 
   // Stock
   const inStock = sameColorVariants.some((v) => v.availableForSale);
@@ -187,7 +197,10 @@ export function StyxProductCard({
         {variant.image ? (
           <Image
             data={variant.image}
-            alt={variant.image.altText ?? (colorLabel ? `${product.title} · ${colorLabel}` : product.title)}
+            alt={
+              variant.image.altText ??
+              (colorLabel ? `${product.title} · ${colorLabel}` : product.title)
+            }
             aspectRatio="4/5"
             sizes="(min-width: 1200px) 25vw, 50vw"
             loading={eager ? 'eager' : 'lazy'}
@@ -196,7 +209,8 @@ export function StyxProductCard({
               width: '100%',
               height: '100%',
               objectFit:
-                variant.image.width && variant.image.height &&
+                variant.image.width &&
+                variant.image.height &&
                 variant.image.width / variant.image.height > 2.5
                   ? 'contain'
                   : 'cover',
@@ -205,7 +219,9 @@ export function StyxProductCard({
         ) : (
           <PlaceholderImage
             aspect="4/5"
-            label={colorLabel ? `${product.title} · ${colorLabel}` : product.title}
+            label={
+              colorLabel ? `${product.title} · ${colorLabel}` : product.title
+            }
           />
         )}
 
@@ -222,7 +238,8 @@ export function StyxProductCard({
               width: '100%',
               height: '100%',
               objectFit:
-                hoverImage.width && hoverImage.height &&
+                hoverImage.width &&
+                hoverImage.height &&
                 hoverImage.width / hoverImage.height > 2.5
                   ? 'contain'
                   : 'cover',
@@ -343,7 +360,10 @@ export function StyxProductCard({
         >
           {product.title}
           {colorLabel && (
-            <span style={{color: STYX.silt, fontWeight: 400}}>{' '}&mdash; {colorLabel}</span>
+            <span style={{color: STYX.silt, fontWeight: 400}}>
+              {' '}
+              &mdash; {colorLabel}
+            </span>
           )}
         </div>
 
@@ -374,7 +394,12 @@ export function StyxProductCard({
               from
             </span>
           )}
-          ${minPrice.toFixed(2)}
+          {minPrice > 0
+            ? `$${minPrice.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}`
+            : 'Price on request'}
         </div>
 
         {/* Spec line */}

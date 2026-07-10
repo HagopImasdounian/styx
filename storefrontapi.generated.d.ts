@@ -498,6 +498,9 @@ export type StyxCollectionsIndexQueryVariables = StorefrontAPI.Exact<{
 }>;
 
 export type StyxCollectionsIndexQuery = {
+  allChains?: StorefrontAPI.Maybe<{
+    products: {nodes: Array<Pick<StorefrontAPI.Product, 'id'>>};
+  }>;
   collections: {
     nodes: Array<
       Pick<
@@ -1711,7 +1714,7 @@ interface GeneratedQueryTypes {
     return: CollectionDetailsQuery;
     variables: CollectionDetailsQueryVariables;
   };
-  '#graphql\n  query StyxCollectionsIndex(\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    collections(first: 100, sortKey: TITLE) {\n      nodes {\n        id\n        title\n        handle\n        description\n        products(first: 1) {\n          nodes {\n            id\n          }\n        }\n        image {\n          url\n          altText\n          width\n          height\n        }\n        cutout: metafield(namespace: "custom", key: "cutout_image") {\n          reference {\n            ... on MediaImage {\n              image {\n                url\n              }\n            }\n          }\n        }\n        seo {\n          description\n          title\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  query StyxCollectionsIndex(\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    # exact count for the "All Chains" banner (the catalog is well under 250)\n    allChains: collection(handle: "chains") {\n      products(first: 250) {\n        nodes {\n          id\n        }\n      }\n    }\n    collections(first: 100, sortKey: TITLE) {\n      nodes {\n        id\n        title\n        handle\n        description\n        # ids only — rendered as the per-collection piece count (capped at 100)\n        products(first: 100) {\n          nodes {\n            id\n          }\n        }\n        image {\n          url\n          altText\n          width\n          height\n        }\n        cutout: metafield(namespace: "custom", key: "cutout_image") {\n          reference {\n            ... on MediaImage {\n              image {\n                url\n              }\n            }\n          }\n        }\n        seo {\n          description\n          title\n        }\n      }\n    }\n  }\n': {
     return: StyxCollectionsIndexQuery;
     variables: StyxCollectionsIndexQueryVariables;
   };

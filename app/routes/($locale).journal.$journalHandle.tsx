@@ -1,7 +1,4 @@
-import {
-    type MetaArgs,
-  type LoaderFunctionArgs,
-} from 'react-router';
+import {type MetaArgs, type LoaderFunctionArgs} from 'react-router';
 import {data, useLoaderData, useParams, useRouteLoaderData} from 'react-router';
 import {getSeoMeta, Image} from '@shopify/hydrogen';
 import invariant from 'tiny-invariant';
@@ -11,8 +8,20 @@ import {Link} from '~/components/Link';
 import {seoPayload} from '~/lib/seo.server';
 import {getStyxSeoMeta} from '~/lib/seo-meta';
 import {KARAT_PURITY} from '~/lib/gold';
-import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel, CTAButton, StyxProductCard} from '~/components/styx';
-import {PLACEHOLDER_ARTICLES, HIDDEN_ARTICLE_HANDLES} from '~/data/journal-articles';
+import {
+  STYX,
+  FONT,
+  GoldTicker,
+  StyxNav,
+  StyxFooter,
+  StyxLabel,
+  CTAButton,
+  StyxProductCard,
+} from '~/components/styx';
+import {
+  PLACEHOLDER_ARTICLES,
+  HIDDEN_ARTICLE_HANDLES,
+} from '~/data/journal-articles';
 import {validateLocale} from '~/lib/utils';
 import {CACHE_LONG, routeHeaders} from '~/data/cache';
 
@@ -22,20 +31,104 @@ const BLOG_HANDLE = 'journal';
 
 /* ─── All journal entries for the "Other chapters" index ─── */
 const ALL_JOURNAL_ENTRIES = [
-  {handle: 'history-of-gold-chains', title: 'A Brief History of Gold Chains', subtitle: 'From Mesopotamia to Miami', readTime: '10 min', vol: 'The Almanac'},
-  {handle: 'sizing-guide', title: 'On Proportion & Stature', subtitle: 'The Definitive Sizing Guide', readTime: '8 min', vol: 'The Almanac'},
-  {handle: 'history-of-the-cuban-link', title: 'The Cuban Link', subtitle: 'Miami, 1974', readTime: '6 min', vol: 'Vol I'},
-  {handle: 'history-of-the-franco-chain', title: 'The Franco', subtitle: "Milan's Strongest Weave", readTime: '4 min', vol: 'Vol I'},
-  {handle: 'history-of-the-curb-chain', title: 'The Curb Link', subtitle: 'Ancient Sumer, 2600 BC', readTime: '5 min', vol: 'Vol I'},
-  {handle: 'history-of-the-figaro-chain', title: 'The Figaro', subtitle: 'Vicenza, 1885', readTime: '5 min', vol: 'Vol I'},
-  {handle: 'history-of-the-mariner-chain', title: 'The Mariner', subtitle: 'Anchored in History', readTime: '4 min', vol: 'Vol I'},
-  {handle: 'history-of-the-rope-chain', title: 'The Rope Chain', subtitle: 'A Twist Through Time', readTime: '4 min', vol: 'Vol II'},
-  {handle: 'history-of-the-wheat-chain', title: 'The Wheat (Spiga)', subtitle: 'Vicenza, The Renaissance', readTime: '5 min', vol: 'Vol II'},
-  {handle: 'history-of-the-herringbone-chain', title: 'The Herringbone', subtitle: 'Flat Luxury', readTime: '4 min', vol: 'Vol IV'},
-  {handle: 'history-of-the-snake-chain', title: 'The Snake Chain', subtitle: 'Victorian Era', readTime: '4 min', vol: 'Vol IV'},
-  {handle: 'history-of-the-box-chain', title: 'The Box Chain', subtitle: 'Venice, 6th Century', readTime: '4 min', vol: 'Vol IV'},
-  {handle: 'history-of-the-paperclip-chain', title: 'The Paperclip', subtitle: 'Oslo, 1940', readTime: '4 min', vol: 'Vol IV'},
-  {handle: 'history-of-the-tennis-chain', title: 'The Tennis Chain', subtitle: 'Forest Hills, 1978', readTime: '5 min', vol: 'Vol V'},
+  {
+    handle: 'history-of-gold-chains',
+    title: 'A Brief History of Gold Chains',
+    subtitle: 'From Mesopotamia to Miami',
+    readTime: '10 min',
+    vol: 'The Almanac',
+  },
+  {
+    handle: 'sizing-guide',
+    title: 'On Proportion & Stature',
+    subtitle: 'The Definitive Sizing Guide',
+    readTime: '8 min',
+    vol: 'The Almanac',
+  },
+  {
+    handle: 'history-of-the-cuban-link',
+    title: 'The Cuban Link',
+    subtitle: 'Miami, 1974',
+    readTime: '6 min',
+    vol: 'Vol I',
+  },
+  {
+    handle: 'history-of-the-franco-chain',
+    title: 'The Franco',
+    subtitle: "Milan's Strongest Weave",
+    readTime: '4 min',
+    vol: 'Vol I',
+  },
+  {
+    handle: 'history-of-the-curb-chain',
+    title: 'The Curb Link',
+    subtitle: 'Ancient Sumer, 2600 BC',
+    readTime: '5 min',
+    vol: 'Vol I',
+  },
+  {
+    handle: 'history-of-the-figaro-chain',
+    title: 'The Figaro',
+    subtitle: 'Vicenza, 1885',
+    readTime: '5 min',
+    vol: 'Vol I',
+  },
+  {
+    handle: 'history-of-the-mariner-chain',
+    title: 'The Mariner',
+    subtitle: 'Anchored in History',
+    readTime: '4 min',
+    vol: 'Vol I',
+  },
+  {
+    handle: 'history-of-the-rope-chain',
+    title: 'The Rope Chain',
+    subtitle: 'A Twist Through Time',
+    readTime: '4 min',
+    vol: 'Vol II',
+  },
+  {
+    handle: 'history-of-the-wheat-chain',
+    title: 'The Wheat (Spiga)',
+    subtitle: 'Vicenza, The Renaissance',
+    readTime: '5 min',
+    vol: 'Vol II',
+  },
+  {
+    handle: 'history-of-the-herringbone-chain',
+    title: 'The Herringbone',
+    subtitle: 'Flat Luxury',
+    readTime: '4 min',
+    vol: 'Vol IV',
+  },
+  {
+    handle: 'history-of-the-snake-chain',
+    title: 'The Snake Chain',
+    subtitle: 'Victorian Era',
+    readTime: '4 min',
+    vol: 'Vol IV',
+  },
+  {
+    handle: 'history-of-the-box-chain',
+    title: 'The Box Chain',
+    subtitle: 'Venice, 6th Century',
+    readTime: '4 min',
+    vol: 'Vol IV',
+  },
+  {
+    handle: 'history-of-the-paperclip-chain',
+    title: 'The Paperclip',
+    subtitle: 'Oslo, 1940',
+    readTime: '4 min',
+    vol: 'Vol IV',
+  },
+  {
+    handle: 'history-of-the-tennis-chain',
+    title: 'The Tennis Chain',
+    subtitle: 'Forest Hills, 1978',
+    readTime: '5 min',
+    vol: 'Vol V',
+  },
 ];
 
 // Only surface chapters for chain types we actually carry
@@ -56,7 +149,10 @@ const COLLECTION_MAP: Record<string, {name: string; handle: string}> = {
   'history-of-the-cable-chain': {name: 'Cable', handle: 'cable'},
   'history-of-the-rolo-chain': {name: 'Rolo', handle: 'rolo'},
   'history-of-the-singapore-chain': {name: 'Singapore', handle: 'singapore'},
-  'history-of-the-herringbone-chain': {name: 'Herringbone', handle: 'herringbone'},
+  'history-of-the-herringbone-chain': {
+    name: 'Herringbone',
+    handle: 'herringbone',
+  },
   'history-of-the-snake-chain': {name: 'Snake', handle: 'snake'},
   'history-of-the-paperclip-chain': {name: 'Paperclip', handle: 'paperclip'},
   'history-of-the-tennis-chain': {name: 'Tennis', handle: 'tennis'},
@@ -68,7 +164,10 @@ const COLLECTION_MAP: Record<string, {name: string; handle: string}> = {
   'history-of-the-peanut-chain': {name: 'Peanut', handle: 'peanut'},
   'history-of-the-scroll-chain': {name: 'Scroll', handle: 'scroll'},
   'history-of-the-s-link-chain': {name: 'S-Link', handle: 's-link'},
-  'history-of-the-criss-cross-chain': {name: 'Criss-Cross', handle: 'criss-cross'},
+  'history-of-the-criss-cross-chain': {
+    name: 'Criss-Cross',
+    handle: 'criss-cross',
+  },
   'history-of-the-forsantina-chain': {name: 'Forsantina', handle: 'forsantina'},
 };
 
@@ -96,13 +195,15 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
       },
     }),
     collectionHandle
-      ? context.storefront.query(SHOP_COLLECTION_QUERY, {
-          variables: {
-            handle: collectionHandle,
-            country: context.storefront.i18n.country,
-            language,
-          },
-        }).catch(() => null)
+      ? context.storefront
+          .query(SHOP_COLLECTION_QUERY, {
+            variables: {
+              handle: collectionHandle,
+              country: context.storefront.i18n.country,
+              language,
+            },
+          })
+          .catch(() => null)
       : Promise.resolve(null),
   ]);
 
@@ -147,44 +248,52 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
 
   return data(
     {
-    article: {
-      title: placeholder.title,
-      contentHtml: placeholder.content,
-      image: placeholder.image ? {url: placeholder.image.url, altText: placeholder.image.altText} : null,
-      author: {name: 'The Ferryman'},
-    },
-    formattedDate: placeholder.readTime,
-    seo: {
-      title: placeholder.title,
-      titleTemplate: '%s | STYX Gold',
-      description,
-      url: request.url,
-      jsonLd: {
-        '@context': 'https://schema.org',
-        '@type': 'Article',
-        headline: placeholder.title,
-        description,
-        ...(heroImageUrl ? {image: heroImageUrl} : {}),
-        author: {
-          '@type': 'Organization',
-          name: 'STYX Gold',
-        },
-        publisher: {
-          '@type': 'Organization',
-          name: 'STYX Gold',
-          logo: {
-            '@type': 'ImageObject',
-            url: `${origin}/images/styx-logo-512.png`,
-          },
-        },
-        mainEntityOfPage: request.url,
-        url: request.url,
+      article: {
+        title: placeholder.title,
+        contentHtml: placeholder.content,
+        image: placeholder.image
+          ? {url: placeholder.image.url, altText: placeholder.image.altText}
+          : null,
+        author: {name: 'The Ferryman'},
       },
-    },
-    isPlaceholder: true,
-    category: placeholder.category,
-    vol: placeholder.vol,
-    shopProducts,
+      formattedDate: placeholder.readTime,
+      seo: {
+        title: placeholder.seoTitle ?? placeholder.title,
+        titleTemplate: '%s | STYX Gold',
+        description,
+        url: request.url,
+        // Social card should show the article hero, not the site default.
+        ...(heroImageUrl ? {media: heroImageUrl} : {}),
+        jsonLd: {
+          '@context': 'https://schema.org',
+          '@type': 'Article',
+          headline: placeholder.title,
+          description,
+          ...(heroImageUrl ? {image: heroImageUrl} : {}),
+          // Journal content shipped with the 2026-05-18 production deploy and
+          // was last revised in the 2026-06-07 content pass (git history).
+          datePublished: '2026-05-18',
+          dateModified: '2026-06-07',
+          author: {
+            '@type': 'Organization',
+            name: 'STYX Gold',
+          },
+          publisher: {
+            '@type': 'Organization',
+            name: 'STYX Gold',
+            logo: {
+              '@type': 'ImageObject',
+              url: `${origin}/images/styx-logo-512.png`,
+            },
+          },
+          mainEntityOfPage: request.url,
+          url: request.url,
+        },
+      },
+      isPlaceholder: true,
+      category: placeholder.category,
+      vol: placeholder.vol,
+      shopProducts,
     },
     {headers: {'Cache-Control': CACHE_LONG}},
   );
@@ -212,10 +321,15 @@ export default function Article() {
 
   // Find current entry + other chapters
   const currentEntry = JOURNAL_ENTRIES.find((e) => e.handle === journalHandle);
-  const otherChapters = JOURNAL_ENTRIES.filter((e) => e.handle !== journalHandle).slice(0, 6);
+  const otherChapters = JOURNAL_ENTRIES.filter(
+    (e) => e.handle !== journalHandle,
+  ).slice(0, 6);
 
   return (
-    <div style={{background: STYX.bone, minHeight: '100vh'}} className="styx-journal-page">
+    <div
+      style={{background: STYX.bone, minHeight: '100vh'}}
+      className="styx-journal-page"
+    >
       <GoldTicker />
       <StyxNav />
 
@@ -281,7 +395,9 @@ export default function Article() {
             <div>
               <StyxLabel>
                 {isPlaceholder && category
-                  ? `${category} · ${currentEntry?.readTime || formattedDate} read`
+                  ? `${category} · ${
+                      currentEntry?.readTime || formattedDate
+                    } read`
                   : `${formattedDate}`}
               </StyxLabel>
               <h1
@@ -422,7 +538,9 @@ export default function Article() {
           }}
         >
           <div
-            dangerouslySetInnerHTML={{__html: processArticleHtml(contentHtml, spotPerOz)}}
+            dangerouslySetInnerHTML={{
+              __html: processArticleHtml(contentHtml, spotPerOz),
+            }}
             style={{
               fontFamily: FONT.cormorant,
               fontSize: 20,
@@ -663,7 +781,6 @@ export default function Article() {
         </div>
       </section>
 
-
       {/* ─── Article content styles ─────────────────────────── */}
       <style
         dangerouslySetInnerHTML={{
@@ -703,7 +820,9 @@ export default function Article() {
         .journal-article p {
           margin: 0 0 28px;
         }
-        .journal-article p:first-of-type::first-letter {
+        /* Direct child only — figure captions and blockquote paragraphs are
+           nested in wrappers and must never get the drop cap. */
+        .journal-article > p:first-of-type::first-letter {
           font-family: ${FONT.cinzel};
           font-size: 3.2em;
           float: left;
@@ -967,9 +1086,13 @@ function processArticleHtml(html: string, spotPerOz: number): string {
                 <div style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: rgba(239,234,224,0.7); margin-top: 4px;">More than a full troy ounce</div>
               </div>
               <div>
-                <div style="font-family: 'Cinzel', serif; font-size: 36px; color: #B8924A; font-weight: 500;">${fmt(rawMaterialValue)}</div>
+                <div style="font-family: 'Cinzel', serif; font-size: 36px; color: #B8924A; font-weight: 500;">${fmt(
+                  rawMaterialValue,
+                )}</div>
                 <div style="font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.2em; color: rgba(239,234,224,0.5); text-transform: uppercase; margin-top: 8px;">Raw Material Value</div>
-                <div style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: rgba(239,234,224,0.7); margin-top: 4px;">At today&rsquo;s ${fmt(spotPerOz)}/oz spot</div>
+                <div style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: rgba(239,234,224,0.7); margin-top: 4px;">At today&rsquo;s ${fmt(
+                  spotPerOz,
+                )}/oz spot</div>
               </div>
             </div>
           </div>

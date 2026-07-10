@@ -4,7 +4,7 @@ import {
   type LoaderFunctionArgs,
   type ActionFunctionArgs,
   type MetaFunction,
-  } from 'react-router';
+} from 'react-router';
 import {CartForm, type CartQueryDataReturn, Analytics} from '@shopify/hydrogen';
 
 import {isLocalPath} from '~/lib/utils';
@@ -12,7 +12,10 @@ import {Cart} from '~/components/Cart';
 
 export const meta: MetaFunction = () => {
   // The cart is personal and transient — not something to index.
-  return [{title: 'Your Vault — STYX Gold'}, {name: 'robots', content: 'noindex, follow'}];
+  return [
+    {title: 'Your Vault — STYX Gold'},
+    {name: 'robots', content: 'noindex, follow'},
+  ];
 };
 
 export async function action({request, context}: ActionFunctionArgs) {
@@ -91,8 +94,22 @@ export default function CartRoute() {
   const cart = useLoaderData<typeof loader>();
 
   return (
-    <div className="cart">
-      <h1>Cart</h1>
+    <div
+      className="cart"
+      style={{maxWidth: 1200, margin: '0 auto', padding: '48px 28px 80px'}}
+    >
+      <h1
+        style={{
+          fontFamily: "'Cinzel', serif",
+          fontSize: 32,
+          fontWeight: 400,
+          letterSpacing: '0.06em',
+          textTransform: 'uppercase',
+          margin: '0 0 32px',
+        }}
+      >
+        Cart
+      </h1>
       <Cart layout="page" cart={cart} />
       <Analytics.CartView />
     </div>

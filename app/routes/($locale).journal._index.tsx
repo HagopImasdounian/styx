@@ -3,7 +3,15 @@ import {data, useLoaderData, type LoaderFunctionArgs} from 'react-router';
 import {getStyxSeoMeta} from '~/lib/seo-meta';
 
 import {Link} from '~/components/Link';
-import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel, Obol} from '~/components/styx';
+import {
+  STYX,
+  FONT,
+  GoldTicker,
+  StyxNav,
+  StyxFooter,
+  StyxLabel,
+  Obol,
+} from '~/components/styx';
 import {validateLocale} from '~/lib/utils';
 import {CACHE_LONG, routeHeaders} from '~/data/cache';
 import {HIDDEN_ARTICLE_HANDLES} from '~/data/journal-articles';
@@ -12,35 +20,64 @@ export const headers = routeHeaders;
 
 /* ─── Hero image lookup: handle → hero image path ─── */
 const HERO_IMAGES: Record<string, string> = {
-  'history-of-gold-chains': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-gold-chains-history-hero.jpg?v=1779151607',
-  'history-of-the-cuban-link': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-cuban-link-hero.png?v=1779151550',
-  'history-of-the-franco-chain': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-franco-chain-hero.png?v=1779151600',
-  'history-of-the-curb-chain': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-curb-chain-hero.png?v=1779151561',
-  'history-of-the-figaro-chain': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-figaro-chain-hero.png?v=1779151576',
-  'history-of-the-mariner-chain': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-mariner-chain-hero.jpg?v=1779151650',
-  'history-of-the-rope-chain': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-rope-chain-hero.png?v=1779151692',
-  'history-of-the-wheat-chain': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-wheat-chain-hero.png?v=1779151794',
-  'history-of-the-criss-cross-chain': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-criss-cross-chain-hero.jpg?v=1779151534',
-  'history-of-the-forsantina-chain': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-forsantina-chain-hero.jpg?v=1779151586',
-  'history-of-the-tinsel-chain': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-tinsel-chain-hero.jpg?v=1779151756',
-  'history-of-the-cable-chain': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-cable-chain-hero.jpg?v=1779151524',
-  'history-of-the-rolo-chain': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-rolo-chain-hero.jpg?v=1779151682',
-  'history-of-the-ball-chain': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-ball-chain-hero.png?v=1779151495',
-  'history-of-the-singapore-chain': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-singapore-chain-hero.jpg?v=1779151724',
-  'history-of-the-byzantine-chain': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-byzantine-chain-hero.jpg?v=1779151514',
-  'history-of-the-herringbone-chain': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-herringbone-chain-hero.png?v=1779151622',
-  'history-of-the-snake-chain': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-snake-chain-hero.png?v=1779151735',
-  'history-of-the-box-chain': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-box-chain-hero.jpg?v=1779151502',
-  'history-of-the-paperclip-chain': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-paperclip-chain-hero.png?v=1779151660',
-  'history-of-the-s-link-chain': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-s-link-chain-hero.jpg?v=1779151703',
-  'history-of-the-tennis-chain': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-tennis-chain-hero.jpg?v=1779151745',
-  'history-of-the-valentino-chain': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-valentino-chain-hero.jpg?v=1779151780',
-  'history-of-the-tulip-chain': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-tulip-chain-hero.jpg?v=1779151769',
-  'history-of-the-heart-chain': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-heart-chain-hero.jpg?v=1779151611',
-  'history-of-the-peanut-chain': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-peanut-chain-hero.jpg?v=1779151671',
-  'history-of-the-scroll-chain': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-scroll-chain-hero.png?v=1779151714',
-  'understanding-gold-karats': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-gold-chains-history-hero.jpg?v=1779151607',
-  'sizing-guide': 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-size-guide.jpg?v=1779151801',
+  'history-of-gold-chains':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-gold-chains-history-hero.jpg?v=1779151607',
+  'history-of-the-cuban-link':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-cuban-link-hero.png?v=1779151550',
+  'history-of-the-franco-chain':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-franco-chain-hero.png?v=1779151600',
+  'history-of-the-curb-chain':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-curb-chain-hero.png?v=1779151561',
+  'history-of-the-figaro-chain':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-figaro-chain-hero.png?v=1779151576',
+  'history-of-the-mariner-chain':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-mariner-chain-hero.jpg?v=1779151650',
+  'history-of-the-rope-chain':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-rope-chain-hero.png?v=1779151692',
+  'history-of-the-wheat-chain':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-wheat-chain-hero.png?v=1779151794',
+  'history-of-the-criss-cross-chain':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-criss-cross-chain-hero.jpg?v=1779151534',
+  'history-of-the-forsantina-chain':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-forsantina-chain-hero.jpg?v=1779151586',
+  'history-of-the-tinsel-chain':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-tinsel-chain-hero.jpg?v=1779151756',
+  'history-of-the-cable-chain':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-cable-chain-hero.jpg?v=1779151524',
+  'history-of-the-rolo-chain':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-rolo-chain-hero.jpg?v=1779151682',
+  'history-of-the-ball-chain':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-ball-chain-hero.png?v=1779151495',
+  'history-of-the-singapore-chain':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-singapore-chain-hero.jpg?v=1779151724',
+  'history-of-the-byzantine-chain':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-byzantine-chain-hero.jpg?v=1779151514',
+  'history-of-the-herringbone-chain':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-herringbone-chain-hero.png?v=1779151622',
+  'history-of-the-snake-chain':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-snake-chain-hero.png?v=1779151735',
+  'history-of-the-box-chain':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-box-chain-hero.jpg?v=1779151502',
+  'history-of-the-paperclip-chain':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-paperclip-chain-hero.png?v=1779151660',
+  'history-of-the-s-link-chain':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-s-link-chain-hero.jpg?v=1779151703',
+  'history-of-the-tennis-chain':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-tennis-chain-hero.jpg?v=1779151745',
+  'history-of-the-valentino-chain':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-valentino-chain-hero.jpg?v=1779151780',
+  'history-of-the-tulip-chain':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-tulip-chain-hero.jpg?v=1779151769',
+  'history-of-the-heart-chain':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-heart-chain-hero.jpg?v=1779151611',
+  'history-of-the-peanut-chain':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-peanut-chain-hero.jpg?v=1779151671',
+  'history-of-the-scroll-chain':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-scroll-chain-hero.png?v=1779151714',
+  'understanding-gold-karats':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-gold-chains-history-hero.jpg?v=1779151607',
+  'sizing-guide':
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-size-guide.jpg?v=1779151801',
 };
 
 /* ─── Volume data ─── */
@@ -52,78 +89,299 @@ const ALL_JOURNAL_VOLUMES = [
     description: 'Foundational knowledge on the world of precious metals.',
     cat: 'The Almanac',
     articles: [
-      {handle: 'history-of-gold-chains', title: 'A Brief History of Gold Chains', subtitle: 'From Mesopotamia to Miami', preview: 'How a 4,500-year-old technology became the world\'s most enduring symbol of wealth.', readTime: '10 min', image: HERO_IMAGES['history-of-gold-chains']},
-      {handle: 'understanding-gold-karats', title: 'Understanding Gold Karats', subtitle: '10K, 14K, 18K, 22K & 24K', preview: 'Most jewelers want you confused about karats. The truth is simple math — here\'s what it means for the chain around your neck.', readTime: '8 min', image: HERO_IMAGES['understanding-gold-karats']},
+      {
+        handle: 'history-of-gold-chains',
+        title: 'A Brief History of Gold Chains',
+        subtitle: 'From Mesopotamia to Miami',
+        preview:
+          "How a 4,500-year-old technology became the world's most enduring symbol of wealth.",
+        readTime: '10 min',
+        image: HERO_IMAGES['history-of-gold-chains'],
+      },
+      {
+        handle: 'understanding-gold-karats',
+        title: 'Understanding Gold Karats',
+        subtitle: '10K, 14K, 18K, 22K & 24K',
+        preview:
+          "Most jewelers want you confused about karats. The truth is simple math — here's what it means for the chain around your neck.",
+        readTime: '8 min',
+        image: HERO_IMAGES['understanding-gold-karats'],
+      },
     ],
   },
   {
     id: 'vol-1',
     volLabel: 'Vol I',
     title: 'Vol I: The Powerhouses',
-    description: 'The heavy hitters. Bold, interlocking links built for dominance.',
+    description:
+      'The heavy hitters. Bold, interlocking links built for dominance.',
     cat: 'The Catalog',
     articles: [
-      {handle: 'history-of-the-cuban-link', title: 'The Cuban Link', subtitle: 'Miami, 1974', preview: 'The chain that defined hip-hop, born from a Cuban jeweler\'s hands on a Calle Ocho workbench.', readTime: '6 min', image: HERO_IMAGES['history-of-the-cuban-link']},
-      {handle: 'history-of-the-franco-chain', title: 'The Franco', subtitle: "Milan's Strongest Weave", preview: 'An Italian engineering marvel — interlocking V-shaped links that flex without ever kinking.', readTime: '4 min', image: HERO_IMAGES['history-of-the-franco-chain']},
-      {handle: 'history-of-the-curb-chain', title: 'The Curb Link', subtitle: 'Ancient Sumer, 2600 BC', preview: 'The oldest link geometry in existence, unchanged for 4,600 years because nothing improves it.', readTime: '5 min', image: HERO_IMAGES['history-of-the-curb-chain']},
-      {handle: 'history-of-the-figaro-chain', title: 'The Figaro', subtitle: 'Vicenza, 1885', preview: 'Three short links, one long — the rhythmic Italian pattern that broke every design rule.', readTime: '5 min', image: HERO_IMAGES['history-of-the-figaro-chain']},
-      {handle: 'history-of-the-mariner-chain', title: 'The Mariner', subtitle: 'Anchored in History', preview: 'Oval links with a center bar, modeled after the anchor chains that held ships in port.', readTime: '4 min', image: HERO_IMAGES['history-of-the-mariner-chain']},
+      {
+        handle: 'history-of-the-cuban-link',
+        title: 'The Cuban Link',
+        subtitle: 'Miami, 1974',
+        preview:
+          "The chain that defined hip-hop, born from a Cuban jeweler's hands on a Calle Ocho workbench.",
+        readTime: '6 min',
+        image: HERO_IMAGES['history-of-the-cuban-link'],
+      },
+      {
+        handle: 'history-of-the-franco-chain',
+        title: 'The Franco',
+        subtitle: "Milan's Strongest Weave",
+        preview:
+          'An Italian engineering marvel — interlocking V-shaped links that flex without ever kinking.',
+        readTime: '4 min',
+        image: HERO_IMAGES['history-of-the-franco-chain'],
+      },
+      {
+        handle: 'history-of-the-curb-chain',
+        title: 'The Curb Link',
+        subtitle: 'Ancient Sumer, 2600 BC',
+        preview:
+          'The oldest link geometry in existence, unchanged for 4,600 years because nothing improves it.',
+        readTime: '5 min',
+        image: HERO_IMAGES['history-of-the-curb-chain'],
+      },
+      {
+        handle: 'history-of-the-figaro-chain',
+        title: 'The Figaro',
+        subtitle: 'Vicenza, 1885',
+        preview:
+          'Three short links, one long — the rhythmic Italian pattern that broke every design rule.',
+        readTime: '5 min',
+        image: HERO_IMAGES['history-of-the-figaro-chain'],
+      },
+      {
+        handle: 'history-of-the-mariner-chain',
+        title: 'The Mariner',
+        subtitle: 'Anchored in History',
+        preview:
+          'Oval links with a center bar, modeled after the anchor chains that held ships in port.',
+        readTime: '4 min',
+        image: HERO_IMAGES['history-of-the-mariner-chain'],
+      },
     ],
   },
   {
     id: 'vol-2',
     volLabel: 'Vol II',
     title: 'Vol II: The Artisans',
-    description: 'Technical masterpieces. Helical spirals and nature-inspired weaves.',
+    description:
+      'Technical masterpieces. Helical spirals and nature-inspired weaves.',
     cat: 'The Catalog',
     articles: [
-      {handle: 'history-of-the-rope-chain', title: 'The Rope Chain', subtitle: 'A Twist Through Time', preview: 'Two helical strands wound tight — the chain that catches light from every angle.', readTime: '4 min', image: HERO_IMAGES['history-of-the-rope-chain']},
-      {handle: 'history-of-the-wheat-chain', title: 'The Wheat (Spiga)', subtitle: 'Vicenza, The Renaissance', preview: 'Interlocking teardrop links woven into a pattern that mirrors the wheat sheaf it\'s named for.', readTime: '5 min', image: HERO_IMAGES['history-of-the-wheat-chain']},
-      {handle: 'history-of-the-criss-cross-chain', title: 'The Criss-Cross', subtitle: 'Milan, The Modern Era', preview: 'Twisted links that cross at alternating angles, creating a textured spiral with serious visual weight.', readTime: '4 min', image: HERO_IMAGES['history-of-the-criss-cross-chain']},
-      {handle: 'history-of-the-forsantina-chain', title: 'The Forsantina', subtitle: 'Venice, Mid-20th Century', preview: 'A Venetian specialty — elongated links with figure-eight connectors that drape like liquid.', readTime: '3 min', image: HERO_IMAGES['history-of-the-forsantina-chain']},
+      {
+        handle: 'history-of-the-rope-chain',
+        title: 'The Rope Chain',
+        subtitle: 'A Twist Through Time',
+        preview:
+          'Two helical strands wound tight — the chain that catches light from every angle.',
+        readTime: '4 min',
+        image: HERO_IMAGES['history-of-the-rope-chain'],
+      },
+      {
+        handle: 'history-of-the-wheat-chain',
+        title: 'The Wheat (Spiga)',
+        subtitle: 'Vicenza, The Renaissance',
+        preview:
+          "Interlocking teardrop links woven into a pattern that mirrors the wheat sheaf it's named for.",
+        readTime: '5 min',
+        image: HERO_IMAGES['history-of-the-wheat-chain'],
+      },
+      {
+        handle: 'history-of-the-criss-cross-chain',
+        title: 'The Criss-Cross',
+        subtitle: 'Milan, The Modern Era',
+        preview:
+          'Twisted links that cross at alternating angles, creating a textured spiral with serious visual weight.',
+        readTime: '4 min',
+        image: HERO_IMAGES['history-of-the-criss-cross-chain'],
+      },
+      {
+        handle: 'history-of-the-forsantina-chain',
+        title: 'The Forsantina',
+        subtitle: 'Venice, Mid-20th Century',
+        preview:
+          'A Venetian specialty — elongated links with figure-eight connectors that drape like liquid.',
+        readTime: '3 min',
+        image: HERO_IMAGES['history-of-the-forsantina-chain'],
+      },
     ],
   },
   {
     id: 'vol-3',
     volLabel: 'Vol III',
     title: 'Vol III: The Foundations',
-    description: 'The DNA of the jewelry world. Essential links that never go out of style.',
+    description:
+      'The DNA of the jewelry world. Essential links that never go out of style.',
     cat: 'The Catalog',
     articles: [
-      {handle: 'history-of-the-cable-chain', title: 'The Cable Chain', subtitle: 'Sumer, c. 2600 BC', preview: 'The simplest geometry in jewelry — uniform oval links, alternating orientation, infinite elegance.', readTime: '4 min', image: HERO_IMAGES['history-of-the-cable-chain']},
-      {handle: 'history-of-the-rolo-chain', title: 'The Rolo Chain', subtitle: 'Victorian London, c. 1850', preview: 'Symmetrical round links with a flat interior face, built for weight you can feel.', readTime: '4 min', image: HERO_IMAGES['history-of-the-rolo-chain']},
-      {handle: 'history-of-the-ball-chain', title: 'The Ball Chain', subtitle: 'United States, c. 1940', preview: 'Uniform spheres connected by short bars — military dog tags made it iconic.', readTime: '3 min', image: HERO_IMAGES['history-of-the-ball-chain']},
-      {handle: 'history-of-the-singapore-chain', title: 'The Singapore', subtitle: 'Italy, c. 1975', preview: 'Braided curb links twisted into a diamond-cut helix that sparkles with every movement.', readTime: '4 min', image: HERO_IMAGES['history-of-the-singapore-chain']},
-      {handle: 'history-of-the-byzantine-chain', title: 'The Byzantine', subtitle: 'Constantinople, 500 AD', preview: 'An intricate weave of interlocking rings from the Eastern Roman Empire — chainmail elevated to jewelry.', readTime: '5 min', image: HERO_IMAGES['history-of-the-byzantine-chain']},
+      {
+        handle: 'history-of-the-cable-chain',
+        title: 'The Cable Chain',
+        subtitle: 'Sumer, c. 2600 BC',
+        preview:
+          'The simplest geometry in jewelry — uniform oval links, alternating orientation, infinite elegance.',
+        readTime: '4 min',
+        image: HERO_IMAGES['history-of-the-cable-chain'],
+      },
+      {
+        handle: 'history-of-the-rolo-chain',
+        title: 'The Rolo Chain',
+        subtitle: 'Victorian London, c. 1850',
+        preview:
+          'Symmetrical round links with a flat interior face, built for weight you can feel.',
+        readTime: '4 min',
+        image: HERO_IMAGES['history-of-the-rolo-chain'],
+      },
+      {
+        handle: 'history-of-the-ball-chain',
+        title: 'The Ball Chain',
+        subtitle: 'United States, c. 1940',
+        preview:
+          'Uniform spheres connected by short bars — military dog tags made it iconic.',
+        readTime: '3 min',
+        image: HERO_IMAGES['history-of-the-ball-chain'],
+      },
+      {
+        handle: 'history-of-the-singapore-chain',
+        title: 'The Singapore',
+        subtitle: 'Italy, c. 1975',
+        preview:
+          'Braided curb links twisted into a diamond-cut helix that sparkles with every movement.',
+        readTime: '4 min',
+        image: HERO_IMAGES['history-of-the-singapore-chain'],
+      },
+      {
+        handle: 'history-of-the-byzantine-chain',
+        title: 'The Byzantine',
+        subtitle: 'Constantinople, 500 AD',
+        preview:
+          'An intricate weave of interlocking rings from the Eastern Roman Empire — chainmail elevated to jewelry.',
+        readTime: '5 min',
+        image: HERO_IMAGES['history-of-the-byzantine-chain'],
+      },
     ],
   },
   {
     id: 'vol-4',
     volLabel: 'Vol IV',
     title: 'Vol IV: The Architects',
-    description: 'Liquid gold. Flat, architectural profiles that catch the light like a mirror.',
+    description:
+      'Liquid gold. Flat, architectural profiles that catch the light like a mirror.',
     cat: 'The Catalog',
     articles: [
-      {handle: 'history-of-the-herringbone-chain', title: 'The Herringbone', subtitle: 'Flat Luxury', preview: 'Slanted flat links pressed together into a fluid, mirror-finish ribbon of gold.', readTime: '4 min', image: HERO_IMAGES['history-of-the-herringbone-chain']},
-      {handle: 'history-of-the-snake-chain', title: 'The Snake Chain', subtitle: 'Victorian Era', preview: 'Interlocking wavy plates forming a smooth, round tube — sleek as the creature it\'s named for.', readTime: '4 min', image: HERO_IMAGES['history-of-the-snake-chain']},
-      {handle: 'history-of-the-box-chain', title: 'The Box Chain', subtitle: 'Venice, 6th Century', preview: 'Square links connected at right angles — the most structurally rigid chain ever designed.', readTime: '4 min', image: HERO_IMAGES['history-of-the-box-chain']},
-      {handle: 'history-of-the-paperclip-chain', title: 'The Paperclip', subtitle: 'Oslo, 1940', preview: 'Elongated oval links inspired by a wartime symbol of resistance turned modern minimalism.', readTime: '4 min', image: HERO_IMAGES['history-of-the-paperclip-chain']},
-      {handle: 'history-of-the-s-link-chain', title: 'The S-Link', subtitle: 'Mesopotamia, c. 2000 BC', preview: 'Alternating S-shaped curves that create a flowing, organic rhythm unlike any other chain.', readTime: '4 min', image: HERO_IMAGES['history-of-the-s-link-chain']},
+      {
+        handle: 'history-of-the-herringbone-chain',
+        title: 'The Herringbone',
+        subtitle: 'Flat Luxury',
+        preview:
+          'Slanted flat links pressed together into a fluid, mirror-finish ribbon of gold.',
+        readTime: '4 min',
+        image: HERO_IMAGES['history-of-the-herringbone-chain'],
+      },
+      {
+        handle: 'history-of-the-snake-chain',
+        title: 'The Snake Chain',
+        subtitle: 'Victorian Era',
+        preview:
+          "Interlocking wavy plates forming a smooth, round tube — sleek as the creature it's named for.",
+        readTime: '4 min',
+        image: HERO_IMAGES['history-of-the-snake-chain'],
+      },
+      {
+        handle: 'history-of-the-box-chain',
+        title: 'The Box Chain',
+        subtitle: 'Venice, 6th Century',
+        preview:
+          'Square links connected at right angles — the most structurally rigid chain ever designed.',
+        readTime: '4 min',
+        image: HERO_IMAGES['history-of-the-box-chain'],
+      },
+      {
+        handle: 'history-of-the-paperclip-chain',
+        title: 'The Paperclip',
+        subtitle: 'Oslo, 1940',
+        preview:
+          'Elongated oval links inspired by a wartime symbol of resistance turned modern minimalism.',
+        readTime: '4 min',
+        image: HERO_IMAGES['history-of-the-paperclip-chain'],
+      },
+      {
+        handle: 'history-of-the-s-link-chain',
+        title: 'The S-Link',
+        subtitle: 'Mesopotamia, c. 2000 BC',
+        preview:
+          'Alternating S-shaped curves that create a flowing, organic rhythm unlike any other chain.',
+        readTime: '4 min',
+        image: HERO_IMAGES['history-of-the-s-link-chain'],
+      },
     ],
   },
   {
     id: 'vol-5',
     volLabel: 'Vol V',
     title: 'Vol V: The Ornamentals',
-    description: 'Artistic expression. Specialized links and decorative masterpieces.',
+    description:
+      'Artistic expression. Specialized links and decorative masterpieces.',
     cat: 'The Catalog',
     articles: [
-      {handle: 'history-of-the-tennis-chain', title: 'The Tennis Chain', subtitle: 'Forest Hills, 1978', preview: 'A single row of individually set stones — named after the bracelet Chris Evert lost mid-match.', readTime: '5 min', image: HERO_IMAGES['history-of-the-tennis-chain']},
-      {handle: 'history-of-the-valentino-chain', title: 'The Valentino', subtitle: 'Vicenza, High Fashion', preview: 'Flat, polished links with geometric precision — Italian high fashion distilled into a chain.', readTime: '4 min', image: HERO_IMAGES['history-of-the-valentino-chain']},
-      {handle: 'history-of-the-tulip-chain', title: 'The Tulip Chain', subtitle: 'Ottoman Empire', preview: 'Petal-shaped links nested together, born from the Ottoman obsession with the flower.', readTime: '4 min', image: HERO_IMAGES['history-of-the-tulip-chain']},
-      {handle: 'history-of-the-heart-chain', title: 'The Heart Chain', subtitle: 'France, 13th Century', preview: 'Interlocking heart-shaped links from medieval France — sentiment forged into solid gold.', readTime: '4 min', image: HERO_IMAGES['history-of-the-heart-chain']},
-      {handle: 'history-of-the-peanut-chain', title: 'The Peanut Chain', subtitle: 'East Asia, Prosperity Symbol', preview: 'Textured oval capsules linked end to end — an East Asian symbol of prosperity and abundance.', readTime: '4 min', image: HERO_IMAGES['history-of-the-peanut-chain']},
-      {handle: 'history-of-the-scroll-chain', title: 'The Scroll Chain', subtitle: 'Classical Greece', preview: 'Spiraling wire forms that echo ancient Greek scroll motifs — decorative metalwork at its finest.', readTime: '4 min', image: HERO_IMAGES['history-of-the-scroll-chain']},
+      {
+        handle: 'history-of-the-tennis-chain',
+        title: 'The Tennis Chain',
+        subtitle: 'Forest Hills, 1978',
+        preview:
+          'A single row of individually set stones — named after the bracelet Chris Evert lost mid-match.',
+        readTime: '5 min',
+        image: HERO_IMAGES['history-of-the-tennis-chain'],
+      },
+      {
+        handle: 'history-of-the-valentino-chain',
+        title: 'The Valentino',
+        subtitle: 'Vicenza, High Fashion',
+        preview:
+          'Flat, polished links with geometric precision — Italian high fashion distilled into a chain.',
+        readTime: '4 min',
+        image: HERO_IMAGES['history-of-the-valentino-chain'],
+      },
+      {
+        handle: 'history-of-the-tulip-chain',
+        title: 'The Tulip Chain',
+        subtitle: 'Ottoman Empire',
+        preview:
+          'Petal-shaped links nested together, born from the Ottoman obsession with the flower.',
+        readTime: '4 min',
+        image: HERO_IMAGES['history-of-the-tulip-chain'],
+      },
+      {
+        handle: 'history-of-the-heart-chain',
+        title: 'The Heart Chain',
+        subtitle: 'France, 13th Century',
+        preview:
+          'Interlocking heart-shaped links from medieval France — sentiment forged into solid gold.',
+        readTime: '4 min',
+        image: HERO_IMAGES['history-of-the-heart-chain'],
+      },
+      {
+        handle: 'history-of-the-peanut-chain',
+        title: 'The Peanut Chain',
+        subtitle: 'East Asia, Prosperity Symbol',
+        preview:
+          'Textured oval capsules linked end to end — an East Asian symbol of prosperity and abundance.',
+        readTime: '4 min',
+        image: HERO_IMAGES['history-of-the-peanut-chain'],
+      },
+      {
+        handle: 'history-of-the-scroll-chain',
+        title: 'The Scroll Chain',
+        subtitle: 'Classical Greece',
+        preview:
+          'Spiraling wire forms that echo ancient Greek scroll motifs — decorative metalwork at its finest.',
+        readTime: '4 min',
+        image: HERO_IMAGES['history-of-the-scroll-chain'],
+      },
     ],
   },
 ];
@@ -163,7 +421,10 @@ function buildFlatIndex(): JournalEntry[] {
 }
 
 const ALL_ENTRIES = buildFlatIndex();
-const CATEGORIES = ['All', ...Array.from(new Set(JOURNAL_VOLUMES.map((v) => v.cat)))];
+const CATEGORIES = [
+  'All',
+  ...Array.from(new Set(JOURNAL_VOLUMES.map((v) => v.cat))),
+];
 const TOTAL_COUNT = ALL_ENTRIES.length;
 
 export async function loader({request, params}: LoaderFunctionArgs) {
@@ -201,7 +462,10 @@ export default function JournalIndex() {
   const [featured, ...rest] = visible;
 
   return (
-    <div style={{background: STYX.bone, minHeight: '100vh'}} className="styx-journal-archive">
+    <div
+      style={{background: STYX.bone, minHeight: '100vh'}}
+      className="styx-journal-archive"
+    >
       <GoldTicker />
       <StyxNav />
 
@@ -296,8 +560,8 @@ export default function JournalIndex() {
               }}
             >
               A running index of the chapters, essays, and dispatches behind
-              every Styx piece — on craft, on transparency, on why the weight
-              in your hand is worth what we say it is.
+              every Styx piece — on craft, on transparency, on why the weight in
+              your hand is worth what we say it is.
             </div>
           </div>
         </div>
@@ -359,8 +623,7 @@ export default function JournalIndex() {
             }}
             className="styx-ja-counter"
           >
-            SHOWING &middot;{' '}
-            {String(visible.length).padStart(2, '0')} /{' '}
+            SHOWING &middot; {String(visible.length).padStart(2, '0')} /{' '}
             {String(TOTAL_COUNT).padStart(2, '0')}
           </div>
         </div>
@@ -368,7 +631,10 @@ export default function JournalIndex() {
 
       {/* ─── Featured entry ───────────────────────────────── */}
       {featured && (
-        <section style={{padding: '80px 56px 64px'}} className="styx-ja-featured">
+        <section
+          style={{padding: '80px 56px 64px'}}
+          className="styx-ja-featured"
+        >
           <div style={{maxWidth: 1280, margin: '0 auto'}}>
             <Link
               to={`/journal/${featured.handle}`}
@@ -448,15 +714,21 @@ export default function JournalIndex() {
                     }}
                   >
                     <StyxLabel>{featured.cat}</StyxLabel>
-                    <div
-                      style={{
-                        width: 4,
-                        height: 4,
-                        background: STYX.silt,
-                        borderRadius: '50%',
-                      }}
-                    />
-                    <StyxLabel>{featured.vol}</StyxLabel>
+                    {/* The Almanac's volume label equals its category —
+                        don't print the same words twice. */}
+                    {featured.vol !== featured.cat && (
+                      <>
+                        <div
+                          style={{
+                            width: 4,
+                            height: 4,
+                            background: STYX.silt,
+                            borderRadius: '50%',
+                          }}
+                        />
+                        <StyxLabel>{featured.vol}</StyxLabel>
+                      </>
+                    )}
                     <div
                       style={{
                         width: 4,
@@ -513,7 +785,10 @@ export default function JournalIndex() {
       )}
 
       {/* ─── Grid — remaining entries ─────────────────────── */}
-      <section style={{padding: '32px 56px 96px'}} className="styx-ja-grid-section">
+      <section
+        style={{padding: '32px 56px 96px'}}
+        className="styx-ja-grid-section"
+      >
         <div style={{maxWidth: 1280, margin: '0 auto'}}>
           <div
             style={{
@@ -537,9 +812,7 @@ export default function JournalIndex() {
           borderTop: `1px solid ${STYX.line}`,
         }}
       >
-        <div
-          style={{maxWidth: 960, margin: '0 auto', textAlign: 'center'}}
-        >
+        <div style={{maxWidth: 960, margin: '0 auto', textAlign: 'center'}}>
           <div
             style={{
               display: 'flex',
@@ -563,9 +836,9 @@ export default function JournalIndex() {
             }}
           >
             We keep this journal the way we keep the ledger: plainly, in
-            daylight, and with every number you&rsquo;d want to see. If you
-            ever wonder why a chain costs what it costs, or where a weave
-            came from, the answer is probably somewhere on this page.
+            daylight, and with every number you&rsquo;d want to see. If you ever
+            wonder why a chain costs what it costs, or where a weave came from,
+            the answer is probably somewhere on this page.
           </div>
           <StyxLabel>&mdash; A. Demetrios, Founder</StyxLabel>
         </div>
@@ -679,15 +952,20 @@ function JournalCard({entry, n}: {entry: JournalEntry; n: number}) {
           }}
         >
           <StyxLabel>{entry.cat}</StyxLabel>
-          <div
-            style={{
-              width: 3,
-              height: 3,
-              background: STYX.silt,
-              borderRadius: '50%',
-            }}
-          />
-          <StyxLabel>{entry.vol}</StyxLabel>
+          {/* Almanac entries: volume label duplicates the category — skip it */}
+          {entry.vol !== entry.cat && (
+            <>
+              <div
+                style={{
+                  width: 3,
+                  height: 3,
+                  background: STYX.silt,
+                  borderRadius: '50%',
+                }}
+              />
+              <StyxLabel>{entry.vol}</StyxLabel>
+            </>
+          )}
         </div>
         <h3
           style={{

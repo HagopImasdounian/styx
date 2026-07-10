@@ -57,15 +57,16 @@ export default {
       /**
        * Create a client for Customer Account API (optional).
        */
-      const customerAccount = env.PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID && env.SHOP_ID
-        ? createCustomerAccountClient({
-            waitUntil,
-            request,
-            session,
-            customerAccountId: env.PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID,
-            shopId: env.SHOP_ID,
-          })
-        : undefined;
+      const customerAccount =
+        env.PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID && env.SHOP_ID
+          ? createCustomerAccountClient({
+              waitUntil,
+              request,
+              session,
+              customerAccountId: env.PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID,
+              shopId: env.SHOP_ID,
+            })
+          : undefined;
 
       const cart = createCartHandler({
         storefront,
@@ -94,7 +95,9 @@ export default {
       const response = await handleRequest(request);
 
       if (session.isPending) {
-        response.headers.set('Set-Cookie', await session.commit());
+        // append, not set — routes may already have queued a Set-Cookie
+        // (e.g. cart id from cart.setCartId()) that must survive.
+        response.headers.append('Set-Cookie', await session.commit());
       }
 
       if (response.status === 404) {

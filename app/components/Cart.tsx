@@ -134,8 +134,7 @@ export function CartDetails({
                 fontVariantNumeric: 'tabular-nums',
               }}
             >
-              $
-              {spotPerOz.toLocaleString('en-US', {maximumFractionDigits: 0})}
+              ${spotPerOz.toLocaleString('en-US', {maximumFractionDigits: 0})}
               /oz
             </span>
           </div>
@@ -206,9 +205,7 @@ function CartDiscounts({
             name="discountCode"
             placeholder="Discount code"
           />
-          <button className="font-medium whitespace-nowrap">
-            Apply
-          </button>
+          <button className="font-medium whitespace-nowrap">Apply</button>
         </div>
       </UpdateDiscountForm>
     </>
@@ -255,7 +252,10 @@ function CartLines({
   }
 
   return (
-    <section aria-labelledby="cart-contents" className="px-6 pb-6 overflow-auto md:px-12">
+    <section
+      aria-labelledby="cart-contents"
+      className="px-6 pb-6 overflow-auto md:px-12"
+    >
       <ul className="grid gap-6 md:gap-10">
         {currentLines.map((line) => (
           <StyxCartLineItem key={line.id} line={line as CartLine} />
@@ -266,7 +266,10 @@ function CartLines({
 }
 
 function StyxCartLineItem({line}: {line: CartLine}) {
-  const optimisticData = useOptimisticData<{action?: string; quantity?: number}>(line?.id);
+  const optimisticData = useOptimisticData<{
+    action?: string;
+    quantity?: number;
+  }>(line?.id);
 
   if (!line?.id) return null;
   const {id, quantity, merchandise} = line;
@@ -286,7 +289,9 @@ function StyxCartLineItem({line}: {line: CartLine}) {
       }}
     >
       {/* Thumbnail */}
-      <div style={{width: 80, height: 80, flexShrink: 0, background: STYX.paper}}>
+      <div
+        style={{width: 80, height: 80, flexShrink: 0, background: STYX.paper}}
+      >
         {merchandise.image && (
           <Image
             width={160}
@@ -299,7 +304,9 @@ function StyxCartLineItem({line}: {line: CartLine}) {
       </div>
 
       {/* Details */}
-      <div style={{flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0}}>
+      <div
+        style={{flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0}}
+      >
         <div style={{display: 'flex', justifyContent: 'space-between', gap: 8}}>
           <div style={{minWidth: 0}}>
             <div
@@ -362,7 +369,13 @@ function StyxCartLineItem({line}: {line: CartLine}) {
                 flexShrink: 0,
               }}
             >
-              <svg width="12" height="12" viewBox="0 0 12 12" stroke="currentColor" strokeWidth="1.2">
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 12 12"
+                stroke="currentColor"
+                strokeWidth="1.2"
+              >
                 <line x1="2" y1="2" x2="10" y2="10" />
                 <line x1="10" y1="2" x2="2" y2="10" />
               </svg>
@@ -488,7 +501,9 @@ function CompleteTheSetRow({
   cart: CartType;
   onClose?: () => void;
 }) {
-  const lines = (cart?.lines ? flattenConnection(cart.lines) : []) as CartLine[];
+  const lines = (
+    cart?.lines ? flattenConnection(cart.lines) : []
+  ) as CartLine[];
   const firstHandle = lines[0]?.merchandise?.product?.handle ?? null;
 
   const [counterpart, setCounterpart] = useState<CrossSellCounterpart | null>(
@@ -509,7 +524,9 @@ function CompleteTheSetRow({
     }
     let cancelled = false;
     fetch(`/api/cross-sell?handle=${encodeURIComponent(firstHandle)}`)
-      .then((res) => (res.ok ? (res.json() as Promise<CrossSellResponse>) : null))
+      .then((res) =>
+        res.ok ? (res.json() as Promise<CrossSellResponse>) : null,
+      )
       .then((json) => {
         const product = json?.product ?? null;
         counterpartCache.set(firstHandle, product);
@@ -544,7 +561,9 @@ function CompleteTheSetRow({
       }}
     >
       {/* Thumbnail */}
-      <div style={{width: 40, height: 40, flexShrink: 0, background: STYX.bone}}>
+      <div
+        style={{width: 40, height: 40, flexShrink: 0, background: STYX.bone}}
+      >
         {counterpart.image && (
           <Image
             width={80}
@@ -707,7 +726,9 @@ function CartCheckoutActions({cart}: {cart: CartType}) {
 function ordinal(n: number): string {
   const v = n % 100;
   if (v >= 11 && v <= 13) return `${n}th`;
-  const suffix = ({1: 'st', 2: 'nd', 3: 'rd'} as Record<number, string>)[n % 10];
+  const suffix = ({1: 'st', 2: 'nd', 3: 'rd'} as Record<number, string>)[
+    n % 10
+  ];
   return `${n}${suffix || 'th'}`;
 }
 
@@ -771,14 +792,15 @@ function GoldOfferProgress({cost}: {cost: CartCost}) {
         }}
       >
         {gramsEarned === 0 ? (
-          <>
-            Add {fmt(remaining)} to receive 1g of 24K gold — on the house.
-          </>
+          <>Add {fmt(remaining)} to receive 1g of 24K gold — on the house.</>
         ) : (
           <>
             You&rsquo;ve earned {gramsEarned}g of 24K gold.
             {showNextGramNudge && (
-              <> {fmt(remaining)} to your {ordinal(gramsEarned + 1)} gram.</>
+              <>
+                {' '}
+                {fmt(remaining)} to your {ordinal(gramsEarned + 1)} gram.
+              </>
             )}
           </>
         )}
@@ -944,8 +966,8 @@ function CartSummary({
             lineHeight: 1.45,
           }}
         >
-          Paying by wire transfer? Save 4% off the card price — wire pricing
-          is shown on every product page.
+          Paying by wire transfer? Save 4% off the card price — wire pricing is
+          shown on every product page.
         </div>
 
         <div
@@ -1026,67 +1048,56 @@ export function CartEmpty({
 }) {
   if (hidden) return null;
 
-  if (layout === 'drawer') {
-    return (
+  // Same treatment for drawer and page — the page previously fell through to
+  // an unstyled fallback that broke the site's visual language.
+  return (
+    <div
+      style={{
+        padding: layout === 'drawer' ? '80px 28px' : '120px 28px 140px',
+        textAlign: 'center',
+      }}
+    >
       <div
         style={{
-          padding: '80px 28px',
-          textAlign: 'center',
+          fontFamily: FONT.cinzel,
+          fontSize: 18,
+          letterSpacing: '0.06em',
+          color: STYX.ink,
+          textTransform: 'uppercase',
+          marginBottom: 8,
         }}
       >
-        <div
-          style={{
-            fontFamily: FONT.cinzel,
-            fontSize: 18,
-            letterSpacing: '0.06em',
-            color: STYX.ink,
-            textTransform: 'uppercase',
-            marginBottom: 8,
-          }}
-        >
-          Empty Vault
-        </div>
-        <div
-          style={{
-            fontFamily: FONT.cormorant,
-            fontSize: 15,
-            fontStyle: 'italic',
-            color: STYX.silt,
-            lineHeight: 1.5,
-            marginBottom: 32,
-          }}
-        >
-          The river takes nothing.
-          <br />
-          Add a piece to begin.
-        </div>
-        <Link
-          to="/collections/chains"
-          onClick={onClose}
-          style={{
-            display: 'inline-block',
-            padding: '16px 32px',
-            background: STYX.ink,
-            color: STYX.bone,
-            fontFamily: FONT.cinzel,
-            fontSize: 11,
-            letterSpacing: '0.25em',
-            textTransform: 'uppercase',
-            textDecoration: 'none',
-          }}
-        >
-          Shop Chains
-        </Link>
+        Empty Vault
       </div>
-    );
-  }
-
-  return (
-    <div className="flex flex-col space-y-7 justify-center items-center md:py-8 md:px-12 px-4 py-6">
-      <p className="text-secondary">
-        Looks like you haven&rsquo;t added anything yet.
-      </p>
-      <Link to="/collections/chains" onClick={onClose}>
+      <div
+        style={{
+          fontFamily: FONT.cormorant,
+          fontSize: 15,
+          fontStyle: 'italic',
+          color: STYX.silt,
+          lineHeight: 1.5,
+          marginBottom: 32,
+        }}
+      >
+        The river takes nothing.
+        <br />
+        Add a piece to begin.
+      </div>
+      <Link
+        to="/collections/chains"
+        onClick={onClose}
+        style={{
+          display: 'inline-block',
+          padding: '16px 32px',
+          background: STYX.ink,
+          color: STYX.bone,
+          fontFamily: FONT.cinzel,
+          fontSize: 11,
+          letterSpacing: '0.25em',
+          textTransform: 'uppercase',
+          textDecoration: 'none',
+        }}
+      >
         Shop Chains
       </Link>
     </div>

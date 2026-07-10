@@ -20,6 +20,9 @@ const STATIC_PATHS = [
   '/faq',
   '/customize',
   '/shipping',
+  '/compare',
+  '/privacy',
+  '/terms',
 ];
 
 export async function loader({request}: LoaderFunctionArgs) {
@@ -34,7 +37,10 @@ export async function loader({request}: LoaderFunctionArgs) {
   );
 
   const urls = [...STATIC_PATHS, ...journalPaths, ...comparePaths]
-    .map((path) => `  <url><loc>${baseUrl}${path === '/' ? '/' : path}</loc></url>`)
+    .map(
+      (path) =>
+        `  <url><loc>${baseUrl}${path === '/' ? '/' : path}</loc></url>`,
+    )
     .join('\n');
 
   const body = `<?xml version="1.0" encoding="UTF-8"?>

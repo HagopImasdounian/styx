@@ -1,9 +1,6 @@
 import {useState, useRef, useCallback, useEffect, Suspense} from 'react';
 import {Disclosure, Listbox} from '@headlessui/react';
-import {
-    type MetaArgs,
-  type LoaderFunctionArgs,
-} from 'react-router';
+import {type MetaArgs, type LoaderFunctionArgs} from 'react-router';
 import {data, useLoaderData, Await, useRouteLoaderData} from 'react-router';
 import {
   getSeoMeta,
@@ -32,7 +29,7 @@ import {IconCaret, IconCheck, IconClose} from '~/components/Icon';
 import {getExcerpt, validateLocale} from '~/lib/utils';
 import {seoPayload} from '~/lib/seo.server';
 import {getStyxSeoMeta} from '~/lib/seo-meta';
-import {computeGoldPrice, KARAT_PURITY} from '~/lib/gold';
+import {computeGoldPrice, KARAT_PURITY, formatUSD} from '~/lib/gold';
 import type {Storefront} from '~/lib/type';
 import {trackProductView, trackVariantSelect} from '~/components/GTMDataLayer';
 import {CACHE_SHORT, routeHeaders} from '~/data/cache';
@@ -111,11 +108,21 @@ async function loadCriticalData({
   }
 
   // Find the chain-type collection for recommendations
-  const excludeCollections = new Set(['chains', '10k-gold', '14k-gold', 'frontpage', 'automated-collection']);
+  const excludeCollections = new Set([
+    'chains',
+    '10k-gold',
+    '14k-gold',
+    'frontpage',
+    'automated-collection',
+  ]);
   const chainCollection = product.collections?.nodes?.find(
     (c: any) => !excludeCollections.has(c.handle),
   );
-  const recommended = getRecommendedProducts(context.storefront, product.id, chainCollection?.handle);
+  const recommended = getRecommendedProducts(
+    context.storefront,
+    product.id,
+    chainCollection?.handle,
+  );
 
   // Cross-sell: nearest same-style/construction pieces + matching bracelet/necklace.
   // Deliberately NOT awaited — it's a below-fold module and must not block TTFB.
@@ -205,7 +212,10 @@ export default function Product() {
   // Track variant selection (skip initial load)
   const initialVariantRef = useRef(selectedVariant?.id);
   useEffect(() => {
-    if (selectedVariant?.id && selectedVariant.id !== initialVariantRef.current) {
+    if (
+      selectedVariant?.id &&
+      selectedVariant.id !== initialVariantRef.current
+    ) {
       trackVariantSelect({
         id: product.id,
         title: product.title,
@@ -224,6 +234,9 @@ export default function Product() {
   });
 
   const isOutOfStock = !selectedVariant?.availableForSale;
+  // Data guard: a $0 variant is a catalog error, never a sellable price.
+  // Route it into the request-this-size flow instead of a free checkout.
+  const isUnpriced = parseFloat(selectedVariant?.price?.amount ?? '0') <= 0;
   const isOnSale =
     selectedVariant?.price?.amount &&
     selectedVariant?.compareAtPrice?.amount &&
@@ -231,19 +244,26 @@ export default function Product() {
 
   // Extract metafields
   const p = product as any;
-  const weightGrams = p.weight_grams?.value ? parseFloat(p.weight_grams.value) : null;
+  const weightGrams = p.weight_grams?.value
+    ? parseFloat(p.weight_grams.value)
+    : null;
   // Karat: metafield > title parsing > default 10K
   const metafieldKarat = p.karat?.value
     ? parseInt(p.karat.value, 10)
-    : /18\s*k/i.test(title) ? 18
-    : /14\s*k/i.test(title) ? 14
+    : /18\s*k/i.test(title)
+    ? 18
+    : /14\s*k/i.test(title)
+    ? 14
     : 10;
-  const chainThickness = p.chain_thickness?.value
-    || (title.match(/(\d+(?:\.\d+)?)\s*mm/i)?.[0] ?? null);
+  const chainThickness =
+    p.chain_thickness?.value ||
+    (title.match(/(\d+(?:\.\d+)?)\s*mm/i)?.[0] ?? null);
   const chainConstruction = p.chain_construction?.value || null;
   const chainStyle = p.chain_style?.value || null;
   const laborCost = p.labor_cost?.value ? parseFloat(p.labor_cost.value) : 280;
-  const marginPercent = p.margin_percent?.value ? parseFloat(p.margin_percent.value) / 100 : 0.55;
+  const marginPercent = p.margin_percent?.value
+    ? parseFloat(p.margin_percent.value) / 100
+    : 0.55;
   const chainOrigin = p.chain_origin?.value || null;
   const yearInvented = p.year_invented?.value || null;
   const romanNumeral = p.roman_numeral?.value || null;
@@ -335,7 +355,13 @@ export default function Product() {
   // Compute gold transparency breakdown (only when we have weight)
   const hasTransparency = weightGrams !== null && weightGrams > 0;
   const goldBreakdown = hasTransparency
-    ? computeGoldPrice({spotPerOz, weight: weightGrams!, karat, laborCost, margin: marginPercent})
+    ? computeGoldPrice({
+        spotPerOz,
+        weight: weightGrams!,
+        karat,
+        laborCost,
+        margin: marginPercent,
+      })
     : null;
 
   // Per-gram price for the selected karat
@@ -365,13 +391,22 @@ export default function Product() {
       {/* ── Breadcrumb Bar ── */}
       {(() => {
         // Find the chain-type collection (exclude chains, 10k-gold, 14k-gold, frontpage)
-        const exclude = new Set(['chains', '10k-gold', '14k-gold', 'frontpage', 'automated-collection']);
+        const exclude = new Set([
+          'chains',
+          '10k-gold',
+          '14k-gold',
+          'frontpage',
+          'automated-collection',
+        ]);
         const chainCollection = (product as any).collections?.nodes?.find(
           (c: any) => !exclude.has(c.handle),
         );
         return (
           <div style={{borderBottom: `1px solid ${STYX.line}`}}>
-            <div className="styx-product-breadcrumb" style={{maxWidth: 1440, margin: '0 auto', padding: '20px 56px'}}>
+            <div
+              className="styx-product-breadcrumb"
+              style={{maxWidth: 1440, margin: '0 auto', padding: '20px 56px'}}
+            >
               {/* Full trail — desktop / tablet */}
               <nav
                 className="styx-breadcrumb-full"
@@ -386,18 +421,28 @@ export default function Product() {
                   gap: 8,
                 }}
               >
-                <Link to="/" style={{color: STYX.silt, textDecoration: 'none'}}>Home</Link>
+                <Link to="/" style={{color: STYX.silt, textDecoration: 'none'}}>
+                  Home
+                </Link>
                 <span style={{opacity: 0.4}}>/</span>
                 {chainCollection ? (
                   <>
-                    <Link to={`/collections/${chainCollection.handle}`} style={{color: STYX.silt, textDecoration: 'none'}}>
+                    <Link
+                      to={`/collections/${chainCollection.handle}`}
+                      style={{color: STYX.silt, textDecoration: 'none'}}
+                    >
                       {chainCollection.title}
                     </Link>
                     <span style={{opacity: 0.4}}>/</span>
                   </>
                 ) : (
                   <>
-                    <Link to="/collections" style={{color: STYX.silt, textDecoration: 'none'}}>Collections</Link>
+                    <Link
+                      to="/collections"
+                      style={{color: STYX.silt, textDecoration: 'none'}}
+                    >
+                      Collections
+                    </Link>
                     <span style={{opacity: 0.4}}>/</span>
                   </>
                 )}
@@ -415,7 +460,11 @@ export default function Product() {
                 }}
               >
                 <Link
-                  to={chainCollection ? `/collections/${chainCollection.handle}` : '/collections'}
+                  to={
+                    chainCollection
+                      ? `/collections/${chainCollection.handle}`
+                      : '/collections'
+                  }
                   style={{
                     color: STYX.silt,
                     textDecoration: 'none',
@@ -452,12 +501,19 @@ export default function Product() {
         }}
       >
         {/* ── Gallery — Lead Image (first on mobile) ── */}
-        <div className="styx-gallery-lead" style={{gridColumn: '1 / 2', gridRow: '1'}}>
+        <div
+          className="styx-gallery-lead"
+          style={{gridColumn: '1 / 2', gridRow: '1'}}
+        >
           {/* Lead image — variant image if available, else first color-matched media */}
           {(() => {
             const variantImg = (selectedVariant as any)?.image;
             const firstMedia = colorFilteredMedia[0];
-            const leadImage = variantImg || (firstMedia && 'image' in firstMedia ? firstMedia.image : firstMedia?.previewImage);
+            const leadImage =
+              variantImg ||
+              (firstMedia && 'image' in firstMedia
+                ? firstMedia.image
+                : firstMedia?.previewImage);
             return (
               <div
                 style={{
@@ -535,7 +591,14 @@ export default function Product() {
                       {romanNumeral || yearInvented}
                     </div>
                     {yearInvented && romanNumeral && (
-                      <div style={{fontFamily: FONT.mono, fontSize: 10, color: STYX.silt, marginTop: 6}}>
+                      <div
+                        style={{
+                          fontFamily: FONT.mono,
+                          fontSize: 10,
+                          color: STYX.silt,
+                          marginTop: 6,
+                        }}
+                      >
                         = {yearInvented}
                       </div>
                     )}
@@ -565,7 +628,9 @@ export default function Product() {
               colorFilteredMedia[0]?.image?.url ||
               colorFilteredMedia[0]?.previewImage?.url;
             return colorFilteredMedia
-              .filter((m: any) => (m.image?.url || m.previewImage?.url) !== leadUrl)
+              .filter(
+                (m: any) => (m.image?.url || m.previewImage?.url) !== leadUrl,
+              )
               .slice(0, 7);
           })().map((m: any, i: number) => {
             const img = m.image || m.previewImage;
@@ -586,7 +651,6 @@ export default function Product() {
               </div>
             );
           })}
-
         </div>
 
         {/* ── Right Column — Product Info (sticky) ── */}
@@ -612,7 +676,8 @@ export default function Product() {
                 marginBottom: 16,
               }}
             >
-              {chainOrigin}{romanNumeral ? ` · ${romanNumeral}` : ''}
+              {chainOrigin}
+              {romanNumeral ? ` · ${romanNumeral}` : ''}
             </div>
           )}
 
@@ -648,373 +713,536 @@ export default function Product() {
           {/* ── PRICE BLOCK ── */}
           <div style={{marginTop: 32}}>
             {/* Credit Card + Wire Transfer side by side */}
-            {selectedVariant?.price && (() => {
-              const basePrice = parseFloat(selectedVariant.price.amount);
-              const wirePrice = basePrice * 0.96;
-              const currencyCode = selectedVariant.price.currencyCode;
-              const fmt = (n: number) =>
-                new Intl.NumberFormat('en-US', {style: 'currency', currency: currencyCode, minimumFractionDigits: 2, maximumFractionDigits: 2}).format(n);
-              const pureGoldWeight = displayWeight ? +(displayWeight * selectedPurity).toFixed(1) : null;
-              return (
-                <>
-                  <div
-                    style={{
-                      display: 'flex',
-                      gap: 12,
-                    }}
-                  >
-                    {/* Credit Card — default / emphasized */}
-                    <div
-                      style={{
-                        flex: 1,
-                        border: `1px solid ${STYX.ink}`,
-                        padding: '12px 14px',
-                        background: STYX.ink,
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontFamily: FONT.cinzel,
-                          fontSize: 9,
-                          letterSpacing: '0.25em',
-                          textTransform: 'uppercase',
-                          color: STYX.gold,
-                          marginBottom: 4,
-                        }}
-                      >
-                        Credit Card
-                      </div>
-                      <div
-                        style={{
-                          fontFamily: FONT.cinzel,
-                          fontSize: 22,
-                          fontWeight: 600,
-                          color: STYX.bone,
-                          fontVariantNumeric: 'tabular-nums',
-                        }}
-                      >
-                        {fmt(basePrice)}
-                      </div>
-                      <div
-                        style={{
-                          fontFamily: FONT.mono,
-                          fontSize: 10,
-                          color: 'rgba(239,234,224,0.55)',
-                          marginTop: 3,
-                        }}
-                      >
-                        default at checkout
-                      </div>
-                    </div>
-                    {/* Wire Transfer */}
-                    <div
-                      style={{
-                        flex: 1,
-                        border: `1px solid ${STYX.line}`,
-                        padding: '12px 14px',
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontFamily: FONT.cinzel,
-                          fontSize: 9,
-                          letterSpacing: '0.25em',
-                          textTransform: 'uppercase',
-                          color: STYX.silt,
-                          marginBottom: 4,
-                        }}
-                      >
-                        Wire Transfer
-                      </div>
-                      <div
-                        style={{
-                          fontFamily: FONT.cinzel,
-                          fontSize: 22,
-                          fontWeight: 400,
-                          color: STYX.graphite,
-                          fontVariantNumeric: 'tabular-nums',
-                        }}
-                      >
-                        {fmt(wirePrice)}
-                      </div>
-                      <div
-                        style={{
-                          fontFamily: FONT.mono,
-                          fontSize: 10,
-                          color: STYX.silt,
-                          marginTop: 3,
-                        }}
-                      >
-                        4% discount
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Weight row: karat + total weight */}
-                  {displayWeight && (
-                  <div style={{marginTop: 14}}>
+            {selectedVariant?.price &&
+              (() => {
+                const basePrice = parseFloat(selectedVariant.price.amount);
+                const wirePrice = basePrice * 0.96;
+                const currencyCode = selectedVariant.price.currencyCode;
+                const fmt = (n: number) =>
+                  new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: currencyCode,
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  }).format(n);
+                const pureGoldWeight = displayWeight
+                  ? +(displayWeight * selectedPurity).toFixed(1)
+                  : null;
+                // $0 = catalog error; "$0.00" price cards would read as free.
+                const priceLabel = (n: number) => (isUnpriced ? '—' : fmt(n));
+                return (
+                  <>
                     <div
                       style={{
                         display: 'flex',
-                        gap: 16,
-                        fontFamily: FONT.mono,
-                        fontSize: 12,
-                        color: STYX.silt,
+                        gap: 12,
                       }}
                     >
-                      <span>{karat}K &middot; {displayWeight}g total</span>
+                      {/* Credit Card — default / emphasized */}
+                      <div
+                        style={{
+                          flex: 1,
+                          border: `1px solid ${STYX.ink}`,
+                          padding: '12px 14px',
+                          background: STYX.ink,
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontFamily: FONT.cinzel,
+                            fontSize: 9,
+                            letterSpacing: '0.25em',
+                            textTransform: 'uppercase',
+                            color: STYX.gold,
+                            marginBottom: 4,
+                          }}
+                        >
+                          Credit Card
+                        </div>
+                        <div
+                          style={{
+                            fontFamily: FONT.cinzel,
+                            fontSize: 22,
+                            fontWeight: 600,
+                            color: STYX.bone,
+                            fontVariantNumeric: 'tabular-nums',
+                          }}
+                        >
+                          {priceLabel(basePrice)}
+                        </div>
+                        <div
+                          style={{
+                            fontFamily: FONT.mono,
+                            fontSize: 10,
+                            color: 'rgba(239,234,224,0.55)',
+                            marginTop: 3,
+                          }}
+                        >
+                          {isUnpriced
+                            ? 'price on request'
+                            : 'default at checkout'}
+                        </div>
+                      </div>
+                      {/* Wire Transfer */}
+                      <div
+                        style={{
+                          flex: 1,
+                          border: `1px solid ${STYX.line}`,
+                          padding: '12px 14px',
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontFamily: FONT.cinzel,
+                            fontSize: 9,
+                            letterSpacing: '0.25em',
+                            textTransform: 'uppercase',
+                            color: STYX.silt,
+                            marginBottom: 4,
+                          }}
+                        >
+                          Wire Transfer
+                        </div>
+                        <div
+                          style={{
+                            fontFamily: FONT.cinzel,
+                            fontSize: 22,
+                            fontWeight: 400,
+                            color: STYX.graphite,
+                            fontVariantNumeric: 'tabular-nums',
+                          }}
+                        >
+                          {priceLabel(wirePrice)}
+                        </div>
+                        <div
+                          style={{
+                            fontFamily: FONT.mono,
+                            fontSize: 10,
+                            color: STYX.silt,
+                            marginTop: 3,
+                          }}
+                        >
+                          {isUnpriced ? 'price on request' : '4% discount'}
+                        </div>
+                      </div>
                     </div>
-                    <div
-                      style={{
-                        fontFamily: FONT.cormorant,
-                        fontStyle: 'italic',
-                        fontSize: 13,
-                        color: STYX.silt2,
-                        marginTop: 4,
-                      }}
-                    >
-                      Approximate &mdash; each piece is hand-finished, so weight may vary by a few percent.
-                    </div>
-                  </div>
-                  )}
-                </>
-              );
-            })()}
+
+                    {/* Weight row: karat + total weight */}
+                    {displayWeight && (
+                      <div style={{marginTop: 14}}>
+                        <div
+                          style={{
+                            display: 'flex',
+                            gap: 16,
+                            fontFamily: FONT.mono,
+                            fontSize: 12,
+                            color: STYX.silt,
+                          }}
+                        >
+                          <span>
+                            {karat}K &middot; {displayWeight}g total
+                          </span>
+                        </div>
+                        <div
+                          style={{
+                            fontFamily: FONT.cormorant,
+                            fontStyle: 'italic',
+                            fontSize: 13,
+                            color: STYX.silt2,
+                            marginTop: 4,
+                          }}
+                        >
+                          Approximate &mdash; each piece is hand-finished, so
+                          weight may vary by a few percent.
+                        </div>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
           </div>
 
           {/* ── Variant Selectors ── */}
-          <div style={{marginTop: 28, display: 'flex', flexDirection: 'column', gap: 28}}>
+          <div
+            style={{
+              marginTop: 28,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 28,
+            }}
+          >
             {productOptions
-            .filter((option) => {
-              // Hide "Title" option with only "Default Title" value
-              if (option.name.toLowerCase() === 'title') {
-                return !(option.optionValues.length === 1 && option.optionValues[0].name === 'Default Title');
-              }
-              return true;
-            })
-            .map((option, optionIndex) => {
-              const isKarat = option.name.toLowerCase() === 'karat';
-              const isColor = option.name.toLowerCase() === 'color';
+              .filter((option) => {
+                // Hide "Title" option with only "Default Title" value
+                if (option.name.toLowerCase() === 'title') {
+                  return !(
+                    option.optionValues.length === 1 &&
+                    option.optionValues[0].name === 'Default Title'
+                  );
+                }
+                return true;
+              })
+              .map((option, optionIndex) => {
+                const isKarat = option.name.toLowerCase() === 'karat';
+                const isColor = option.name.toLowerCase() === 'color';
 
-              // Gold color swatches
-              const colorSwatches: Record<string, string> = {
-                'Yellow Gold': '#D4A844',
-                'Rose Gold': '#C9877A',
-                'White Gold': '#D5D0C8',
-              };
+                // Gold color swatches
+                const colorSwatches: Record<string, string> = {
+                  'Yellow Gold': '#D4A844',
+                  'Rose Gold': '#C9877A',
+                  'White Gold': '#D5D0C8',
+                };
 
-              return (
-                <div key={option.name}>
-                  <div
-                    style={{
-                      fontFamily: FONT.cinzel,
-                      fontSize: 11,
-                      letterSpacing: '0.25em',
-                      textTransform: 'uppercase',
-                      color: STYX.silt,
-                      marginBottom: 14,
-                      display: 'flex',
-                      alignItems: 'baseline',
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    <span>{option.name}</span>
-                    {isKarat && (
-                      <span style={{fontFamily: FONT.mono, fontSize: 10, color: STYX.silt2, letterSpacing: '0.05em', textTransform: 'none'}}>
-                        ${perGramSelected.toFixed(2)}/g
-                      </span>
-                    )}
-                    {isColor && selectedColor && (
-                      <span style={{fontFamily: FONT.cormorant, fontSize: 13, fontStyle: 'italic', color: STYX.silt2, letterSpacing: 0, textTransform: 'none'}}>
-                        {selectedColor}
-                      </span>
-                    )}
-                  </div>
-                  <div style={{display: 'flex', flexWrap: 'wrap', gap: isColor ? 12 : 0}}>
-                    {isKarat ? (
-                      /* Karat: full-width segmented control with gold accent */
-                      <div style={{display: 'flex', width: '100%', border: `1px solid ${STYX.line}`}}>
-                        {option.optionValues.map(
-                          ({isDifferentProduct, name, variantUriQuery, handle, selected, available}) => (
-                            <Link
-                              key={option.name + name}
-                              {...(!isDifferentProduct ? {rel: 'nofollow'} : {})}
-                              to={`/products/${handle}?${variantUriQuery}`}
-                              preventScrollReset
-                              prefetch="intent"
-                              replace
-                              style={{
-                                flex: 1,
-                                fontFamily: FONT.cinzel,
-                                fontSize: 13,
-                                letterSpacing: '0.15em',
-                                textTransform: 'uppercase',
-                                padding: '16px 0',
-                                textAlign: 'center',
-                                background: selected ? STYX.ink : 'transparent',
-                                color: selected ? STYX.gold : available ? STYX.ink : STYX.silt2,
-                                borderRight: `1px solid ${STYX.line}`,
-                                cursor: 'pointer',
-                                opacity: available ? 1 : 0.5,
-                                textDecoration: available ? 'none' : 'line-through',
-                                textDecorationThickness: available ? undefined : '1.5px',
-                                transition: 'all 0.25s ease',
-                                position: 'relative',
-                              }}
-                              title={available ? undefined : 'Sold out — select to request this size'}
-                            >
-                              {name}
-                              {selected && (
-                                <span style={{
-                                  position: 'absolute', bottom: 0, left: '20%', right: '20%',
-                                  height: 2, background: STYX.gold,
-                                }} />
-                              )}
-                            </Link>
-                          ),
-                        )}
-                      </div>
-                    ) : isColor ? (
-                      /* Color: outline pills with swatch dot, gold accent when selected */
-                      <div className="styx-color-pills" style={{display: 'flex', width: '100%', border: `1px solid ${STYX.line}`}}>
-                        {option.optionValues.map(
-                          ({isDifferentProduct, name, variantUriQuery, handle, selected, available}) => (
-                            <Link
-                              key={option.name + name}
-                              {...(!isDifferentProduct ? {rel: 'nofollow'} : {})}
-                              to={`/products/${handle}?${variantUriQuery}`}
-                              preventScrollReset
-                              prefetch="intent"
-                              replace
-                              style={{
-                                flex: 1,
-                                fontFamily: FONT.cinzel,
-                                fontSize: 12,
-                                letterSpacing: '0.12em',
-                                textTransform: 'uppercase',
-                                padding: '14px 0',
-                                textAlign: 'center',
-                                background: selected ? STYX.paper : 'transparent',
-                                color: selected ? STYX.ink : available ? STYX.silt : STYX.silt2,
-                                borderRight: `1px solid ${STYX.line}`,
-                                cursor: 'pointer',
-                                opacity: available ? 1 : 0.5,
-                                textDecoration: available ? 'none' : 'line-through',
-                                textDecorationThickness: available ? undefined : '1.5px',
-                                transition: 'all 0.25s ease',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: 8,
-                                position: 'relative',
-                              }}
-                              title={available ? undefined : 'Sold out — select to request this color'}
-                            >
-                              <span
+                return (
+                  <div key={option.name}>
+                    <div
+                      style={{
+                        fontFamily: FONT.cinzel,
+                        fontSize: 11,
+                        letterSpacing: '0.25em',
+                        textTransform: 'uppercase',
+                        color: STYX.silt,
+                        marginBottom: 14,
+                        display: 'flex',
+                        alignItems: 'baseline',
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <span>{option.name}</span>
+                      {isKarat && (
+                        <span
+                          style={{
+                            fontFamily: FONT.mono,
+                            fontSize: 10,
+                            color: STYX.silt2,
+                            letterSpacing: '0.05em',
+                            textTransform: 'none',
+                          }}
+                        >
+                          ${perGramSelected.toFixed(2)}/g
+                        </span>
+                      )}
+                      {isColor && selectedColor && (
+                        <span
+                          style={{
+                            fontFamily: FONT.cormorant,
+                            fontSize: 13,
+                            fontStyle: 'italic',
+                            color: STYX.silt2,
+                            letterSpacing: 0,
+                            textTransform: 'none',
+                          }}
+                        >
+                          {selectedColor}
+                        </span>
+                      )}
+                    </div>
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: isColor ? 12 : 0,
+                      }}
+                    >
+                      {isKarat ? (
+                        /* Karat: full-width segmented control with gold accent */
+                        <div
+                          style={{
+                            display: 'flex',
+                            width: '100%',
+                            border: `1px solid ${STYX.line}`,
+                          }}
+                        >
+                          {option.optionValues.map(
+                            ({
+                              isDifferentProduct,
+                              name,
+                              variantUriQuery,
+                              handle,
+                              selected,
+                              available,
+                            }) => (
+                              <Link
+                                key={option.name + name}
+                                {...(!isDifferentProduct
+                                  ? {rel: 'nofollow'}
+                                  : {})}
+                                to={`/products/${handle}?${variantUriQuery}`}
+                                preventScrollReset
+                                prefetch="intent"
+                                replace
                                 style={{
-                                  width: 10,
-                                  height: 10,
-                                  borderRadius: '50%',
-                                  background: colorSwatches[name] || STYX.silt2,
-                                  boxShadow: 'inset 0 0 0 1px rgba(26,24,21,0.12)',
-                                  flexShrink: 0,
+                                  flex: 1,
+                                  fontFamily: FONT.cinzel,
+                                  fontSize: 13,
+                                  letterSpacing: '0.15em',
+                                  textTransform: 'uppercase',
+                                  padding: '16px 0',
+                                  textAlign: 'center',
+                                  background: selected
+                                    ? STYX.ink
+                                    : 'transparent',
+                                  color: selected
+                                    ? STYX.gold
+                                    : available
+                                    ? STYX.ink
+                                    : STYX.silt2,
+                                  borderRight: `1px solid ${STYX.line}`,
+                                  cursor: 'pointer',
+                                  opacity: available ? 1 : 0.5,
+                                  textDecoration: available
+                                    ? 'none'
+                                    : 'line-through',
+                                  textDecorationThickness: available
+                                    ? undefined
+                                    : '1.5px',
+                                  transition: 'all 0.25s ease',
+                                  position: 'relative',
                                 }}
-                              />
-                              {name}
-                              {selected && (
-                                <span style={{
-                                  position: 'absolute', bottom: 0, left: '20%', right: '20%',
-                                  height: 2, background: STYX.gold,
-                                }} />
-                              )}
-                            </Link>
-                          ),
-                        )}
-                      </div>
-                    ) : (
-                      /* Default: outline pill buttons, gold underline when selected.
-                         Length pills also show that length's price (current color). */
-                      option.optionValues.map(
-                        ({isDifferentProduct, name, variantUriQuery, handle, selected, available, swatch, firstSelectableVariant}) => {
-                          const isLength = option.name.toLowerCase() === 'length';
-                          const pillVariant = isLength
-                            ? findVariantForLength(name) ?? firstSelectableVariant ?? null
-                            : null;
-                          const pillPrice =
-                            isLength && available && pillVariant?.price
-                              ? pillVariant.price
-                              : null;
-                          return (
-                          <Link
-                            key={option.name + name}
-                            {...(!isDifferentProduct ? {rel: 'nofollow'} : {})}
-                            to={`/products/${handle}?${variantUriQuery}`}
-                            preventScrollReset
-                            prefetch="intent"
-                            replace
-                            style={{
-                              fontFamily: FONT.cinzel,
-                              fontSize: 12,
-                              letterSpacing: '0.15em',
-                              textTransform: 'uppercase',
-                              padding: isLength ? '10px 14px' : '12px 24px',
-                              background: selected ? STYX.paper : 'transparent',
-                              color: selected ? STYX.ink : available ? STYX.silt : STYX.silt2,
-                              border: `1px solid ${selected ? STYX.graphite : STYX.line}`,
-                              borderBottom: selected ? `2px solid ${STYX.gold}` : `1px solid ${STYX.line}`,
-                              cursor: 'pointer',
-                              opacity: available ? 1 : 0.5,
-                              textDecoration: available ? 'none' : 'line-through',
-                              textDecorationThickness: available ? undefined : '1.5px',
-                              transition: 'all 0.2s ease',
-                              ...(isLength
-                                ? {
-                                    display: 'flex',
-                                    flexDirection: 'column' as const,
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    gap: 3,
-                                    flex: '1 0 auto',
-                                    textAlign: 'center' as const,
-                                  }
-                                : {}),
-                            }}
-                            title={available ? undefined : 'Sold out — select to request this size'}
-                          >
-                            {swatch?.color || swatch?.image?.previewImage?.url ? (
-                              <ProductOptionSwatch swatch={swatch} name={name} />
-                            ) : (
-                              name
-                            )}
-                            {isLength && (
-                              <span
-                                className="styx-length-pill-price"
-                                style={{
-                                  fontFamily: FONT.mono,
-                                  fontSize: 10,
-                                  letterSpacing: '0.04em',
-                                  textTransform: 'none',
-                                  textDecoration: 'none',
-                                  color: selected ? STYX.graphite : STYX.silt2,
-                                  lineHeight: 1,
-                                }}
+                                title={
+                                  available
+                                    ? undefined
+                                    : 'Sold out — select to request this size'
+                                }
                               >
-                                {pillPrice ? (
-                                  <Money data={pillPrice} as="span" withoutTrailingZeros />
-                                ) : (
-                                  '—'
+                                {name}
+                                {selected && (
+                                  <span
+                                    style={{
+                                      position: 'absolute',
+                                      bottom: 0,
+                                      left: '20%',
+                                      right: '20%',
+                                      height: 2,
+                                      background: STYX.gold,
+                                    }}
+                                  />
                                 )}
-                              </span>
-                            )}
-                          </Link>
-                          );
-                        },
-                      )
-                    )}
+                              </Link>
+                            ),
+                          )}
+                        </div>
+                      ) : isColor ? (
+                        /* Color: outline pills with swatch dot, gold accent when selected */
+                        <div
+                          className="styx-color-pills"
+                          style={{
+                            display: 'flex',
+                            width: '100%',
+                            border: `1px solid ${STYX.line}`,
+                          }}
+                        >
+                          {option.optionValues.map(
+                            ({
+                              isDifferentProduct,
+                              name,
+                              variantUriQuery,
+                              handle,
+                              selected,
+                              available,
+                            }) => (
+                              <Link
+                                key={option.name + name}
+                                {...(!isDifferentProduct
+                                  ? {rel: 'nofollow'}
+                                  : {})}
+                                to={`/products/${handle}?${variantUriQuery}`}
+                                preventScrollReset
+                                prefetch="intent"
+                                replace
+                                style={{
+                                  flex: 1,
+                                  fontFamily: FONT.cinzel,
+                                  fontSize: 12,
+                                  letterSpacing: '0.12em',
+                                  textTransform: 'uppercase',
+                                  padding: '14px 0',
+                                  textAlign: 'center',
+                                  background: selected
+                                    ? STYX.paper
+                                    : 'transparent',
+                                  color: selected
+                                    ? STYX.ink
+                                    : available
+                                    ? STYX.silt
+                                    : STYX.silt2,
+                                  borderRight: `1px solid ${STYX.line}`,
+                                  cursor: 'pointer',
+                                  opacity: available ? 1 : 0.5,
+                                  textDecoration: available
+                                    ? 'none'
+                                    : 'line-through',
+                                  textDecorationThickness: available
+                                    ? undefined
+                                    : '1.5px',
+                                  transition: 'all 0.25s ease',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  gap: 8,
+                                  position: 'relative',
+                                }}
+                                title={
+                                  available
+                                    ? undefined
+                                    : 'Sold out — select to request this color'
+                                }
+                              >
+                                <span
+                                  style={{
+                                    width: 10,
+                                    height: 10,
+                                    borderRadius: '50%',
+                                    background:
+                                      colorSwatches[name] || STYX.silt2,
+                                    boxShadow:
+                                      'inset 0 0 0 1px rgba(26,24,21,0.12)',
+                                    flexShrink: 0,
+                                  }}
+                                />
+                                {name}
+                                {selected && (
+                                  <span
+                                    style={{
+                                      position: 'absolute',
+                                      bottom: 0,
+                                      left: '20%',
+                                      right: '20%',
+                                      height: 2,
+                                      background: STYX.gold,
+                                    }}
+                                  />
+                                )}
+                              </Link>
+                            ),
+                          )}
+                        </div>
+                      ) : (
+                        /* Default: outline pill buttons, gold underline when selected.
+                         Length pills also show that length's price (current color). */
+                        option.optionValues.map(
+                          ({
+                            isDifferentProduct,
+                            name,
+                            variantUriQuery,
+                            handle,
+                            selected,
+                            available,
+                            swatch,
+                            firstSelectableVariant,
+                          }) => {
+                            const isLength =
+                              option.name.toLowerCase() === 'length';
+                            const pillVariant = isLength
+                              ? findVariantForLength(name) ??
+                                firstSelectableVariant ??
+                                null
+                              : null;
+                            const pillPrice =
+                              isLength && available && pillVariant?.price
+                                ? pillVariant.price
+                                : null;
+                            return (
+                              <Link
+                                key={option.name + name}
+                                {...(!isDifferentProduct
+                                  ? {rel: 'nofollow'}
+                                  : {})}
+                                to={`/products/${handle}?${variantUriQuery}`}
+                                preventScrollReset
+                                prefetch="intent"
+                                replace
+                                style={{
+                                  fontFamily: FONT.cinzel,
+                                  fontSize: 12,
+                                  letterSpacing: '0.15em',
+                                  textTransform: 'uppercase',
+                                  padding: isLength ? '10px 14px' : '12px 24px',
+                                  background: selected
+                                    ? STYX.paper
+                                    : 'transparent',
+                                  color: selected
+                                    ? STYX.ink
+                                    : available
+                                    ? STYX.silt
+                                    : STYX.silt2,
+                                  border: `1px solid ${
+                                    selected ? STYX.graphite : STYX.line
+                                  }`,
+                                  borderBottom: selected
+                                    ? `2px solid ${STYX.gold}`
+                                    : `1px solid ${STYX.line}`,
+                                  cursor: 'pointer',
+                                  opacity: available ? 1 : 0.5,
+                                  textDecoration: available
+                                    ? 'none'
+                                    : 'line-through',
+                                  textDecorationThickness: available
+                                    ? undefined
+                                    : '1.5px',
+                                  transition: 'all 0.2s ease',
+                                  ...(isLength
+                                    ? {
+                                        display: 'flex',
+                                        flexDirection: 'column' as const,
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        gap: 3,
+                                        flex: '1 0 auto',
+                                        textAlign: 'center' as const,
+                                      }
+                                    : {}),
+                                }}
+                                title={
+                                  available
+                                    ? undefined
+                                    : 'Sold out — select to request this size'
+                                }
+                              >
+                                {swatch?.color ||
+                                swatch?.image?.previewImage?.url ? (
+                                  <ProductOptionSwatch
+                                    swatch={swatch}
+                                    name={name}
+                                  />
+                                ) : (
+                                  name
+                                )}
+                                {isLength && (
+                                  <span
+                                    className="styx-length-pill-price"
+                                    style={{
+                                      fontFamily: FONT.mono,
+                                      fontSize: 10,
+                                      letterSpacing: '0.04em',
+                                      textTransform: 'none',
+                                      textDecoration: 'none',
+                                      color: selected
+                                        ? STYX.graphite
+                                        : STYX.silt2,
+                                      lineHeight: 1,
+                                    }}
+                                  >
+                                    {pillPrice ? (
+                                      <Money
+                                        data={pillPrice}
+                                        as="span"
+                                        withoutTrailingZeros
+                                      />
+                                    ) : (
+                                      '—'
+                                    )}
+                                  </span>
+                                )}
+                              </Link>
+                            );
+                          },
+                        )
+                      )}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
           </div>
 
           {/* Blurb / Description */}
@@ -1028,7 +1256,11 @@ export default function Product() {
                 marginTop: 28,
               }}
             >
-              {chainBlurb && <p style={{margin: '0 0 12px', fontStyle: 'italic'}}>{chainBlurb}</p>}
+              {chainBlurb && (
+                <p style={{margin: '0 0 12px', fontStyle: 'italic'}}>
+                  {chainBlurb}
+                </p>
+              )}
               {descriptionHtml && (
                 <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
               )}
@@ -1038,7 +1270,10 @@ export default function Product() {
           {/* Journal Link */}
           {chainOrigin && (
             <Link
-              to={`/journal/${chainOrigin.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`}
+              to={`/journal/${chainOrigin
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/(^-|-$)/g, '')}`}
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -1076,7 +1311,7 @@ export default function Product() {
           {selectedVariant && (
             <div style={{marginTop: 16}}>
               <div style={{display: 'flex', gap: 12}}>
-                {isOutOfStock ? (
+                {isOutOfStock || isUnpriced ? (
                   <div style={{flex: 1}}>
                     <button
                       type="button"
@@ -1117,7 +1352,9 @@ export default function Product() {
                         textAlign: 'center',
                       }}
                     >
-                      This size is sold out — send a request and we&rsquo;ll source it for you.
+                      {isOutOfStock
+                        ? 'This size is sold out — send a request and we’ll source it for you.'
+                        : 'Pricing for this piece is being updated — send a request and we’ll quote it for you.'}
                     </div>
                   </div>
                 ) : (
@@ -1167,15 +1404,15 @@ export default function Product() {
                       >
                         <span>Add to Cart</span>
                         <span style={{opacity: 0.4}}>&middot;</span>
-                        <Money
-                          data={selectedVariant.price!}
-                          as="span"
-                        />
+                        <Money data={selectedVariant.price!} as="span" />
                         {isOnSale && selectedVariant.compareAtPrice && (
                           <Money
                             data={selectedVariant.compareAtPrice}
                             as="span"
-                            style={{opacity: 0.5, textDecoration: 'line-through'}}
+                            style={{
+                              opacity: 0.5,
+                              textDecoration: 'line-through',
+                            }}
                           />
                         )}
                       </span>
@@ -1185,7 +1422,7 @@ export default function Product() {
               </div>
 
               {/* Make an Offer — quiet text link, deliberately demoted below ATC */}
-              {!isOutOfStock && (
+              {!isOutOfStock && !isUnpriced && (
                 <div style={{marginTop: 14, textAlign: 'center'}}>
                   <button
                     type="button"
@@ -1214,11 +1451,20 @@ export default function Product() {
               )}
 
               {/* Favorites + Compare + Print — three equal actions */}
-              <div style={{marginTop: 16, display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8}}>
+              <div
+                style={{
+                  marginTop: 16,
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr 1fr',
+                  gap: 8,
+                }}
+              >
                 <button
                   type="button"
                   onClick={() => wishlist.toggle(product.handle)}
-                  aria-label={wished ? 'Remove from favorites' : 'Add to favorites'}
+                  aria-label={
+                    wished ? 'Remove from favorites' : 'Add to favorites'
+                  }
                   title={wished ? 'Saved to favorites' : 'Save to favorites'}
                   style={{
                     display: 'inline-flex',
@@ -1227,7 +1473,9 @@ export default function Product() {
                     gap: 6,
                     padding: '8px 14px',
                     border: `1px solid ${wished ? STYX.gold : STYX.line}`,
-                    background: wished ? 'rgba(184,146,74,0.08)' : 'transparent',
+                    background: wished
+                      ? 'rgba(184,146,74,0.08)'
+                      : 'transparent',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
                     fontFamily: FONT.mono,
@@ -1262,7 +1510,13 @@ export default function Product() {
               </div>
 
               {/* ── Divider ── */}
-              <div style={{marginTop: 24, borderTop: `1px solid ${STYX.line}`, paddingTop: 20}} />
+              <div
+                style={{
+                  marginTop: 24,
+                  borderTop: `1px solid ${STYX.line}`,
+                  paddingTop: 20,
+                }}
+              />
 
               {/* ── Trust Signals ── */}
               <div
@@ -1306,12 +1560,16 @@ export default function Product() {
                         cursor: 'pointer',
                       }}
                     >
-                      <span style={{color: STYX.gold, flexShrink: 0}}>&bull;</span>
+                      <span style={{color: STYX.gold, flexShrink: 0}}>
+                        &bull;
+                      </span>
                       {text}
                     </a>
                   ) : (
                     <div key={text} style={rowStyle}>
-                      <span style={{color: STYX.gold, flexShrink: 0}}>&bull;</span>
+                      <span style={{color: STYX.gold, flexShrink: 0}}>
+                        &bull;
+                      </span>
                       {text}
                     </div>
                   );
@@ -1370,9 +1628,13 @@ export default function Product() {
                 background: 'rgba(26,24,21,0.6)',
                 backdropFilter: 'blur(4px)',
               }}
-              onClick={(e) => { if (e.target === e.currentTarget) setOfferOpen(false); }}
+              onClick={(e) => {
+                if (e.target === e.currentTarget) setOfferOpen(false);
+              }}
             >
-              <style dangerouslySetInnerHTML={{__html: `
+              <style
+                dangerouslySetInnerHTML={{
+                  __html: `
                 @media (max-width: 600px) {
                   .offer-card { padding: 20px 18px !important; max-height: 88vh !important; width: 94vw !important; }
                   .offer-eyebrow { margin-bottom: 4px !important; }
@@ -1383,7 +1645,9 @@ export default function Product() {
                   .offer-form { gap: 12px !important; }
                   .offer-form input, .offer-form textarea { font-size: 16px !important; }
                 }
-              `}} />
+              `,
+                }}
+              />
               <div
                 className="offer-card"
                 style={{
@@ -1396,21 +1660,64 @@ export default function Product() {
                 }}
               >
                 {/* Header */}
-                <div className="offer-head" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24}}>
+                <div
+                  className="offer-head"
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-start',
+                    marginBottom: 24,
+                  }}
+                >
                   <div>
-                    <div className="offer-eyebrow" style={{fontFamily: FONT.cinzel, fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: STYX.gold, marginBottom: 8}}>
-                      {offerMode === 'request' ? 'Request This Size' : 'Make an Offer'}
+                    <div
+                      className="offer-eyebrow"
+                      style={{
+                        fontFamily: FONT.cinzel,
+                        fontSize: 10,
+                        letterSpacing: '0.3em',
+                        textTransform: 'uppercase',
+                        color: STYX.gold,
+                        marginBottom: 8,
+                      }}
+                    >
+                      {offerMode === 'request'
+                        ? 'Request This Size'
+                        : 'Make an Offer'}
                     </div>
-                    <div className="offer-title" style={{fontFamily: FONT.cinzel, fontSize: 20, fontWeight: 400, textTransform: 'uppercase', letterSpacing: '0.04em', color: STYX.ink}}>
+                    <div
+                      className="offer-title"
+                      style={{
+                        fontFamily: FONT.cinzel,
+                        fontSize: 20,
+                        fontWeight: 400,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.04em',
+                        color: STYX.ink,
+                      }}
+                    >
                       {title}
                     </div>
                   </div>
                   <button
                     onClick={() => setOfferOpen(false)}
-                    style={{background: 'none', border: 'none', cursor: 'pointer', padding: 4, color: STYX.ink}}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: 4,
+                      color: STYX.ink,
+                    }}
                     aria-label="Close"
                   >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                    >
                       <path d="M18 6L6 18M6 6l12 12" />
                     </svg>
                   </button>
@@ -1435,10 +1742,15 @@ export default function Product() {
                   <div>SKU: {selectedVariant?.sku || 'N/A'}</div>
                   <div>Variant: {selectedVariant?.title}</div>
                   {selectedVariant?.selectedOptions?.map((o: any) => (
-                    <div key={o.name}>{o.name}: {o.value}</div>
+                    <div key={o.name}>
+                      {o.name}: {o.value}
+                    </div>
                   ))}
                   <div style={{color: STYX.ink, fontWeight: 500, marginTop: 4}}>
-                    Listed price: ${parseFloat(selectedVariant?.price?.amount || '0').toFixed(2)}
+                    Listed price:{' '}
+                    {formatUSD(
+                      parseFloat(selectedVariant?.price?.amount || '0'),
+                    )}
                   </div>
                 </div>
 
@@ -1455,7 +1767,9 @@ export default function Product() {
                         marginBottom: 14,
                       }}
                     >
-                      {offerMode === 'request' ? 'Request Received' : 'Offer Submitted'}
+                      {offerMode === 'request'
+                        ? 'Request Received'
+                        : 'Offer Submitted'}
                     </div>
                     <p
                       style={{
@@ -1490,192 +1804,254 @@ export default function Product() {
                     </button>
                   </div>
                 ) : (
-                <>
-                {/* Rules */}
-                <div
-                  className="offer-rules"
-                  style={{
-                    fontFamily: FONT.cormorant,
-                    fontSize: 14,
-                    fontStyle: 'italic',
-                    color: STYX.silt,
-                    lineHeight: 1.6,
-                    marginBottom: 24,
-                    paddingBottom: 20,
-                    borderBottom: `1px solid ${STYX.line}`,
-                  }}
-                >
-                  {offerMode === 'request'
-                    ? 'This size is currently sold out, but every piece is backorderable. Leave your details and we’ll confirm availability, price, and timing within 24 hours — then place the order for you.'
-                    : 'Offers are reviewed within 24 hours. Once accepted, you have 48 hours to complete your purchase at the agreed price. Offers not completed within this window expire automatically.'}
-                </div>
-
-                {/* Form */}
-                <form
-                  onSubmit={async (e) => {
-                    e.preventDefault();
-                    const form = e.currentTarget;
-                    const data = new FormData(form);
-                    const payload = {
-                      formId: offerMode === 'request' ? 'request-size' : 'make-offer',
-                      formName: offerMode === 'request' ? 'request-size' : 'make-offer',
-                      product: title,
-                      sku: selectedVariant?.sku || '',
-                      variant: selectedVariant?.title || '',
-                      options: selectedVariant?.selectedOptions?.map((o: any) => `${o.name}: ${o.value}`).join(', ') || '',
-                      listedPrice: selectedVariant?.price?.amount || '0',
-                      offerAmount: data.get('offer'),
-                      email: data.get('email'),
-                      phone: data.get('phone'),
-                      message: data.get('message'),
-                    };
-                    setOfferStatus('submitting');
-                    try {
-                      const res = await fetch('/api/form-submit', {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify(payload),
-                      });
-                      if (!res.ok) {
-                        throw new Error(`Form submit failed: ${res.status}`);
-                      }
-                      setOfferStatus('success');
-                    } catch {
-                      setOfferStatus('error');
-                    }
-                  }}
-                  className="offer-form"
-                  style={{display: 'flex', flexDirection: 'column', gap: 16}}
-                >
-                  {offerMode === 'offer' && (
-                  <div>
-                    <label style={{fontFamily: FONT.cinzel, fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: STYX.silt, display: 'block', marginBottom: 6}}>
-                      Your Offer (USD)
-                    </label>
-                    <input
-                      name="offer"
-                      type="number"
-                      required
-                      placeholder="$"
-                      style={{
-                        width: '100%',
-                        padding: '12px 14px',
-                        border: `1px solid ${STYX.line}`,
-                        background: '#fff',
-                        fontFamily: FONT.cinzel,
-                        fontSize: 18,
-                        color: STYX.ink,
-                        outline: 'none',
-                      }}
-                    />
-                  </div>
-                  )}
-                  <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12}}>
-                    <div>
-                      <label style={{fontFamily: FONT.cinzel, fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: STYX.silt, display: 'block', marginBottom: 6}}>
-                        Email
-                      </label>
-                      <input
-                        name="email"
-                        type="email"
-                        required
-                        style={{
-                          width: '100%',
-                          padding: '10px 12px',
-                          border: `1px solid ${STYX.line}`,
-                          background: '#fff',
-                          fontFamily: FONT.inter,
-                          fontSize: 13,
-                          color: STYX.ink,
-                          outline: 'none',
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <label style={{fontFamily: FONT.cinzel, fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: STYX.silt, display: 'block', marginBottom: 6}}>
-                        Phone
-                      </label>
-                      <input
-                        name="phone"
-                        type="tel"
-                        required
-                        style={{
-                          width: '100%',
-                          padding: '10px 12px',
-                          border: `1px solid ${STYX.line}`,
-                          background: '#fff',
-                          fontFamily: FONT.inter,
-                          fontSize: 13,
-                          color: STYX.ink,
-                          outline: 'none',
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label style={{fontFamily: FONT.cinzel, fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: STYX.silt, display: 'block', marginBottom: 6}}>
-                      Message (optional)
-                    </label>
-                    <textarea
-                      name="message"
-                      rows={3}
-                      style={{
-                        width: '100%',
-                        padding: '10px 12px',
-                        border: `1px solid ${STYX.line}`,
-                        background: '#fff',
-                        fontFamily: FONT.cormorant,
-                        fontSize: 15,
-                        color: STYX.ink,
-                        outline: 'none',
-                        resize: 'vertical',
-                      }}
-                    />
-                  </div>
-                  {offerStatus === 'error' && (
+                  <>
+                    {/* Rules */}
                     <div
-                      role="alert"
+                      className="offer-rules"
                       style={{
                         fontFamily: FONT.cormorant,
-                        fontSize: 15,
+                        fontSize: 14,
                         fontStyle: 'italic',
-                        color: '#8A2E2E',
-                        background: 'rgba(138,46,46,0.06)',
-                        border: '1px solid rgba(138,46,46,0.35)',
-                        padding: '12px 16px',
-                        lineHeight: 1.5,
+                        color: STYX.silt,
+                        lineHeight: 1.6,
+                        marginBottom: 24,
+                        paddingBottom: 20,
+                        borderBottom: `1px solid ${STYX.line}`,
                       }}
                     >
-                      Something went wrong &mdash; your{' '}
-                      {offerMode === 'request' ? 'request' : 'offer'} was not
-                      sent. Please try again in a moment.
+                      {offerMode === 'request'
+                        ? 'This size is currently sold out, but every piece is backorderable. Leave your details and we’ll confirm availability, price, and timing within 24 hours — then place the order for you.'
+                        : 'Offers are reviewed within 24 hours. Once accepted, you have 48 hours to complete your purchase at the agreed price. Offers not completed within this window expire automatically.'}
                     </div>
-                  )}
-                  <button
-                    type="submit"
-                    disabled={offerStatus === 'submitting'}
-                    style={{
-                      padding: '16px 24px',
-                      background: STYX.ink,
-                      color: STYX.bone,
-                      fontFamily: FONT.cinzel,
-                      fontSize: 12,
-                      letterSpacing: '0.2em',
-                      textTransform: 'uppercase',
-                      border: 'none',
-                      cursor: offerStatus === 'submitting' ? 'wait' : 'pointer',
-                      opacity: offerStatus === 'submitting' ? 0.6 : 1,
-                      transition: 'background 0.2s',
-                    }}
-                  >
-                    {offerStatus === 'submitting'
-                      ? 'Sending…'
-                      : offerMode === 'request'
-                        ? 'Submit Request'
-                        : 'Submit Offer'}
-                  </button>
-                </form>
-                </>
+
+                    {/* Form */}
+                    <form
+                      onSubmit={async (e) => {
+                        e.preventDefault();
+                        const form = e.currentTarget;
+                        const data = new FormData(form);
+                        const payload = {
+                          formId:
+                            offerMode === 'request'
+                              ? 'request-size'
+                              : 'make-offer',
+                          formName:
+                            offerMode === 'request'
+                              ? 'request-size'
+                              : 'make-offer',
+                          product: title,
+                          sku: selectedVariant?.sku || '',
+                          variant: selectedVariant?.title || '',
+                          options:
+                            selectedVariant?.selectedOptions
+                              ?.map((o: any) => `${o.name}: ${o.value}`)
+                              .join(', ') || '',
+                          listedPrice: selectedVariant?.price?.amount || '0',
+                          offerAmount: data.get('offer'),
+                          email: data.get('email'),
+                          phone: data.get('phone'),
+                          message: data.get('message'),
+                        };
+                        setOfferStatus('submitting');
+                        try {
+                          const res = await fetch('/api/form-submit', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify(payload),
+                          });
+                          if (!res.ok) {
+                            throw new Error(
+                              `Form submit failed: ${res.status}`,
+                            );
+                          }
+                          setOfferStatus('success');
+                        } catch {
+                          setOfferStatus('error');
+                        }
+                      }}
+                      className="offer-form"
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 16,
+                      }}
+                    >
+                      {offerMode === 'offer' && (
+                        <div>
+                          <label
+                            style={{
+                              fontFamily: FONT.cinzel,
+                              fontSize: 9,
+                              letterSpacing: '0.2em',
+                              textTransform: 'uppercase',
+                              color: STYX.silt,
+                              display: 'block',
+                              marginBottom: 6,
+                            }}
+                          >
+                            Your Offer (USD)
+                          </label>
+                          <input
+                            name="offer"
+                            type="number"
+                            required
+                            placeholder="$"
+                            style={{
+                              width: '100%',
+                              padding: '12px 14px',
+                              border: `1px solid ${STYX.line}`,
+                              background: '#fff',
+                              fontFamily: FONT.cinzel,
+                              fontSize: 18,
+                              color: STYX.ink,
+                              outline: 'none',
+                            }}
+                          />
+                        </div>
+                      )}
+                      <div
+                        style={{
+                          display: 'grid',
+                          gridTemplateColumns: '1fr 1fr',
+                          gap: 12,
+                        }}
+                      >
+                        <div>
+                          <label
+                            style={{
+                              fontFamily: FONT.cinzel,
+                              fontSize: 9,
+                              letterSpacing: '0.2em',
+                              textTransform: 'uppercase',
+                              color: STYX.silt,
+                              display: 'block',
+                              marginBottom: 6,
+                            }}
+                          >
+                            Email
+                          </label>
+                          <input
+                            name="email"
+                            type="email"
+                            required
+                            style={{
+                              width: '100%',
+                              padding: '10px 12px',
+                              border: `1px solid ${STYX.line}`,
+                              background: '#fff',
+                              fontFamily: FONT.inter,
+                              fontSize: 13,
+                              color: STYX.ink,
+                              outline: 'none',
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <label
+                            style={{
+                              fontFamily: FONT.cinzel,
+                              fontSize: 9,
+                              letterSpacing: '0.2em',
+                              textTransform: 'uppercase',
+                              color: STYX.silt,
+                              display: 'block',
+                              marginBottom: 6,
+                            }}
+                          >
+                            Phone
+                          </label>
+                          <input
+                            name="phone"
+                            type="tel"
+                            required
+                            style={{
+                              width: '100%',
+                              padding: '10px 12px',
+                              border: `1px solid ${STYX.line}`,
+                              background: '#fff',
+                              fontFamily: FONT.inter,
+                              fontSize: 13,
+                              color: STYX.ink,
+                              outline: 'none',
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label
+                          style={{
+                            fontFamily: FONT.cinzel,
+                            fontSize: 9,
+                            letterSpacing: '0.2em',
+                            textTransform: 'uppercase',
+                            color: STYX.silt,
+                            display: 'block',
+                            marginBottom: 6,
+                          }}
+                        >
+                          Message (optional)
+                        </label>
+                        <textarea
+                          name="message"
+                          rows={3}
+                          style={{
+                            width: '100%',
+                            padding: '10px 12px',
+                            border: `1px solid ${STYX.line}`,
+                            background: '#fff',
+                            fontFamily: FONT.cormorant,
+                            fontSize: 15,
+                            color: STYX.ink,
+                            outline: 'none',
+                            resize: 'vertical',
+                          }}
+                        />
+                      </div>
+                      {offerStatus === 'error' && (
+                        <div
+                          role="alert"
+                          style={{
+                            fontFamily: FONT.cormorant,
+                            fontSize: 15,
+                            fontStyle: 'italic',
+                            color: '#8A2E2E',
+                            background: 'rgba(138,46,46,0.06)',
+                            border: '1px solid rgba(138,46,46,0.35)',
+                            padding: '12px 16px',
+                            lineHeight: 1.5,
+                          }}
+                        >
+                          Something went wrong &mdash; your{' '}
+                          {offerMode === 'request' ? 'request' : 'offer'} was
+                          not sent. Please try again in a moment.
+                        </div>
+                      )}
+                      <button
+                        type="submit"
+                        disabled={offerStatus === 'submitting'}
+                        style={{
+                          padding: '16px 24px',
+                          background: STYX.ink,
+                          color: STYX.bone,
+                          fontFamily: FONT.cinzel,
+                          fontSize: 12,
+                          letterSpacing: '0.2em',
+                          textTransform: 'uppercase',
+                          border: 'none',
+                          cursor:
+                            offerStatus === 'submitting' ? 'wait' : 'pointer',
+                          opacity: offerStatus === 'submitting' ? 0.6 : 1,
+                          transition: 'background 0.2s',
+                        }}
+                      >
+                        {offerStatus === 'submitting'
+                          ? 'Sending…'
+                          : offerMode === 'request'
+                          ? 'Submit Request'
+                          : 'Submit Offer'}
+                      </button>
+                    </form>
+                  </>
                 )}
               </div>
             </div>
@@ -1712,8 +2088,18 @@ export default function Product() {
                 {label: 'Chain Style', value: chainStyle},
                 {label: 'Thickness', value: chainThickness},
                 {label: 'Construction', value: chainConstruction},
-                {label: 'Weight', value: displayWeight ? `${displayWeight}g` : null},
-                {label: 'Karat', value: karat ? `${karat}k Gold (${(selectedPurity * 100).toFixed(1)}% pure)` : null},
+                {
+                  label: 'Weight',
+                  value: displayWeight ? `${displayWeight}g` : null,
+                },
+                {
+                  label: 'Karat',
+                  value: karat
+                    ? `${karat}k Gold (${(selectedPurity * 100).toFixed(
+                        1,
+                      )}% pure)`
+                    : null,
+                },
                 {label: 'Color', value: selectedColor || 'Yellow Gold'},
                 {label: 'Clasp', value: specClasp},
                 {label: 'Our Cast', value: specCast},
@@ -1750,7 +2136,10 @@ export default function Product() {
           </div>
 
           {/* ── See it at actual size on your screen (card-calibrated) ── */}
-          <div id="actual-size-strip" style={{scrollMarginTop: 'var(--header-offset, 80px)'}}>
+          <div
+            id="actual-size-strip"
+            style={{scrollMarginTop: 'var(--header-offset, 80px)'}}
+          >
             <ActualSizeChainStrip
               thickness={chainThickness}
               chainStyle={chainStyle}
@@ -1759,8 +2148,14 @@ export default function Product() {
           </div>
 
           {/* ── Shipping / Returns Disclosure ── */}
-          <div style={{marginTop: 40, paddingTop: 32, borderTop: `1px solid ${STYX.line}`}}>
-              <div
+          <div
+            style={{
+              marginTop: 40,
+              paddingTop: 32,
+              borderTop: `1px solid ${STYX.line}`,
+            }}
+          >
+            <div
               style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -1784,8 +2179,10 @@ export default function Product() {
             </div>
           </div>
 
-          {/* ── Transparency Receipt (below cart) — only with real weight data ── */}
-          {selectedVariant?.price && displayWeight && (
+          {/* ── Transparency Receipt (below cart) — only with real weight data.
+              Hidden for unpriced ($0) variants: the math would show negative
+              labor and a $0.00 toll. ── */}
+          {selectedVariant?.price && displayWeight && !isUnpriced && (
             <div
               style={{
                 marginTop: 40,
@@ -1852,27 +2249,55 @@ export default function Product() {
                   return (
                     <>
                       <ReceiptSection label="MELT VALUE" />
-                      <ReceiptRow label={`${displayWeight}g total weight`} value={`${karat}K gold`} />
-                      <ReceiptRow label={`${pureGoldGrams.toFixed(2)}g pure gold (${(selectedPurity * 100).toFixed(0)}%)`} value={`@ $${(spotPerOz / 31.1035).toFixed(2)}/g`} />
-                      <ReceiptRow label="Gold melt value" value={`$${meltValue.toFixed(2)}`} highlight />
+                      <ReceiptRow
+                        label={`${displayWeight}g total weight`}
+                        value={`${karat}K gold`}
+                      />
+                      <ReceiptRow
+                        label={`${pureGoldGrams.toFixed(2)}g pure gold (${(
+                          selectedPurity * 100
+                        ).toFixed(0)}%)`}
+                        value={`@ $${(spotPerOz / 31.1035).toFixed(2)}/g`}
+                      />
+                      <ReceiptRow
+                        label="Gold melt value"
+                        value={formatUSD(meltValue)}
+                        highlight
+                      />
 
                       <div style={{height: 20}} />
                       <ReceiptSection label="DIFFERENCE" />
-                      <ReceiptRow label="Labor, craftsmanship, overhead" value={`$${difference.toFixed(2)}`} highlight />
+                      <ReceiptRow
+                        label="Labor, craftsmanship, overhead"
+                        value={formatUSD(difference)}
+                        highlight
+                      />
 
                       <div style={{height: 20}} />
                       <ReceiptSection label="OUR PRICE" />
-                      <ReceiptRow label="Melt value + markup" value={`$${ourPrice.toFixed(2)}`} highlight />
+                      <ReceiptRow
+                        label="Melt value + markup"
+                        value={formatUSD(ourPrice)}
+                        highlight
+                      />
 
                       <div style={{height: 12}} />
-                      <ReceiptRow label="Wire transfer (save 4%)" value={`$${wirePrice.toFixed(2)}`} />
+                      <ReceiptRow
+                        label="Wire transfer (save 4%)"
+                        value={formatUSD(wirePrice)}
+                      />
                     </>
                   );
                 })()}
               </div>
 
               {/* Divider */}
-              <div style={{borderTop: '1px dashed rgba(239,234,224,0.2)', margin: '18px 0'}} />
+              <div
+                style={{
+                  borderTop: '1px dashed rgba(239,234,224,0.2)',
+                  margin: '18px 0',
+                }}
+              />
 
               {/* Total */}
               <div
@@ -1913,7 +2338,10 @@ export default function Product() {
             <Await resolve={crossSell} errorElement={null}>
               {(products) =>
                 products && products.length > 0 ? (
-                  <RecommendedProducts products={products} heading="Pairs Well With" />
+                  <RecommendedProducts
+                    products={products}
+                    heading="Pairs Well With"
+                  />
                 ) : null
               }
             </Await>
@@ -1921,82 +2349,93 @@ export default function Product() {
         </div>
       </div>
 
-      {/* ── Transparency Narrative Section — only with real weight data ── */}
-      {displayWeight && (
-      <section
-        style={{
-          background: STYX.paper,
-          borderTop: `1px solid ${STYX.line}`,
-        }}
-      >
-        <div className="styx-product-transparency" style={{maxWidth: 1440, margin: '0 auto', padding: '100px 56px'}}>
-        <StyxLabel>On Transparency &middot; VI</StyxLabel>
-        <h2
+      {/* ── Transparency Narrative Section — only with real weight data.
+          Skipped for unpriced ($0) variants: the labor math would go negative. ── */}
+      {displayWeight && !isUnpriced && (
+        <section
           style={{
-            fontFamily: FONT.cinzel,
-            fontSize: 44,
-            fontWeight: 400,
-            color: STYX.ink,
-            margin: '12px 0 0',
-            lineHeight: 1.1,
-          }}
-        >
-          Every number,{' '}
-          <span
-            style={{
-              fontFamily: FONT.cormorant,
-              fontStyle: 'italic',
-              fontWeight: 400,
-            }}
-          >
-            in the open.
-          </span>
-        </h2>
-
-        <div
-          className="styx-transparency-grid"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: 64,
-            alignItems: 'start',
-            marginTop: 48,
+            background: STYX.paper,
+            borderTop: `1px solid ${STYX.line}`,
           }}
         >
           <div
-            style={{
-              fontFamily: FONT.cormorant,
-              fontSize: 19,
-              fontStyle: 'italic',
-              color: STYX.ink,
-              lineHeight: 1.7,
-            }}
+            className="styx-product-transparency"
+            style={{maxWidth: 1440, margin: '0 auto', padding: '100px 56px'}}
           >
-            {storyBody || (
-              <>
-                Most jewelers mark gold up 8 to 12 times. That is not because gold is
-                expensive &mdash; gold is a commodity, priced openly on global markets
-                &mdash; it is because the business is built on mystery. We are not.
-              </>
-            )}
-          </div>
-          <div
-            style={{
-              fontFamily: FONT.inter,
-              fontSize: 15,
-              color: STYX.ink,
-              lineHeight: 1.75,
-            }}
-          >
-            This piece weighs {displayWeight}g of solid {karat}k gold. At today&rsquo;s
-            live market price, that is ${goldBreakdown ? goldBreakdown.materialCost.toFixed(2) : (displayWeight * perGramSelected).toFixed(2)} in raw material.
-            We add ${goldBreakdown ? goldBreakdown.laborCost.toFixed(2) : laborCost.toFixed(2)} for manufacturing and finishing,
-            and our margin keeps the lights on. That is the whole math. Nothing hidden in a velvet box.
-          </div>
-        </div>
+            <StyxLabel>On Transparency &middot; VI</StyxLabel>
+            <h2
+              style={{
+                fontFamily: FONT.cinzel,
+                fontSize: 44,
+                fontWeight: 400,
+                color: STYX.ink,
+                margin: '12px 0 0',
+                lineHeight: 1.1,
+              }}
+            >
+              Every number,{' '}
+              <span
+                style={{
+                  fontFamily: FONT.cormorant,
+                  fontStyle: 'italic',
+                  fontWeight: 400,
+                }}
+              >
+                in the open.
+              </span>
+            </h2>
 
-        </div>
-      </section>
+            <div
+              className="styx-transparency-grid"
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: 64,
+                alignItems: 'start',
+                marginTop: 48,
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: FONT.cormorant,
+                  fontSize: 19,
+                  fontStyle: 'italic',
+                  color: STYX.ink,
+                  lineHeight: 1.7,
+                }}
+              >
+                {storyBody || (
+                  <>
+                    Most jewelers mark gold up 8 to 12 times. That is not
+                    because gold is expensive &mdash; gold is a commodity,
+                    priced openly on global markets &mdash; it is because the
+                    business is built on mystery. We are not.
+                  </>
+                )}
+              </div>
+              <div
+                style={{
+                  fontFamily: FONT.inter,
+                  fontSize: 15,
+                  color: STYX.ink,
+                  lineHeight: 1.75,
+                }}
+              >
+                This piece weighs {displayWeight}g of solid {karat}k gold. At
+                today&rsquo;s live market price, that is{' '}
+                {formatUSD(
+                  goldBreakdown
+                    ? goldBreakdown.materialCost
+                    : displayWeight * perGramSelected,
+                )}{' '}
+                in raw material. We add{' '}
+                {formatUSD(goldBreakdown ? goldBreakdown.laborCost : laborCost)}{' '}
+                for manufacturing and finishing, and our margin keeps the lights
+                on. That is the whole math. Nothing hidden in a velvet box.
+              </div>
+            </div>
+          </div>
+        </section>
       )}
 
       {/* ── Pull Quote ── (specs live in Product Details above) */}
@@ -2077,38 +2516,48 @@ export default function Product() {
           scrollMarginTop: 96,
         }}
       >
-        <div className="styx-pact-banner" style={{maxWidth: 1440, margin: '0 auto', padding: 56, display: 'flex', alignItems: 'center', gap: 40}}>
-        <Obol size={64} color={STYX.goldLight} speed={6} />
-        <div style={{flex: 1}}>
-          <div
-            style={{
-              fontFamily: FONT.cinzel,
-              fontSize: 11,
-              letterSpacing: '0.25em',
-              textTransform: 'uppercase',
-              color: STYX.goldLight,
-              marginBottom: 8,
-            }}
-          >
-            The Ferryman&rsquo;s Pact
+        <div
+          className="styx-pact-banner"
+          style={{
+            maxWidth: 1440,
+            margin: '0 auto',
+            padding: 56,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 40,
+          }}
+        >
+          <Obol size={64} color={STYX.goldLight} speed={6} />
+          <div style={{flex: 1}}>
+            <div
+              style={{
+                fontFamily: FONT.cinzel,
+                fontSize: 11,
+                letterSpacing: '0.25em',
+                textTransform: 'uppercase',
+                color: STYX.goldLight,
+                marginBottom: 8,
+              }}
+            >
+              The Ferryman&rsquo;s Pact
+            </div>
+            <p
+              style={{
+                fontFamily: FONT.cormorant,
+                fontStyle: 'italic',
+                fontSize: 20,
+                lineHeight: 1.6,
+                color: STYX.bone,
+                margin: 0,
+                maxWidth: 640,
+              }}
+            >
+              Every piece carries a 5-year buyback guarantee. If you ever wish
+              to return to shore, we will buy back your gold at the prevailing
+              market price&mdash;minus only the original labor. The metal never
+              loses its passage.
+            </p>
           </div>
-          <p
-            style={{
-              fontFamily: FONT.cormorant,
-              fontStyle: 'italic',
-              fontSize: 20,
-              lineHeight: 1.6,
-              color: STYX.bone,
-              margin: 0,
-              maxWidth: 640,
-            }}
-          >
-            Every piece carries a 5-year buyback guarantee. If you ever wish to
-            return to shore, we will buy back your gold at the prevailing market
-            price&mdash;minus only the original labor. The metal never loses its
-            passage.
-          </p>
-        </div>
         </div>
       </section>
 
@@ -2290,7 +2739,9 @@ function ZoomableImage({
             display: 'block',
             transform: zoomed ? 'scale(2)' : 'scale(1)',
             transformOrigin: origin,
-            transition: zoomed ? 'transform 0.1s ease-out' : 'transform 0.3s ease',
+            transition: zoomed
+              ? 'transform 0.1s ease-out'
+              : 'transform 0.3s ease',
           }}
         />
       </div>
@@ -2652,8 +3103,9 @@ async function getRecommendedProducts(
     const result = await storefront.query(COLLECTION_PRODUCTS_QUERY, {
       variables: {handle: collectionHandle, count: 12},
     });
-    const nodes = (result.collection?.products?.nodes ?? [])
-      .filter((p: any) => p.id !== productId);
+    const nodes = (result.collection?.products?.nodes ?? []).filter(
+      (p: any) => p.id !== productId,
+    );
     if (nodes.length > 0) {
       return {nodes};
     }
@@ -2738,7 +3190,8 @@ const CROSS_SELL_QUERY = `#graphql
 /** Parse first mm number out of a thickness string or title. */
 function parseMm(value?: string | null): number | null {
   if (!value) return null;
-  const m = value.match(/(\d+(?:\.\d+)?)\s*mm/i) ?? value.match(/(\d+(?:\.\d+)?)/);
+  const m =
+    value.match(/(\d+(?:\.\d+)?)\s*mm/i) ?? value.match(/(\d+(?:\.\d+)?)/);
   return m ? parseFloat(m[1]) : null;
 }
 
@@ -2747,7 +3200,10 @@ function normalize(value?: string | null): string {
 }
 
 /** Parse karat from a metafield value or product title (e.g. "10K 3mm Rope Chain" → 10). */
-function parseKarat(value?: string | null, title?: string | null): number | null {
+function parseKarat(
+  value?: string | null,
+  title?: string | null,
+): number | null {
   const fromValue = value ? parseInt(value, 10) : NaN;
   if (!Number.isNaN(fromValue) && fromValue > 0) return fromValue;
   const m = (title ?? '').match(/(\d{2})\s*k/i);
@@ -2756,8 +3212,19 @@ function parseKarat(value?: string | null, title?: string | null): number | null
 
 // Longer names first so "Cuban Link" wins before any shorter substring could.
 const CHAIN_STYLE_NAMES = [
-  'Cuban Link', 'Herringbone', 'Singapore', 'Paperclip', 'Figaro',
-  'Franco', 'Wheat', 'Curb', 'Rope', 'Cable', 'Rolo', 'Snake', 'Box',
+  'Cuban Link',
+  'Herringbone',
+  'Singapore',
+  'Paperclip',
+  'Figaro',
+  'Franco',
+  'Wheat',
+  'Curb',
+  'Rope',
+  'Cable',
+  'Rolo',
+  'Snake',
+  'Box',
 ];
 
 /**
@@ -2811,8 +3278,7 @@ async function getCrossSellProducts(
     styleTitle,
   );
   const myType = normalize(product?.productType); // "chain" | "bracelet"
-  const myMm =
-    parseMm(product?.chain_thickness?.value) ?? parseMm(styleTitle);
+  const myMm = parseMm(product?.chain_thickness?.value) ?? parseMm(styleTitle);
   const myKarat = parseKarat(product?.karat?.value, styleTitle);
 
   // Without a known style, width, and karat we can't guarantee a true
@@ -2839,7 +3305,9 @@ async function getCrossSellProducts(
     .filter((c: any) => {
       if (!c?.id || c.id === product.id) return false;
       if (normalize(c.productType) !== normalize(pairType)) return false;
-      const cStyle = normalize(parseStyle(c.chain_style?.value, c.tags, c.title));
+      const cStyle = normalize(
+        parseStyle(c.chain_style?.value, c.tags, c.title),
+      );
       if (cStyle !== myStyle) return false;
       const cMm = parseMm(c.chain_thickness?.value) ?? parseMm(c.title);
       // Titles round to the nearest 0.5mm — absorb that, but never let a
@@ -2853,12 +3321,13 @@ async function getCrossSellProducts(
     .sort((a: any, b: any) => {
       const conScore = (c: any) =>
         construction &&
-        parseConstruction(c.chain_construction?.value, c.tags, c.title) === construction
+        parseConstruction(c.chain_construction?.value, c.tags, c.title) ===
+          construction
           ? 1
           : 0;
       const stockScore = (c: any) =>
         (c.variants?.nodes ?? []).some((v: any) => v.availableForSale) ? 1 : 0;
-      return (conScore(b) - conScore(a)) || (stockScore(b) - stockScore(a));
+      return conScore(b) - conScore(a) || stockScore(b) - stockScore(a);
     });
 
   return matches.slice(0, 2).map((c: any) => ({
@@ -2867,6 +3336,7 @@ async function getCrossSellProducts(
     handle: c.handle,
     productType: c.productType,
     variants: c.variants,
-    reason: myType === 'chain' ? 'The Matching Bracelet' : 'The Matching Necklace',
+    reason:
+      myType === 'chain' ? 'The Matching Bracelet' : 'The Matching Necklace',
   }));
 }

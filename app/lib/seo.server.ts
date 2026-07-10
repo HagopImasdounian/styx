@@ -190,9 +190,9 @@ function productJsonLd({
   // so we never emit image: [""].
   const images = [
     selectedVariant?.image?.url,
-    ...(product.media?.nodes ?? []).map((node) => node?.image?.url as
-      | string
-      | undefined),
+    ...(product.media?.nodes ?? []).map(
+      (node) => node?.image?.url as string | undefined,
+    ),
   ].filter((src): src is string => Boolean(src));
   const uniqueImages = Array.from(new Set(images));
   return [
@@ -216,15 +216,20 @@ function productJsonLd({
     {
       '@context': 'https://schema.org',
       '@type': 'Product',
+      // Always the storefront brand — product.vendor carries the supplier
+      // name, which must never appear in public structured data.
       brand: {
         '@type': 'Brand',
-        name: product.vendor,
+        name: 'STYX Gold',
       },
       description,
       image: uniqueImages,
       name: product.title,
       offers,
       sku: selectedVariant?.sku ?? '',
+      // No GTINs exist for these products; the vendor SKU doubles as the MPN
+      // so merchant listings still get a manufacturer identifier.
+      ...(selectedVariant?.sku ? {mpn: selectedVariant.sku} : {}),
       material: 'Gold',
       url,
     },
@@ -338,7 +343,9 @@ function collection({
     truncate(
       collection?.seo?.description || cleanText(collection?.description ?? ''),
     ) ||
-    `Shop ${collection?.title ?? 'solid gold chains'} — 10K & 14K, priced transparently from the London fix. No markup mystery.`;
+    `Shop ${
+      collection?.title ?? 'solid gold chains'
+    } — 10K & 14K, priced transparently from the London fix. No markup mystery.`;
 
   return {
     title,
@@ -401,7 +408,8 @@ function listCollections({
   return {
     title: 'Collections',
     titleTemplate: '%s | STYX Gold',
-    description: 'Browse all solid gold chain collections — by style, weight, karat, and metal.',
+    description:
+      'Browse all solid gold chain collections — by style, weight, karat, and metal.',
     url,
     jsonLd: collectionsJsonLd({collections, url}),
   };
@@ -609,4 +617,3 @@ function cleanText(html: string): string {
     .replace(/\s+/g, ' ')
     .trim();
 }
-

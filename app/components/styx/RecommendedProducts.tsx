@@ -2,6 +2,7 @@ import {Image} from '@shopify/hydrogen';
 import {Link} from 'react-router';
 import {STYX, FONT} from './constants';
 import {PlaceholderImage} from './PlaceholderImage';
+import {formatUSD} from '~/lib/gold';
 
 /**
  * Cross-sell "Pairs Well With" module shown below the add-to-cart flow on the
@@ -80,9 +81,10 @@ export function RecommendedProducts({
           const variant = pickVariant(product);
           if (!variant) return null;
 
+          // Drop NaN and $0 (catalog-error) prices from the "from" floor.
           const prices = (product.variants?.nodes ?? [])
             .map((v) => parseFloat(v.price.amount))
-            .filter((n) => !Number.isNaN(n));
+            .filter((n) => !Number.isNaN(n) && n > 0);
           const minPrice = prices.length ? Math.min(...prices) : null;
           const hasRange = prices.length
             ? Math.max(...prices) > (minPrice ?? 0)
@@ -190,7 +192,7 @@ export function RecommendedProducts({
                         from
                       </span>
                     )}
-                    ${minPrice.toFixed(2)}
+                    {formatUSD(minPrice)}
                   </div>
                 )}
               </div>

@@ -23,8 +23,10 @@ export async function loader({request, context, params}: LoaderFunctionArgs) {
   let redirectParam =
     searchParams.get('redirect') || searchParams.get('return_to') || '/';
 
-  if (redirectParam.includes('//')) {
-    // Avoid redirecting to external URLs to prevent phishing attacks
+  // Only allow same-origin paths: must start with a single "/" not followed
+  // by "/" or "\" (browsers normalize "\" to "/", so "/\evil.com" would
+  // otherwise become a scheme-relative external redirect).
+  if (!/^\/(?![/\\])/.test(redirectParam)) {
     redirectParam = '/';
   }
 

@@ -1,8 +1,5 @@
-import {
-    type MetaArgs,
-  type LoaderFunctionArgs,
-} from 'react-router';
-import {useLoaderData} from 'react-router';
+import {type MetaArgs, type LoaderFunctionArgs} from 'react-router';
+import {redirect, useLoaderData} from 'react-router';
 import invariant from 'tiny-invariant';
 import {getStyxSeoMeta} from '~/lib/seo-meta';
 
@@ -16,6 +13,15 @@ export const headers = routeHeaders;
 export async function loader({request, params, context}: LoaderFunctionArgs) {
   validateLocale(params);
   invariant(params.pageHandle, 'Missing page handle');
+
+  // The Shopify "contact" page duplicates the custom /contact route (same
+  // title, both indexed) — consolidate on the custom route.
+  if (params.pageHandle === 'contact') {
+    return redirect(
+      params?.locale ? `/${params.locale}/contact` : '/contact',
+      301,
+    );
+  }
 
   const {page} = await context.storefront.query(PAGE_QUERY, {
     variables: {

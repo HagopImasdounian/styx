@@ -1,4 +1,5 @@
 import {type ActionFunctionArgs, data} from 'react-router';
+import {rateLimitAllow} from '~/lib/rate-limit.server';
 
 type FormPayload = {
   formId?: string;
@@ -38,6 +39,20 @@ function sanitizeHeaderText(value: string): string {
 export async function action({request, context}: ActionFunctionArgs) {
   if (request.method !== 'POST') {
     return data({error: 'Method not allowed'}, {status: 405});
+  }
+
+  // Each submission triggers outbound email from our verified domain —
+  // throttle per IP so bots can't burn quota or spam arbitrary inboxes.
+  if (
+    !(await rateLimitAllow(request, 'form-submit', {
+      limit: 5,
+      windowSeconds: 600,
+    }))
+  ) {
+    return data(
+      {error: 'Too many requests — please try again in a few minutes'},
+      {status: 429},
+    );
   }
 
   let body: FormPayload;
@@ -107,7 +122,9 @@ export async function action({request, context}: ActionFunctionArgs) {
       });
       results.webhook = res.ok ? 'sent' : `failed: ${res.status}`;
     } catch (err) {
-      results.webhook = `error: ${err instanceof Error ? err.message : 'unknown'}`;
+      results.webhook = `error: ${
+        err instanceof Error ? err.message : 'unknown'
+      }`;
     }
   }
 
@@ -125,13 +142,17 @@ export async function action({request, context}: ActionFunctionArgs) {
           from: fromAddress,
           to: [ownerEmail],
           reply_to: email,
-          subject: `[${friendlyFormName}] New submission from ${safeName || safeEmail}`,
+          subject: `[${friendlyFormName}] New submission from ${
+            safeName || safeEmail
+          }`,
           html: buildOwnerEmail(friendlyFormName, payload),
         }),
       });
       results.notification = res.ok ? 'sent' : `failed: ${res.status}`;
     } catch (err) {
-      results.notification = `error: ${err instanceof Error ? err.message : 'unknown'}`;
+      results.notification = `error: ${
+        err instanceof Error ? err.message : 'unknown'
+      }`;
     }
 
     // 2b. CUSTOMER confirmation — short, branded, no internal info.
@@ -151,7 +172,9 @@ export async function action({request, context}: ActionFunctionArgs) {
       });
       results.confirmation = res.ok ? 'sent' : `failed: ${res.status}`;
     } catch (err) {
-      results.confirmation = `error: ${err instanceof Error ? err.message : 'unknown'}`;
+      results.confirmation = `error: ${
+        err instanceof Error ? err.message : 'unknown'
+      }`;
     }
   }
 
@@ -189,7 +212,9 @@ function prettyFormName(formName?: string): string {
       return 'Make an Offer';
     default:
       return formName
-        ? formName.replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+        ? formName
+            .replace(/[-_]/g, ' ')
+            .replace(/\b\w/g, (c) => c.toUpperCase())
         : 'Form';
   }
 }
@@ -230,7 +255,10 @@ function renderValue(value: unknown): string {
     // Flatten nested `fields` objects into readable lines.
     return Object.entries(value as Record<string, unknown>)
       .filter(([, v]) => v != null && v !== '')
-      .map(([k, v]) => `${escapeHtml(humanizeKey(k))}: ${escapeHtml(renderValue(v))}`)
+      .map(
+        ([k, v]) =>
+          `${escapeHtml(humanizeKey(k))}: ${escapeHtml(renderValue(v))}`,
+      )
       .join('<br/>');
   }
   // Cap individual values so a single oversized field can't bloat the email.
@@ -245,7 +273,9 @@ function buildOwnerEmail(friendlyFormName: string, data: FormPayload): string {
       const rendered = renderValue(v);
       if (!rendered) return '';
       return `<tr>
-        <td style="padding:10px 14px;font-weight:600;color:#1a1a1a;border-bottom:1px solid #eee;vertical-align:top;white-space:nowrap">${escapeHtml(label)}</td>
+        <td style="padding:10px 14px;font-weight:600;color:#1a1a1a;border-bottom:1px solid #eee;vertical-align:top;white-space:nowrap">${escapeHtml(
+          label,
+        )}</td>
         <td style="padding:10px 14px;color:#333;border-bottom:1px solid #eee;vertical-align:top">${rendered}</td>
       </tr>`;
     })
@@ -253,8 +283,12 @@ function buildOwnerEmail(friendlyFormName: string, data: FormPayload): string {
 
   return `
     <div style="font-family:Helvetica,Arial,sans-serif;max-width:640px;margin:0 auto">
-      <h2 style="color:#1a1a1a;border-bottom:2px solid #c9a84c;padding-bottom:8px;margin-bottom:4px">New ${escapeHtml(friendlyFormName)} Submission</h2>
-      <p style="color:#888;font-size:13px;margin:0 0 16px">A customer just submitted the ${escapeHtml(friendlyFormName)} form on styxgold.com.</p>
+      <h2 style="color:#1a1a1a;border-bottom:2px solid #c9a84c;padding-bottom:8px;margin-bottom:4px">New ${escapeHtml(
+        friendlyFormName,
+      )} Submission</h2>
+      <p style="color:#888;font-size:13px;margin:0 0 16px">A customer just submitted the ${escapeHtml(
+        friendlyFormName,
+      )} form on styxgold.com.</p>
       <table style="width:100%;border-collapse:collapse;font-size:14px">${rows}</table>
     </div>
   `;
@@ -315,7 +349,9 @@ function wrapBrandedEmail(heading: string, innerHtml: string): string {
             </tr>
             <tr>
               <td style="padding:36px 40px 40px">
-                <h1 style="font-family:Georgia,'Times New Roman',serif;font-weight:400;font-size:22px;letter-spacing:0.04em;color:#f3eee2;margin:0 0 20px">${escapeHtml(heading)}</h1>
+                <h1 style="font-family:Georgia,'Times New Roman',serif;font-weight:400;font-size:22px;letter-spacing:0.04em;color:#f3eee2;margin:0 0 20px">${escapeHtml(
+                  heading,
+                )}</h1>
                 <div style="font-family:Helvetica,Arial,sans-serif;font-size:15px;line-height:1.7;color:#cfc8b8">
                   ${innerHtml}
                   <p style="margin:24px 0 0;color:#cfc8b8">— The STYX Gold Team</p>

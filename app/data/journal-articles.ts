@@ -1,5 +1,7 @@
 export interface Article {
   title: string;
+  /** Shorter <title> override when the display title exceeds ~60 chars. */
+  seoTitle?: string;
   category: string;
   vol: number;
   readTime: string;
@@ -34,6 +36,7 @@ export const HIDDEN_ARTICLE_HANDLES = new Set<string>([
 export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
   'history-of-gold-chains': {
     title: "The Almanac: A History of Gold — From Mesopotamian Links to Wearable Bullion",
+    seoTitle: "A History of Gold Chains",
     category: "The Almanac",
     vol: 0,
     readTime: "10 min",

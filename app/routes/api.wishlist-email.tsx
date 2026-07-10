@@ -1,4 +1,5 @@
 import {type ActionFunctionArgs, data} from 'react-router';
+import {rateLimitAllow} from '~/lib/rate-limit.server';
 
 /**
  * Sends a customer's wishlist to an email address via Resend.
@@ -76,6 +77,19 @@ export async function action({request, context}: ActionFunctionArgs) {
     return data({error: 'Method not allowed'}, {status: 405});
   }
 
+  // Sends email to an arbitrary recipient — throttle per IP (spam vector).
+  if (
+    !(await rateLimitAllow(request, 'wishlist-email', {
+      limit: 3,
+      windowSeconds: 600,
+    }))
+  ) {
+    return data(
+      {error: 'Too many requests — please try again in a few minutes'},
+      {status: 429},
+    );
+  }
+
   let body: {
     to?: string;
     note?: string;
@@ -131,7 +145,9 @@ export async function action({request, context}: ActionFunctionArgs) {
 
     if (!res.ok) {
       const detail = await res.text().catch(() => '');
-      console.error(`[wishlist-email] Resend failed (${res.status}): ${detail}`);
+      console.error(
+        `[wishlist-email] Resend failed (${res.status}): ${detail}`,
+      );
       return data({error: 'Failed to send email'}, {status: 502});
     }
   } catch (err) {
@@ -202,8 +218,8 @@ function buildWishlistEmail(
                 ${thumb}
                 <td valign="top">
                   <a href="${url}" style="font-family:'Times New Roman',serif;font-size:15px;font-weight:600;letter-spacing:0.04em;color:#1a1815;text-decoration:none;text-transform:uppercase">${esc(
-                    item.title,
-                  )}</a>
+        item.title,
+      )}</a>
                   ${lengthLine}
                   ${priceLine}
                   <div style="margin-top:8px">

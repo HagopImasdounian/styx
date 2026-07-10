@@ -1,11 +1,13 @@
-import {useEffect, useState, Suspense, useRef, useCallback, createContext, useContext} from 'react';
 import {
-  Await,
-  useRouteLoaderData,
-  Link,
-  useParams,
-  Form,
-} from 'react-router';
+  useEffect,
+  useState,
+  Suspense,
+  useRef,
+  useCallback,
+  createContext,
+  useContext,
+} from 'react';
+import {Await, useRouteLoaderData, Link, useParams, Form} from 'react-router';
 import {CartForm} from '@shopify/hydrogen';
 import {
   STYX,
@@ -13,10 +15,7 @@ import {
   type CollectionNode,
   collectionCutoutUrl,
 } from './constants';
-import {
-  PredictiveSearchPanel,
-  MobileMenuSearch,
-} from './PredictiveSearch';
+import {PredictiveSearchPanel, MobileMenuSearch} from './PredictiveSearch';
 import {Cart, cartToAnalyticsPayload} from '~/components/Cart';
 import {trackCartView} from '~/components/GTMDataLayer';
 import {CartLoading} from '~/components/CartLoading';
@@ -298,14 +297,37 @@ const CHAIN_TAXONOMY: ChainGroup[] = [
 ];
 
 const METALS = [
-  {label: 'Yellow Gold', hex: '#C5A059', sub: 'The original alloy', handle: 'yellow-gold'},
-  {label: 'Rose Gold', hex: '#C08572', sub: 'Copper-warmed', handle: 'rose-gold'},
-  {label: 'White Gold', hex: '#D4D2CC', sub: 'Palladium-alloyed', handle: 'white-gold'},
+  {
+    label: 'Yellow Gold',
+    hex: '#C5A059',
+    sub: 'The original alloy',
+    handle: 'yellow-gold',
+  },
+  {
+    label: 'Rose Gold',
+    hex: '#C08572',
+    sub: 'Copper-warmed',
+    handle: 'rose-gold',
+  },
+  {
+    label: 'White Gold',
+    hex: '#D4D2CC',
+    sub: 'Palladium-alloyed',
+    handle: 'white-gold',
+  },
 ];
 
 const KARATS = [
-  {label: '10k · Durable', detail: '41.7% pure — hardest wearing', handle: '10k-gold'},
-  {label: '14k · Everyday', detail: '58.5% pure — strong and versatile', handle: '14k-gold'},
+  {
+    label: '10k · Durable',
+    detail: '41.7% pure — hardest wearing',
+    handle: '10k-gold',
+  },
+  {
+    label: '14k · Everyday',
+    detail: '58.5% pure — strong and versatile',
+    handle: '14k-gold',
+  },
   {label: '18k · Premium', detail: '75% pure — rich color', handle: '18k-gold'},
 ];
 
@@ -333,13 +355,7 @@ const THICKNESS_TIERS = [
    Shared sub-components
    ═══════════════════════════════════════════════════════════════ */
 
-function MenuColumnHeader({
-  kicker,
-  title,
-}: {
-  kicker?: string;
-  title: string;
-}) {
+function MenuColumnHeader({kicker, title}: {kicker?: string; title: string}) {
   return (
     <div
       style={{
@@ -424,8 +440,14 @@ function MenuLink({
       to={to}
       prefetch="intent"
       onClick={() => closeMenu?.()}
-      onMouseEnter={() => { setHover(true); onHover?.(true); }}
-      onMouseLeave={() => { setHover(false); onHover?.(false); }}
+      onMouseEnter={() => {
+        setHover(true);
+        onHover?.(true);
+      }}
+      onMouseLeave={() => {
+        setHover(false);
+        onHover?.(false);
+      }}
       style={{
         display: 'flex',
         alignItems: 'baseline',
@@ -540,13 +562,15 @@ function ChainCard({chain}: {chain: ChainItem}) {
             border: `1px solid ${STYX.lineSoft}`,
           }}
         >
-          <span style={{
-            fontFamily: FONT.cinzel,
-            fontSize: 22,
-            color: STYX.gold,
-            opacity: 0.4,
-            letterSpacing: '0.05em',
-          }}>
+          <span
+            style={{
+              fontFamily: FONT.cinzel,
+              fontSize: 22,
+              color: STYX.gold,
+              opacity: 0.4,
+              letterSpacing: '0.05em',
+            }}
+          >
             {label.charAt(0)}
           </span>
         </div>
@@ -577,9 +601,7 @@ function ChainsMegaPanel() {
   // Filter each taxonomy group to only show chains that exist as collections
   const filteredGroups = CHAIN_TAXONOMY.map((group) => ({
     ...group,
-    chains: group.chains.filter((c) =>
-      existingHandles.has(c.handle),
-    ),
+    chains: group.chains.filter((c) => existingHandles.has(c.handle)),
   })).filter((g) => g.chains.length > 0);
 
   const allChains = filteredGroups.flatMap((g) => g.chains);
@@ -608,28 +630,34 @@ function ChainsMegaPanel() {
   return (
     <div style={{padding: '40px 56px 44px'}}>
       {/* Section header */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'baseline',
-        justifyContent: 'space-between',
-        marginBottom: 32,
-      }}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'baseline',
+          justifyContent: 'space-between',
+          marginBottom: 32,
+        }}
+      >
         <div style={{display: 'flex', alignItems: 'baseline', gap: 16}}>
-          <span style={{
-            fontFamily: FONT.mono,
-            fontSize: 9,
-            letterSpacing: '0.2em',
-            color: STYX.gold,
-            textTransform: 'uppercase',
-          }}>
+          <span
+            style={{
+              fontFamily: FONT.mono,
+              fontSize: 9,
+              letterSpacing: '0.2em',
+              color: STYX.gold,
+              textTransform: 'uppercase',
+            }}
+          >
             Shop by Weave
           </span>
-          <span style={{
-            fontFamily: FONT.cormorant,
-            fontSize: 15,
-            fontStyle: 'italic',
-            color: STYX.silt2,
-          }}>
+          <span
+            style={{
+              fontFamily: FONT.cormorant,
+              fontSize: 15,
+              fontStyle: 'italic',
+              color: STYX.silt2,
+            }}
+          >
             {allChains.length} styles
           </span>
         </div>
@@ -671,14 +699,31 @@ function ChainsMegaPanel() {
 
 // Handles to exclude from the collections menu (shown elsewhere or internal)
 const COLLECTIONS_EXCLUDE = new Set([
-  'frontpage', 'automated-collection', 'hydrogen', 'chains',
+  'frontpage',
+  'automated-collection',
+  'hydrogen',
+  'chains',
 ]);
 
 // Handles that belong to "filter" groupings (metal, karat, thickness, weave group)
 const isFilterCollection = (handle: string) =>
-  ['yellow-gold', 'white-gold', 'rose-gold', '10k-gold', '14k-gold', '18k-gold', '22k-gold'].includes(handle) ||
+  [
+    'yellow-gold',
+    'white-gold',
+    'rose-gold',
+    '10k-gold',
+    '14k-gold',
+    '18k-gold',
+    '22k-gold',
+  ].includes(handle) ||
   handle.startsWith('thickness-') ||
-  ['classic-curb', 'woven-braided', 'round-rolling', 'flat-architectural', 'figural-decorative'].includes(handle);
+  [
+    'classic-curb',
+    'woven-braided',
+    'round-rolling',
+    'flat-architectural',
+    'figural-decorative',
+  ].includes(handle);
 
 // Chain type handles (already shown in the Chains panel)
 const isChainType = (handle: string) =>
@@ -728,35 +773,41 @@ function CollectionCategoryLink({
         />
       )}
       <span style={{flex: 1}}>
-        <div style={{
-          fontFamily: FONT.cinzel,
-          fontSize: 15,
-          letterSpacing: '0.08em',
-          color: hover ? STYX.gold : STYX.ink,
-          textTransform: 'uppercase',
-          fontWeight: 500,
-          transition: 'color 0.2s',
-          lineHeight: 1.3,
-        }}>
+        <div
+          style={{
+            fontFamily: FONT.cinzel,
+            fontSize: 15,
+            letterSpacing: '0.08em',
+            color: hover ? STYX.gold : STYX.ink,
+            textTransform: 'uppercase',
+            fontWeight: 500,
+            transition: 'color 0.2s',
+            lineHeight: 1.3,
+          }}
+        >
           {title}
         </div>
-        <div style={{
-          fontFamily: FONT.cormorant,
-          fontSize: 14,
-          fontStyle: 'italic',
-          color: STYX.silt2,
-          marginTop: 2,
-        }}>
+        <div
+          style={{
+            fontFamily: FONT.cormorant,
+            fontSize: 14,
+            fontStyle: 'italic',
+            color: STYX.silt2,
+            marginTop: 2,
+          }}
+        >
           {subtitle}
         </div>
       </span>
-      <span style={{
-        fontFamily: FONT.cinzel,
-        fontSize: 11,
-        color: hover ? STYX.gold : 'transparent',
-        transition: 'color 0.2s',
-        flexShrink: 0,
-      }}>
+      <span
+        style={{
+          fontFamily: FONT.cinzel,
+          fontSize: 11,
+          color: hover ? STYX.gold : 'transparent',
+          transition: 'color 0.2s',
+          flexShrink: 0,
+        }}
+      >
         →
       </span>
     </Link>
@@ -780,27 +831,43 @@ function CollectionsMegaPanel() {
     >
       {/* By Type */}
       <div>
-        <div style={{
-          fontFamily: FONT.mono,
-          fontSize: 9,
-          letterSpacing: '0.25em',
-          color: STYX.gold,
-          textTransform: 'uppercase',
-          marginBottom: 6,
-        }}>I</div>
-        <div style={{
-          fontFamily: FONT.cinzel,
-          fontSize: 13,
-          letterSpacing: '0.25em',
-          textTransform: 'uppercase',
-          color: STYX.silt,
-          fontWeight: 500,
-          paddingBottom: 16,
-          marginBottom: 4,
-          borderBottom: `1px solid ${STYX.line}`,
-        }}>By Type</div>
-        <CollectionCategoryLink to="/collections/necklaces" title="Necklaces" subtitle="Chains · 16″ – 30″" />
-        <CollectionCategoryLink to="/collections/bracelets" title="Bracelets" subtitle="Wrist chains · 7″ – 9″" />
+        <div
+          style={{
+            fontFamily: FONT.mono,
+            fontSize: 9,
+            letterSpacing: '0.25em',
+            color: STYX.gold,
+            textTransform: 'uppercase',
+            marginBottom: 6,
+          }}
+        >
+          I
+        </div>
+        <div
+          style={{
+            fontFamily: FONT.cinzel,
+            fontSize: 13,
+            letterSpacing: '0.25em',
+            textTransform: 'uppercase',
+            color: STYX.silt,
+            fontWeight: 500,
+            paddingBottom: 16,
+            marginBottom: 4,
+            borderBottom: `1px solid ${STYX.line}`,
+          }}
+        >
+          By Type
+        </div>
+        <CollectionCategoryLink
+          to="/collections/necklaces"
+          title="Necklaces"
+          subtitle="Chains · 16″ – 30″"
+        />
+        <CollectionCategoryLink
+          to="/collections/bracelets"
+          title="Bracelets"
+          subtitle="Wrist chains · 7″ – 9″"
+        />
         <MegaLink
           to="/collections/chains"
           prefetch="intent"
@@ -821,25 +888,33 @@ function CollectionsMegaPanel() {
 
       {/* By Karat */}
       <div>
-        <div style={{
-          fontFamily: FONT.mono,
-          fontSize: 9,
-          letterSpacing: '0.25em',
-          color: STYX.gold,
-          textTransform: 'uppercase',
-          marginBottom: 6,
-        }}>II</div>
-        <div style={{
-          fontFamily: FONT.cinzel,
-          fontSize: 13,
-          letterSpacing: '0.25em',
-          textTransform: 'uppercase',
-          color: STYX.silt,
-          fontWeight: 500,
-          paddingBottom: 16,
-          marginBottom: 4,
-          borderBottom: `1px solid ${STYX.line}`,
-        }}>By Karat</div>
+        <div
+          style={{
+            fontFamily: FONT.mono,
+            fontSize: 9,
+            letterSpacing: '0.25em',
+            color: STYX.gold,
+            textTransform: 'uppercase',
+            marginBottom: 6,
+          }}
+        >
+          II
+        </div>
+        <div
+          style={{
+            fontFamily: FONT.cinzel,
+            fontSize: 13,
+            letterSpacing: '0.25em',
+            textTransform: 'uppercase',
+            color: STYX.silt,
+            fontWeight: 500,
+            paddingBottom: 16,
+            marginBottom: 4,
+            borderBottom: `1px solid ${STYX.line}`,
+          }}
+        >
+          By Karat
+        </div>
         {filteredKarats.map((k) => (
           <CollectionCategoryLink
             key={k.label}
@@ -852,25 +927,33 @@ function CollectionsMegaPanel() {
 
       {/* By Metal */}
       <div>
-        <div style={{
-          fontFamily: FONT.mono,
-          fontSize: 9,
-          letterSpacing: '0.25em',
-          color: STYX.gold,
-          textTransform: 'uppercase',
-          marginBottom: 6,
-        }}>III</div>
-        <div style={{
-          fontFamily: FONT.cinzel,
-          fontSize: 13,
-          letterSpacing: '0.25em',
-          textTransform: 'uppercase',
-          color: STYX.silt,
-          fontWeight: 500,
-          paddingBottom: 16,
-          marginBottom: 4,
-          borderBottom: `1px solid ${STYX.line}`,
-        }}>By Metal</div>
+        <div
+          style={{
+            fontFamily: FONT.mono,
+            fontSize: 9,
+            letterSpacing: '0.25em',
+            color: STYX.gold,
+            textTransform: 'uppercase',
+            marginBottom: 6,
+          }}
+        >
+          III
+        </div>
+        <div
+          style={{
+            fontFamily: FONT.cinzel,
+            fontSize: 13,
+            letterSpacing: '0.25em',
+            textTransform: 'uppercase',
+            color: STYX.silt,
+            fontWeight: 500,
+            paddingBottom: 16,
+            marginBottom: 4,
+            borderBottom: `1px solid ${STYX.line}`,
+          }}
+        >
+          By Metal
+        </div>
         {filteredMetals.map((m) => (
           <CollectionCategoryLink
             key={m.label}
@@ -884,27 +967,43 @@ function CollectionsMegaPanel() {
 
       {/* By Build + Browse All */}
       <div style={{display: 'flex', flexDirection: 'column'}}>
-        <div style={{
-          fontFamily: FONT.mono,
-          fontSize: 9,
-          letterSpacing: '0.25em',
-          color: STYX.gold,
-          textTransform: 'uppercase',
-          marginBottom: 6,
-        }}>IV</div>
-        <div style={{
-          fontFamily: FONT.cinzel,
-          fontSize: 13,
-          letterSpacing: '0.25em',
-          textTransform: 'uppercase',
-          color: STYX.silt,
-          fontWeight: 500,
-          paddingBottom: 16,
-          marginBottom: 4,
-          borderBottom: `1px solid ${STYX.line}`,
-        }}>By Build</div>
-        <CollectionCategoryLink to="/collections/chains?construction=Solid" title="Solid" subtitle="Dense · investment-grade" />
-        <CollectionCategoryLink to="/collections/chains?construction=Hollow" title="Hollow" subtitle="Lighter · everyday wear" />
+        <div
+          style={{
+            fontFamily: FONT.mono,
+            fontSize: 9,
+            letterSpacing: '0.25em',
+            color: STYX.gold,
+            textTransform: 'uppercase',
+            marginBottom: 6,
+          }}
+        >
+          IV
+        </div>
+        <div
+          style={{
+            fontFamily: FONT.cinzel,
+            fontSize: 13,
+            letterSpacing: '0.25em',
+            textTransform: 'uppercase',
+            color: STYX.silt,
+            fontWeight: 500,
+            paddingBottom: 16,
+            marginBottom: 4,
+            borderBottom: `1px solid ${STYX.line}`,
+          }}
+        >
+          By Build
+        </div>
+        <CollectionCategoryLink
+          to="/collections/chains?construction=Solid"
+          title="Solid"
+          subtitle="Dense · investment-grade"
+        />
+        <CollectionCategoryLink
+          to="/collections/chains?construction=Hollow"
+          title="Hollow"
+          subtitle="Lighter · everyday wear"
+        />
 
         {/* Browse all card */}
         <div
@@ -924,34 +1023,40 @@ function CollectionsMegaPanel() {
               textDecoration: 'none',
             }}
           >
-            <div style={{
-              fontFamily: FONT.cinzel,
-              fontSize: 14,
-              letterSpacing: '0.06em',
-              color: STYX.ink,
-              textTransform: 'uppercase',
-              lineHeight: 1.3,
-              marginBottom: 6,
-            }}>
+            <div
+              style={{
+                fontFamily: FONT.cinzel,
+                fontSize: 14,
+                letterSpacing: '0.06em',
+                color: STYX.ink,
+                textTransform: 'uppercase',
+                lineHeight: 1.3,
+                marginBottom: 6,
+              }}
+            >
               All Collections
             </div>
-            <div style={{
-              fontFamily: FONT.cormorant,
-              fontSize: 14,
-              fontStyle: 'italic',
-              color: STYX.silt2,
-              lineHeight: 1.4,
-              marginBottom: 12,
-            }}>
+            <div
+              style={{
+                fontFamily: FONT.cormorant,
+                fontSize: 14,
+                fontStyle: 'italic',
+                color: STYX.silt2,
+                lineHeight: 1.4,
+                marginBottom: 12,
+              }}
+            >
               Browse everything
             </div>
-            <div style={{
-              fontFamily: FONT.cinzel,
-              fontSize: 10,
-              letterSpacing: '0.2em',
-              color: STYX.gold,
-              textTransform: 'uppercase',
-            }}>
+            <div
+              style={{
+                fontFamily: FONT.cinzel,
+                fontSize: 10,
+                letterSpacing: '0.2em',
+                color: STYX.gold,
+                textTransform: 'uppercase',
+              }}
+            >
               View All →
             </div>
           </MegaLink>
@@ -967,16 +1072,38 @@ function CollectionsMegaPanel() {
 
 function JournalMegaPanel() {
   const volumes = [
-    {vol: 'I', title: 'The Weaves', kicker: 'Chain history, origin to alloy', count: 9},
+    {
+      vol: 'I',
+      title: 'The Weaves',
+      kicker: 'Chain history, origin to alloy',
+      count: 9,
+    },
     {vol: 'II', title: 'The Foundry', kicker: 'Inside the workshop', count: 6},
     {vol: 'III', title: 'The Owners', kicker: 'Worn, in the world', count: 12},
-    {vol: 'IV', title: 'The Almanac', kicker: 'Spot, assay, context', count: 24},
+    {
+      vol: 'IV',
+      title: 'The Almanac',
+      kicker: 'Spot, assay, context',
+      count: 24,
+    },
   ];
   const recent = [
-    {title: 'On the Cuban Link · Miami · 1974', handle: 'history-of-the-cuban-link'},
-    {title: 'On the Rope Chain · The Nile Delta', handle: 'history-of-the-rope-chain'},
-    {title: 'On the Figaro · Vicenza · 1885', handle: 'history-of-the-figaro-chain'},
-    {title: 'On the Byzantine · Constantinople · 500 AD', handle: 'history-of-the-byzantine-chain'},
+    {
+      title: 'On the Cuban Link · Miami · 1974',
+      handle: 'history-of-the-cuban-link',
+    },
+    {
+      title: 'On the Rope Chain · The Nile Delta',
+      handle: 'history-of-the-rope-chain',
+    },
+    {
+      title: 'On the Figaro · Vicenza · 1885',
+      handle: 'history-of-the-figaro-chain',
+    },
+    {
+      title: 'On the Byzantine · Constantinople · 500 AD',
+      handle: 'history-of-the-byzantine-chain',
+    },
   ];
   return (
     <div
@@ -1162,7 +1289,14 @@ const NAV_ITEMS: NavItem[] = [
 
 function HamburgerIcon() {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <svg
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+    >
       <line x1="3" y1="6" x2="21" y2="6" />
       <line x1="3" y1="12" x2="21" y2="12" />
       <line x1="3" y1="18" x2="21" y2="18" />
@@ -1187,6 +1321,11 @@ function MobileMenu({
 }) {
   const cutoutFor = (handle: string) =>
     collectionCutoutUrl(collections.find((c) => c.handle === handle));
+  // Live spot for the ticker strip (was a hardcoded "XAU Spot" placeholder).
+  const menuRootData = useRouteLoaderData<RootLoader>('root');
+  const menuGold = (menuRootData as any)?.goldData as
+    | {spotPerOz?: number; isFallback?: boolean}
+    | undefined;
   const [section, setSection] = useState<'Chains' | 'Collections' | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -1258,10 +1397,15 @@ function MobileMenu({
     chains: group.chains.filter((c) => existingHandles.has(c.handle)),
   })).filter((g) => g.chains.length > 0);
 
-  const paneTransition = "transform 0.35s cubic-bezier(.5,.1,.2,1)";
+  const paneTransition = 'transform 0.35s cubic-bezier(.5,.1,.2,1)';
   const borderLine = `1px solid ${STYX.line}`;
 
-  const ROOT_LINKS: {numeral: string; label: string; drillTo?: 'Chains' | 'Collections'; to?: string}[] = [
+  const ROOT_LINKS: {
+    numeral: string;
+    label: string;
+    drillTo?: 'Chains' | 'Collections';
+    to?: string;
+  }[] = [
     {numeral: 'I', label: 'Gold Chains', drillTo: 'Chains'},
     {numeral: 'II', label: 'Collections', drillTo: 'Collections'},
     {numeral: 'III', label: 'Customize', to: '/customize'},
@@ -1273,9 +1417,24 @@ function MobileMenu({
   // Metal swatches link to their collections; ones without a published
   // collection are filtered out (no dead-end rows).
   const METAL_SWATCHES = [
-    {label: 'Yellow Gold', hex: '#D4A844', sub: 'The classic alloy', handle: 'yellow-gold'},
-    {label: 'Rose Gold', hex: '#C9877A', sub: 'Copper-warmed', handle: 'rose-gold'},
-    {label: 'White Gold', hex: '#D5D0C8', sub: 'Palladium-alloyed', handle: 'white-gold'},
+    {
+      label: 'Yellow Gold',
+      hex: '#D4A844',
+      sub: 'The classic alloy',
+      handle: 'yellow-gold',
+    },
+    {
+      label: 'Rose Gold',
+      hex: '#C9877A',
+      sub: 'Copper-warmed',
+      handle: 'rose-gold',
+    },
+    {
+      label: 'White Gold',
+      hex: '#D5D0C8',
+      sub: 'Palladium-alloyed',
+      handle: 'white-gold',
+    },
   ].filter((m) => existingHandles.has(m.handle));
 
   // Price buckets navigate to the all-chains collection with the same
@@ -1283,8 +1442,16 @@ function MobileMenu({
   // (FILTER_URL_PREFIX in SortFilter.tsx \u2192 Storefront API ProductFilter).
   const PRICE_BUCKETS = [
     {label: 'Under $500', sub: 'Thin chains, daily wear', price: {max: 500}},
-    {label: '$500 \u2013 $1,500', sub: 'Mid-weight chains', price: {min: 500, max: 1500}},
-    {label: '$1,500 \u2013 $5,000', sub: 'Signature pieces', price: {min: 1500, max: 5000}},
+    {
+      label: '$500 \u2013 $1,500',
+      sub: 'Mid-weight chains',
+      price: {min: 500, max: 1500},
+    },
+    {
+      label: '$1,500 \u2013 $5,000',
+      sub: 'Signature pieces',
+      price: {min: 1500, max: 5000},
+    },
     {label: '$5,000+', sub: 'Statement weight', price: {min: 5000}},
   ];
 
@@ -1379,7 +1546,14 @@ function MobileMenu({
               color: STYX.ink,
             }}
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            >
               <line x1="6" y1="6" x2="18" y2="18" />
               <line x1="18" y1="6" x2="6" y2="18" />
             </svg>
@@ -1388,7 +1562,6 @@ function MobileMenu({
 
         {/* Two-pane container */}
         <div style={{flex: 1, position: 'relative', overflow: 'hidden'}}>
-
           {/* ── Root pane ── */}
           <div
             {...inertWhen(section !== null)}
@@ -1426,10 +1599,28 @@ function MobileMenu({
                       gap: 16,
                     }}
                   >
-                    <span style={{fontFamily: FONT.cinzel, fontSize: 14, color: STYX.gold, letterSpacing: '0.1em', minWidth: 28}}>
+                    <span
+                      style={{
+                        fontFamily: FONT.cinzel,
+                        fontSize: 14,
+                        color: STYX.gold,
+                        letterSpacing: '0.1em',
+                        minWidth: 28,
+                      }}
+                    >
                       {item.numeral}
                     </span>
-                    <span style={{fontFamily: FONT.cinzel, fontSize: 28, letterSpacing: '0.08em', textTransform: 'uppercase', color: STYX.ink, flex: 1, textAlign: 'left'}}>
+                    <span
+                      style={{
+                        fontFamily: FONT.cinzel,
+                        fontSize: 28,
+                        letterSpacing: '0.08em',
+                        textTransform: 'uppercase',
+                        color: STYX.ink,
+                        flex: 1,
+                        textAlign: 'left',
+                      }}
+                    >
                       {item.label}
                     </span>
                     <span style={{color: STYX.silt, fontSize: 20}}>&rarr;</span>
@@ -1449,10 +1640,27 @@ function MobileMenu({
                       borderBottom: borderLine,
                     }}
                   >
-                    <span style={{fontFamily: FONT.cinzel, fontSize: 14, color: STYX.gold, letterSpacing: '0.1em', minWidth: 28}}>
+                    <span
+                      style={{
+                        fontFamily: FONT.cinzel,
+                        fontSize: 14,
+                        color: STYX.gold,
+                        letterSpacing: '0.1em',
+                        minWidth: 28,
+                      }}
+                    >
                       {item.numeral}
                     </span>
-                    <span style={{fontFamily: FONT.cinzel, fontSize: 28, letterSpacing: '0.08em', textTransform: 'uppercase', color: STYX.ink, flex: 1}}>
+                    <span
+                      style={{
+                        fontFamily: FONT.cinzel,
+                        fontSize: 28,
+                        letterSpacing: '0.08em',
+                        textTransform: 'uppercase',
+                        color: STYX.ink,
+                        flex: 1,
+                      }}
+                    >
                       {item.label}
                     </span>
                   </Link>
@@ -1472,12 +1680,40 @@ function MobileMenu({
                 borderBottom: borderLine,
               }}
             >
-              <span style={{width: 7, height: 7, borderRadius: '50%', background: '#4CAF50', flexShrink: 0}} />
-              <span style={{fontFamily: FONT.mono, fontSize: 10, letterSpacing: '0.1em', color: STYX.silt2, textTransform: 'uppercase'}}>
-                London Fix &middot; Live
+              <span
+                style={{
+                  width: 7,
+                  height: 7,
+                  borderRadius: '50%',
+                  background: menuGold?.isFallback ? STYX.silt2 : '#4CAF50',
+                  flexShrink: 0,
+                }}
+              />
+              <span
+                style={{
+                  fontFamily: FONT.mono,
+                  fontSize: 10,
+                  letterSpacing: '0.1em',
+                  color: STYX.silt2,
+                  textTransform: 'uppercase',
+                }}
+              >
+                {menuGold?.isFallback ? 'London Fix' : 'London Fix · Live'}
               </span>
-              <span style={{marginLeft: 'auto', fontFamily: FONT.mono, fontSize: 11, color: STYX.gold, letterSpacing: '0.05em'}}>
-                XAU Spot
+              <span
+                style={{
+                  marginLeft: 'auto',
+                  fontFamily: FONT.mono,
+                  fontSize: 11,
+                  color: STYX.gold,
+                  letterSpacing: '0.05em',
+                }}
+              >
+                {menuGold?.spotPerOz
+                  ? `$${menuGold.spotPerOz.toLocaleString('en-US', {
+                      maximumFractionDigits: 0,
+                    })}/oz`
+                  : 'XAU Spot'}
               </span>
             </div>
 
@@ -1515,112 +1751,162 @@ function MobileMenu({
               inset: 0,
               overflowY: 'auto',
               WebkitOverflowScrolling: 'touch' as any,
-              transform: section === 'Chains' ? 'translateX(0)' : 'translateX(100%)',
+              transform:
+                section === 'Chains' ? 'translateX(0)' : 'translateX(100%)',
               transition: paneTransition,
             }}
           >
             {/* Section heading */}
             <div style={{padding: '32px 24px 20px'}}>
-              <div style={{fontFamily: FONT.mono, fontSize: 10, letterSpacing: '0.2em', color: STYX.gold, textTransform: 'uppercase', marginBottom: 8}}>
+              <div
+                style={{
+                  fontFamily: FONT.mono,
+                  fontSize: 10,
+                  letterSpacing: '0.2em',
+                  color: STYX.gold,
+                  textTransform: 'uppercase',
+                  marginBottom: 8,
+                }}
+              >
                 Section &middot; I
               </div>
-              <div style={{fontFamily: FONT.cinzel, fontSize: 40, letterSpacing: '0.06em', color: STYX.ink, textTransform: 'uppercase', lineHeight: 1.1}}>
+              <div
+                style={{
+                  fontFamily: FONT.cinzel,
+                  fontSize: 40,
+                  letterSpacing: '0.06em',
+                  color: STYX.ink,
+                  textTransform: 'uppercase',
+                  lineHeight: 1.1,
+                }}
+              >
                 Gold Chains
               </div>
-              <div style={{fontFamily: FONT.cormorant, fontSize: 16, fontStyle: 'italic', color: STYX.silt2, marginTop: 8, lineHeight: 1.4}}>
+              <div
+                style={{
+                  fontFamily: FONT.cormorant,
+                  fontSize: 16,
+                  fontStyle: 'italic',
+                  color: STYX.silt2,
+                  marginTop: 8,
+                  lineHeight: 1.4,
+                }}
+              >
                 Three metals, every weight in the open.
               </div>
             </div>
 
             <div style={{paddingBottom: 24}}>
-                <Link
-                  to="/collections/chains"
-                  prefetch="intent"
-                  onClick={onClose}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '16px 24px',
-                    fontFamily: FONT.mono,
-                    fontSize: 10,
-                    letterSpacing: '0.2em',
-                    textTransform: 'uppercase',
-                    color: STYX.gold,
-                    textDecoration: 'none',
-                    borderBottom: borderLine,
-                  }}
-                >
-                  <span>Shop All Chains</span>
-                  <span style={{fontSize: 14, lineHeight: 1}}>→</span>
-                </Link>
-                {filteredTaxonomy.map((group) => (
-                  <div key={group.group}>
-                    {/* Group divider */}
+              <Link
+                to="/collections/chains"
+                prefetch="intent"
+                onClick={onClose}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '16px 24px',
+                  fontFamily: FONT.mono,
+                  fontSize: 10,
+                  letterSpacing: '0.2em',
+                  textTransform: 'uppercase',
+                  color: STYX.gold,
+                  textDecoration: 'none',
+                  borderBottom: borderLine,
+                }}
+              >
+                <span>Shop All Chains</span>
+                <span style={{fontSize: 14, lineHeight: 1}}>→</span>
+              </Link>
+              {filteredTaxonomy.map((group) => (
+                <div key={group.group}>
+                  {/* Group divider */}
+                  <div
+                    style={{
+                      padding: '14px 24px 4px',
+                    }}
+                  >
                     <div
                       style={{
-                        padding: '14px 24px 4px',
+                        fontFamily: FONT.cinzel,
+                        fontSize: 13,
+                        letterSpacing: '0.12em',
+                        textTransform: 'uppercase',
+                        color: STYX.ink,
                       }}
                     >
-                      <div style={{fontFamily: FONT.cinzel, fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase', color: STYX.ink}}>{group.group}</div>
-                      <div style={{fontFamily: FONT.cormorant, fontSize: 13, fontStyle: 'italic', color: STYX.silt2, marginTop: 2}}>{group.kicker}</div>
-                      <div style={{height: 1, background: STYX.line, marginTop: 10}} />
+                      {group.group}
                     </div>
-                    {group.chains.map((chain) => (
-                      <Link
-                        key={chain.handle}
-                        to={`/collections/${chain.handle}`}
-                        prefetch="intent"
-                        onClick={onClose}
+                    <div
+                      style={{
+                        fontFamily: FONT.cormorant,
+                        fontSize: 13,
+                        fontStyle: 'italic',
+                        color: STYX.silt2,
+                        marginTop: 2,
+                      }}
+                    >
+                      {group.kicker}
+                    </div>
+                    <div
+                      style={{height: 1, background: STYX.line, marginTop: 10}}
+                    />
+                  </div>
+                  {group.chains.map((chain) => (
+                    <Link
+                      key={chain.handle}
+                      to={`/collections/${chain.handle}`}
+                      prefetch="intent"
+                      onClick={onClose}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 0,
+                        padding: '0 0 0 24px',
+                        textDecoration: 'none',
+                        borderBottom: `1px solid ${STYX.lineSoft}`,
+                        minHeight: 52,
+                        overflow: 'hidden',
+                      }}
+                    >
+                      <span
                         style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 0,
-                          padding: '0 0 0 24px',
-                          textDecoration: 'none',
-                          borderBottom: `1px solid ${STYX.lineSoft}`,
-                          minHeight: 52,
-                          overflow: 'hidden',
+                          fontFamily: FONT.cormorant,
+                          fontSize: 26,
+                          color: STYX.ink,
+                          flex: 1,
+                          letterSpacing: '0.01em',
                         }}
                       >
-                        <span
+                        {chain.name}
+                      </span>
+                      {cutoutFor(chain.handle) ? (
+                        <img
+                          src={cutoutFor(chain.handle)}
+                          alt={`${chain.name} chain`}
+                          // The drawer is always in the DOM (slid offscreen).
+                          // Without lazy, these 13 cutouts download on every
+                          // page load and starve the LCP image on mobile.
+                          loading="lazy"
+                          decoding="async"
                           style={{
-                            fontFamily: FONT.cormorant,
-                            fontSize: 26,
-                            color: STYX.ink,
-                            flex: 1,
-                            letterSpacing: '0.01em',
+                            width: 130,
+                            height: 46,
+                            objectFit: 'contain',
+                            objectPosition: 'center',
+                            flexShrink: 0,
+                            opacity: 0.85,
+                            marginRight: -8,
                           }}
-                        >
-                          {chain.name}
-                        </span>
-                        {cutoutFor(chain.handle) ? (
-                          <img
-                            src={cutoutFor(chain.handle)}
-                            alt={`${chain.name} chain`}
-                            // The drawer is always in the DOM (slid offscreen).
-                            // Without lazy, these 13 cutouts download on every
-                            // page load and starve the LCP image on mobile.
-                            loading="lazy"
-                            decoding="async"
-                            style={{
-                              width: 130,
-                              height: 46,
-                              objectFit: 'contain',
-                              objectPosition: 'center',
-                              flexShrink: 0,
-                              opacity: 0.85,
-                              marginRight: -8,
-                            }}
-                          />
-                        ) : (
-                          <div style={{width: 130, height: 46, flexShrink: 0}} />
-                        )}
-                      </Link>
-                    ))}
-                  </div>
-                ))}
-              </div>
+                        />
+                      ) : (
+                        <div style={{width: 130, height: 46, flexShrink: 0}} />
+                      )}
+                    </Link>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* ── Collections detail pane ── */}
@@ -1631,15 +1917,36 @@ function MobileMenu({
               inset: 0,
               overflowY: 'auto',
               WebkitOverflowScrolling: 'touch' as any,
-              transform: section === 'Collections' ? 'translateX(0)' : 'translateX(100%)',
+              transform:
+                section === 'Collections'
+                  ? 'translateX(0)'
+                  : 'translateX(100%)',
               transition: paneTransition,
             }}
           >
             <div style={{padding: '32px 24px 20px'}}>
-              <div style={{fontFamily: FONT.mono, fontSize: 10, letterSpacing: '0.2em', color: STYX.gold, textTransform: 'uppercase', marginBottom: 8}}>
+              <div
+                style={{
+                  fontFamily: FONT.mono,
+                  fontSize: 10,
+                  letterSpacing: '0.2em',
+                  color: STYX.gold,
+                  textTransform: 'uppercase',
+                  marginBottom: 8,
+                }}
+              >
                 Section &middot; II
               </div>
-              <div style={{fontFamily: FONT.cinzel, fontSize: 40, letterSpacing: '0.06em', color: STYX.ink, textTransform: 'uppercase', lineHeight: 1.1}}>
+              <div
+                style={{
+                  fontFamily: FONT.cinzel,
+                  fontSize: 40,
+                  letterSpacing: '0.06em',
+                  color: STYX.ink,
+                  textTransform: 'uppercase',
+                  lineHeight: 1.1,
+                }}
+              >
                 Collections
               </div>
             </div>
@@ -1669,11 +1976,30 @@ function MobileMenu({
 
               {/* By Type */}
               <div style={{marginTop: 24}}>
-                <div style={{fontFamily: FONT.mono, fontSize: 9, letterSpacing: '0.25em', textTransform: 'uppercase', color: STYX.silt, marginBottom: 14}}>Type</div>
+                <div
+                  style={{
+                    fontFamily: FONT.mono,
+                    fontSize: 9,
+                    letterSpacing: '0.25em',
+                    textTransform: 'uppercase',
+                    color: STYX.silt,
+                    marginBottom: 14,
+                  }}
+                >
+                  Type
+                </div>
                 <div style={{display: 'flex', flexDirection: 'column', gap: 0}}>
                   {[
-                    {label: 'Necklaces', sub: 'Chains · 16″ – 30″', handle: 'necklaces'},
-                    {label: 'Bracelets', sub: 'Wrist chains · 7″ – 9″', handle: 'bracelets'},
+                    {
+                      label: 'Necklaces',
+                      sub: 'Chains · 16″ – 30″',
+                      handle: 'necklaces',
+                    },
+                    {
+                      label: 'Bracelets',
+                      sub: 'Wrist chains · 7″ – 9″',
+                      handle: 'bracelets',
+                    },
                   ].map((t) => (
                     <Link
                       key={t.handle}
@@ -1690,8 +2016,25 @@ function MobileMenu({
                         color: 'inherit',
                       }}
                     >
-                      <span style={{fontFamily: FONT.cormorant, fontSize: 20, color: STYX.ink}}>{t.label}</span>
-                      <span style={{fontFamily: FONT.cormorant, fontSize: 14, fontStyle: 'italic', color: STYX.silt2}}>{t.sub}</span>
+                      <span
+                        style={{
+                          fontFamily: FONT.cormorant,
+                          fontSize: 20,
+                          color: STYX.ink,
+                        }}
+                      >
+                        {t.label}
+                      </span>
+                      <span
+                        style={{
+                          fontFamily: FONT.cormorant,
+                          fontSize: 14,
+                          fontStyle: 'italic',
+                          color: STYX.silt2,
+                        }}
+                      >
+                        {t.sub}
+                      </span>
                     </Link>
                   ))}
                 </div>
@@ -1700,8 +2043,21 @@ function MobileMenu({
               {/* Metal */}
               {METAL_SWATCHES.length > 0 && (
                 <div style={{marginTop: 24}}>
-                  <div style={{fontFamily: FONT.mono, fontSize: 9, letterSpacing: '0.25em', textTransform: 'uppercase', color: STYX.silt, marginBottom: 14}}>Metal</div>
-                  <div style={{display: 'flex', flexDirection: 'column', gap: 10}}>
+                  <div
+                    style={{
+                      fontFamily: FONT.mono,
+                      fontSize: 9,
+                      letterSpacing: '0.25em',
+                      textTransform: 'uppercase',
+                      color: STYX.silt,
+                      marginBottom: 14,
+                    }}
+                  >
+                    Metal
+                  </div>
+                  <div
+                    style={{display: 'flex', flexDirection: 'column', gap: 10}}
+                  >
                     {METAL_SWATCHES.map((m) => (
                       <Link
                         key={m.label}
@@ -1718,9 +2074,36 @@ function MobileMenu({
                           color: 'inherit',
                         }}
                       >
-                        <span style={{width: 22, height: 22, borderRadius: '50%', background: m.hex, flexShrink: 0, border: '2px solid rgba(26,24,21,0.1)'}} />
-                        <span style={{fontFamily: FONT.cormorant, fontSize: 20, color: STYX.ink}}>{m.label}</span>
-                        <span style={{fontFamily: FONT.cormorant, fontSize: 14, fontStyle: 'italic', color: STYX.silt2, marginLeft: 'auto'}}>{m.sub}</span>
+                        <span
+                          style={{
+                            width: 22,
+                            height: 22,
+                            borderRadius: '50%',
+                            background: m.hex,
+                            flexShrink: 0,
+                            border: '2px solid rgba(26,24,21,0.1)',
+                          }}
+                        />
+                        <span
+                          style={{
+                            fontFamily: FONT.cormorant,
+                            fontSize: 20,
+                            color: STYX.ink,
+                          }}
+                        >
+                          {m.label}
+                        </span>
+                        <span
+                          style={{
+                            fontFamily: FONT.cormorant,
+                            fontSize: 14,
+                            fontStyle: 'italic',
+                            color: STYX.silt2,
+                            marginLeft: 'auto',
+                          }}
+                        >
+                          {m.sub}
+                        </span>
                       </Link>
                     ))}
                   </div>
@@ -1729,8 +2112,21 @@ function MobileMenu({
 
               {/* Karat / Purity */}
               <div style={{marginTop: 28}}>
-                <div style={{fontFamily: FONT.mono, fontSize: 9, letterSpacing: '0.25em', textTransform: 'uppercase', color: STYX.silt, marginBottom: 16}}>Purity</div>
-                <div style={{display: 'flex', flexDirection: 'column', gap: 20}}>
+                <div
+                  style={{
+                    fontFamily: FONT.mono,
+                    fontSize: 9,
+                    letterSpacing: '0.25em',
+                    textTransform: 'uppercase',
+                    color: STYX.silt,
+                    marginBottom: 16,
+                  }}
+                >
+                  Purity
+                </div>
+                <div
+                  style={{display: 'flex', flexDirection: 'column', gap: 20}}
+                >
                   {[
                     {label: '10K', purity: 41.7, handle: '10k-gold'},
                     {label: '14K', purity: 58.3, handle: '14k-gold'},
@@ -1746,19 +2142,53 @@ function MobileMenu({
                         style={{textDecoration: 'none', color: 'inherit'}}
                       >
                         <div>
-                          <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 6}}>
-                            <span style={{fontFamily: FONT.cinzel, fontSize: 15, color: STYX.ink, letterSpacing: '0.08em'}}>{k.label}</span>
-                            <span style={{fontFamily: FONT.mono, fontSize: 10, color: STYX.silt2, letterSpacing: '0.05em'}}>{k.purity}%</span>
+                          <div
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'baseline',
+                              marginBottom: 6,
+                            }}
+                          >
+                            <span
+                              style={{
+                                fontFamily: FONT.cinzel,
+                                fontSize: 15,
+                                color: STYX.ink,
+                                letterSpacing: '0.08em',
+                              }}
+                            >
+                              {k.label}
+                            </span>
+                            <span
+                              style={{
+                                fontFamily: FONT.mono,
+                                fontSize: 10,
+                                color: STYX.silt2,
+                                letterSpacing: '0.05em',
+                              }}
+                            >
+                              {k.purity}%
+                            </span>
                           </div>
-                          <div style={{width: '100%', height: 3, background: STYX.line, position: 'relative'}}>
-                            <div style={{
-                              position: 'absolute',
-                              left: 0,
-                              top: 0,
-                              height: '100%',
-                              width: `${k.purity}%`,
-                              background: `linear-gradient(90deg, ${STYX.goldDeep}, ${STYX.gold})`,
-                            }} />
+                          <div
+                            style={{
+                              width: '100%',
+                              height: 3,
+                              background: STYX.line,
+                              position: 'relative',
+                            }}
+                          >
+                            <div
+                              style={{
+                                position: 'absolute',
+                                left: 0,
+                                top: 0,
+                                height: '100%',
+                                width: `${k.purity}%`,
+                                background: `linear-gradient(90deg, ${STYX.goldDeep}, ${STYX.gold})`,
+                              }}
+                            />
                           </div>
                         </div>
                       </Link>
@@ -1768,8 +2198,21 @@ function MobileMenu({
 
               {/* Price */}
               <div style={{marginTop: 28}}>
-                <div style={{fontFamily: FONT.mono, fontSize: 9, letterSpacing: '0.25em', textTransform: 'uppercase', color: STYX.silt, marginBottom: 14}}>Price</div>
-                <div style={{display: 'flex', flexDirection: 'column', gap: 10}}>
+                <div
+                  style={{
+                    fontFamily: FONT.mono,
+                    fontSize: 9,
+                    letterSpacing: '0.25em',
+                    textTransform: 'uppercase',
+                    color: STYX.silt,
+                    marginBottom: 14,
+                  }}
+                >
+                  Price
+                </div>
+                <div
+                  style={{display: 'flex', flexDirection: 'column', gap: 10}}
+                >
                   {PRICE_BUCKETS.map((tier) => (
                     <Link
                       key={tier.label}
@@ -1788,15 +2231,31 @@ function MobileMenu({
                         color: 'inherit',
                       }}
                     >
-                      <span style={{fontFamily: FONT.cormorant, fontSize: 20, color: STYX.ink}}>{tier.label}</span>
-                      <span style={{fontFamily: FONT.cormorant, fontSize: 14, fontStyle: 'italic', color: STYX.silt2}}>{tier.sub}</span>
+                      <span
+                        style={{
+                          fontFamily: FONT.cormorant,
+                          fontSize: 20,
+                          color: STYX.ink,
+                        }}
+                      >
+                        {tier.label}
+                      </span>
+                      <span
+                        style={{
+                          fontFamily: FONT.cormorant,
+                          fontSize: 14,
+                          fontStyle: 'italic',
+                          color: STYX.silt2,
+                        }}
+                      >
+                        {tier.sub}
+                      </span>
                     </Link>
                   ))}
                 </div>
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </>
@@ -1920,7 +2379,13 @@ function StyxCartDrawer({open, onClose}: {open: boolean; onClose: () => void}) {
               justifyContent: 'center',
             }}
           >
-            <svg width="12" height="12" viewBox="0 0 12 12" stroke={STYX.ink} strokeWidth="1.2">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 12 12"
+              stroke={STYX.ink}
+              strokeWidth="1.2"
+            >
               <line x1="2" y1="2" x2="10" y2="10" />
               <line x1="10" y1="2" x2="2" y2="10" />
             </svg>
@@ -2053,7 +2518,11 @@ function AnnouncementBar() {
   );
 }
 
-export function StyxNav({collections: collectionsProp}: {collections?: CollectionNode[]}) {
+export function StyxNav({
+  collections: collectionsProp,
+}: {
+  collections?: CollectionNode[];
+}) {
   // Build a set of existing collection handles for dynamic menu filtering
   const rootData2 = useRouteLoaderData<RootLoader>('root');
   const collections = collectionsProp ?? (rootData2 as any)?.collections ?? [];
@@ -2096,7 +2565,10 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
     if (!el) return;
     const update = () => {
       const h = headerHidden ? 0 : el.offsetHeight;
-      document.documentElement.style.setProperty('--styx-header-offset', `${h}px`);
+      document.documentElement.style.setProperty(
+        '--styx-header-offset',
+        `${h}px`,
+      );
     };
     update();
     const ro = new ResizeObserver(update);
@@ -2185,8 +2657,7 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
             }}
           >
             {NAV_ITEMS.map((item) => {
-              const active =
-                hoverLink === item.label || openMenu === item.mega;
+              const active = hoverLink === item.label || openMenu === item.mega;
               return (
                 <div
                   key={item.label}
@@ -2210,7 +2681,9 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
                     to={item.to}
                     prefetch="intent"
                     aria-haspopup={item.mega ? 'true' : undefined}
-                    aria-expanded={item.mega ? openMenu === item.mega : undefined}
+                    aria-expanded={
+                      item.mega ? openMenu === item.mega : undefined
+                    }
                     // Keyboard access: focusing a trigger opens its panel
                     // (hover behavior on the wrapper is unchanged); Enter/click
                     // still navigates to the section landing page.
@@ -2308,8 +2781,12 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
                 textDecoration: 'none',
                 transition: 'color 0.2s',
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.color = STYX.ink; }}
-              onMouseLeave={(e) => { e.currentTarget.style.color = STYX.silt; }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = STYX.ink;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = STYX.silt;
+              }}
             >
               Contact
             </Link>
@@ -2418,9 +2895,7 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
                 background: STYX.paper,
               }}
             >
-              <div
-                style={{display: 'flex', gap: 28, alignItems: 'center'}}
-              >
+              <div style={{display: 'flex', gap: 28, alignItems: 'center'}}>
                 <div
                   style={{
                     fontFamily: FONT.mono,
@@ -2429,7 +2904,9 @@ export function StyxNav({collections: collectionsProp}: {collections?: Collectio
                     letterSpacing: '0.1em',
                   }}
                 >
-                  {spotPerOz ? `LONDON FIX · $${spotPerOz.toFixed(0)}/oz` : 'STYX GOLD'}
+                  {spotPerOz
+                    ? `LONDON FIX · $${spotPerOz.toFixed(0)}/oz`
+                    : 'STYX GOLD'}
                 </div>
                 <div
                   style={{
@@ -2508,13 +2985,7 @@ function CartCount({openCart}: {openCart: () => void}) {
   );
 }
 
-function CartBadge({
-  count,
-  openCart,
-}: {
-  count: number;
-  openCart: () => void;
-}) {
+function CartBadge({count, openCart}: {count: number; openCart: () => void}) {
   const isHydrated = useIsHydrated();
 
   const inner = (
@@ -2572,7 +3043,11 @@ function CartBadge({
   }
 
   return (
-    <Link to="/cart" aria-label="Cart" style={{padding: 9, margin: '0 -5px', color: 'inherit', display: 'flex'}}>
+    <Link
+      to="/cart"
+      aria-label="Cart"
+      style={{padding: 9, margin: '0 -5px', color: 'inherit', display: 'flex'}}
+    >
       {inner}
     </Link>
   );

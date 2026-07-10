@@ -1,7 +1,4 @@
-import {
-    type MetaArgs,
-  type LoaderFunctionArgs,
-} from 'react-router';
+import {type MetaArgs, type LoaderFunctionArgs} from 'react-router';
 import {data, useLoaderData, Link} from 'react-router';
 import {Image, getSeoMeta} from '@shopify/hydrogen';
 import {seoPayload} from '~/lib/seo.server';
@@ -29,7 +26,7 @@ export const loader = async ({
 }: LoaderFunctionArgs) => {
   validateLocale(params);
 
-  const {collections} = await storefront.query(COLLECTIONS_QUERY, {
+  const {collections, allChains} = await storefront.query(COLLECTIONS_QUERY, {
     variables: {
       country: storefront.i18n.country,
       language: storefront.i18n.language,
@@ -42,7 +39,11 @@ export const loader = async ({
   });
 
   return data(
-    {collections: collections.nodes as any[], seo},
+    {
+      collections: collections.nodes as any[],
+      allChainsCount: allChains?.products?.nodes?.length ?? null,
+      seo,
+    },
     {headers: {'Cache-Control': CACHE_LONG}},
   );
 };
@@ -51,8 +52,16 @@ export const meta = ({matches}: MetaArgs<typeof loader>) => {
   return getStyxSeoMeta(...matches.map((match) => (match.data as any).seo));
 };
 
+/** "17 designs", "1 design", or "100+ designs" when the fetch cap was hit.
+ * "Designs" (products), deliberately not "pieces" — collection pages count
+ * color-split cards, so the same collection shows a higher "pieces" number. */
+function designCount(n: number, cap = 100) {
+  if (n >= cap) return `${cap}+ designs`;
+  return `${n} ${n === 1 ? 'design' : 'designs'}`;
+}
+
 export default function CollectionsIndex() {
-  const {collections} = useLoaderData<typeof loader>();
+  const {collections, allChainsCount} = useLoaderData<typeof loader>();
 
   // Only show collections that have at least 1 product, exclude frontpage/hydrogen
   const live = collections.filter(
@@ -65,9 +74,18 @@ export default function CollectionsIndex() {
 
   // Split into "chain type" collections and "filter" collections (metal, karat, thickness, etc.)
   const filterHandles = new Set([
-    'yellow-gold', 'white-gold', 'rose-gold',
-    '10k-gold', '14k-gold', '18k-gold',
-    'chains', 'classic-curb', 'woven-braided', 'round-rolling', 'flat-architectural', 'figural-decorative',
+    'yellow-gold',
+    'white-gold',
+    'rose-gold',
+    '10k-gold',
+    '14k-gold',
+    '18k-gold',
+    'chains',
+    'classic-curb',
+    'woven-braided',
+    'round-rolling',
+    'flat-architectural',
+    'figural-decorative',
   ]);
   const isThickness = (handle: string) => handle.startsWith('thickness-');
 
@@ -75,7 +93,14 @@ export default function CollectionsIndex() {
     (c: any) => !filterHandles.has(c.handle) && !isThickness(c.handle),
   );
   const filterCollections = live.filter((c: any) =>
-    ['yellow-gold', 'white-gold', 'rose-gold', '10k-gold', '14k-gold', '18k-gold'].includes(c.handle),
+    [
+      'yellow-gold',
+      'white-gold',
+      'rose-gold',
+      '10k-gold',
+      '14k-gold',
+      '18k-gold',
+    ].includes(c.handle),
   );
   const allChains = live.find((c: any) => c.handle === 'chains');
 
@@ -173,7 +198,10 @@ export default function CollectionsIndex() {
                 color: STYX.gold,
               }}
             >
-              {allChains.products?.nodes?.length ?? 0} pieces
+              {designCount(
+                allChainsCount ?? allChains.products?.nodes?.length ?? 0,
+                250,
+              )}
             </span>
           </div>
           <span
@@ -253,7 +281,10 @@ export default function CollectionsIndex() {
             className="styx-ci-karat-grid"
             style={{
               display: 'grid',
-              gridTemplateColumns: `repeat(${Math.min(filterCollections.length, 5)}, 1fr)`,
+              gridTemplateColumns: `repeat(${Math.min(
+                filterCollections.length,
+                5,
+              )}, 1fr)`,
               gap: 2,
               background: STYX.line,
             }}
@@ -295,7 +326,7 @@ export default function CollectionsIndex() {
                     color: STYX.gold,
                   }}
                 >
-                  {c.products?.nodes?.length ?? 0} pieces
+                  {designCount(c.products?.nodes?.length ?? 0)}
                 </div>
               </Link>
             ))}
@@ -308,13 +339,7 @@ export default function CollectionsIndex() {
   );
 }
 
-function CollectionTile({
-  collection,
-  index,
-}: {
-  collection: any;
-  index: number;
-}) {
+function CollectionTile({collection, index}: {collection: any; index: number}) {
   return (
     <Link
       to={`/collections/${collection.handle}`}
@@ -339,7 +364,9 @@ function CollectionTile({
       }}
     >
       {/* Image */}
-      <div style={{aspectRatio: '4/5', position: 'relative', overflow: 'hidden'}}>
+      <div
+        style={{aspectRatio: '4/5', position: 'relative', overflow: 'hidden'}}
+      >
         {collection.image ? (
           <Image
             data={collection.image}
@@ -349,11 +376,7 @@ function CollectionTile({
             style={{width: '100%', height: '100%', objectFit: 'cover'}}
           />
         ) : (
-          <PlaceholderImage
-            aspect="4/5"
-            label={collection.title}
-            tone="warm"
-          />
+          <PlaceholderImage aspect="4/5" label={collection.title} tone="warm" />
         )}
 
         {/* Hover overlay */}
@@ -385,7 +408,9 @@ function CollectionTile({
             letterSpacing: '0.05em',
           }}
         >
-          {collection.products?.nodes?.length ?? 0}
+          {(collection.products?.nodes?.length ?? 0) >= 100
+            ? '100+'
+            : collection.products?.nodes?.length ?? 0}
         </div>
       </div>
 
@@ -432,13 +457,22 @@ const COLLECTIONS_QUERY = `#graphql
     $country: CountryCode
     $language: LanguageCode
   ) @inContext(country: $country, language: $language) {
+    # exact count for the "All Chains" banner (the catalog is well under 250)
+    allChains: collection(handle: "chains") {
+      products(first: 250) {
+        nodes {
+          id
+        }
+      }
+    }
     collections(first: 100, sortKey: TITLE) {
       nodes {
         id
         title
         handle
         description
-        products(first: 1) {
+        # ids only — rendered as the per-collection piece count (capped at 100)
+        products(first: 100) {
           nodes {
             id
           }

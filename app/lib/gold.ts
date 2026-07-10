@@ -71,3 +71,11 @@ export function computeGoldPrice({
     perGramByKarat,
   };
 }
+
+/** "$14,489.00" — dollar amounts shown in the UI always get digit grouping. */
+export function formatUSD(n: number): string {
+  return `$${n.toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
+}
