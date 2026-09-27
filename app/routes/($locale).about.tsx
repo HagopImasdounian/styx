@@ -45,6 +45,7 @@ export default function About() {
           <div>
             <StyxLabel>About &middot; The Crossing</StyxLabel>
             <h1
+              data-reveal=""
               style={{
                 fontFamily: FONT.cinzel,
                 fontSize: 72,
@@ -109,6 +110,7 @@ export default function About() {
             <Obol size={64} color={STYX.gold} speed={6} />
             <div>
               <h2
+                data-reveal=""
                 style={{
                   fontFamily: FONT.cinzel,
                   fontSize: 32,
@@ -132,14 +134,14 @@ export default function About() {
                   gap: 24,
                 }}
               >
-                <p style={{margin: 0}}>
+                <p data-reveal="" style={{margin: 0}}>
                   It starts with an uncle who still works the way goldsmiths did a century ago.
                   Carving wax models by hand under a single lamp. Casting in a crucible he's
                   used for thirty years. Setting stones with tools older than most of his
                   apprentices. He doesn't use CAD. He doesn't need to. His hands remember
                   what the software is still trying to learn.
                 </p>
-                <p style={{margin: 0}}>
+                <p data-reveal="" style={{margin: 0}}>
                   On the other side of the family — one of the largest wholesale jewelry
                   operations in Canada. Not a boutique. Not a brand. The kind of business
                   that supplies the businesses. The one the retailers call when they need
@@ -147,7 +149,7 @@ export default function About() {
                   For over fifty years, this operation has moved gold at a scale that most
                   consumer brands will never understand.
                 </p>
-                <p style={{margin: 0}}>
+                <p data-reveal="" style={{margin: 0}}>
                   We grew up between these two worlds. The craftsman's bench
                   and the wholesaler's vault. We watched our uncle turn raw metal into
                   art, and we watched the family move tonnage across borders. We learned
@@ -171,6 +173,7 @@ export default function About() {
         >
           <StyxLabel>The Problem</StyxLabel>
           <h2
+            data-reveal=""
             style={{
               fontFamily: FONT.cinzel,
               fontSize: 32,
@@ -195,20 +198,20 @@ export default function About() {
               maxWidth: 720,
             }}
           >
-            <p style={{margin: 0}}>
+            <p data-reveal="" style={{margin: 0}}>
               Gold is a commodity. It trades around the clock on live markets, and
               there's nothing mysterious about what it costs. And yet the jewelry
               industry has been built on that mystery — hiding margins behind "retail
               price" and hoping you don't ask questions. The typical markup? Eight to
               twelve times what the gold is worth.
             </p>
-            <p style={{margin: 0}}>
+            <p data-reveal="" style={{margin: 0}}>
               We've consulted for some of the biggest names in hip-hop jewelry.
               We've seen the invoices. We know what a Cuban link costs to cast,
               finish, and ship. And we know what it sells for in a display case
               on Fifth Avenue or in a music video. The gap is obscene.
             </p>
-            <p style={{margin: 0}}>
+            <p data-reveal="" style={{margin: 0}}>
               So we did something our family has never done before: we went direct.
               Same gold. Same foundries. Same quality our wholesale clients demand.
               But sold to you at wholesale-adjacent pricing, with the full cost
@@ -229,6 +232,7 @@ export default function About() {
         >
           <StyxLabel>What We Stand For</StyxLabel>
           <h2
+            data-reveal=""
             style={{
               fontFamily: FONT.cinzel,
               fontSize: 36,
@@ -314,6 +318,7 @@ export default function About() {
                   {val.title}
                 </h3>
                 <p
+                  data-reveal=""
                   style={{
                     fontFamily: FONT.cormorant,
                     fontSize: 16,
@@ -343,6 +348,7 @@ export default function About() {
         >
           <StyxLabel>What's Next</StyxLabel>
           <h2
+            data-reveal=""
             style={{
               fontFamily: FONT.cinzel,
               fontSize: 32,
@@ -367,13 +373,13 @@ export default function About() {
               maxWidth: 720,
             }}
           >
-            <p style={{margin: 0}}>
+            <p data-reveal="" style={{margin: 0}}>
               We've spent fifty years building one of Canada's most trusted wholesale
               gold operations. Now we're taking that knowledge — and those prices — south.
               Styx is how our family enters the American market: not as another luxury brand,
               but as the source.
             </p>
-            <p style={{margin: 0}}>
+            <p data-reveal="" style={{margin: 0}}>
               We don't need to convince you gold is valuable. You already know.
               We just need to show you what it should actually cost.
             </p>
@@ -409,6 +415,7 @@ export default function About() {
               Questions?
             </div>
             <p
+              data-reveal=""
               style={{
                 fontFamily: FONT.cormorant,
                 fontStyle: 'italic',

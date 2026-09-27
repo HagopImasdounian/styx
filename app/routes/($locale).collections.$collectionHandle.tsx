@@ -749,6 +749,7 @@ export default function Collection() {
               />
             )}
             <h1
+              data-reveal=""
               style={{
                 fontFamily: FONT.cinzel,
                 fontSize: (collection as any).handle === 'chains' ? 44 : 56,

@@ -1,7 +1,5 @@
-import {Link} from 'react-router';
 import {STYX, FONT} from './constants';
 import {CTAButton} from './CTAButton';
-import {Obol} from './Obol';
 
 // Shopify CDN serves resized variants via the `width` query param — the
 // original is 1.38 MB; these keep the LCP image proportional to the viewport.
@@ -11,7 +9,7 @@ export const HERO_IMAGE =
   'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-hero.jpg?v=1779151485';
 export const HERO_WIDTHS = [768, 1280, 1600, 2048];
 
-export function HeroGallery({products = []}: {products?: any[]}) {
+export function HeroGallery() {
   return (
     <section
       className="styx-hero"
@@ -25,6 +23,7 @@ export function HeroGallery({products = []}: {products?: any[]}) {
     >
       {/* Full-bleed background image (LCP — load eagerly at high priority) */}
       <img
+        className="styx-hero-image"
         src={`${HERO_IMAGE}&width=1600`}
         srcSet={HERO_WIDTHS.map((w) => `${HERO_IMAGE}&width=${w} ${w}w`).join(
           ', ',
@@ -49,6 +48,7 @@ export function HeroGallery({products = []}: {products?: any[]}) {
 
       {/* Gradient overlay for text legibility */}
       <div
+        className="styx-hero-shade"
         style={{
           position: 'absolute',
           inset: 0,
@@ -73,6 +73,8 @@ export function HeroGallery({products = []}: {products?: any[]}) {
           zIndex: 1,
         }}
       />
+
+      <div className="styx-hero-frame" aria-hidden="true" />
 
       {/* Content */}
       <div
@@ -145,15 +147,17 @@ export function HeroGallery({products = []}: {products?: any[]}) {
           No markup mystery.
         </p>
 
-        {/* CTAs — the default variants use ink text/borders, which vanish on
-            the dark hero photo, so both get dark-background overrides. */}
-        <div style={{display: 'flex', gap: 16}}>
+        {/* CTAs */}
+        <div
+          className="styx-hero-actions"
+          style={{display: 'flex', gap: 16, flexWrap: 'wrap'}}
+        >
           <CTAButton
             variant="primary"
             href="/collections/chains"
             style={{
               background: STYX.gold,
-              border: `1px solid ${STYX.gold}`,
+              borderColor: STYX.gold,
               color: STYX.ink,
             }}
           >
@@ -164,7 +168,7 @@ export function HeroGallery({products = []}: {products?: any[]}) {
             href="/about"
             style={{
               color: STYX.bone,
-              borderBottom: '1px solid rgba(239,234,224,0.45)',
+              borderBottomColor: 'rgba(239,234,224,0.45)',
             }}
           >
             Our Promise

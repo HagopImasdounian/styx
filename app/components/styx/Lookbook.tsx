@@ -2,7 +2,6 @@ import {Link} from 'react-router';
 import {STYX, FONT, type CollectionNode} from './constants';
 import {StyxLabel} from './StyxLabel';
 import {CTAButton} from './CTAButton';
-import {Obol} from './Obol';
 
 // Lifestyle images come from each collection's image in Shopify (no hardcoding)
 const COLLECTION_ORDER = ['cuban', 'curb', 'rope', 'box', 'figaro', 'cable', 'wheat', 'rolo', 'singapore'];
@@ -61,6 +60,7 @@ export function Lookbook({collections = []}: {collections?: CollectionNode[]}) {
         <div>
           <StyxLabel>The Collection · IV</StyxLabel>
           <h2
+            data-reveal=""
             style={{
               fontFamily: FONT.cinzel,
               fontSize: 52,
@@ -104,6 +104,7 @@ export function Lookbook({collections = []}: {collections?: CollectionNode[]}) {
       >
         {matched.map((item, i) => (
           <Link
+            data-reveal=""
             key={item.handle}
             to={`/collections/${item.handle}`}
             prefetch="intent"

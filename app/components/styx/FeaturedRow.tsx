@@ -39,6 +39,7 @@ export function FeaturedRow({products}: {products: ProductNode[]}) {
     >
       <StyxLabel>Featured · III</StyxLabel>
       <h2
+        data-reveal=""
         style={{
           fontFamily: FONT.cinzel,
           fontSize: 40,

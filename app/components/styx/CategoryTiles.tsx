@@ -33,6 +33,7 @@ export function CategoryTiles({
         <div>
           <StyxLabel>Categories · II</StyxLabel>
           <h2
+            data-reveal=""
             style={{
               fontFamily: FONT.cinzel,
               fontSize: 48,

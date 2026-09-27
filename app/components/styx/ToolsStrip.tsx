@@ -39,6 +39,7 @@ export function ToolsStrip() {
       <div style={{maxWidth: 1440, margin: '0 auto'}}>
         <StyxLabel>Tools of the Trade &middot; V</StyxLabel>
         <h2
+          data-reveal=""
           style={{
             fontFamily: FONT.cinzel,
             fontSize: 44,

@@ -97,16 +97,6 @@ export function StyxProductCard({
     !belowFold && index === 0 ? {fetchpriority: 'high'} : {}
   ) as Record<string, string>;
 
-  // Hover image from a different variant
-  const hoverImage = (() => {
-    const primaryUrl = variant.image?.url;
-    if (!primaryUrl) return null;
-    const other = product.variants.nodes.find(
-      (v) => v.image?.url && v.image.url !== primaryUrl,
-    );
-    return other?.image ?? null;
-  })();
-
   // Karat: variant option > title parsing > default 10
   const karatOpt = variant.selectedOptions?.find(
     (o) => o.name.toLowerCase() === 'karat',
@@ -175,15 +165,12 @@ export function StyxProductCard({
 
   return (
     <Link
+      data-reveal=""
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       to={`/products/${product.handle}${variantQuery}`}
       style={{textDecoration: 'none', display: 'block'}}
       prefetch="intent"
-      onMouseEnter={() => {
-        if (hoverImage) setIsHovered(true);
-      }}
-      onMouseLeave={() => {
-        setIsHovered(false);
-      }}
     >
       {/* ── Image ── */}
       <div
@@ -222,31 +209,6 @@ export function StyxProductCard({
             label={
               colorLabel ? `${product.title} · ${colorLabel}` : product.title
             }
-          />
-        )}
-
-        {/* Hover image */}
-        {hoverImage && (
-          <Image
-            data={hoverImage}
-            alt={hoverImage.altText ?? product.title}
-            aspectRatio="4/5"
-            sizes="(min-width: 1200px) 25vw, 50vw"
-            style={{
-              position: 'absolute',
-              inset: 0,
-              width: '100%',
-              height: '100%',
-              objectFit:
-                hoverImage.width &&
-                hoverImage.height &&
-                hoverImage.width / hoverImage.height > 2.5
-                  ? 'contain'
-                  : 'cover',
-              opacity: isHovered ? 1 : 0,
-              transition: 'opacity 0.4s ease',
-              pointerEvents: 'none',
-            }}
           />
         )}
 

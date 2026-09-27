@@ -22,7 +22,8 @@ export function CTAButton({
     letterSpacing: '0.22em',
     textTransform: 'uppercase',
     cursor: 'pointer',
-    transition: 'all 0.3s ease',
+    transition:
+      'background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, transform 0.25s ease',
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -60,20 +61,20 @@ export function CTAButton({
     // Use Remix Link for internal paths, <a> for external
     if (href.startsWith('/')) {
       return (
-        <Link to={href} style={s} prefetch="intent">
+        <Link className="styx-cta" to={href} style={s} prefetch="intent">
           {children}
         </Link>
       );
     }
     return (
-      <a href={href} style={s}>
+      <a className="styx-cta" href={href} style={s}>
         {children}
       </a>
     );
   }
 
   return (
-    <button onClick={onClick} style={s}>
+    <button className="styx-cta" onClick={onClick} style={s}>
       {children}
     </button>
   );

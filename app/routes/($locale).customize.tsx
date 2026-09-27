@@ -129,6 +129,7 @@ export default function Customize() {
         <div style={{maxWidth: 900, margin: '0 auto'}}>
           <StyxLabel>Bespoke</StyxLabel>
           <h1
+            data-reveal=""
             style={{
               fontFamily: FONT.cinzel,
               fontSize: 'clamp(36px, 6vw, 64px)',
@@ -154,6 +155,7 @@ export default function Customize() {
             </span>
           </h1>
           <p
+            data-reveal=""
             style={{
               fontFamily: FONT.cormorant,
               fontSize: 20,
@@ -266,6 +268,7 @@ export default function Customize() {
         <div style={{maxWidth: 900, margin: '0 auto'}}>
           <StyxLabel>The Process</StyxLabel>
           <h2
+            data-reveal=""
             style={{
               fontFamily: FONT.cinzel,
               fontSize: 28,
@@ -286,6 +289,7 @@ export default function Customize() {
               {step: '04', title: 'We Deliver', desc: 'Final balance due on completion. Your piece ships fully insured with signature confirmation. Every custom piece includes a certificate of authenticity.'},
             ].map((item, i) => (
               <div
+                data-reveal=""
                 key={item.step}
                 style={{
                   display: 'grid',
@@ -343,6 +347,7 @@ export default function Customize() {
           <div style={{textAlign: 'center', marginBottom: 48}}>
             <Obol size={48} color={STYX.gold} speed={8} />
             <h2
+              data-reveal=""
               style={{
                 fontFamily: FONT.cinzel,
                 fontSize: 28,
@@ -356,6 +361,7 @@ export default function Customize() {
               Start Your Commission
             </h2>
             <p
+              data-reveal=""
               style={{
                 fontFamily: FONT.cormorant,
                 fontSize: 17,

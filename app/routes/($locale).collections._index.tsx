@@ -110,6 +110,7 @@ export default function CollectionsIndex() {
       {/* All Chains banner */}
       {allChains && (
         <Link
+      data-reveal=""
           to={`/collections/${allChains.handle}`}
           prefetch="intent"
           className="styx-ci-banner"
@@ -224,6 +225,7 @@ export default function CollectionsIndex() {
           }}
         >
           <h2
+            data-reveal=""
             style={{
               fontFamily: FONT.cinzel,
               fontSize: 28,
@@ -250,6 +252,7 @@ export default function CollectionsIndex() {
           >
             {filterCollections.map((c: any) => (
               <Link
+      data-reveal=""
                 key={c.id}
                 to={`/collections/${c.handle}`}
                 prefetch="intent"
@@ -301,6 +304,7 @@ export default function CollectionsIndex() {
 function CollectionTile({collection}: {collection: any}) {
   return (
     <Link
+      data-reveal=""
       to={`/collections/${collection.handle}`}
       prefetch="intent"
       style={{

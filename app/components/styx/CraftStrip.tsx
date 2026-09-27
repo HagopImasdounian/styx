@@ -31,6 +31,7 @@ export function CraftStrip() {
         <div>
           <StyxLabel>The Promise · V</StyxLabel>
           <h2
+            data-reveal=""
             style={{
               fontFamily: FONT.cinzel,
               fontSize: 40,

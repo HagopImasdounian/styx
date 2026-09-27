@@ -1,3 +1,4 @@
+import {galleryImageKey, remainingGalleryMedia, selectedGalleryMedia} from '~/lib/product-gallery';
 import {useState, useRef, useCallback, useEffect, Suspense} from 'react';
 import {Disclosure} from '@headlessui/react';
 import {type MetaArgs, type LoaderFunctionArgs} from 'react-router';
@@ -371,20 +372,21 @@ export default function Product() {
   const selectedPurity = KARAT_PURITY[karat] ?? 0.75;
   const perGramSelected = (spotPerOz / 31.1035) * selectedPurity;
 
-  // Gallery — filter media to the selected color. An image is shown when its
-  // alt text either names the selected color or names no color at all
-  // (color-neutral lifestyle/detail shots stay visible for every variant).
-  const mediaNodes = media?.nodes ?? [];
-  const COLOR_NAMES = ['yellow gold', 'white gold', 'rose gold'];
-  const mediaAlt = (m: any): string =>
-    String(m?.alt || m?.image?.altText || '').toLowerCase();
-  const colorFilteredMedia = selectedColor
-    ? mediaNodes.filter((m: any) => {
-        const alt = mediaAlt(m);
-        const named = COLOR_NAMES.find((c) => alt.includes(c));
-        return !named || named === selectedColor.toLowerCase();
-      })
-    : mediaNodes;
+  // Only mount media associated with this selection. Unknown finish photos
+  // are excluded on multi-color products instead of downloading every finish.
+  const galleryColors = product.options.find((option: {name: string}) => option.name.toLowerCase() === 'color')
+    ?.optionValues.map((option: {name: string}) => option.name) ?? [];
+  const colorFilteredMedia = selectedGalleryMedia(
+    media?.nodes ?? [], selectedVariant ?? {}, knownVariants, galleryColors,
+  );
+  const firstGalleryMedia = colorFilteredMedia[0];
+  const selectedImage = (selectedVariant as any)?.image;
+  const assignedMedia = media?.nodes?.find((item: any) =>
+    selectedImage?.url && galleryImageKey(item.image?.url || item.previewImage?.url || '') === galleryImageKey(selectedImage.url),
+  ) ?? {image: selectedImage};
+  const assignedImageMatches = selectedGalleryMedia([assignedMedia], selectedVariant ?? {}, knownVariants, galleryColors).length > 0;
+  const leadImage = (assignedImageMatches ? selectedImage : null) || firstGalleryMedia?.image || firstGalleryMedia?.previewImage;
+  const remainingMedia = remainingGalleryMedia(colorFilteredMedia, leadImage).slice(0, 7);
 
   // Mobile swipe-carousel slides: selected-variant image leads, then every
   // color-matched media node (images and hosted videos), deduped by URL.
@@ -642,30 +644,8 @@ export default function Product() {
             background: '#FFFFFF',
           }}
         >
-          {/* Remaining media — large, stacked; skip whichever image leads.
-              Videos always stay in the list (their preview may double as
-              the lead image, but the playable file is only here). */}
-          {(() => {
-            const variantImg = (selectedVariant as any)?.image;
-            const leadUrl =
-              variantImg?.url ||
-              colorFilteredMedia[0]?.image?.url ||
-              colorFilteredMedia[0]?.previewImage?.url;
-            return colorFilteredMedia
-              .filter(
-                (m: any) =>
-                  m.mediaContentType === 'VIDEO' ||
-                  (m.image?.url || m.previewImage?.url) !== leadUrl,
-              )
-              .slice(0, 9);
-          })().map((m: any, i: number) => {
-            if (m.mediaContentType === 'VIDEO' && m.sources?.length) {
-              return (
-                <div key={m.id || i} style={{background: '#FFFFFF'}}>
-                  <AutoplayVideo media={m} />
-                </div>
-              );
-            }
+          {/* Remaining media — large, stacked; skip whichever image leads */}
+          {remainingMedia.map((m: any, i: number) => {
             const img = m.image || m.previewImage;
             if (!img) return null;
             return (
@@ -787,6 +767,7 @@ export default function Product() {
 
           {/* Title */}
           <h1
+            data-reveal=""
             style={{
               fontFamily: FONT.cinzel,
               fontSize: 38,
@@ -3282,7 +3263,7 @@ const PRODUCT_FRAGMENT = `#graphql
       description
       title
     }
-    media(first: 12) {
+    media(first: 100) {
       nodes {
         ...Media
       }

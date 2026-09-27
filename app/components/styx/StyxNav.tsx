@@ -7,7 +7,14 @@ import {
   createContext,
   useContext,
 } from 'react';
-import {Await, useRouteLoaderData, Link, useParams, Form} from 'react-router';
+import {
+  Await,
+  useRouteLoaderData,
+  Link,
+  useParams,
+  useNavigation,
+  Form,
+} from 'react-router';
 import {CartForm} from '@shopify/hydrogen';
 import {
   STYX,
@@ -407,6 +414,7 @@ function MegaLink(props: React.ComponentProps<typeof Link>) {
   return (
     <Link
       {...props}
+      data-menu-item=""
       onClick={(e) => {
         closeMenu?.();
         (props as any).onClick?.(e);
@@ -437,6 +445,7 @@ function MenuLink({
   const closeMenu = useContext(CloseMenuContext);
   return (
     <Link
+      data-menu-item=""
       to={to}
       prefetch="intent"
       onClick={() => closeMenu?.()}
@@ -511,6 +520,7 @@ function ChainCard({chain}: {chain: ChainItem}) {
 
   return (
     <Link
+      data-menu-item=""
       to={`/collections/${chain.handle}`}
       prefetch="intent"
       onClick={() => closeMenu?.()}
@@ -1475,6 +1485,8 @@ function MobileMenu({
       {/* Panel */}
       <div
         ref={panelRef}
+        className="styx-mobile-menu"
+        data-open={open}
         role="dialog"
         aria-modal={open ? true : undefined}
         aria-label="Menu"
@@ -1535,6 +1547,7 @@ function MobileMenu({
             style={{height: 28, width: 'auto'}}
           />
           <button
+            aria-label="Close menu"
             onClick={onClose}
             style={{
               position: 'absolute',
@@ -1581,7 +1594,7 @@ function MobileMenu({
                 focus trap via the focusables() selector above. */}
             <MobileMenuSearch onClose={onClose} />
 
-            <div style={{flex: 1, paddingTop: 8}}>
+            <div className="styx-mobile-links" style={{flex: 1, paddingTop: 8}}>
               {ROOT_LINKS.map((item) =>
                 item.drillTo ? (
                   <button
@@ -2553,6 +2566,7 @@ export function StyxNav({
   const [openMenu, setOpenMenu] = useState<MenuKey | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const navigation = useNavigation();
   const headerHidden = useAutoHideHeader();
   const headerRef = useRef<HTMLDivElement>(null);
 
@@ -2827,6 +2841,8 @@ export function StyxNav({
               className="styx-nav-hamburger"
               onClick={openMobileMenu}
               aria-label="Open menu"
+              aria-expanded={isMobileMenuOpen}
+              aria-haspopup="dialog"
               style={{
                 background: 'none',
                 border: 'none',
@@ -2842,6 +2858,12 @@ export function StyxNav({
           </div>
         </nav>
 
+        {navigation.state !== 'idle' && (
+          <div className="styx-navigation-progress" role="status">
+            <span className="sr-only">Loading page</span>
+          </div>
+        )}
+
         {/* ── Predictive search overlay ── */}
         {searchOpen && (
           <PredictiveSearchPanel onClose={() => setSearchOpen(false)} />
@@ -2850,6 +2872,8 @@ export function StyxNav({
         {/* ── Mega panel ── */}
         {Panel && (
           <div
+            key={openMenu}
+            className="styx-mega-panel"
             onMouseEnter={cancelClose}
             onMouseLeave={scheduleClose}
             style={{
@@ -2862,7 +2886,6 @@ export function StyxNav({
               borderBottom: `1px solid ${STYX.line}`,
               boxShadow: '0 24px 48px -24px rgba(26,24,21,0.2)',
               zIndex: 1,
-              animation: 'styx-menu-in 0.28s cubic-bezier(.2,.8,.2,1) both',
             }}
           >
             {/* Decorative gold hairline */}

@@ -29,6 +29,7 @@ export function ProductGridSection({
     >
       <StyxLabel>{label}</StyxLabel>
       <h2
+        data-reveal=""
         style={{
           fontFamily: FONT.cinzel,
           fontSize: 36,

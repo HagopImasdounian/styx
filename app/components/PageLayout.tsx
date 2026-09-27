@@ -1,4 +1,5 @@
-import {useParams, Form, Await, useRouteLoaderData} from 'react-router';
+import {useReveal} from '~/hooks/useReveal';
+import {useLocation, useParams, Form, Await, useRouteLoaderData} from 'react-router';
 import useWindowScroll from 'react-use/esm/useWindowScroll';
 import {Disclosure} from '@headlessui/react';
 import {Suspense, useEffect, useMemo} from 'react';
@@ -48,6 +49,8 @@ type LayoutProps = {
 export function PageLayout({children, layout}: LayoutProps) {
   const {headerMenu, footerMenu} = layout || {};
   const isStyxPage = useIsStyxPath();
+  const {pathname} = useLocation();
+  const revealRef = useReveal<HTMLElement>(pathname);
 
   // Styx pages (home, collections, products) handle their own
   // GoldTicker + StyxNav + StyxFooter — skip the default chrome.
@@ -63,7 +66,7 @@ export function PageLayout({children, layout}: LayoutProps) {
               Skip to content
             </a>
           </div>
-          <main role="main" id="mainContent" className="flex-grow">
+          <main ref={revealRef} role="main" id="mainContent" className="flex-grow">
             {children}
           </main>
         </div>
@@ -90,6 +93,7 @@ export function PageLayout({children, layout}: LayoutProps) {
         <GoldTicker />
         <StyxNav />
         <main
+          ref={revealRef}
           role="main"
           id="mainContent"
           style={{
