@@ -105,7 +105,7 @@ async function loadCriticalData({context, request}: LoaderFunctionArgs) {
       products: {nodes: [{id: c.products.nodes[0].id}]},
     })),
     chainTiles: buildChainTiles(rawCollections, productNodes),
-    priceSample: pickPriceSample(productNodes),
+    priceSamples: pickPriceSamples(productNodes),
     journalTeasers: buildJournalTeasers(),
     seo: seoPayload.home({url: request.url}),
   };
@@ -205,8 +205,8 @@ function parseKarat(metaValue: string | null | undefined, title: string): number
  * in-stock solid chain (not a bracelet) that has a real weight and price.
  * Cheapest keeps the gold share honest without picking a statement piece.
  */
-function pickPriceSample(productList: any[]): PriceSample | null {
-  let best: PriceSample | null = null;
+function pickPriceSamples(productList: any[]): PriceSample[] {
+  const candidates: PriceSample[] = [];
 
   for (const p of productList) {
     const title: string = p?.title || '';
@@ -218,12 +218,13 @@ function pickPriceSample(productList: any[]): PriceSample | null {
     const family = styleToSlug(p?.chain_style?.value, title);
     if (!family) continue;
 
+    // One variant per product: its cheapest in-stock, weighed length.
+    let best: PriceSample | null = null;
     for (const v of p?.variants?.nodes || []) {
       const price = parseFloat(v?.price?.amount || '0');
       const grams = weightInGrams(v);
       if (!(price > 0) || !grams || v?.availableForSale === false) continue;
       if (best && price >= best.price) continue;
-
       const length =
         v?.selectedOptions?.find(
           (o: any) => o?.name?.toLowerCase() === 'length',
@@ -231,7 +232,6 @@ function pickPriceSample(productList: any[]): PriceSample | null {
       const thickness =
         p?.chain_thickness?.value ||
         (title.match(/(\d+(?:\.\d+)?)\s*mm/i)?.[0] ?? null);
-
       best = {
         handle: p.handle,
         title,
@@ -244,9 +244,22 @@ function pickPriceSample(productList: any[]): PriceSample | null {
         currencyCode: v.price.currencyCode || 'USD',
       };
     }
+    if (best) candidates.push(best);
   }
 
-  return best;
+  if (candidates.length === 0) return [];
+  candidates.sort((a, b) => a.weightGrams - b.weightGrams);
+  const picks = [
+    candidates[0],
+    candidates[Math.floor(candidates.length / 2)],
+    candidates[candidates.length - 1],
+  ];
+  // Distinct products and distinct weave families where the catalog allows.
+  const out: PriceSample[] = [];
+  for (const c of picks) {
+    if (!out.some((o) => o.handle === c.handle)) out.push(c);
+  }
+  return out;
 }
 
 /** Three real journal entries. Handles must exist in the articles data and not be hidden. */
@@ -286,7 +299,7 @@ function buildJournalTeasers(): JournalTeaser[] {
 /* ─── Page ─── */
 
 export default function Homepage() {
-  const {collections, chainTiles, priceSample, journalTeasers} =
+  const {collections, chainTiles, priceSamples, journalTeasers} =
     useLoaderData<typeof loader>();
 
   return (
@@ -297,7 +310,7 @@ export default function Homepage() {
       <HomePillars />
       <HomeHands />
       <HomeChains tiles={chainTiles} />
-      <HomePriceLedger sample={priceSample} />
+      <HomePriceLedger samples={priceSamples} />
       <FerrymansCode />
       <HomeLore />
       <HomeJournal teasers={journalTeasers} />
