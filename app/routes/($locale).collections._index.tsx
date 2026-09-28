@@ -156,7 +156,6 @@ export default function CollectionsIndex() {
         <section className="styx-ci-materials">
           <div className="styx-section-heading">
             <div>
-              <p className="styx-eyebrow">Metal and karat</p>
               <h2 data-reveal="">
                 Shop by <em>material.</em>
               </h2>

@@ -355,7 +355,7 @@ const THICKNESS_TIERS = [
   {label: '5mm', sub: 'Statement', handle: 'thickness-5mm'},
   {label: '6mm', sub: 'Bold', handle: 'thickness-6mm'},
   {label: '7mm', sub: 'Heavy', handle: 'thickness-7mm'},
-  {label: '10mm', sub: 'Foundry weight', handle: 'thickness-10mm'},
+  {label: '10mm', sub: 'Heaviest', handle: 'thickness-10mm'},
 ];
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1088,10 +1088,9 @@ function JournalMegaPanel() {
       kicker: 'Chain history, origin to alloy',
       count: 9,
     },
-    {vol: 'II', title: 'The Foundry', kicker: 'Inside the workshop', count: 6},
-    {vol: 'III', title: 'The Owners', kicker: 'Worn, in the world', count: 12},
+    {vol: 'II', title: 'The Owners', kicker: 'Worn, in the world', count: 12},
     {
-      vol: 'IV',
+      vol: 'III',
       title: 'The Almanac',
       kicker: 'Spot, assay, context',
       count: 24,

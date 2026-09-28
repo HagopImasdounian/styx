@@ -524,7 +524,6 @@ export default function JournalIndex() {
             className="styx-ja-title-grid"
           >
             <div>
-              <StyxLabel>The Styx Journal &middot; Archive</StyxLabel>
               <h1
                 style={{
                   fontFamily: FONT.cinzel,

@@ -82,9 +82,6 @@ export default function Search() {
     >
       {/* ───── Heading + search form ───── */}
       <div style={{textAlign: 'center', marginBottom: 40}}>
-        <p className="styx-eyebrow" style={{marginBottom: 14}}>
-          Search the catalog
-        </p>
         <h1 className="styx-catalog-title" style={{margin: '0 0 12px'}}>
           Search
         </h1>

@@ -30,7 +30,7 @@ export function HomeChains({tiles}: {tiles: ChainTile[]}) {
     >
       <div className="styx-section-heading">
         <div>
-          <p className="styx-eyebrow">The collection</p>
+          <p className="styx-eyebrow">Solid 10K gold &middot; weighed to 0.01 g</p>
           <h2 id="chains-title">
             Find your <em>signature.</em>
           </h2>

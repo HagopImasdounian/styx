@@ -83,7 +83,6 @@ export default function AllProducts() {
       style={{background: 'var(--styx-surface)', minHeight: '100vh'}}
     >
       <header className="styx-catalog-header">
-        <p className="styx-eyebrow">The catalog</p>
         <h1 className="styx-catalog-title">All products</h1>
       </header>
       <div className="styx-catalog-toolbar">
