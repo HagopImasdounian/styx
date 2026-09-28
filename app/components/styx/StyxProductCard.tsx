@@ -518,7 +518,7 @@ export function StyxProductCard({
                 title="Model number"
                 style={{fontFamily: FONT.mono, letterSpacing: '0.02em'}}
               >
-                {variant.sku}
+                #{variant.sku.replace(/\s*-\s*/g, '-')}
               </span>
             </>
           )}

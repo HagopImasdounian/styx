@@ -825,7 +825,7 @@ export default function Product() {
                 marginTop: 8,
               }}
             >
-              Model {selectedVariant.sku}
+              Model #{selectedVariant.sku.replace(/\s*-\s*/g, '-')}
             </div>
           )}
           {yearInvented && (
