@@ -851,9 +851,7 @@ export default function Product() {
                     {isUnpriced ? 'Price on request' : 'Your price'}
                   </span>
                   <div className="styx-pdp-price-value">
-                    {isUnpriced ? (
-                      '—'
-                    ) : (
+                    {isUnpriced ? null : (
                       <Money data={selectedVariant.price} as="span" />
                     )}
                     {!isUnpriced && (

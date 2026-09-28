@@ -2298,6 +2298,8 @@ shop-pay-button {
   color: #686257;
 }
 .styx-pdp-price-value {
+  color: #1a1815;
+  opacity: 1 !important;
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 40px;
   font-weight: 500;
