@@ -163,7 +163,7 @@ export default function Buyback() {
           }}
         >
           <div>
-            <StyxLabel>Service &middot; The Ferryman&rsquo;s Pact</StyxLabel>
+            <StyxLabel greek="ΝΟΣΤΟΣ">Service &middot; The Ferryman&rsquo;s Pact</StyxLabel>
             <h1
               data-reveal=""
               style={{

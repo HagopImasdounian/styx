@@ -26,7 +26,7 @@ export {HomeLore} from './HomeLore';
 export {HomeJournal} from './HomeJournal';
 export type {JournalTeaser} from './HomeJournal';
 export {StyxFooter} from './StyxFooter';
-export {StyxLabel} from './StyxLabel';
+export {StyxLabel, GreekGloss} from './StyxLabel';
 export {CTAButton} from './CTAButton';
 export {PlaceholderImage} from './PlaceholderImage';
 export {StoneBg} from './StoneBg';

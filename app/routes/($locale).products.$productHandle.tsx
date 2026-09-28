@@ -43,14 +43,13 @@ import {
   RecommendedProducts,
   Obol,
   ActualSizeImagePanel,
-  ActualSizeImageButton,
   RecentlyViewed,
   recordRecentlyViewed,
   ImageLightbox,
 } from '~/components/styx';
 import type {CrossSellProduct} from '~/components/styx';
 import {CompareButton} from '~/components/styx/CompareButton';
-import {PrintListButton} from '~/components/styx/PrintListButton';
+import {TrueSizeControls} from '~/components/styx/TrueSizeControls';
 import {useWishlist} from '~/context/WishlistContext';
 import {useScaleCalibration} from '~/context/ScaleCalibrationContext';
 import {parseMm as parseThicknessMm} from '~/lib/chains';
@@ -266,6 +265,15 @@ export default function Product() {
     actualSizeOn &&
     pxPerMm != null &&
     parseThicknessMm(chainThickness, title) != null;
+  // One-line helper under the on-image true-size pills; gone after first tap.
+  const [trueSizeHintDismissed, setTrueSizeHintDismissed] = useState(false);
+  const trueSizeControls = chainThickness ? (
+    <TrueSizeControls
+      handle={product.handle}
+      showHint={!trueSizeHintDismissed}
+      onInteract={() => setTrueSizeHintDismissed(true)}
+    />
+  ) : null;
   const chainConstruction = p.chain_construction?.value || null;
   const chainStyle = p.chain_style?.value || null;
   const laborCost = p.labor_cost?.value ? parseFloat(p.labor_cost.value) : 280;
@@ -391,16 +399,17 @@ export default function Product() {
   const leadImage = (assignedImageMatches ? selectedImage : null) || firstGalleryMedia?.image || firstGalleryMedia?.previewImage;
   const remainingMedia = remainingGalleryMedia(colorFilteredMedia, leadImage).slice(0, 7);
 
-  // Mobile swipe-carousel slides: selected-variant image leads, then every
-  // color-matched media node (images and hosted videos), deduped by URL.
+  // Mobile swipe-carousel slides: the color-checked lead image first (same
+  // `leadImage` the desktop gallery uses, so a stale cross-color variant
+  // assignment can never sneak in), then every color-matched media node
+  // (images and hosted videos), deduped by normalized gallery key.
   const gallerySlides = (() => {
-    const variantImg = (selectedVariant as any)?.image;
     const slides: Array<{key: string; kind: 'image' | 'video'; media: any}> =
       [];
     const seen = new Set<string>();
-    if (variantImg?.url) {
-      slides.push({key: 'variant', kind: 'image', media: variantImg});
-      seen.add(variantImg.url);
+    if (leadImage?.url) {
+      slides.push({key: 'lead', kind: 'image', media: leadImage});
+      seen.add(galleryImageKey(leadImage.url));
     }
     for (const m of colorFilteredMedia as any[]) {
       if (m?.mediaContentType === 'VIDEO' && m.sources?.length) {
@@ -412,8 +421,9 @@ export default function Product() {
         continue;
       }
       const img = m?.image || m?.previewImage;
-      if (img?.url && !seen.has(img.url)) {
-        seen.add(img.url);
+      const imgKey = img?.url ? galleryImageKey(img.url) : null;
+      if (imgKey && !seen.has(imgKey)) {
+        seen.add(imgKey);
         slides.push({key: m.id || img.url, kind: 'image', media: img});
       }
     }
@@ -468,6 +478,7 @@ export default function Product() {
               thickness={chainThickness}
               chainStyle={chainStyle}
               title={title}
+              controls={trueSizeControls}
             />
           ) : (
             <MobileMediaCarousel
@@ -475,7 +486,7 @@ export default function Product() {
               title={title}
               firstSlideOverlay={
                 <>
-                  {chainThickness && <ActualSizeImageButton />}
+                  {trueSizeControls}
                   {(romanNumeral || yearInvented) && (
                     <div
                       style={{
@@ -531,16 +542,12 @@ export default function Product() {
               thickness={chainThickness}
               chainStyle={chainStyle}
               title={title}
+              controls={trueSizeControls}
             />
           ) : (
             (() => {
-              const variantImg = (selectedVariant as any)?.image;
-              const firstMedia = colorFilteredMedia[0];
-              const leadImage =
-                variantImg ||
-                (firstMedia && 'image' in firstMedia
-                  ? firstMedia.image
-                  : firstMedia?.previewImage);
+              // Same color-checked `leadImage` as remainingMedia / the mobile
+              // slides, so the desktop lead can't show another finish's photo.
               return (
                 <div
                   style={{
@@ -576,9 +583,10 @@ export default function Product() {
                     </div>
                   )}
 
-                  {/* Actual-size overlay button, swaps this photo for the
-                    true-size panel in place */}
-                  {leadImage && chainThickness && <ActualSizeImageButton />}
+                  {/* True-size tools, pinned to the bottom edge of the photo:
+                      actual size swaps this photo for the panel in place,
+                      print adds it to the 1:1 sheet */}
+                  {leadImage && trueSizeControls}
 
                   {/* Year / Origin Badge */}
                   {(romanNumeral || yearInvented) && (
@@ -1549,12 +1557,13 @@ export default function Product() {
                 </div>
               )}
 
-              {/* Favorites + Compare + Print, three equal actions */}
+              {/* Favorites + Compare, two equal actions. Download Print moved
+                  onto the lead image next to View actual size. */}
               <div
                 style={{
                   marginTop: 16,
                   display: 'grid',
-                  gridTemplateColumns: '1fr 1fr 1fr',
+                  gridTemplateColumns: '1fr 1fr',
                   gap: 8,
                 }}
               >
@@ -1600,10 +1609,6 @@ export default function Product() {
                 <CompareButton
                   handle={product.handle}
                   length={selectedLength}
-                  style={{width: '100%', justifyContent: 'center'}}
-                />
-                <PrintListButton
-                  handle={product.handle}
                   style={{width: '100%', justifyContent: 'center'}}
                 />
               </div>
@@ -2666,7 +2671,7 @@ function LivePriceReceipt({
 
       {/* Receipt Rows */}
       <div style={{fontFamily: FONT.mono, fontSize: 13, lineHeight: 1}}>
-        <ReceiptSection label="The gold" />
+        <ReceiptSection label="The gold" greek="ΧΡΥΣΟΣ" />
         <ReceiptRow
           label={`${safeWeight}g total weight`}
           value={`${karat}K gold`}
@@ -2684,7 +2689,7 @@ function LivePriceReceipt({
         />
 
         <div style={{height: 20}} />
-        <ReceiptSection label="The craft" />
+        <ReceiptSection label="The craft" greek="ΤΕΧΝΗ" />
         <ReceiptRow
           label="Casting, finishing, testing, insured shipping & our margin"
           value={priced ? formatUSD(craft) : '—'}
@@ -2753,6 +2758,7 @@ function LivePriceReceipt({
             }}
           >
             We&rsquo;ll buy it back for its gold value
+            <GreekSubLabel inline>ΝΟΣΤΟΣ</GreekSubLabel>
           </span>
           <span
             style={{
@@ -2801,16 +2807,19 @@ function LivePriceReceipt({
           gap: 12,
         }}
       >
-        <span
-          style={{
-            fontFamily: FONT.cinzel,
-            fontSize: 13,
-            letterSpacing: '0.2em',
-            textTransform: 'uppercase',
-            color: STYX.gold,
-          }}
-        >
-          The fare
+        <span style={{display: 'flex', flexDirection: 'column', gap: 4}}>
+          <span
+            style={{
+              fontFamily: FONT.cinzel,
+              fontSize: 13,
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+              color: STYX.gold,
+            }}
+          >
+            The fare
+          </span>
+          <GreekSubLabel>ΝΑΥΛΟΝ</GreekSubLabel>
         </span>
         <span
           style={{
@@ -2842,10 +2851,13 @@ function LivePriceReceipt({
   );
 }
 
-function ReceiptSection({label}: {label: string}) {
+function ReceiptSection({label, greek}: {label: string; greek?: string}) {
   return (
     <div
       style={{
+        display: 'flex',
+        alignItems: 'baseline',
+        gap: 10,
         fontFamily: FONT.cinzel,
         fontSize: 9,
         letterSpacing: '0.35em',
@@ -2857,7 +2869,37 @@ function ReceiptSection({label}: {label: string}) {
       }}
     >
       {label}
+      {greek && <GreekSubLabel>{greek}</GreekSubLabel>}
     </div>
+  );
+}
+
+/** Tiny Greek accent under/next to a receipt label. Decorative only. */
+function GreekSubLabel({
+  children,
+  inline,
+}: {
+  children: string;
+  inline?: boolean;
+}) {
+  return (
+    <span
+      lang="el"
+      aria-hidden="true"
+      style={{
+        fontFamily: FONT.mono,
+        fontSize: 9,
+        letterSpacing: '0.32em',
+        textTransform: 'uppercase',
+        color: 'rgba(184,146,74,0.85)',
+        fontWeight: 400,
+        whiteSpace: 'nowrap',
+        marginLeft: inline ? 10 : 0,
+        verticalAlign: inline ? 'middle' : undefined,
+      }}
+    >
+      {children}
+    </span>
   );
 }
 

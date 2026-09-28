@@ -24,6 +24,7 @@ export function HomeJournal({teasers}: {teasers: JournalTeaser[]}) {
       <div style={{maxWidth: 1440, margin: '0 auto'}}>
         <HomeHead
           label="The journal"
+          greek="ΛΟΓΟΣ"
           title={<>On gold.</>}
           link={{to: '/journal', label: 'All entries'}}
         />

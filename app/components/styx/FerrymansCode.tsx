@@ -59,7 +59,7 @@ export function FerrymansCode({
         }}
         className="styx-home-code-inner"
       >
-        <StyxLabel>{label}</StyxLabel>
+        <StyxLabel greek="ΠΟΡΘΜΕΥΣ">{label}</StyxLabel>
         <h2
           data-reveal=""
           style={{

@@ -1,6 +1,18 @@
 import {STYX, FONT} from './constants';
 
-export function StyxLabel({children}: {children: React.ReactNode}) {
+/**
+ * Section eyebrow. `greek` adds a small ancient-Greek gloss after the Latin
+ * label (Styx is named for the river; the glosses are decorative and hidden
+ * from assistive tech). Rendered in the mono face, whose subset carries the
+ * Greek block; Cinzel does not.
+ */
+export function StyxLabel({
+  children,
+  greek,
+}: {
+  children: React.ReactNode;
+  greek?: string;
+}) {
   return (
     <div
       style={{
@@ -10,9 +22,43 @@ export function StyxLabel({children}: {children: React.ReactNode}) {
         textTransform: 'uppercase',
         color: STYX.gold,
         marginBottom: 12,
+        display: 'flex',
+        alignItems: 'baseline',
+        gap: 14,
+        flexWrap: 'wrap',
+      }}
+    >
+      <span>{children}</span>
+      {greek && <GreekGloss>{greek}</GreekGloss>}
+    </div>
+  );
+}
+
+/** Decorative ancient-Greek gloss, e.g. ΧΡΥΣΟΣ next to "The gold". */
+export function GreekGloss({
+  children,
+  size = 9,
+  color = STYX.goldDeep,
+}: {
+  children: React.ReactNode;
+  size?: number;
+  color?: string;
+}) {
+  return (
+    <span
+      lang="el"
+      aria-hidden="true"
+      style={{
+        fontFamily: FONT.mono,
+        fontSize: size,
+        letterSpacing: '0.32em',
+        color,
+        opacity: 0.85,
+        textTransform: 'uppercase',
+        whiteSpace: 'nowrap',
       }}
     >
       {children}
-    </div>
+    </span>
   );
 }

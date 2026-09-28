@@ -1,5 +1,6 @@
 import {Link} from 'react-router';
 import {STYX, FONT} from './constants';
+import {GreekGloss} from './StyxLabel';
 
 /**
  * Small shared pieces for the homepage sections: an editorial serif
@@ -73,11 +74,14 @@ export function HomeLink({
 /** Section header row: label + headline on the left, a caps link on the right. */
 export function HomeHead({
   label,
+  greek,
   title,
   link,
   color,
 }: {
   label: React.ReactNode;
+  /** Decorative ancient-Greek gloss shown after the eyebrow. */
+  greek?: string;
   title: React.ReactNode;
   link?: {to: string; label: string};
   color?: string;
@@ -102,9 +106,14 @@ export function HomeHead({
             textTransform: 'uppercase',
             color: STYX.gold,
             marginBottom: 14,
+            display: 'flex',
+            alignItems: 'baseline',
+            gap: 14,
+            flexWrap: 'wrap',
           }}
         >
-          {label}
+          <span>{label}</span>
+          {greek && <GreekGloss>{greek}</GreekGloss>}
         </div>
         <HomeH2 color={color}>{title}</HomeH2>
       </div>

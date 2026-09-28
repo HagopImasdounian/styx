@@ -48,7 +48,7 @@ export function HomePriceLedger({sample}: {sample: PriceSample | null}) {
         }}
       >
         <div>
-          <StyxLabel>The price, in full</StyxLabel>
+          <StyxLabel greek="ΑΞΙΑ">The price, in full</StyxLabel>
           <HomeH2>
             Most jewelers hide the gold inside the price. We <Em>print</Em> it.
           </HomeH2>

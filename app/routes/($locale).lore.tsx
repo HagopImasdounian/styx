@@ -153,7 +153,7 @@ export default function Lore() {
           }}
         >
           <div>
-            <StyxLabel>The Lore &middot; River Styx</StyxLabel>
+            <StyxLabel greek="ΜΥΘΟΣ">The Lore &middot; River Styx</StyxLabel>
             <h1
               data-reveal=""
               style={{

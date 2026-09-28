@@ -11,10 +11,8 @@ import {
 } from '@shopify/hydrogen';
 
 import {PageHeader, Section} from '~/components/Text';
-import {ProductCard} from '~/components/ProductCard';
-import {Grid} from '~/components/Grid';
+import {StyxProductCard} from '~/components/styx/StyxProductCard';
 import {PRODUCT_CARD_FRAGMENT} from '~/data/fragments';
-import {getImageLoadingPriority} from '~/lib/const';
 import {seoPayload} from '~/lib/seo.server';
 import {getStyxSeoMeta} from '~/lib/seo-meta';
 import {validateLocale} from '~/lib/utils';
@@ -80,11 +78,7 @@ export default function AllProducts() {
         <Pagination connection={products}>
           {({nodes, isLoading, NextLink, PreviousLink}) => {
             const itemsMarkup = nodes.map((product: any, i: number) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                loading={getImageLoadingPriority(i)}
-              />
+              <StyxProductCard key={product.id} product={product} index={i} />
             ));
 
             return (
@@ -94,7 +88,17 @@ export default function AllProducts() {
                     {isLoading ? 'Loading...' : 'Previous'}
                   </PreviousLink>
                 </div>
-                <Grid data-test="product-grid">{itemsMarkup}</Grid>
+                <div
+                  className="styx-plp-grid"
+                  data-test="product-grid"
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(3, 1fr)',
+                    gap: 48,
+                  }}
+                >
+                  {itemsMarkup}
+                </div>
                 <div className="flex items-center justify-center mt-6">
                   <NextLink className="inline-block rounded font-medium text-center py-3 px-6 border border-primary/10 bg-contrast text-primary w-full">
                     {isLoading ? 'Loading...' : 'Next'}

@@ -41,7 +41,8 @@ export const MEDIA_FRAGMENT = `#graphql
 // and fetches only the fields the cards actually read: price/compareAtPrice
 // (price + Sale label), selectedOptions (color-exploded cards + karat),
 // image (per-color imagery + hover), weight (grams badge), availableForSale
-// (stock dot).
+// (stock dot). media(first: 8) feeds the mobile swipe strip on the card (color
+// filtered client side, capped at 6 slides).
 export const PRODUCT_CARD_FRAGMENT = `#graphql
   fragment ProductCard on Product {
     id
@@ -50,6 +51,19 @@ export const PRODUCT_CARD_FRAGMENT = `#graphql
     handle
     productType
     tags
+    media(first: 8) {
+      nodes {
+        ... on MediaImage {
+          id
+          image {
+            url
+            altText
+            width
+            height
+          }
+        }
+      }
+    }
     variants(first: 30) {
       nodes {
         id

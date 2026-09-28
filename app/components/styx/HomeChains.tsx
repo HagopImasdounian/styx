@@ -36,6 +36,7 @@ export function HomeChains({tiles}: {tiles: ChainTile[]}) {
       <div style={{maxWidth: 1440, margin: '0 auto'}}>
         <HomeHead
           label="The chains"
+          greek="ΑΛΥΣΙΣ"
           title={<>Choose your link.</>}
           link={{to: '/collections/chains', label: 'All chains'}}
         />

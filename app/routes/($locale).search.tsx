@@ -243,6 +243,7 @@ export default function Search() {
 
               {/* One card per product, no per-color explosion on search */}
               <div
+                className="styx-plp-grid"
                 data-test="product-grid"
                 style={{
                   display: 'grid',

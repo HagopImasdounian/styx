@@ -58,7 +58,7 @@ export function ActualSizeImageButton() {
         <rect x="2" y="7" width="20" height="10" rx="1" />
         <path d="M7 7v3M12 7v4M17 7v3" />
       </svg>
-      {actualSizeOn ? 'Actual size: on' : 'View actual size'}
+      {actualSizeOn ? 'Back to photo' : 'View actual size'}
     </button>
   );
 }

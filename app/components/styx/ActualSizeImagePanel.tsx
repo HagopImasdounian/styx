@@ -16,10 +16,13 @@ export function ActualSizeImagePanel({
   thickness,
   chainStyle,
   title,
+  controls,
 }: {
   thickness?: string | null;
   chainStyle?: string | null;
   title: string;
+  /** Overlay control cluster; defaults to the lone actual-size pill. */
+  controls?: React.ReactNode;
 }) {
   const {
     pxPerMm,
@@ -180,9 +183,9 @@ export function ActualSizeImagePanel({
         </div>
       </div>
 
-      {/* Same overlay button as the photo, now reading "Actual size: on"
+      {/* Same overlay controls as the photo, now reading "Back to photo",
           tapping it swaps the photo back. */}
-      <ActualSizeImageButton />
+      {controls ?? <ActualSizeImageButton />}
     </div>
   );
 }

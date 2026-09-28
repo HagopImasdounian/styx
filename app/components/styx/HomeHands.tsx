@@ -46,7 +46,7 @@ export function HomeHands() {
         </div>
 
         <div>
-          <StyxLabel>The hands behind it</StyxLabel>
+          <StyxLabel greek="ΤΕΧΝΙΤΗΣ">The hands behind it</StyxLabel>
           <HomeH2>
             Our uncle still casts <Em>by hand</Em>, in a crucible older than
             most jewelers.

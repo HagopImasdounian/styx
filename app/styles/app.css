@@ -1,4 +1,4 @@
-/* Google Fonts — loaded via <link> in root.tsx for non-blocking performance */
+/* Google Fonts - loaded via <link> in root.tsx for non-blocking performance */
 
 @tailwind base;
 @tailwind components;
@@ -10,7 +10,7 @@
    mobile (a wide ticker row, a price pseudo-element at 108% width),
    which makes the whole page rubber-band sideways. `overflow-x: clip`
    stops that without turning the body into a scroll container the way
-   `overflow: hidden` would — so the sticky nav keeps working.
+   `overflow: hidden` would - so the sticky nav keeps working.
    ─────────────────────────────────────────────────────────────── */
 html,
 body {
@@ -254,7 +254,7 @@ shop-pay-button {
   display: none;
 }
 
-/* Mobile swipe carousel — desktop uses the stacked lead/rest gallery instead.
+/* Mobile swipe carousel - desktop uses the stacked lead/rest gallery instead.
    display:none keeps its lazy images from ever loading on desktop. */
 .styx-gallery-carousel {
   display: none;
@@ -282,7 +282,7 @@ shop-pay-button {
 
 /* ═══════════════════════════════════════════════════════════════
    STYX Responsive Overrides
-   Inline styles have highest specificity — !important is required.
+   Inline styles have highest specificity - !important is required.
    ═══════════════════════════════════════════════════════════════ */
 
 /* Tablet: ≤ 48em (768px) */
@@ -306,7 +306,7 @@ shop-pay-button {
     display: none !important;
   }
 
-  /* Chain length guide — stack on mobile */
+  /* Chain length guide - stack on mobile */
   .styx-chain-guide-layout {
     grid-template-columns: 1fr !important;
     padding: 0 !important;
@@ -332,7 +332,7 @@ shop-pay-button {
     display: none !important;
   }
 
-  /* Hero — full-bleed background */
+  /* Hero - full-bleed background */
   .styx-hero {
     min-height: 65vh !important;
   }
@@ -400,7 +400,7 @@ shop-pay-button {
     scroll-snap-align: start;
   }
 
-  /* Lookbook — static grid, rows of 2 on mobile */
+  /* Lookbook - static grid, rows of 2 on mobile */
   .styx-lookbook {
     padding: 80px 0 80px !important;
   }
@@ -440,7 +440,7 @@ shop-pay-button {
     padding: 60px 20px !important;
   }
 
-  /* Footer — brand column spans full width on top, 3 link groups flow 2-up below */
+  /* Footer - brand column spans full width on top, 3 link groups flow 2-up below */
   .styx-footer {
     padding: 48px 20px 32px !important;
   }
@@ -491,14 +491,14 @@ shop-pay-button {
   }
 
   /* ── Product page ── */
-  /* Breadcrumb: full trail wraps awkwardly on phones — show a single back link */
+  /* Breadcrumb: full trail wraps awkwardly on phones - show a single back link */
   .styx-breadcrumb-full {
     display: none !important;
   }
   .styx-breadcrumb-back {
     display: block !important;
   }
-  /* Color pills: three letter-spaced pills can't share one phone-width row — stack them */
+  /* Color pills: three letter-spaced pills can't share one phone-width row - stack them */
   .styx-color-pills {
     flex-direction: column !important;
   }
@@ -550,7 +550,7 @@ shop-pay-button {
   .styx-product-price {
     font-size: 32px !important;
   }
-  /* Product details grid — 2 col on tablet */
+  /* Product details grid - 2 col on tablet */
   .styx-product-specs-grid {
     grid-template-columns: 1fr !important;
     gap: 48px !important;
@@ -563,12 +563,12 @@ shop-pay-button {
   .styx-product-transparency h2 {
     font-size: 32px !important;
   }
-  /* "Every number, in the open" — single column on phones (two-up is too cramped) */
+  /* "Every number, in the open" - single column on phones (two-up is too cramped) */
   .styx-transparency-grid {
     grid-template-columns: 1fr !important;
     gap: 28px !important;
   }
-  /* Ferryman's Pact banner — stack to one column: text on top, Obol centered below;
+  /* Ferryman's Pact banner - stack to one column: text on top, Obol centered below;
      drop the heavy 56px desktop padding. Obol is the first child, so column-reverse. */
   .styx-pact-banner {
     flex-direction: column-reverse !important;
@@ -832,7 +832,7 @@ shop-pay-button {
     text-align: center !important;
   }
 
-  /* ── Compare bar — compact: count + actions only, no name chips ── */
+  /* ── Compare bar - compact: count + actions only, no name chips ── */
   .styx-compare-bar {
     padding: 10px 16px !important;
     gap: 10px !important;
@@ -1040,7 +1040,7 @@ shop-pay-button {
 }
 
 /* ───────────────────────────────────────────────────────────────
-   Skip link — visually hidden until keyboard focus, then a small
+   Skip link - visually hidden until keyboard focus, then a small
    gold-on-ink pill pinned top-left so keyboard users can jump
    straight to the main content.
    ─────────────────────────────────────────────────────────────── */
@@ -1082,7 +1082,7 @@ shop-pay-button {
 }
 
 /* ───────────────────────────────────────────────────────────────
-   Search input — gold focus ring + uppercase tracked placeholder,
+   Search input - gold focus ring + uppercase tracked placeholder,
    matching the rest of the site's inputs.
    ─────────────────────────────────────────────────────────────── */
 .styx-search-input::placeholder {
@@ -1098,7 +1098,7 @@ shop-pay-button {
 }
 
 /* ───────────────────────────────────────────────────────────────
-   Reduced motion — kill the marquee/ticker, shimmer and the other
+   Reduced motion - kill the marquee/ticker, shimmer and the other
    keyframe animations and transitions for users who ask for it.
    ─────────────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
@@ -1322,5 +1322,144 @@ shop-pay-button {
   }
   .styx-home-receipt > div > div {
     font-size: 12px !important;
+  }
+}
+
+/* ── Listing pages: mobile swipe strip + two-column grids (2026-09) ── */
+/* ──────────────────────────────────────────────────────────────────────────
+   PLP (product listing) rules: product grids + StyxProductCard.
+   Loaded after app.css. Grid rules in app.css use single-class selectors with
+   !important, so the overrides here add [data-test] / descendant specificity
+   to win regardless of load order.
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* ── Card: swipe strip (all viewports) ─────────────────────────────────── */
+.styx-card-strip {
+  scrollbar-width: none;
+}
+.styx-card-strip::-webkit-scrollbar {
+  display: none;
+}
+.styx-card-slide {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+.styx-card-dot {
+  display: block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(26, 24, 21, 0.22);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.styx-card-dot[data-active] {
+  background: #b8924a;
+  transform: scale(1.25);
+}
+
+/* ── Desktop: single image, no swipe ───────────────────────────────────── */
+@media (min-width: 769px) {
+  .styx-card-strip {
+    overflow: hidden !important;
+  }
+  /* Keep slides 2+ out of layout so their lazy images never request. */
+  .styx-card-slide + .styx-card-slide {
+    display: none;
+  }
+  .styx-card-dots {
+    display: none !important;
+  }
+}
+
+/* ── Mobile: 2-up grids + swipeable card media ─────────────────────────── */
+@media (max-width: 768px) {
+  /* Grids: exactly 2 columns, 12px gap, 16px page gutters */
+  .styx-collection-products {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+  .styx-collection-product-grid[data-test='product-grid'],
+  .styx-plp-grid[data-test='product-grid'],
+  .styx-product-related .styx-product-related-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
+  .styx-product-related {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+  .styx-plp-page {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  /* Strip: native scroll snap, hidden scrollbar. A plain scroll container
+     inside the card link: a horizontal swipe scrolls, a tap navigates. */
+  .styx-card-strip {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    touch-action: pan-x pan-y;
+  }
+  .styx-card-dots {
+    display: flex !important;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 8px;
+    justify-content: center;
+    gap: 5px;
+    pointer-events: none;
+  }
+  /* Gold badge sits bottom right; lift the dots clear of it when both show. */
+  .styx-card-gold ~ .styx-card-dots,
+  .styx-card-dots:has(~ .styx-card-gold) {
+    bottom: 34px;
+  }
+
+  /* Card chrome at ~170px wide (390px viewport, 2-up) */
+  .styx-card-swatch {
+    top: 6px !important;
+    left: 6px !important;
+    padding: 4px 8px 4px 6px !important;
+  }
+  .styx-card-actions {
+    top: 4px !important;
+    right: 4px !important;
+    gap: 2px !important;
+    opacity: 0.85 !important;
+  }
+  .styx-card-gold {
+    padding: 5px 8px !important;
+    font-size: 9px !important;
+  }
+  .styx-card-info {
+    padding-top: 10px !important;
+  }
+  .styx-card-title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    font-size: 11px !important;
+    letter-spacing: 0.04em !important;
+  }
+  .styx-card-price {
+    font-size: 16px !important;
+  }
+  .styx-card-meta {
+    flex-wrap: wrap !important;
+    row-gap: 2px;
+    font-size: 9px !important;
+  }
+  .styx-card-meta-sep {
+    display: none;
+  }
+  .styx-card-sku {
+    flex-basis: 100%;
+    overflow-wrap: anywhere;
   }
 }

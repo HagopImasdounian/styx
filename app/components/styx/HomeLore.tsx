@@ -1,4 +1,5 @@
 import {STYX, FONT} from './constants';
+import {GreekGloss} from './StyxLabel';
 import {CTAButton} from './CTAButton';
 import {Obol} from './Obol';
 import {HomeH2, Em} from './HomePrimitives';
@@ -39,9 +40,13 @@ export function HomeLore() {
             textTransform: 'uppercase',
             color: STYX.gold,
             marginBottom: 14,
+            display: 'flex',
+            alignItems: 'baseline',
+            gap: 14,
           }}
         >
-          The lore
+          <span>The lore</span>
+          <GreekGloss color={STYX.gold}>ΜΥΘΟΣ</GreekGloss>
         </div>
         <HomeH2 color={STYX.bone}>
           The only thing that <Em>crosses over</Em>.
