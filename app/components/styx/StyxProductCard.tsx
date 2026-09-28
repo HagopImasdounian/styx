@@ -364,6 +364,7 @@ export function StyxProductCard({
                 textTransform: 'uppercase',
                 color: STYX.ink,
               }}
+              className="styx-card-swatch-label"
             >
               {colorLabel}
             </span>

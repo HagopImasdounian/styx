@@ -1463,3 +1463,27 @@ shop-pay-button {
     overflow-wrap: anywhere;
   }
 }
+
+/* Two-up cards on phones: the color name collides with the action icons,
+   so keep the swatch dot and drop the text. */
+@media (max-width: 768px) {
+  .styx-card .styx-card-swatch-label {
+    display: none;
+  }
+}
+
+/* True-size pills share one row on phones instead of stacking. */
+@media (max-width: 480px) {
+  .styx-true-size-pills {
+    flex-wrap: nowrap !important;
+    width: 100%;
+  }
+  .styx-true-size-pills > * {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0 10px !important;
+    font-size: 10px !important;
+    letter-spacing: 0.08em !important;
+    justify-content: center;
+  }
+}

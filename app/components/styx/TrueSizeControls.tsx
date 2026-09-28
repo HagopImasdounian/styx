@@ -46,6 +46,7 @@ export function TrueSizeControls({
       }}
     >
       <div
+        className="styx-true-size-pills"
         style={{
           display: 'flex',
           flexWrap: 'wrap',
