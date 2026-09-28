@@ -12,6 +12,12 @@ import {
 
 import {PageHeader, Section} from '~/components/Text';
 import {StyxProductCard} from '~/components/styx/StyxProductCard';
+import {
+  GridDensityScript,
+  GridDensityToggle,
+  gridDensityClass,
+  useGridDensity,
+} from '~/components/styx/ListingControls';
 import {PRODUCT_CARD_FRAGMENT} from '~/data/fragments';
 import {seoPayload} from '~/lib/seo.server';
 import {getStyxSeoMeta} from '~/lib/seo-meta';
@@ -70,11 +76,17 @@ export const meta = ({matches}: MetaArgs<typeof loader>) => {
 
 export default function AllProducts() {
   const {products} = useLoaderData<typeof loader>();
+  const [density, setDensity] = useGridDensity();
 
   return (
-    <>
+    <div className="styx-listing-page">
       <PageHeader heading="All Products" variant="allCollections" />
       <Section>
+        <div
+          style={{display: 'flex', justifyContent: 'flex-end', marginTop: 8}}
+        >
+          <GridDensityToggle density={density} onChange={setDensity} />
+        </div>
         <Pagination connection={products}>
           {({nodes, isLoading, NextLink, PreviousLink}) => {
             const itemsMarkup = nodes.map((product: any, i: number) => (
@@ -89,16 +101,19 @@ export default function AllProducts() {
                   </PreviousLink>
                 </div>
                 <div
-                  className="styx-plp-grid"
+                  className={`styx-plp-grid ${gridDensityClass(density)}`.trim()}
                   data-test="product-grid"
                   style={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(3, 1fr)',
                     gap: 48,
                   }}
+                  // GridDensityScript may add the density classes pre-hydration
+                  suppressHydrationWarning
                 >
                   {itemsMarkup}
                 </div>
+                <GridDensityScript />
                 <div className="flex items-center justify-center mt-6">
                   <NextLink className="inline-block rounded font-medium text-center py-3 px-6 border border-primary/10 bg-contrast text-primary w-full">
                     {isLoading ? 'Loading...' : 'Next'}
@@ -109,7 +124,7 @@ export default function AllProducts() {
           }}
         </Pagination>
       </Section>
-    </>
+    </div>
   );
 }
 

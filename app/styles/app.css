@@ -1588,3 +1588,176 @@ shop-pay-button {
     transition: none !important;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Listing pages: Filter & Sort drawer, grid density, phone bottom bar
+   (2026-09). Appended block, owned by the collection/products listing routes
+   (~/components/styx/ListingControls.tsx, ListingFilterDrawer.tsx).
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Grid density ───────────────────────────────────────────────────────── */
+/* Default (no class) = today's layout: 3-up desktop, 2-up phone.
+   `.styx-grid-2up` + `.styx-grid-1up` are both added when the "large" density
+   is on; each media query below picks the one that applies. Selectors carry
+   [data-test] so they beat the earlier single-class !important rules. */
+@media (min-width: 769px) {
+  .styx-collection-product-grid.styx-grid-2up[data-test='product-grid'],
+  .styx-plp-grid.styx-grid-2up[data-test='product-grid'] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 56px !important;
+  }
+}
+@media (max-width: 768px) {
+  .styx-collection-product-grid.styx-grid-1up[data-test='product-grid'],
+  .styx-plp-grid.styx-grid-1up[data-test='product-grid'] {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 28px !important;
+  }
+  /* 1-up cards are wide enough for the full card chrome again */
+  .styx-grid-1up .styx-card .styx-card-swatch-label {
+    display: inline !important;
+  }
+  .styx-grid-1up .styx-card-title {
+    font-size: 12px !important;
+    -webkit-line-clamp: 3;
+  }
+}
+
+/* ── Toolbar: desktop shows sort + Filter & Sort + density; phones show the
+      Filter & Sort button only (bottom bar carries density) ───────────── */
+.styx-collection-active-chips {
+  display: none !important;
+}
+@media (max-width: 768px) {
+  .styx-collection-sort,
+  .styx-collection-density,
+  .styx-collection-filters {
+    display: none !important;
+  }
+  /* Count left, Filter & Sort right, on one row */
+  .styx-collection-toolbar > div:first-child {
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+  }
+  .styx-collection-toolbar {
+    gap: 10px !important;
+  }
+  .styx-collection-active-chips {
+    display: flex !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+  .styx-collection-active-chips::-webkit-scrollbar {
+    display: none;
+  }
+  .styx-collection-active-chips > * {
+    flex-shrink: 0;
+  }
+}
+
+/* ── Phone bottom bar ───────────────────────────────────────────────────── */
+.styx-listing-bottombar {
+  display: none;
+}
+@media (max-width: 768px) {
+  .styx-listing-bottombar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 60; /* above the sticky toolbar (5) and nav (50/51) */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 16px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    background: #efeae0; /* STYX.bone */
+    border-top: 1px solid rgba(26, 24, 21, 0.12);
+  }
+  .styx-listing-bottombar-filter {
+    flex: 1 1 auto;
+    justify-content: center;
+    height: 40px !important;
+    font-size: 11px !important;
+  }
+  .styx-listing-bottombar [role='group'] button {
+    width: 40px !important;
+    height: 40px !important;
+  }
+  /* Keep the footer's last line clear of the fixed bar */
+  .styx-listing-page {
+    padding-bottom: calc(62px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* ── Filter & Sort drawer ───────────────────────────────────────────────── */
+@keyframes styx-fsd-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes styx-fsd-slide-right {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+@keyframes styx-fsd-slide-up {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+.styx-fsd-backdrop {
+  animation: styx-fsd-fade 0.2s ease both;
+}
+/* Desktop: right-side drawer */
+.styx-fsd-panel {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(420px, 100vw);
+  animation: styx-fsd-slide-right 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+/* Phones: bottom sheet */
+@media (max-width: 768px) {
+  .styx-fsd-panel {
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    max-height: 88dvh;
+    border-left: none !important;
+    border-top: 1px solid rgba(26, 24, 21, 0.12);
+    animation-name: styx-fsd-slide-up;
+  }
+}
+.styx-fsd-value:focus-visible,
+.styx-fsd-panel button:focus-visible,
+.styx-listing-bottombar button:focus-visible {
+  outline: 2px solid #b8924a;
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .styx-fsd-backdrop,
+  .styx-fsd-panel {
+    animation: none !important;
+  }
+}

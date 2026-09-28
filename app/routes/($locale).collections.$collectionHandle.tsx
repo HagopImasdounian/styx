@@ -1,4 +1,10 @@
-import {useEffect, useMemo} from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react';
 import {type MetaArgs, type LoaderFunctionArgs} from 'react-router';
 import {data, useLoaderData, useNavigate, useSearchParams} from 'react-router';
 import {useInView} from 'react-intersection-observer';
@@ -27,6 +33,30 @@ import {
   Obol,
 } from '~/components/styx';
 import {trackCollectionView} from '~/components/GTMDataLayer';
+import {
+  COLOR_HEX,
+  METAL_COLLECTION_COLOR,
+  activeFacetChips,
+  applyFacets,
+  countActive,
+  emptySelection,
+  explodeByColor,
+  facetOptions,
+  parseFacetSelection,
+  toggleFacetValue,
+  writeFacetSelection,
+  type FacetKey,
+  type FacetSelection,
+} from '~/components/styx/listingFilters';
+import {
+  FilterSortButton,
+  GridDensityScript,
+  GridDensityToggle,
+  ListingBottomBar,
+  gridDensityClass,
+  useGridDensity,
+} from '~/components/styx/ListingControls';
+import {ListingFilterDrawer} from '~/components/styx/ListingFilterDrawer';
 
 /* ─── Chain type intros + journal links ─── */
 const CHAIN_INTROS: Record<
@@ -166,13 +196,16 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     [] as ProductFilter[],
   );
 
-  // Client-side pills (type/color/karat/width/construction) have NO working
-  // Storefront API filter on this store (productType/tag/variantOption/
-  // productMetafield filters are silently ignored without S&D definitions).
-  // When any is active we bypass pagination and fetch the FULL collection
-  // (≤ ~115 products) so client filtering and counts are complete.
-  const clientFilters = resolveClientFilters(searchParams, collectionHandle);
-  const fullSet = clientFilters.any;
+  // Client-side facets (type/color/karat/width/length/price/construction)
+  // have NO working Storefront API filter on this store (productType/tag/
+  // variantOption/productMetafield filters are silently ignored without S&D
+  // definitions). When any is active we bypass pagination and fetch the FULL
+  // collection (≤ ~115 products) so client filtering and counts are complete.
+  const selection = parseFacetSelection(
+    searchParams,
+    METAL_COLLECTION_COLOR[collectionHandle] ?? null,
+  );
+  const fullSet = countActive(selection) > 0;
 
   const paginationVariables = fullSet
     ? {first: FULL_SET_PAGE_SIZE}
@@ -278,23 +311,16 @@ const SORT_OPTIONS: {label: string; value: SortParam | 'default'}[] = [
   {label: 'Popular', value: 'best-selling'},
 ];
 
-/* ═══════════════════════════════════════════════════════════════
-   Filter helpers, extract available filter values from products
-   ═══════════════════════════════════════════════════════════════ */
+// Plain-word sort labels for the drawer (arrows are fine in a segmented
+// control, less so in a radio list).
+const DRAWER_SORT_OPTIONS = [
+  {label: 'Price, low to high', value: 'price-low-high'},
+  {label: 'Price, high to low', value: 'price-high-low'},
+  {label: 'Newest', value: 'newest'},
+  {label: 'Popular', value: 'best-selling'},
+];
 
-const COLOR_HEX: Record<string, string> = {
-  'Yellow Gold': '#C5A059',
-  'Rose Gold': '#C08572',
-  'White Gold': '#D4D2CC',
-};
-
-// Metal collections pre-select their color filter so e.g. /collections/white-gold
-// opens showing only white-gold variants.
-const METAL_COLLECTION_COLOR: Record<string, string> = {
-  'yellow-gold': 'Yellow Gold',
-  'white-gold': 'White Gold',
-  'rose-gold': 'Rose Gold',
-};
+const DEFAULT_SORT = 'price-low-high';
 
 /* ═══════════════════════════════════════════════════════════════
    Filter state lives in the URL (shareable / bookmarkable / back-safe)
@@ -302,206 +328,28 @@ const METAL_COLLECTION_COLOR: Record<string, string> = {
    Two kinds of filters:
    • SERVER filters, `filter.*` params parsed by the loader into Storefront
      API ProductFilters. Only `price` (and `available`) have Search &
-     Discovery definitions on this store, so only those work server-side.
-   • CLIENT pills, `type`, `color`, `karat`, `width`, `construction`
-     params. The API silently ignores productType/tag/variantOption/
-     productMetafield filters here, so these are applied client-side over
-     the FULL collection set (loader fetches first: 250 when any is active).
+     Discovery definitions on this store, so only those work server-side
+     (the mega menu's price links use `filter.price`).
+   • CLIENT facets, `type`, `color`, `karat`, `width`, `length`, `price`,
+     `construction` params (comma-separated multi-values). The API silently
+     ignores productType/tag/variantOption/productMetafield filters here, so
+     these are applied client-side over the FULL collection set (loader
+     fetches first: 250 when any is active). Model + URL codec live in
+     ~/components/styx/listingFilters.ts.
    ═══════════════════════════════════════════════════════════════ */
 
 // Collections max out around ~115 products, so one 250-product page always
-// covers the complete set when client-side pill filtering is active.
+// covers the complete set when client-side facet filtering is active.
 const FULL_SET_PAGE_SIZE = 250;
 
-const CLIENT_FILTER_KEYS = [
+// Facets that get inline quick-filter pills on desktop (the drawer has all).
+const QUICK_FACETS: FacetKey[] = [
   'type',
   'color',
   'karat',
   'width',
   'construction',
-] as const;
-
-type ClientFilters = {
-  type: string | null;
-  color: string | null;
-  karat: string | null;
-  width: string | null;
-  construction: string | null;
-  any: boolean;
-};
-
-function resolveClientFilters(
-  searchParams: URLSearchParams,
-  collectionHandle: string,
-): ClientFilters {
-  const get = (key: string) => {
-    const v = searchParams.get(key);
-    return v && v !== 'all' ? v : null;
-  };
-  // Metal collections preset their color; `color=all` is the explicit
-  // "preset toggled off" sentinel.
-  const presetColor = METAL_COLLECTION_COLOR[collectionHandle] ?? null;
-  const colorRaw = searchParams.get('color');
-  const color = colorRaw === 'all' ? null : colorRaw || presetColor;
-
-  const values = {
-    type: get('type'),
-    color,
-    karat: get('karat'),
-    width: get('width'),
-    construction: get('construction'),
-  };
-  return {...values, any: Object.values(values).some(Boolean)};
-}
-
-// Thickness ranges for filter pills
-const THICKNESS_RANGES = [
-  {label: 'Under 1mm', min: 0, max: 1},
-  {label: '1–2mm', min: 1, max: 2},
-  {label: '2–3mm', min: 2, max: 3},
-  {label: '3–5mm', min: 3, max: 5},
-  {label: '5–8mm', min: 5, max: 8},
-  {label: '8–10mm', min: 8, max: 10},
-  {label: '10mm+', min: 10, max: 999},
 ];
-
-function getThicknessMm(title: string): number | null {
-  const m = title?.match(/(\d+(?:\.\d+)?)\s*mm/i);
-  return m ? parseFloat(m[1]) : null;
-}
-
-// Karat lives in the product title (separate products per karat, not a variant
-// option), so parse it from there, falling back to a Karat variant option if
-// one ever exists.
-function getKaratLabel(title: string): string | null {
-  if (/18\s*k/i.test(title)) return '18K';
-  if (/14\s*k/i.test(title)) return '14K';
-  if (/10\s*k/i.test(title)) return '10K';
-  return null;
-}
-
-function cardKarat(product: any, variant: any): string | null {
-  const opt = variant?.selectedOptions?.find((o: any) => o.name === 'Karat');
-  if (opt?.value) {
-    const m = String(opt.value).match(/(\d+)/);
-    return m ? `${m[1]}K` : opt.value;
-  }
-  return getKaratLabel(product?.title || '');
-}
-
-// Normalize construction to a single canonical value so casing/whitespace
-// differences ("solid" vs "Solid") don't create a phantom extra filter pill.
-function normalizeConstruction(product: any): string {
-  const raw =
-    product?.chain_construction?.value ||
-    (/hollow/i.test(product?.title || '') ? 'Hollow' : 'Solid');
-  const v = String(raw).trim().toLowerCase();
-  if (v.includes('hollow')) return 'Hollow';
-  if (v.includes('solid')) return 'Solid';
-  return v ? v.charAt(0).toUpperCase() + v.slice(1) : 'Solid';
-}
-
-// A piece is a bracelet if its title says so (every bracelet in the catalog
-// has "Bracelet" in the title; necklaces never do).
-function cardType(product: any): 'Necklace' | 'Bracelet' {
-  return /bracelet/i.test(product?.title || '') ? 'Bracelet' : 'Necklace';
-}
-
-function extractFilters(cards: ReturnType<typeof explodeByColor>) {
-  const colors = new Set<string>();
-  const karats = new Set<string>();
-  const thicknessRangesPresent = new Set<string>();
-  const constructions = new Set<string>();
-  const types = new Set<string>();
-
-  for (const {product, variantIndex} of cards) {
-    const variant = product.variants?.nodes?.[variantIndex];
-    if (!variant) continue;
-
-    types.add(cardType(product));
-
-    for (const opt of variant.selectedOptions ?? []) {
-      if (opt.name === 'Color') colors.add(opt.value);
-    }
-
-    // Karat comes from the title (separate products per karat)
-    const k = cardKarat(product, variant);
-    if (k) karats.add(k);
-
-    // Map thickness to range bucket
-    const mm = getThicknessMm(product.title || '');
-    if (mm !== null) {
-      for (const range of THICKNESS_RANGES) {
-        if (mm >= range.min && mm < range.max) {
-          thicknessRangesPresent.add(range.label);
-          break;
-        }
-      }
-    }
-
-    // Construction, normalized so we only ever surface distinct builds
-    // (the Solid/Hollow filter then only shows when both are actually present)
-    constructions.add(normalizeConstruction(product));
-  }
-
-  // Return thickness ranges in order, only those that have products
-  const thicknesses = THICKNESS_RANGES.filter((r) =>
-    thicknessRangesPresent.has(r.label),
-  ).map((r) => r.label);
-
-  return {
-    colors: [...colors].sort(),
-    karats: [...karats].sort((a, b) => parseInt(a) - parseInt(b)),
-    thicknesses,
-    constructions: [...constructions].sort(),
-    // Necklace first, Bracelet second, only those actually present
-    types: ['Necklace', 'Bracelet'].filter((t) => types.has(t)),
-  };
-}
-
-function applyFilters(
-  cards: ReturnType<typeof explodeByColor>,
-  filters: {
-    color: string | null;
-    karat: string | null;
-    thickness: string | null;
-    construction: string | null;
-    type?: string | null;
-  },
-) {
-  return cards.filter(({product, variantIndex}) => {
-    const variant = product.variants?.nodes?.[variantIndex];
-    if (!variant) return false;
-
-    if (filters.type) {
-      if (cardType(product) !== filters.type) return false;
-    }
-
-    if (filters.color) {
-      const colorOpt = variant.selectedOptions?.find(
-        (o: any) => o.name === 'Color',
-      );
-      if (colorOpt?.value !== filters.color) return false;
-    }
-
-    if (filters.karat) {
-      if (cardKarat(product, variant) !== filters.karat) return false;
-    }
-
-    if (filters.thickness) {
-      const mm = getThicknessMm(product.title || '');
-      if (mm === null) return false;
-      const range = THICKNESS_RANGES.find((r) => r.label === filters.thickness);
-      if (!range || mm < range.min || mm >= range.max) return false;
-    }
-
-    if (filters.construction) {
-      if (normalizeConstruction(product) !== filters.construction) return false;
-    }
-
-    return true;
-  });
-}
 
 /* ═══════════════════════════════════════════════════════════════
    Filter pill component
@@ -592,24 +440,25 @@ export default function Collection() {
 
   const {ref, inView} = useInView();
   const [searchParams, setSearchParams] = useSearchParams();
-  const currentSort = searchParams.get('sort') || 'price-low-high';
+  const currentSort = searchParams.get('sort') || DEFAULT_SORT;
   const collectionHandle = (collection as any).handle as string;
   const presetColor = METAL_COLLECTION_COLOR[collectionHandle] ?? null;
 
   // All filter state is derived from the URL, shareable, bookmarkable,
-  // back-button safe. Pills toggle their param via setSearchParams below.
-  const clientFilters = resolveClientFilters(searchParams, collectionHandle);
-  const {
-    type: filterType,
-    color: filterColor,
-    karat: filterKarat,
-    width: filterThickness,
-    construction: filterConstruction,
-  } = clientFilters;
+  // back-button safe. Pills and the drawer write it via setSearchParams.
+  const selection = useMemo(
+    () => parseFacetSelection(searchParams, presetColor),
+    [searchParams, presetColor],
+  );
+
+  // Drawer + grid density UI state
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const closeDrawer = useCallback(() => setDrawerOpen(false), []);
+  const [density, setDensity] = useGridDensity();
 
   // Complete collection set (post server filters): in full-set mode the main
   // products query holds everything; otherwise use the lightweight index.
-  // Drives the result count + which pills are shown, never just loaded pages.
+  // Drives the result count, facet options and counts, never just loaded pages.
   const fullSetCards = useMemo(() => {
     const nodes =
       fullSet || !allProductIndex ? collection.products.nodes : allProductIndex;
@@ -617,52 +466,39 @@ export default function Collection() {
   }, [fullSet, allProductIndex, collection.products.nodes]);
 
   const availableFilters = useMemo(
-    () => extractFilters(fullSetCards),
+    () => facetOptions(fullSetCards),
     [fullSetCards],
   );
 
   // Exact count over the COMPLETE filtered set (not loaded pages)
   const filteredCount = useMemo(
-    () =>
-      applyFilters(fullSetCards, {
-        color: filterColor,
-        karat: filterKarat,
-        thickness: filterThickness,
-        construction: filterConstruction,
-        type: filterType,
-      }).length,
-    [
-      fullSetCards,
-      filterColor,
-      filterKarat,
-      filterThickness,
-      filterConstruction,
-      filterType,
-    ],
+    () => applyFacets(fullSetCards, selection).length,
+    [fullSetCards, selection],
   );
 
-  const activeFilterCount =
-    (filterColor ? 1 : 0) +
-    (filterKarat ? 1 : 0) +
-    (filterThickness ? 1 : 0) +
-    (filterConstruction ? 1 : 0) +
-    (filterType ? 1 : 0) +
-    appliedFilters.length;
+  const activeFilterCount = countActive(selection) + appliedFilters.length;
 
-  // Toggle a client pill: write/remove its URL param (resets pagination)
-  const setClientFilter = (key: string, value: string | null) => {
-    const params = new URLSearchParams(searchParams);
-    params.delete('cursor');
-    params.delete('direction');
-    if (value === null) {
-      // `color=all` keeps a metal collection's preset from re-applying
-      if (key === 'color' && presetColor) params.set('color', 'all');
-      else params.delete(key);
-    } else {
-      params.set(key, value);
-    }
+  const commitParams = (params: URLSearchParams) => {
     setSearchParams(params, {preventScrollReset: true});
   };
+
+  // Replace the whole facet selection (drawer apply, chip removal, pills)
+  const applySelection = (next: FacetSelection, sort?: string) => {
+    const params = writeFacetSelection(
+      new URLSearchParams(searchParams),
+      next,
+      presetColor,
+    );
+    if (sort !== undefined) {
+      if (sort === DEFAULT_SORT) params.delete('sort');
+      else params.set('sort', sort);
+    }
+    commitParams(params);
+  };
+
+  // Toggle one facet value (quick pills + active chips)
+  const toggleFacet = (key: FacetKey, value: string) =>
+    applySelection(toggleFacetValue(selection, key, value));
 
   // Remove a server-side `filter.*` param (e.g. the mobile menu's price bucket)
   const removeServerFilter = (filter: ProductFilter) => {
@@ -672,20 +508,32 @@ export default function Collection() {
     });
     params.delete('cursor');
     params.delete('direction');
-    setSearchParams(params, {preventScrollReset: true});
+    commitParams(params);
   };
 
   const clearAllFilters = () => {
-    const params = new URLSearchParams(searchParams);
-    for (const key of CLIENT_FILTER_KEYS) params.delete(key);
+    const params = writeFacetSelection(
+      new URLSearchParams(searchParams),
+      emptySelection(),
+      presetColor,
+    );
     for (const key of [...params.keys()]) {
       if (key.startsWith(FILTER_URL_PREFIX)) params.delete(key);
     }
+    commitParams(params);
+  };
+
+  const setSort = (value: string) => {
+    const params = new URLSearchParams(searchParams);
+    if (value === DEFAULT_SORT) params.delete('sort');
+    else params.set('sort', value);
+    // sort changes restart pagination
     params.delete('cursor');
     params.delete('direction');
-    if (presetColor) params.set('color', 'all');
-    setSearchParams(params, {preventScrollReset: true});
+    commitParams(params);
   };
+
+  const activeChips = activeFacetChips(selection);
 
   // Chain close-up cutout (transparent PNG) for the hero, from the
   // collection's custom.cutout_image metafield, set in Shopify admin
@@ -714,7 +562,10 @@ export default function Collection() {
   const chapterKicker = c.chapter_kicker?.value || null;
 
   return (
-    <div style={{background: STYX.bone, minHeight: '100vh'}}>
+    <div
+      className="styx-listing-page"
+      style={{background: STYX.bone, minHeight: '100vh'}}
+    >
       <GoldTicker />
       <StyxNav />
 
@@ -981,50 +832,59 @@ export default function Collection() {
             </div>
 
             <div
-              className="styx-collection-sort"
-              style={{display: 'flex', alignItems: 'center', gap: 0}}
+              className="styx-collection-tools"
+              style={{display: 'flex', alignItems: 'center', gap: 12}}
             >
-              {SORT_OPTIONS.map((opt, i) => {
-                const isActive = currentSort === opt.value;
-                return (
-                  <button
-                    key={opt.value}
-                    onClick={() => {
-                      const params = new URLSearchParams(searchParams);
-                      if (opt.value === 'price-low-high') {
-                        params.delete('sort');
-                      } else {
-                        params.set('sort', opt.value);
-                      }
-                      // sort changes restart pagination
-                      params.delete('cursor');
-                      params.delete('direction');
-                      setSearchParams(params, {preventScrollReset: true});
-                    }}
-                    style={{
-                      fontFamily: FONT.inter,
-                      fontSize: 10,
-                      fontWeight: isActive ? 600 : 400,
-                      letterSpacing: '0.06em',
-                      textTransform: 'uppercase',
-                      color: isActive ? STYX.bone : STYX.silt,
-                      background: isActive ? STYX.ink : 'transparent',
-                      border: `1px solid ${isActive ? STYX.ink : STYX.line}`,
-                      borderRight:
-                        i < SORT_OPTIONS.length - 1 ? 'none' : undefined,
-                      padding: '7px 14px',
-                      cursor: 'pointer',
-                      transition: 'all 0.15s ease',
-                    }}
-                  >
-                    {opt.label}
-                  </button>
-                );
-              })}
+              <div
+                className="styx-collection-sort"
+                style={{display: 'flex', alignItems: 'center', gap: 0}}
+              >
+                {SORT_OPTIONS.map((opt, i) => {
+                  const isActive = currentSort === opt.value;
+                  return (
+                    <button
+                      key={opt.value}
+                      onClick={() => setSort(opt.value)}
+                      aria-pressed={isActive}
+                      style={{
+                        fontFamily: FONT.inter,
+                        fontSize: 10,
+                        fontWeight: isActive ? 600 : 400,
+                        letterSpacing: '0.06em',
+                        textTransform: 'uppercase',
+                        color: isActive ? STYX.bone : STYX.silt,
+                        background: isActive ? STYX.ink : 'transparent',
+                        border: `1px solid ${isActive ? STYX.ink : STYX.line}`,
+                        borderRight:
+                          i < SORT_OPTIONS.length - 1 ? 'none' : undefined,
+                        padding: '7px 14px',
+                        height: 32,
+                        cursor: 'pointer',
+                        transition: 'all 0.15s ease',
+                      }}
+                    >
+                      {opt.label}
+                    </button>
+                  );
+                })}
+              </div>
+              <FilterSortButton
+                activeCount={activeFilterCount}
+                open={drawerOpen}
+                onClick={() => setDrawerOpen(true)}
+                className="styx-collection-filter-btn"
+              />
+              <GridDensityToggle
+                density={density}
+                onChange={setDensity}
+                className="styx-collection-density"
+              />
             </div>
           </div>
 
-          {/* Row 2: Filter pills */}
+          {/* Row 2 (desktop): quick-filter pills for the common facets, plus
+              removable chips for anything else that is active (length, price,
+              server-side filter.price). Hidden on phones by CSS. */}
           <div
             className="styx-collection-filters"
             style={{
@@ -1034,169 +894,57 @@ export default function Collection() {
               flexWrap: 'wrap',
             }}
           >
-            {/* Type filter (Necklaces / Bracelets) */}
-            {availableFilters.types.length > 1 && (
-              <div style={{display: 'flex', alignItems: 'center', gap: 8}}>
-                <span
-                  style={{
-                    fontFamily: FONT.cinzel,
-                    fontSize: 9,
-                    letterSpacing: '0.2em',
-                    textTransform: 'uppercase',
-                    color: STYX.silt2,
-                    marginRight: 4,
-                  }}
+            {QUICK_FACETS.map((key) => {
+              const opts = availableFilters[key];
+              if (opts.length < 2) return null;
+              return (
+                <div
+                  key={key}
+                  style={{display: 'flex', alignItems: 'center', gap: 8}}
                 >
-                  Type
-                </span>
-                {availableFilters.types.map((t) => (
-                  <FilterPill
-                    key={t}
-                    label={t === 'Necklace' ? 'Necklaces' : 'Bracelets'}
-                    active={filterType === t}
-                    onClick={() =>
-                      setClientFilter('type', filterType === t ? null : t)
-                    }
-                  />
-                ))}
-              </div>
-            )}
+                  <FacetHeading>{FACET_TITLE_SHORT[key]}</FacetHeading>
+                  {opts.map((o) => (
+                    <FilterPill
+                      key={o.value}
+                      label={
+                        key === 'color' ? o.value.replace(' Gold', '') : o.label
+                      }
+                      active={selection[key].includes(o.value)}
+                      swatch={key === 'color' ? COLOR_HEX[o.value] : undefined}
+                      onClick={() => toggleFacet(key, o.value)}
+                    />
+                  ))}
+                </div>
+              );
+            })}
 
-            {/* Color filters */}
-            {availableFilters.colors.length > 1 && (
-              <div style={{display: 'flex', alignItems: 'center', gap: 8}}>
-                <span
-                  style={{
-                    fontFamily: FONT.cinzel,
-                    fontSize: 9,
-                    letterSpacing: '0.2em',
-                    textTransform: 'uppercase',
-                    color: STYX.silt2,
-                    marginRight: 4,
-                  }}
+            {/* Active length / price facets (no quick pills), click to remove */}
+            {(['length', 'price'] as FacetKey[]).map((key) =>
+              selection[key].length > 0 ? (
+                <div
+                  key={key}
+                  style={{display: 'flex', alignItems: 'center', gap: 8}}
                 >
-                  Metal
-                </span>
-                {availableFilters.colors.map((color) => (
-                  <FilterPill
-                    key={color}
-                    label={color.replace(' Gold', '')}
-                    active={filterColor === color}
-                    swatch={COLOR_HEX[color]}
-                    onClick={() =>
-                      setClientFilter(
-                        'color',
-                        filterColor === color ? null : color,
-                      )
-                    }
-                  />
-                ))}
-              </div>
-            )}
-
-            {/* Karat filters */}
-            {availableFilters.karats.length > 1 && (
-              <div style={{display: 'flex', alignItems: 'center', gap: 8}}>
-                <span
-                  style={{
-                    fontFamily: FONT.cinzel,
-                    fontSize: 9,
-                    letterSpacing: '0.2em',
-                    textTransform: 'uppercase',
-                    color: STYX.silt2,
-                    marginRight: 4,
-                  }}
-                >
-                  Karat
-                </span>
-                {availableFilters.karats.map((k) => (
-                  <FilterPill
-                    key={k}
-                    label={k}
-                    active={filterKarat === k}
-                    onClick={() =>
-                      setClientFilter('karat', filterKarat === k ? null : k)
-                    }
-                  />
-                ))}
-              </div>
-            )}
-
-            {/* Thickness filters */}
-            {availableFilters.thicknesses.length > 1 && (
-              <div style={{display: 'flex', alignItems: 'center', gap: 8}}>
-                <span
-                  style={{
-                    fontFamily: FONT.cinzel,
-                    fontSize: 9,
-                    letterSpacing: '0.2em',
-                    textTransform: 'uppercase',
-                    color: STYX.silt2,
-                    marginRight: 4,
-                  }}
-                >
-                  Width
-                </span>
-                {availableFilters.thicknesses.map((t) => (
-                  <FilterPill
-                    key={t}
-                    label={t}
-                    active={filterThickness === t}
-                    onClick={() =>
-                      setClientFilter('width', filterThickness === t ? null : t)
-                    }
-                  />
-                ))}
-              </div>
-            )}
-
-            {/* Construction filters (Hollow / Solid) */}
-            {availableFilters.constructions.length > 1 && (
-              <div style={{display: 'flex', alignItems: 'center', gap: 8}}>
-                <span
-                  style={{
-                    fontFamily: FONT.cinzel,
-                    fontSize: 9,
-                    letterSpacing: '0.2em',
-                    textTransform: 'uppercase',
-                    color: STYX.silt2,
-                    marginRight: 4,
-                  }}
-                >
-                  Build
-                </span>
-                {availableFilters.constructions.map((c) => (
-                  <FilterPill
-                    key={c}
-                    label={c}
-                    active={filterConstruction === c}
-                    onClick={() =>
-                      setClientFilter(
-                        'construction',
-                        filterConstruction === c ? null : c,
-                      )
-                    }
-                  />
-                ))}
-              </div>
+                  <FacetHeading>{FACET_TITLE_SHORT[key]}</FacetHeading>
+                  {activeChips
+                    .filter((c) => c.key === key)
+                    .map((c) => (
+                      <FilterPill
+                        key={c.value}
+                        label={`${c.label} ✕`}
+                        active
+                        onClick={() => toggleFacet(c.key, c.value)}
+                      />
+                    ))}
+                </div>
+              ) : null,
             )}
 
             {/* Active server-side filters (e.g. price bucket from the
                 mobile menu), click to remove */}
             {appliedFilters.length > 0 && (
               <div style={{display: 'flex', alignItems: 'center', gap: 8}}>
-                <span
-                  style={{
-                    fontFamily: FONT.cinzel,
-                    fontSize: 9,
-                    letterSpacing: '0.2em',
-                    textTransform: 'uppercase',
-                    color: STYX.silt2,
-                    marginRight: 4,
-                  }}
-                >
-                  Price
-                </span>
+                <FacetHeading>Price</FacetHeading>
                 {appliedFilters.map(({label, filter}) => (
                   <FilterPill
                     key={`${label}-${JSON.stringify(filter)}`}
@@ -1208,6 +956,38 @@ export default function Collection() {
               </div>
             )}
           </div>
+
+          {/* Row 3 (phones): active filters as removable chips. Hidden on
+              desktop by CSS, where the pill row already shows state. */}
+          {(activeChips.length > 0 || appliedFilters.length > 0) && (
+            <div
+              className="styx-collection-active-chips"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                flexWrap: 'nowrap',
+              }}
+              aria-label="Active filters"
+            >
+              {activeChips.map((c) => (
+                <FilterPill
+                  key={`${c.key}:${c.value}`}
+                  label={`${c.label} ✕`}
+                  active
+                  onClick={() => toggleFacet(c.key, c.value)}
+                />
+              ))}
+              {appliedFilters.map(({label, filter}) => (
+                <FilterPill
+                  key={`srv-${label}-${JSON.stringify(filter)}`}
+                  label={`${label} ✕`}
+                  active
+                  onClick={() => removeServerFilter(filter)}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -1259,12 +1039,12 @@ export default function Collection() {
               nextPageUrl={nextPageUrl}
               hasNextPage={hasNextPage}
               state={state}
-              filterColor={filterColor}
-              filterKarat={filterKarat}
-              filterThickness={filterThickness}
-              filterConstruction={filterConstruction}
-              filterType={filterType}
+              selection={selection}
+              gridClass={gridDensityClass(density)}
             />
+            {/* Applies the stored grid density before hydration (no flash).
+                Must come after the grid in DOM order. */}
+            <GridDensityScript />
             <div
               style={{
                 display: 'flex',
@@ -1441,46 +1221,58 @@ export default function Collection() {
       />
 
       <StyxFooter />
+
+      {/* Phone-only floating toolbar (hidden while the drawer is open) */}
+      <ListingBottomBar
+        activeCount={activeFilterCount}
+        onOpenFilters={() => setDrawerOpen(true)}
+        density={density}
+        onDensity={setDensity}
+        hidden={drawerOpen}
+      />
+
+      <ListingFilterDrawer
+        open={drawerOpen}
+        onClose={closeDrawer}
+        cards={fullSetCards}
+        selection={selection}
+        sort={currentSort}
+        sortOptions={DRAWER_SORT_OPTIONS}
+        onApply={(next, sort) => {
+          applySelection(next, sort);
+          setDrawerOpen(false);
+        }}
+      />
     </div>
   );
 }
 
-/**
- * Explode products into per-color-variant cards.
- * If a product has Color options (Yellow Gold, Rose Gold, White Gold),
- * each color gets its own card so the customer sees every variation.
- * Products without a Color option render as a single card.
- */
-function explodeByColor(products: any[]) {
-  const cards: Array<{product: any; variantIndex: number; key: string}> = [];
-  for (const product of products) {
-    const variants = product.variants?.nodes ?? [];
-    // Find all unique Color values and their first variant index
-    const seenColors = new Map<string, number>();
-    for (let i = 0; i < variants.length; i++) {
-      const colorOpt = variants[i].selectedOptions?.find(
-        (o: any) => o.name.toLowerCase() === 'color',
-      );
-      const color = colorOpt?.value || '__default__';
-      if (!seenColors.has(color)) {
-        seenColors.set(color, i);
-      }
-    }
-    if (seenColors.size <= 1) {
-      // No Color option or single color, one card
-      cards.push({product, variantIndex: 0, key: product.id});
-    } else {
-      // One card per color
-      for (const [color, idx] of seenColors) {
-        cards.push({
-          product,
-          variantIndex: idx,
-          key: `${product.id}-${color}`,
-        });
-      }
-    }
-  }
-  return cards;
+// Short facet headings for the inline pill row
+const FACET_TITLE_SHORT: Record<FacetKey, string> = {
+  type: 'Type',
+  color: 'Metal',
+  karat: 'Karat',
+  width: 'Width',
+  length: 'Length',
+  price: 'Price',
+  construction: 'Build',
+};
+
+function FacetHeading({children}: {children: ReactNode}) {
+  return (
+    <span
+      style={{
+        fontFamily: FONT.cinzel,
+        fontSize: 9,
+        letterSpacing: '0.2em',
+        textTransform: 'uppercase',
+        color: STYX.silt2,
+        marginRight: 4,
+      }}
+    >
+      {children}
+    </span>
+  );
 }
 
 function ProductsLoadedOnScroll({
@@ -1489,22 +1281,16 @@ function ProductsLoadedOnScroll({
   nextPageUrl,
   hasNextPage,
   state,
-  filterColor,
-  filterKarat,
-  filterThickness,
-  filterConstruction,
-  filterType,
+  selection,
+  gridClass,
 }: {
   nodes: any;
   inView: boolean;
   nextPageUrl: string;
   hasNextPage: boolean;
   state: any;
-  filterColor: string | null;
-  filterKarat: string | null;
-  filterThickness: string | null;
-  filterConstruction: string | null;
-  filterType: string | null;
+  selection: FacetSelection;
+  gridClass: string;
 }) {
   const navigate = useNavigate();
 
@@ -1518,14 +1304,7 @@ function ProductsLoadedOnScroll({
     }
   }, [inView, navigate, state, nextPageUrl, hasNextPage]);
 
-  const allCards = explodeByColor(nodes);
-  const cards = applyFilters(allCards, {
-    color: filterColor,
-    karat: filterKarat,
-    thickness: filterThickness,
-    construction: filterConstruction,
-    type: filterType,
-  });
+  const cards = applyFacets(explodeByColor(nodes), selection);
 
   if (cards.length === 0) {
     return (
@@ -1563,13 +1342,15 @@ function ProductsLoadedOnScroll({
 
   return (
     <div
-      className="styx-collection-product-grid"
+      className={`styx-collection-product-grid ${gridClass}`.trim()}
       style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(3, 1fr)',
         gap: 48,
       }}
       data-test="product-grid"
+      // GridDensityScript may add the density classes before hydration
+      suppressHydrationWarning
     >
       {cards.map(({product, variantIndex, key}, i) => (
         <StyxProductCard
@@ -1679,6 +1460,9 @@ const COLLECTION_QUERY = `#graphql
           }
           variants(first: 30) {
             nodes {
+              price {
+                amount
+              }
               selectedOptions {
                 name
                 value
