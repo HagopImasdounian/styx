@@ -53,6 +53,7 @@ export const PRODUCT_CARD_FRAGMENT = `#graphql
     variants(first: 30) {
       nodes {
         id
+        sku
         availableForSale
         image {
           url

@@ -784,6 +784,20 @@ export default function Product() {
           >
             The {title}
           </h1>
+          {selectedVariant?.sku && (
+            <div
+              style={{
+                fontFamily: FONT.mono,
+                fontSize: 11,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                color: STYX.silt,
+                marginTop: 8,
+              }}
+            >
+              Model {selectedVariant.sku}
+            </div>
+          )}
           {yearInvented && (
             <div
               style={{
@@ -879,10 +893,10 @@ export default function Product() {
                         <div
                           style={{
                             fontFamily: FONT.cinzel,
-                            fontSize: 9,
+                            fontSize: 10,
                             letterSpacing: '0.25em',
                             textTransform: 'uppercase',
-                            color: STYX.silt,
+                            color: STYX.ink,
                             marginBottom: 4,
                           }}
                         >
@@ -1627,6 +1641,7 @@ export default function Product() {
               {[
                 {label: 'Chain Style', value: chainStyle},
                 {label: 'Thickness', value: chainThickness},
+                {label: 'Model', value: selectedVariant?.sku || null},
                 {label: 'Construction', value: chainConstruction},
                 {
                   label: 'Weight',

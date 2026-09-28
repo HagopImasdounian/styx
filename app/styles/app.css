@@ -16,6 +16,10 @@ html,
 body {
   overflow-x: clip;
   max-width: 100%;
+  /* Slashed zero so 0 and 8 never read alike in small mono/receipt text
+     (JetBrains Mono ships a dotted zero by default). Inherited everywhere;
+     fonts without the feature ignore it. */
+  font-feature-settings: 'zero' 1;
 }
 
 /* STYX Keyframe Animations */

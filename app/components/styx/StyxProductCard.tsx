@@ -8,6 +8,7 @@ import {PrintListButton} from './PrintListButton';
 import {WishlistButton} from './WishlistButton';
 
 type VariantNode = {
+  sku?: string | null;
   id: string;
   availableForSale?: boolean;
   image?: {
@@ -385,6 +386,14 @@ export function StyxProductCard({
           <span>{karat}k</span>
           <span style={{margin: '0 6px', opacity: 0.35}}>·</span>
           <span>{construction}</span>
+          {variant.sku && (
+            <>
+              <span style={{margin: '0 6px', opacity: 0.35}}>·</span>
+              <span title="Model number" style={{fontFamily: FONT.mono, letterSpacing: '0.02em'}}>
+                {variant.sku}
+              </span>
+            </>
+          )}
         </div>
 
         {/* Stock indicator */}
