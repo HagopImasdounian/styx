@@ -1,17 +1,13 @@
 import {Link} from 'react-router';
-import {STYX, FONT} from './constants';
 import {PlaceholderImage} from './PlaceholderImage';
-import {HomeHead, resizedCdnUrl} from './HomePrimitives';
+import {resizedCdnUrl} from './HomePrimitives';
 
-/** One category tile, prepared server-side in the homepage loader. */
+/** Collection data and prices come from the live storefront. */
 export type ChainTile = {
   handle: string;
   title: string;
-  /** Collection lifestyle image, if set in Shopify. */
   image?: {url: string; altText?: string | null} | null;
-  /** custom.cutout_image transparent PNG, used when there is no lifestyle image. */
   cutoutUrl?: string | null;
-  /** Lowest positive, in-stock variant price in the collection. */
   fromPrice?: number | null;
   currencyCode?: string | null;
 };
@@ -24,131 +20,81 @@ function formatFrom(n: number, currency = 'USD') {
   });
 }
 
-/** "The chains": category tiles driven by the live collections list. */
 export function HomeChains({tiles}: {tiles: ChainTile[]}) {
   if (!tiles.length) return null;
-
   return (
     <section
-      className="styx-home-chains"
-      style={{background: STYX.parchment, padding: '110px 56px'}}
+      className="styx-collection-edit"
+      id="the-chains"
+      aria-labelledby="chains-title"
     >
-      <div style={{maxWidth: 1440, margin: '0 auto'}}>
-        <HomeHead
-          label="The chains"
-          greek="ΑΛΥΣΙΣ"
-          title={<>Choose your link.</>}
-          link={{to: '/collections/chains', label: 'All chains'}}
-        />
-
-        <div
-          className="styx-home-chains-grid"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: 1,
-            background: STYX.line,
-            border: `1px solid ${STYX.line}`,
-          }}
-        >
-          {tiles.map((t) => (
-            <Link
-              key={t.handle}
-              to={`/collections/${t.handle}`}
-              prefetch="intent"
-              data-reveal=""
-              className="styx-home-chain-tile"
-              style={{
-                display: 'block',
-                background: STYX.parchment,
-                padding: 24,
-                textDecoration: 'none',
-                transition: 'background 0.3s ease',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = STYX.bone;
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = STYX.parchment;
-              }}
-            >
-              <div
-                style={{
-                  aspectRatio: '3/2',
-                  overflow: 'hidden',
-                  marginBottom: 18,
-                  background: STYX.paper,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                {t.image?.url ? (
-                  <img
-                    src={resizedCdnUrl(t.image.url, 800)}
-                    alt={t.image.altText ?? t.title}
-                    loading="lazy"
-                    decoding="async"
-                    style={{width: '100%', height: '100%', objectFit: 'cover'}}
-                  />
-                ) : t.cutoutUrl ? (
-                  <img
-                    src={t.cutoutUrl}
-                    alt={t.title}
-                    loading="lazy"
-                    decoding="async"
-                    style={{
-                      width: '70%',
-                      height: '70%',
-                      objectFit: 'contain',
-                    }}
-                  />
-                ) : (
-                  <PlaceholderImage
-                    aspect="3/2"
-                    tone="warm"
-                    label={`${t.title} flat lay`}
-                  />
-                )}
-              </div>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'baseline',
-                  gap: 12,
-                }}
-              >
-                <h3
-                  style={{
-                    fontFamily: FONT.cinzel,
-                    fontSize: 18,
-                    fontWeight: 500,
-                    letterSpacing: '0.1em',
-                    textTransform: 'uppercase',
-                    color: STYX.ink,
-                    margin: 0,
-                  }}
-                >
-                  {t.title}
-                </h3>
-                <span
-                  style={{
-                    fontFamily: FONT.mono,
-                    fontSize: 12,
-                    letterSpacing: '0.04em',
-                    color: STYX.silt,
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {t.fromPrice
-                    ? `from ${formatFrom(t.fromPrice, t.currencyCode ?? 'USD')}`
-                    : 'Shop'}
-                </span>
-              </div>
-            </Link>
-          ))}
+      <div className="styx-section-heading">
+        <div>
+          <p className="styx-eyebrow">The collection</p>
+          <h2 id="chains-title">
+            Find your <em>signature.</em>
+          </h2>
         </div>
+        <Link
+          to="/collections/chains"
+          prefetch="intent"
+          className="styx-text-link"
+        >
+          Explore all chains <span aria-hidden="true">↗</span>
+        </Link>
+      </div>
+      <div className="styx-collection-edit-grid">
+        {tiles.map((tile, index) => (
+          <Link
+            key={tile.handle}
+            to={`/collections/${tile.handle}`}
+            prefetch="intent"
+            className="styx-collection-card"
+          >
+            <div className="styx-collection-card-image">
+              <span className="styx-collection-card-number" aria-hidden="true">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              {tile.image?.url || tile.cutoutUrl ? (
+                <img
+                  src={resizedCdnUrl(tile.image?.url || tile.cutoutUrl!, 640)}
+                  srcSet={[320, 480, 640, 800]
+                    .map(
+                      (w) =>
+                        `${resizedCdnUrl(
+                          tile.image?.url || tile.cutoutUrl!,
+                          w,
+                        )} ${w}w`,
+                    )
+                    .join(', ')}
+                  sizes="(max-width: 600px) 50vw, 33vw"
+                  alt={tile.image?.altText || tile.title}
+                  loading="lazy"
+                  decoding="async"
+                  width={800}
+                  height={800}
+                  className={tile.image?.url ? '' : 'styx-collection-cutout'}
+                />
+              ) : (
+                <PlaceholderImage aspect="1/1" tone="warm" label={tile.title} />
+              )}
+              <span className="styx-collection-card-arrow" aria-hidden="true">
+                ↗
+              </span>
+            </div>
+            <div className="styx-collection-card-info">
+              <h3>{tile.title}</h3>
+              <span>
+                {tile.fromPrice
+                  ? `From ${formatFrom(
+                      tile.fromPrice,
+                      tile.currencyCode ?? 'USD',
+                    )}`
+                  : 'Explore'}
+              </span>
+            </div>
+          </Link>
+        ))}
       </div>
     </section>
   );

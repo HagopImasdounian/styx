@@ -30,7 +30,7 @@ import {
 } from '~/components/styx';
 import {collectionCutoutUrl} from '~/components/styx/constants';
 import type {ChainTile, PriceSample, JournalTeaser} from '~/components/styx';
-import {HERO_IMAGE, HERO_WIDTHS} from '~/components/styx';
+import {HERO_IMAGE, HERO_WIDTHS} from '~/components/styx/HeroGallery';
 
 /** This route renders its own GoldTicker + StyxNav + StyxFooter. */
 export const handle = {ownChrome: true};
@@ -148,7 +148,10 @@ function minVariantPrice(
  * in CHAIN_FAMILIES order, with the collection's own lowest in-stock price.
  * Falls back to the all-products scan when the collection carries no price.
  */
-function buildChainTiles(collectionList: any[], productList: any[]): ChainTile[] {
+function buildChainTiles(
+  collectionList: any[],
+  productList: any[],
+): ChainTile[] {
   const byFamily = new Map<string, ChainTile>();
 
   for (const c of collectionList) {
@@ -193,7 +196,10 @@ function weightInGrams(v: any): number | null {
 }
 
 /** Karat: chain.karat metafield, else the title ("10K 3mm Rope Chain"), else 10. */
-function parseKarat(metaValue: string | null | undefined, title: string): number {
+function parseKarat(
+  metaValue: string | null | undefined,
+  title: string,
+): number {
   const fromMeta = metaValue ? parseInt(metaValue, 10) : NaN;
   if (!Number.isNaN(fromMeta) && fromMeta > 0) return fromMeta;
   const m = title.match(/(\d{2})\s*k/i);
@@ -289,7 +295,8 @@ const JOURNAL_TEASER_PICKS: Omit<JournalTeaser, 'image'>[] = [
 
 function buildJournalTeasers(): JournalTeaser[] {
   return JOURNAL_TEASER_PICKS.filter(
-    (t) => PLACEHOLDER_ARTICLES[t.handle] && !HIDDEN_ARTICLE_HANDLES.has(t.handle),
+    (t) =>
+      PLACEHOLDER_ARTICLES[t.handle] && !HIDDEN_ARTICLE_HANDLES.has(t.handle),
   ).map((t) => {
     const img = PLACEHOLDER_ARTICLES[t.handle].image;
     return {...t, image: img ? {url: img.url, altText: img.altText} : null};
@@ -303,13 +310,13 @@ export default function Homepage() {
     useLoaderData<typeof loader>();
 
   return (
-    <div style={{background: '#EFEAE0'}}>
+    <div className="styx-home-modern">
       <GoldTicker />
       <StyxNav collections={collections} />
       <HeroGallery />
       <HomePillars />
-      <HomeHands />
       <HomeChains tiles={chainTiles} />
+      <HomeHands />
       <HomePriceLedger samples={priceSamples} />
       <FerrymansCode />
       <HomeLore />

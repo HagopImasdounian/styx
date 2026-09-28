@@ -1,4 +1,8 @@
-import {galleryImageKey, remainingGalleryMedia, selectedGalleryMedia} from '~/lib/product-gallery';
+import {
+  galleryImageKey,
+  remainingGalleryMedia,
+  selectedGalleryMedia,
+} from '~/lib/product-gallery';
 import {useState, useRef, useCallback, useEffect, Suspense} from 'react';
 import {Disclosure} from '@headlessui/react';
 import {type MetaArgs, type LoaderFunctionArgs} from 'react-router';
@@ -162,8 +166,7 @@ export const meta = ({matches}: MetaArgs<typeof loader>) => {
 /* ─────────────────────────── Main Product Page ─────────────────────────── */
 
 export default function Product() {
-  const {product, shop, recommended, variants} =
-    useLoaderData<typeof loader>();
+  const {product, shop, recommended, variants} = useLoaderData<typeof loader>();
   const {media, title, descriptionHtml} = product;
   const {shippingPolicy, refundPolicy} = shop;
   const [offerOpen, setOfferOpen] = useState(false);
@@ -380,19 +383,39 @@ export default function Product() {
 
   // Only mount media associated with this selection. Unknown finish photos
   // are excluded on multi-color products instead of downloading every finish.
-  const galleryColors = product.options.find((option: {name: string}) => option.name.toLowerCase() === 'color')
-    ?.optionValues.map((option: {name: string}) => option.name) ?? [];
+  const galleryColors =
+    product.options
+      .find((option: {name: string}) => option.name.toLowerCase() === 'color')
+      ?.optionValues.map((option: {name: string}) => option.name) ?? [];
   const colorFilteredMedia = selectedGalleryMedia(
-    media?.nodes ?? [], selectedVariant ?? {}, knownVariants, galleryColors,
+    media?.nodes ?? [],
+    selectedVariant ?? {},
+    knownVariants,
+    galleryColors,
   );
   const firstGalleryMedia = colorFilteredMedia[0];
   const selectedImage = (selectedVariant as any)?.image;
-  const assignedMedia = media?.nodes?.find((item: any) =>
-    selectedImage?.url && galleryImageKey(item.image?.url || item.previewImage?.url || '') === galleryImageKey(selectedImage.url),
+  const assignedMedia = media?.nodes?.find(
+    (item: any) =>
+      selectedImage?.url &&
+      galleryImageKey(item.image?.url || item.previewImage?.url || '') ===
+        galleryImageKey(selectedImage.url),
   ) ?? {image: selectedImage};
-  const assignedImageMatches = selectedGalleryMedia([assignedMedia], selectedVariant ?? {}, knownVariants, galleryColors).length > 0;
-  const leadImage = (assignedImageMatches ? selectedImage : null) || firstGalleryMedia?.image || firstGalleryMedia?.previewImage;
-  const remainingMedia = remainingGalleryMedia(colorFilteredMedia, leadImage).slice(0, 7);
+  const assignedImageMatches =
+    selectedGalleryMedia(
+      [assignedMedia],
+      selectedVariant ?? {},
+      knownVariants,
+      galleryColors,
+    ).length > 0;
+  const leadImage =
+    (assignedImageMatches ? selectedImage : null) ||
+    firstGalleryMedia?.image ||
+    firstGalleryMedia?.previewImage;
+  const remainingMedia = remainingGalleryMedia(
+    colorFilteredMedia,
+    leadImage,
+  ).slice(0, 7);
 
   // Mobile swipe-carousel slides: the color-checked lead image first (same
   // `leadImage` the desktop gallery uses, so a stale cross-color variant
@@ -439,7 +462,7 @@ export default function Product() {
 
   return (
     <div
-      className="styx-pdp-page"
+      className="styx-pdp-page styx-pdp-refined"
       style={{background: STYX.bone, minHeight: '100vh'}}
     >
       <GoldTicker />
@@ -725,8 +748,6 @@ export default function Product() {
                   Collections
                 </Link>
               )}
-              <span style={{opacity: 0.4}}>/</span>
-              <span style={{color: STYX.ink}}>{title}</span>
             </nav>
             {/* Single back link, mobile (product name is in the H1 right below) */}
             <nav
@@ -790,10 +811,11 @@ export default function Product() {
               margin: 0,
             }}
           >
-            The {title}
+            {title}
           </h1>
           {selectedVariant?.sku && (
             <div
+              className="styx-pdp-model"
               style={{
                 fontFamily: FONT.mono,
                 fontSize: 11,
@@ -820,157 +842,65 @@ export default function Product() {
             </div>
           )}
 
-          {/* ── PRICE BLOCK ── */}
-          <div style={{marginTop: 32}}>
-            {/* Credit Card + Wire Transfer side by side */}
-            {selectedVariant?.price &&
-              (() => {
-                const basePrice = parseFloat(selectedVariant.price.amount);
-                const wirePrice = basePrice * 0.96;
-                const currencyCode = selectedVariant.price.currencyCode;
-                const fmt = (n: number) =>
-                  new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: currencyCode,
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  }).format(n);
-                // $0 = catalog error; "$0.00" price cards would read as free.
-                const priceLabel = (n: number) => (isUnpriced ? '—' : fmt(n));
-                return (
-                  <>
-                    <div
-                      style={{
-                        display: 'flex',
-                        gap: 12,
-                      }}
-                    >
-                      {/* Credit Card, default / emphasized */}
-                      <div
-                        style={{
-                          flex: 1,
-                          border: `1px solid ${STYX.ink}`,
-                          padding: '12px 14px',
-                          background: STYX.ink,
-                        }}
-                      >
-                        <div
-                          style={{
-                            fontFamily: FONT.cinzel,
-                            fontSize: 9,
-                            letterSpacing: '0.25em',
-                            textTransform: 'uppercase',
-                            color: STYX.gold,
-                            marginBottom: 4,
-                          }}
-                        >
-                          Credit Card
-                        </div>
-                        <div
-                          style={{
-                            fontFamily: FONT.cinzel,
-                            fontSize: 22,
-                            fontWeight: 600,
-                            color: STYX.bone,
-                            fontVariantNumeric: 'tabular-nums',
-                          }}
-                        >
-                          {priceLabel(basePrice)}
-                        </div>
-                        <div
-                          style={{
-                            fontFamily: FONT.mono,
-                            fontSize: 10,
-                            color: 'rgba(239,234,224,0.55)',
-                            marginTop: 3,
-                          }}
-                        >
-                          {isUnpriced
-                            ? 'price on request'
-                            : 'default at checkout'}
-                        </div>
-                      </div>
-                      {/* Wire Transfer */}
-                      <div
-                        style={{
-                          flex: 1,
-                          border: `1px solid ${STYX.line}`,
-                          padding: '12px 14px',
-                        }}
-                      >
-                        <div
-                          style={{
-                            fontFamily: FONT.cinzel,
-                            fontSize: 10,
-                            letterSpacing: '0.25em',
-                            textTransform: 'uppercase',
-                            color: STYX.ink,
-                            marginBottom: 4,
-                          }}
-                        >
-                          Wire Transfer
-                        </div>
-                        <div
-                          style={{
-                            fontFamily: FONT.cinzel,
-                            fontSize: 22,
-                            fontWeight: 400,
-                            color: STYX.graphite,
-                            fontVariantNumeric: 'tabular-nums',
-                          }}
-                        >
-                          {priceLabel(wirePrice)}
-                        </div>
-                        <div
-                          style={{
-                            fontFamily: FONT.mono,
-                            fontSize: 10,
-                            color: STYX.silt,
-                            marginTop: 3,
-                          }}
-                        >
-                          {isUnpriced ? 'price on request' : '4% discount'}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Weight row: karat + total weight */}
-                    {displayWeight && (
-                      <div style={{marginTop: 14}}>
-                        <div
-                          style={{
-                            display: 'flex',
-                            gap: 16,
-                            fontFamily: FONT.mono,
-                            fontSize: 12,
-                            color: STYX.silt,
-                          }}
-                        >
-                          <span>
-                            {karat}K &middot; {displayWeight}g total
-                          </span>
-                        </div>
-                        <div
-                          style={{
-                            fontFamily: FONT.cormorant,
-                            fontStyle: 'italic',
-                            fontSize: 13,
-                            color: STYX.silt2,
-                            marginTop: 4,
-                          }}
-                        >
-                          Approximate: each piece is hand-finished, so
-                          weight may vary by a few percent.
-                        </div>
-                      </div>
+          {/* Price and payment alternatives share one quiet, readable block. */}
+          {selectedVariant?.price && (
+            <div className="styx-pdp-pricing">
+              <div className="styx-pdp-price-line">
+                <div>
+                  <span className="styx-pdp-price-label">
+                    {isUnpriced ? 'Price on request' : 'Your price'}
+                  </span>
+                  <div className="styx-pdp-price-value">
+                    {isUnpriced ? (
+                      '—'
+                    ) : (
+                      <Money data={selectedVariant.price} as="span" />
                     )}
-                  </>
-                );
-              })()}
-          </div>
+                    {!isUnpriced && (
+                      <span className="styx-pdp-currency">
+                        {selectedVariant.price.currencyCode}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                {displayWeight && !isUnpriced && (
+                  <a href="#price-breakdown" className="styx-pdp-price-link">
+                    See the breakdown <span aria-hidden="true">↗</span>
+                  </a>
+                )}
+              </div>
+              {!isUnpriced && (
+                <p className="styx-pdp-wire">
+                  <Money
+                    data={{
+                      ...selectedVariant.price,
+                      amount: (
+                        parseFloat(selectedVariant.price.amount) * 0.96
+                      ).toFixed(2),
+                    }}
+                    as="span"
+                  />{' '}
+                  with wire transfer <span>Save 4%</span>
+                </p>
+              )}
+              {displayWeight && (
+                <div className="styx-pdp-weight">
+                  <span>
+                    {karat}K gold <span aria-hidden="true">·</span>{' '}
+                    {displayWeight}g total
+                  </span>
+                  <p>
+                    Approximate weight. Each piece is hand-finished and may vary
+                    by a few percent.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* ── Variant Selectors ── */}
           <div
+            className="styx-pdp-options"
             style={{
               marginTop: 28,
               display: 'flex',
@@ -1001,8 +931,13 @@ export default function Product() {
                 };
 
                 return (
-                  <div key={option.name}>
+                  <div
+                    key={option.name}
+                    className="styx-pdp-option"
+                    data-option={option.name.toLowerCase()}
+                  >
                     <div
+                      className="styx-pdp-option-label"
                       style={{
                         fontFamily: FONT.cinzel,
                         fontSize: 11,
@@ -1071,6 +1006,9 @@ export default function Product() {
                             }) => (
                               <Link
                                 key={option.name + name}
+                                className="styx-pdp-choice"
+                                data-selected={selected}
+                                aria-current={selected ? 'true' : undefined}
                                 {...(!isDifferentProduct
                                   ? {rel: 'nofollow'}
                                   : {})}
@@ -1115,6 +1053,7 @@ export default function Product() {
                                 {name}
                                 {selected && (
                                   <span
+                                    className="styx-pdp-selection-mark"
                                     style={{
                                       position: 'absolute',
                                       bottom: 0,
@@ -1150,6 +1089,9 @@ export default function Product() {
                             }) => (
                               <Link
                                 key={option.name + name}
+                                className="styx-pdp-choice"
+                                data-selected={selected}
+                                aria-current={selected ? 'true' : undefined}
                                 {...(!isDifferentProduct
                                   ? {rel: 'nofollow'}
                                   : {})}
@@ -1210,6 +1152,7 @@ export default function Product() {
                                 {name}
                                 {selected && (
                                   <span
+                                    className="styx-pdp-selection-mark"
                                     style={{
                                       position: 'absolute',
                                       bottom: 0,
@@ -1252,6 +1195,9 @@ export default function Product() {
                             return (
                               <Link
                                 key={option.name + name}
+                                className="styx-pdp-choice"
+                                data-selected={selected}
+                                aria-current={selected ? 'true' : undefined}
                                 {...(!isDifferentProduct
                                   ? {rel: 'nofollow'}
                                   : {})}
@@ -1352,55 +1298,9 @@ export default function Product() {
               })}
           </div>
 
-          {/* Blurb / Description */}
-          {(chainBlurb || descriptionHtml) && (
-            <div
-              style={{
-                fontFamily: FONT.cormorant,
-                fontSize: 18,
-                color: STYX.graphite,
-                lineHeight: 1.7,
-                marginTop: 28,
-              }}
-            >
-              {chainBlurb && (
-                <p style={{margin: '0 0 12px', fontStyle: 'italic'}}>
-                  {chainBlurb}
-                </p>
-              )}
-              {descriptionHtml && (
-                <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
-              )}
-            </div>
-          )}
-
-          {/* Journal Link */}
-          {chainOrigin && (
-            <Link
-              to={`/journal/${chainOrigin
-                .toLowerCase()
-                .replace(/[^a-z0-9]+/g, '-')
-                .replace(/(^-|-$)/g, '')}`}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 8,
-                marginTop: 16,
-                fontFamily: FONT.cormorant,
-                fontSize: 15,
-                fontStyle: 'italic',
-                color: STYX.gold,
-                textDecoration: 'none',
-                borderBottom: `1px solid ${STYX.gold}`,
-                paddingBottom: 2,
-              }}
-            >
-              Read the history of the {chainOrigin} →
-            </Link>
-          )}
-
           {/* ── Shipping line ── */}
           <div
+            className="styx-pdp-shipping"
             style={{
               fontFamily: FONT.cinzel,
               fontSize: 11,
@@ -1560,6 +1460,7 @@ export default function Product() {
               {/* Favorites + Compare, two equal actions. Download Print moved
                   onto the lead image next to View actual size. */}
               <div
+                className="styx-pdp-tools"
                 style={{
                   marginTop: 16,
                   display: 'grid',
@@ -1615,9 +1516,58 @@ export default function Product() {
             </div>
           )}
 
+          {/* Blurb / Description */}
+          {(chainBlurb || descriptionHtml) && (
+            <div
+              className="styx-pdp-description"
+              style={{
+                fontFamily: FONT.cormorant,
+                fontSize: 18,
+                color: STYX.graphite,
+                lineHeight: 1.7,
+                marginTop: 28,
+              }}
+            >
+              {chainBlurb && (
+                <p style={{margin: '0 0 12px', fontStyle: 'italic'}}>
+                  {chainBlurb}
+                </p>
+              )}
+              {descriptionHtml && (
+                <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
+              )}
+            </div>
+          )}
+
+          {/* Journal Link */}
+          {chainOrigin && (
+            <Link
+              to={`/journal/${chainOrigin
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/(^-|-$)/g, '')}`}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                marginTop: 16,
+                fontFamily: FONT.cormorant,
+                fontSize: 15,
+                fontStyle: 'italic',
+                color: STYX.gold,
+                textDecoration: 'none',
+                borderBottom: `1px solid ${STYX.gold}`,
+                paddingBottom: 2,
+              }}
+            >
+              Read the history of the {chainOrigin} →
+            </Link>
+          )}
+
           {/* ── Product Details, the piece's specs come before the boilerplate
               trust signals ── */}
           <div
+            className="styx-pdp-specifications"
             style={{
               marginTop: 40,
               paddingTop: 32,
@@ -1637,6 +1587,7 @@ export default function Product() {
               Product Details
             </div>
             <div
+              className="styx-pdp-spec-grid"
               style={{
                 display: 'grid',
                 gridTemplateColumns: '1fr 1fr',
@@ -2273,6 +2224,7 @@ export default function Product() {
           }}
         >
           <div
+            id="price-breakdown"
             className="styx-product-transparency"
             style={{maxWidth: 1440, margin: '0 auto', padding: '100px 56px'}}
           >
@@ -2323,9 +2275,9 @@ export default function Product() {
                   {storyBody || (
                     <>
                       Most jewelers mark gold up 8 to 12 times. That is not
-                      because gold is expensive. Gold is a commodity,
-                      priced openly on global markets. It is because the
-                      business is built on mystery. We are not.
+                      because gold is expensive. Gold is a commodity, priced
+                      openly on global markets. It is because the business is
+                      built on mystery. We are not.
                     </>
                   )}
                 </div>
@@ -2481,8 +2433,8 @@ export default function Product() {
             >
               Every piece carries a 5-year buyback guarantee. If you ever wish
               to return to shore, we will buy back your gold at the prevailing
-              market price, minus only the original labor. The metal never
-              loses its passage.
+              market price, minus only the original labor. The metal never loses
+              its passage.
             </p>
           </div>
         </div>
