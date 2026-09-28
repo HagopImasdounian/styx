@@ -61,25 +61,25 @@ export function recordRecentlyViewed(entry: RecentlyViewedEntry) {
   }
 }
 
-export function RecentlyViewed({
-  excludeHandle,
-}: {
-  /** Current product handle, excluded from its own strip. */
-  excludeHandle?: string;
-}) {
-  // Full ProductCard data, fetched for the stored handles so this strip renders
-  // the exact same <StyxProductCard> as "You Might Also Like" (one shared block,
-  // not a parallel mini-card). Empty on the server; hydrates after mount.
+/**
+ * Full ProductCard data for the stored handles, fetched client-side so any
+ * consumer renders the exact same <StyxProductCard> as "You may also like".
+ * Empty on the server; hydrates after mount. Returns [] until there are at
+ * least `min` other products in history (the current one is excluded).
+ */
+export function useRecentlyViewedProducts(
+  excludeHandle?: string,
+  min = 2,
+): any[] {
   const [products, setProducts] = useState<any[]>([]);
 
   useEffect(() => {
     const handles = readEntries()
       .map((e) => e.handle)
       .filter((h) => h !== excludeHandle)
-      .slice(0, 8);
+      .slice(0, MAX_ENTRIES);
 
-    // Need at least two pieces of history before the strip earns its space.
-    if (handles.length < 2) {
+    if (handles.length < min) {
       setProducts([]);
       return;
     }
@@ -97,7 +97,20 @@ export function RecentlyViewed({
     return () => {
       cancelled = true;
     };
-  }, [excludeHandle]);
+  }, [excludeHandle, min]);
+
+  return products.length >= min ? products : [];
+}
+
+export function RecentlyViewed({
+  excludeHandle,
+}: {
+  /** Current product handle, excluded from its own strip. */
+  excludeHandle?: string;
+}) {
+  // Standalone strip keeps the original rule: at least two pieces of history
+  // before it earns its own section.
+  const products = useRecentlyViewedProducts(excludeHandle, 2);
 
   if (products.length < 2) return null;
 

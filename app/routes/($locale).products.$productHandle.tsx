@@ -39,16 +39,15 @@ import {
   StyxNav,
   StyxFooter,
   StyxLabel,
-  ProductGridSection,
-  RecommendedProducts,
   Obol,
   ActualSizeImagePanel,
-  RecentlyViewed,
   recordRecentlyViewed,
   ImageLightbox,
 } from '~/components/styx';
-import type {CrossSellProduct} from '~/components/styx';
 import {CompareButton} from '~/components/styx/CompareButton';
+import {RelatedTabs} from '~/components/styx/RelatedTabs';
+import {StickyBuyBar} from '~/components/styx/StickyBuyBar';
+import {DeliveryReturns} from '~/components/styx/DeliveryReturns';
 import {TrueSizeControls} from '~/components/styx/TrueSizeControls';
 import {useWishlist} from '~/context/WishlistContext';
 import {useScaleCalibration} from '~/context/ScaleCalibrationContext';
@@ -125,11 +124,6 @@ async function loadCriticalData({
     chainCollection?.handle,
   );
 
-  // Cross-sell: nearest same-style/construction pieces + matching bracelet/necklace.
-  // Deliberately NOT awaited, it's a below-fold module and must not block TTFB.
-  // Streamed to the client and rendered via <Suspense>/<Await> like `recommended`.
-  const crossSell = getCrossSellProducts(context.storefront, product);
-
   const selectedVariant = product.selectedOrFirstAvailableVariant ?? {};
   const variants = getAdjacentAndFirstAvailableVariants(product);
 
@@ -145,7 +139,6 @@ async function loadCriticalData({
     shop,
     storeDomain: shop.primaryDomain.url,
     recommended,
-    crossSell,
     seo,
   };
 }
@@ -169,7 +162,7 @@ export const meta = ({matches}: MetaArgs<typeof loader>) => {
 /* ─────────────────────────── Main Product Page ─────────────────────────── */
 
 export default function Product() {
-  const {product, shop, recommended, crossSell, variants} =
+  const {product, shop, recommended, variants} =
     useLoaderData<typeof loader>();
   const {media, title, descriptionHtml} = product;
   const {shippingPolicy, refundPolicy} = shop;
@@ -185,6 +178,8 @@ export default function Product() {
   // in the spec column, no scrolling. Off (or unparseable width) → photo.
   const {actualSizeOn, pxPerMm} = useScaleCalibration();
   const wished = wishlist.has(product.handle);
+  // Watched by the mobile sticky buy bar: bar shows when this scrolls away.
+  const atcRef = useRef<HTMLDivElement>(null);
 
   // Gold data from root loader
   const rootData = useRouteLoaderData<RootLoader>('root');
@@ -443,7 +438,10 @@ export default function Product() {
   );
 
   return (
-    <div style={{background: STYX.bone, minHeight: '100vh'}}>
+    <div
+      className="styx-pdp-page"
+      style={{background: STYX.bone, minHeight: '100vh'}}
+    >
       <GoldTicker />
       <StyxNav />
 
@@ -684,7 +682,9 @@ export default function Product() {
             gridColumn: '2 / 3',
             gridRow: '1 / 3',
             position: 'sticky',
-            top: 88,
+            // Pin under the real header height (StyxNav publishes it as a CSS
+            // var, 0 while the header auto-hides) instead of a fixed 88px.
+            top: 'calc(var(--styx-header-offset, 88px) + 16px)',
             paddingTop: 8,
           }}
         >
@@ -1417,7 +1417,7 @@ export default function Product() {
           {/* ── Add to Cart ── */}
           {selectedVariant && (
             <div style={{marginTop: 16}}>
-              <div style={{display: 'flex', gap: 12}}>
+              <div ref={atcRef} style={{display: 'flex', gap: 12}}>
                 {isOutOfStock || isUnpriced ? (
                   <div style={{flex: 1}}>
                     <button
@@ -1763,23 +1763,10 @@ export default function Product() {
               })}
             </div>
 
-            {/* Delivery promise, exact terms from the shipping policy:
-                  ships in 1–2 business days, domestic transit 3–5,
-                  fully insured with signature on delivery. */}
-            <div
-              style={{
-                marginTop: 16,
-                textAlign: 'center',
-                fontFamily: FONT.cormorant,
-                fontSize: 14,
-                fontStyle: 'italic',
-                color: STYX.silt,
-                lineHeight: 1.5,
-              }}
-            >
-              Ships fully insured in 1 to 2 business days. Domestic
-              delivery typically 3 to 5 business days, signature on arrival.
-            </div>
+            {/* Delivery promise row + Delivery & Returns drawer, exact terms
+                from the shipping policy: ships in 1 to 2 business days,
+                domestic transit 3 to 5, fully insured, signature on arrival. */}
+            <DeliveryReturns />
 
             {/* FAQ link, same quiet idiom as the Make-an-Offer link */}
             <div style={{marginTop: 8, textAlign: 'center'}}>
@@ -2273,20 +2260,6 @@ export default function Product() {
               )}
             </div>
           </div>
-
-          {/* ── Cross-Sell: Pairs Well With (below cart) ── */}
-          <Suspense fallback={null}>
-            <Await resolve={crossSell} errorElement={null}>
-              {(products) =>
-                products && products.length > 0 ? (
-                  <RecommendedProducts
-                    products={products}
-                    heading="Pairs Well With"
-                  />
-                ) : null
-              }
-            </Await>
-          </Suspense>
         </div>
       </div>
 
@@ -2461,9 +2434,6 @@ export default function Product() {
         </section>
       )}
 
-      {/* ── Recently Viewed (localStorage, client-only), above the Pact ── */}
-      <RecentlyViewed excludeHandle={product.handle} />
-
       {/* ── Ferryman's Pact Banner ── */}
       <section
         id="ferrymans-pact"
@@ -2518,7 +2488,7 @@ export default function Product() {
         </div>
       </section>
 
-      {/* ── Recommended Products ── */}
+      {/* ── You may also like / Recently viewed, one tabbed module ── */}
       <Suspense
         fallback={
           <div
@@ -2539,17 +2509,45 @@ export default function Product() {
           errorElement="There was a problem loading related products"
           resolve={recommended}
         >
-          {(products) =>
-            products && products.nodes && products.nodes.length > 0 ? (
-              <ProductGridSection
-                label="Continue the Crossing"
-                heading="You Might Also Like"
-                products={products.nodes}
-              />
-            ) : null
-          }
+          {(products) => (
+            <RelatedTabs
+              recommended={products?.nodes ?? []}
+              excludeHandle={product.handle}
+            />
+          )}
         </Await>
       </Suspense>
+
+      {/* ── Mobile sticky buy bar (<= 768px), mirrors the main Add to Cart ── */}
+      {selectedVariant && (
+        <StickyBuyBar
+          targetRef={atcRef}
+          title={product.title}
+          handle={product.handle}
+          price={selectedVariant.price}
+          compareAtPrice={isOnSale ? selectedVariant.compareAtPrice : null}
+          lines={[{merchandiseId: selectedVariant.id!, quantity: 1}]}
+          analytics={{
+            id: product.id,
+            title: product.title,
+            price: selectedVariant?.price?.amount || '0',
+            quantity: 1,
+            variantTitle: selectedVariant?.title,
+          }}
+          fallback={
+            isOutOfStock || isUnpriced
+              ? {
+                  label: 'Request This Size',
+                  onClick: () => {
+                    setOfferMode('request');
+                    setOfferStatus('idle');
+                    setOfferOpen(true);
+                  },
+                }
+              : null
+          }
+        />
+      )}
 
       <Analytics.ProductView
         data={{
@@ -3610,211 +3608,4 @@ async function getRecommendedProducts(
   if (originalProduct >= 0) mergedProducts.splice(originalProduct, 1);
 
   return {nodes: mergedProducts};
-}
-
-/* ──────────────────── Cross-Sell ("Pairs Well With") ──────────────────── */
-
-const CROSS_SELL_QUERY = `#graphql
-  query crossSellProducts(
-    $query: String!
-    $count: Int
-    $country: CountryCode
-    $language: LanguageCode
-  ) @inContext(country: $country, language: $language) {
-    products(first: $count, query: $query) {
-      nodes {
-        id
-        title
-        handle
-        productType
-        tags
-        chain_style: metafield(namespace: "chain", key: "chain_style") {
-          value
-        }
-        chain_thickness: metafield(namespace: "chain", key: "thickness") {
-          value
-        }
-        chain_construction: metafield(namespace: "chain", key: "construction") {
-          value
-        }
-        chain_karat: metafield(namespace: "chain", key: "karat") {
-          value
-        }
-        variants(first: 20) {
-          nodes {
-            id
-            availableForSale
-            image {
-              url
-              altText
-              width
-              height
-            }
-            price {
-              amount
-              currencyCode
-            }
-            selectedOptions {
-              name
-              value
-            }
-          }
-        }
-      }
-    }
-  }
-` as const;
-
-/** Parse first mm number out of a thickness string or title. */
-function parseMm(value?: string | null): number | null {
-  if (!value) return null;
-  const m =
-    value.match(/(\d+(?:\.\d+)?)\s*mm/i) ?? value.match(/(\d+(?:\.\d+)?)/);
-  return m ? parseFloat(m[1]) : null;
-}
-
-function normalize(value?: string | null): string {
-  return (value ?? '').trim().toLowerCase();
-}
-
-/** Parse karat from a metafield value or product title (e.g. "10K 3mm Rope Chain" → 10). */
-function parseKarat(
-  value?: string | null,
-  title?: string | null,
-): number | null {
-  const fromValue = value ? parseInt(value, 10) : NaN;
-  if (!Number.isNaN(fromValue) && fromValue > 0) return fromValue;
-  const m = (title ?? '').match(/(\d{2})\s*k/i);
-  return m ? parseInt(m[1], 10) : null;
-}
-
-// Longer names first so "Cuban Link" wins before any shorter substring could.
-const CHAIN_STYLE_NAMES = [
-  'Cuban Link',
-  'Herringbone',
-  'Singapore',
-  'Paperclip',
-  'Figaro',
-  'Franco',
-  'Wheat',
-  'Curb',
-  'Rope',
-  'Cable',
-  'Rolo',
-  'Snake',
-  'Box',
-];
-
-/**
- * Derive the weave/style. Most products have no chain.* metafields, so fall
- * back to tags (e.g. "Cuban Link") and then the title.
- */
-function parseStyle(
-  metaValue?: string | null,
-  tags?: string[] | null,
-  title?: string | null,
-): string | null {
-  if (metaValue) return metaValue;
-  const tagHit = (tags ?? []).find((t) =>
-    CHAIN_STYLE_NAMES.some((s) => normalize(t) === normalize(s)),
-  );
-  if (tagHit) return tagHit;
-  const hay = normalize(title);
-  return CHAIN_STYLE_NAMES.find((s) => hay.includes(normalize(s))) ?? null;
-}
-
-/** Derive hollow/solid from metafield, tags, or title. */
-function parseConstruction(
-  metaValue?: string | null,
-  tags?: string[] | null,
-  title?: string | null,
-): string {
-  const v = normalize(metaValue);
-  if (v) return v;
-  const hay = `${normalize(title)} ${(tags ?? []).map(normalize).join(' ')}`;
-  if (hay.includes('hollow')) return 'hollow';
-  if (hay.includes('solid')) return 'solid';
-  return '';
-}
-
-/**
- * Cross-sell is strict: only the true counterpart piece, same weave, same
- * thickness, same karat, opposite product type (chain <-> bracelet).
- * A 3mm rope chain pairs with the 3mm rope chain bracelet, or nothing at all.
- * Returns [] when there is no exact counterpart.
- */
-async function getCrossSellProducts(
-  storefront: Storefront,
-  product: any,
-): Promise<CrossSellProduct[]> {
-  const styleTitle = (product?.title as string) || '';
-  const myTags = (product?.tags ?? []) as string[];
-  const style = parseStyle(product?.chain_style?.value, myTags, styleTitle);
-  const construction = parseConstruction(
-    product?.chain_construction?.value,
-    myTags,
-    styleTitle,
-  );
-  const myType = normalize(product?.productType); // "chain" | "bracelet"
-  const myMm = parseMm(product?.chain_thickness?.value) ?? parseMm(styleTitle);
-  const myKarat = parseKarat(product?.karat?.value, styleTitle);
-
-  // Without a known style, width, and karat we can't guarantee a true
-  // counterpart, suggest nothing rather than something unrelated.
-  if (!style || myMm == null || myKarat == null) return [];
-  if (myType !== 'chain' && myType !== 'bracelet') return [];
-
-  const pairType = myType === 'chain' ? 'Bracelet' : 'Chain';
-  // The weave is stored as a product tag (e.g. "Cuban Link").
-  const query = `tag:'${style}' AND product_type:${pairType}`;
-
-  let result: any;
-  try {
-    result = await storefront.query(CROSS_SELL_QUERY, {
-      variables: {query, count: 30},
-    });
-  } catch {
-    return [];
-  }
-
-  const myStyle = normalize(style);
-
-  const matches = (result?.products?.nodes ?? [])
-    .filter((c: any) => {
-      if (!c?.id || c.id === product.id) return false;
-      if (normalize(c.productType) !== normalize(pairType)) return false;
-      const cStyle = normalize(
-        parseStyle(c.chain_style?.value, c.tags, c.title),
-      );
-      if (cStyle !== myStyle) return false;
-      const cMm = parseMm(c.chain_thickness?.value) ?? parseMm(c.title);
-      // Titles round to the nearest 0.5mm, absorb that, but never let a
-      // genuinely different width (0.5mm+ apart) through.
-      if (cMm == null || Math.abs(cMm - myMm) > 0.25) return false;
-      const cKarat = parseKarat(c.chain_karat?.value, c.title);
-      if (cKarat == null || cKarat !== myKarat) return false;
-      return true;
-    })
-    // Prefer same construction (hollow/solid) and in-stock counterparts.
-    .sort((a: any, b: any) => {
-      const conScore = (c: any) =>
-        construction &&
-        parseConstruction(c.chain_construction?.value, c.tags, c.title) ===
-          construction
-          ? 1
-          : 0;
-      const stockScore = (c: any) =>
-        (c.variants?.nodes ?? []).some((v: any) => v.availableForSale) ? 1 : 0;
-      return conScore(b) - conScore(a) || stockScore(b) - stockScore(a);
-    });
-
-  return matches.slice(0, 2).map((c: any) => ({
-    id: c.id,
-    title: c.title,
-    handle: c.handle,
-    productType: c.productType,
-    variants: c.variants,
-    reason:
-      myType === 'chain' ? 'The Matching Bracelet' : 'The Matching Necklace',
-  }));
 }
