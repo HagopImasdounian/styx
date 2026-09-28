@@ -67,91 +67,91 @@ const CHAIN_INTROS: Record<
     intro:
       'The Cuban Link is the undisputed heavyweight of gold chains. Born in Miami in the 1970s, its flat-filed interlocking links create a mirror-smooth surface that catches light from every angle. Solid, dense, and engineered to lay flat against the chest, this is the chain that built a culture.',
     journal: 'history-of-the-cuban-link',
-    journalTitle: 'Read: The History of the Cuban Link →',
+    journalTitle: 'Read: the history of the Cuban link',
   },
   curb: {
     intro:
       'The Curb Chain is the oldest and most universal chain design in existence, dating back to 2600 BC in ancient Sumer. Its flat, twisted links were inspired by horse curb bits, the same geometry that controls a stallion now adorns the neck. From Victorian pocket watches to modern streetwear, the curb has never gone out of style.',
     journal: 'history-of-the-curb-chain',
-    journalTitle: 'Read: The History of the Curb Chain →',
+    journalTitle: 'Read: the history of the Curb chain',
   },
   box: {
     intro:
       "The Box Chain originated in 6th-century Venice, where goldsmiths discovered that square links interlocked at 90-degree angles create a chain with perfect geometric precision. Clean, architectural, and virtually kink-proof, the box chain is the engineer's choice.",
     journal: 'history-of-the-box-chain',
-    journalTitle: 'Read: The History of the Box Chain →',
+    journalTitle: 'Read: the history of the Box chain',
   },
   rope: {
     intro:
       'The Rope Chain traces its origins to ancient Egypt, circa 2500 BCE, where artisans twisted gold wire into helical spirals that mimicked the hemp ropes of Nile river boats. Its signature twist catches light in a continuous sparkle that no flat chain can replicate. From pharaohs to hip-hop, the rope endures.',
     journal: 'history-of-the-rope-chain',
-    journalTitle: 'Read: The History of the Rope Chain →',
+    journalTitle: 'Read: the history of the Rope chain',
   },
   cable: {
     intro:
       'The Cable Chain is the DNA of all chain designs, simple interlocking oval links, unchanged since the Royal Tombs of Ur. Its strength lies in its simplicity: lightweight, versatile, and nearly indestructible. The cable chain is the foundation upon which every other weave was built.',
     journal: 'history-of-the-cable-chain',
-    journalTitle: 'Read: The History of the Cable Chain →',
+    journalTitle: 'Read: the history of the Cable chain',
   },
   figaro: {
     intro:
       'The Figaro Chain was born in the goldsmithing workshops of Vicenza, Italy, around 1885. Its distinctive pattern, three small links followed by one elongated link, creates a visual rhythm unlike any other chain. Named after the clever barber of Seville, the Figaro is Italian craftsmanship at its most playful.',
     journal: 'history-of-the-figaro-chain',
-    journalTitle: 'Read: The History of the Figaro Chain →',
+    journalTitle: 'Read: the history of the Figaro chain',
   },
   wheat: {
     intro:
       'The Wheat Chain, known in Italy as the Spiga, mimics the overlapping husks of a wheat ear, four strands of oval links woven into a tight, flexible tube. Born during the Renaissance in Vicenza, it is one of the strongest chain weaves per gram. Substantial enough to carry a heavy pendant, elegant enough to wear alone.',
     journal: 'history-of-the-wheat-chain',
-    journalTitle: 'Read: The History of the Wheat Chain →',
+    journalTitle: 'Read: the history of the Wheat chain',
   },
   rolo: {
     intro:
       'The Rolo Chain emerged in Victorian London around 1850, perfectly round, symmetrical links that interlock in a clean, modern pattern. Heavier and more substantial than a cable chain, the rolo carries a satisfying weight that you feel against your chest. Minimal, bold, timeless.',
     journal: 'history-of-the-rolo-chain',
-    journalTitle: 'Read: The History of the Rolo Chain →',
+    journalTitle: 'Read: the history of the Rolo chain',
   },
   singapore: {
     intro:
       'The Singapore Chain was developed by Italian chain-makers in the 1970s and named for its popularity in Southeast Asian gold markets. Its twisted, braided links create a diamond-cut surface that shimmers with every movement, a chain that sparkles like no other, even in the thinnest widths.',
     journal: 'history-of-the-singapore-chain',
-    journalTitle: 'Read: The History of the Singapore Chain →',
+    journalTitle: 'Read: the history of the Singapore chain',
   },
   franco: {
     intro:
       'The Franco Chain was born in the goldsmithing workshops of Northern Italy in the late 1970s, a flat-sided square weave so dense it reads as a solid bar of gold. It is the chain you choose when you need mass that can carry serious pendant weight and still lie flat against the chest.',
     journal: 'history-of-the-franco-chain',
-    journalTitle: 'Read: The History of the Franco Chain →',
+    journalTitle: 'Read: the history of the Franco chain',
   },
   herringbone: {
     intro:
       'The Herringbone traces back to ancient Egypt around 3000 BCE, flat, slanted links laid in a tight fishbone pattern that turns the entire chain into a mirror-smooth ribbon of liquid gold. Sleek, flexible, and unmistakable under light, it lies perfectly flat against the skin.',
     journal: 'history-of-the-herringbone-chain',
-    journalTitle: 'Read: The History of the Herringbone →',
+    journalTitle: 'Read: the history of the Herringbone',
   },
   snake: {
     intro:
       "The Snake Chain emerged in Victorian London around 1840, tightly fitted links that form a smooth, round, flexible tube with the faint banding of a serpent's skin. Completely seamless to the touch, it catches the light in one continuous, unbroken line.",
     journal: 'history-of-the-snake-chain',
-    journalTitle: 'Read: The History of the Snake Chain →',
+    journalTitle: 'Read: the history of the Snake chain',
   },
   paperclip: {
     intro:
       'The Paperclip Chain is the modern minimalist, elongated, uniform oval links inspired by the humble office clip, first popularized in Oslo around 1940. Clean, architectural, and effortlessly contemporary, it wears as well on its own as it does carrying a charm.',
     journal: 'history-of-the-paperclip-chain',
-    journalTitle: 'Read: The History of the Paperclip →',
+    journalTitle: 'Read: the history of the Paperclip',
   },
   '10k-gold': {
     intro:
       '10K gold is 41.7% pure gold alloyed with copper, silver, and zinc, making it the most durable karat we carry. Its hardness means thinner chains hold up to daily wear without stretching or deforming. The color is a refined, pale champagne-gold. For everyday chains, 10K is the workhorse: real gold, built to last, priced honestly.',
     journal: 'understanding-gold-karats',
-    journalTitle: 'Read: Understanding Gold Karats, 10K to 24K →',
+    journalTitle: 'Read: understanding gold karats, 10K to 24K',
   },
   '14k-gold': {
     intro:
       '14K gold is 58.3% pure gold, the American standard for fine jewelry. Richer and warmer in color than 10K, with enough alloy to remain durable for daily wear. This is the sweet spot: unmistakably gold, strong enough for any chain style, and the most popular karat in the United States for good reason.',
     journal: 'understanding-gold-karats',
-    journalTitle: 'Read: Understanding Gold Karats, 10K to 24K →',
+    journalTitle: 'Read: understanding gold karats, 10K to 24K',
   },
 };
 import {FILTER_URL_PREFIX, type SortParam} from '~/components/SortFilter';
@@ -368,23 +368,10 @@ function FilterPill({
 }) {
   return (
     <button
+      type="button"
       onClick={onClick}
-      style={{
-        fontFamily: FONT.cinzel,
-        fontSize: 10,
-        letterSpacing: '0.15em',
-        textTransform: 'uppercase',
-        padding: swatch ? '5px 14px 5px 8px' : '6px 14px',
-        borderRadius: 20,
-        border: active ? `1px solid ${STYX.ink}` : `1px solid ${STYX.line}`,
-        background: active ? STYX.ink : 'transparent',
-        color: active ? STYX.bone : STYX.silt,
-        cursor: 'pointer',
-        transition: 'all 0.2s ease',
-        display: 'flex',
-        alignItems: 'center',
-        gap: 8,
-      }}
+      aria-pressed={active}
+      className="styx-chip"
     >
       {swatch && (
         <span
@@ -393,9 +380,7 @@ function FilterPill({
             height: 12,
             borderRadius: '50%',
             background: swatch,
-            boxShadow: active
-              ? 'inset 0 0 0 1px rgba(239,234,224,0.3)'
-              : 'inset 0 0 0 1px rgba(26,24,21,0.12)',
+            boxShadow: 'inset 0 0 0 1px rgba(26,24,21,0.12)',
             flexShrink: 0,
           }}
         />
@@ -563,8 +548,8 @@ export default function Collection() {
 
   return (
     <div
-      className="styx-listing-page"
-      style={{background: STYX.bone, minHeight: '100vh'}}
+      className="styx-listing-page styx-catalog"
+      style={{background: 'var(--styx-surface)', minHeight: '100vh'}}
     >
       <GoldTicker />
       <StyxNav />
@@ -572,16 +557,15 @@ export default function Collection() {
       {/* Archive Hero */}
       <div
         style={{
-          borderBottom: `1px solid ${STYX.line}`,
-          background: STYX.bone,
+          borderBottom: '1px solid var(--styx-border)',
         }}
       >
         <div
           className="styx-collection-hero"
           style={{
-            maxWidth: 1440,
+            maxWidth: 1800,
             margin: '0 auto',
-            padding: '28px 56px 28px',
+            padding: '40px var(--styx-page-gutter) 32px',
             display: 'grid',
             gridTemplateColumns: '1.2fr 1fr',
             alignItems: 'end',
@@ -604,16 +588,8 @@ export default function Collection() {
             )}
             <h1
               data-reveal=""
-              style={{
-                fontFamily: FONT.cinzel,
-                fontSize: (collection as any).handle === 'chains' ? 44 : 56,
-                fontWeight: 400,
-                textTransform: 'uppercase',
-                letterSpacing: '0.02em',
-                color: STYX.ink,
-                lineHeight: 0.95,
-                margin: 0,
-              }}
+              className="styx-catalog-title"
+              style={{margin: 0}}
             >
               {collection.title}
             </h1>
@@ -625,29 +601,19 @@ export default function Collection() {
       {(collection as any).handle === 'chains' && (
         <div
           style={{
-            borderBottom: `1px solid ${STYX.line}`,
-            background: STYX.paper,
+            borderBottom: '1px solid var(--styx-border)',
           }}
         >
           <div
             className="styx-weave-strip"
             style={{
-              maxWidth: 1440,
+              maxWidth: 1800,
               margin: '0 auto',
-              padding: '32px 56px 36px',
+              padding: '28px var(--styx-page-gutter) 32px',
             }}
           >
-            <div
-              style={{
-                fontFamily: FONT.cinzel,
-                fontSize: 10,
-                letterSpacing: '0.3em',
-                textTransform: 'uppercase',
-                color: STYX.silt,
-                marginBottom: 18,
-              }}
-            >
-              Shop by Weave
+            <div className="styx-catalog-label" style={{marginBottom: 16}}>
+              Shop by weave
             </div>
             <div
               className="styx-weave-grid"
@@ -669,16 +635,17 @@ export default function Collection() {
                     justifyContent: 'center',
                     gap: 10,
                     padding: '16px 10px 14px',
-                    background: STYX.bone,
-                    border: `1px solid ${STYX.line}`,
+                    background: '#fffefa',
+                    border: '1px solid var(--styx-border)',
+                    borderRadius: 3,
                     textDecoration: 'none',
                     transition: 'border-color 0.2s ease',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = STYX.gold;
+                    e.currentTarget.style.borderColor = '#887346';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = STYX.line;
+                    e.currentTarget.style.borderColor = 'var(--styx-border)';
                   }}
                 >
                   {weaveCutout(w.handle) ? (
@@ -697,11 +664,10 @@ export default function Collection() {
                   )}
                   <span
                     style={{
-                      fontFamily: FONT.cinzel,
-                      fontSize: 10,
-                      letterSpacing: '0.12em',
-                      textTransform: 'uppercase',
-                      color: STYX.ink,
+                      fontFamily: FONT.inter,
+                      fontSize: 12,
+                      letterSpacing: '0.01em',
+                      color: '#1a1815',
                       textAlign: 'center',
                       whiteSpace: 'nowrap',
                     }}
@@ -724,42 +690,23 @@ export default function Collection() {
           <div
             className="styx-collection-intro"
             style={{
-              maxWidth: 1440,
+              maxWidth: 1800,
               margin: '0 auto',
-              padding: '28px 56px',
+              padding: '28px var(--styx-page-gutter)',
               display: 'flex',
-              gap: 32,
-              alignItems: 'baseline',
-              borderBottom: `1px solid ${STYX.line}`,
+              gap: 48,
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              borderBottom: '1px solid var(--styx-border)',
             }}
           >
-            <p
-              style={{
-                fontFamily: FONT.cormorant,
-                fontSize: 18,
-                lineHeight: 1.7,
-                color: STYX.silt,
-                margin: 0,
-                flex: 1,
-              }}
-            >
-              {info.intro}
-            </p>
+            <p className="styx-catalog-intro-text">{info.intro}</p>
             <Link
               to={`/journal/${info.journal}`}
-              style={{
-                fontFamily: FONT.cinzel,
-                fontSize: 11,
-                letterSpacing: '0.12em',
-                color: STYX.gold,
-                textDecoration: 'none',
-                whiteSpace: 'nowrap',
-                flexShrink: 0,
-                borderBottom: `1px solid ${STYX.gold}`,
-                paddingBottom: 2,
-              }}
+              className="styx-text-link"
+              style={{whiteSpace: 'nowrap', flexShrink: 0}}
             >
-              {info.journalTitle}
+              {info.journalTitle} <span aria-hidden="true">↗</span>
             </Link>
           </div>
         );
@@ -771,17 +718,17 @@ export default function Collection() {
           position: 'sticky',
           top: 'var(--styx-header-offset, 64px)',
           zIndex: 5,
-          background: STYX.paper,
-          borderBottom: `1px solid ${STYX.line}`,
+          background: 'var(--styx-surface)',
+          borderBottom: '1px solid var(--styx-border)',
           transition: 'top 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
         }}
       >
         <div
           className="styx-collection-toolbar"
           style={{
-            maxWidth: 1440,
+            maxWidth: 1800,
             margin: '0 auto',
-            padding: '14px 56px',
+            padding: '14px var(--styx-page-gutter)',
             display: 'flex',
             flexDirection: 'column',
             gap: 14,
@@ -796,34 +743,15 @@ export default function Collection() {
             }}
           >
             <div style={{display: 'flex', alignItems: 'center', gap: 16}}>
-              <span
-                style={{
-                  fontFamily: FONT.cinzel,
-                  fontSize: 11,
-                  letterSpacing: '0.2em',
-                  textTransform: 'uppercase',
-                  color: STYX.silt,
-                }}
-              >
-                {filteredCount} Piece
+              <span className="styx-catalog-count">
+                {filteredCount} piece
                 {filteredCount !== 1 ? 's' : ''}
               </span>
               {activeFilterCount > 0 && (
                 <button
+                  type="button"
                   onClick={clearAllFilters}
-                  style={{
-                    fontFamily: FONT.cinzel,
-                    fontSize: 10,
-                    letterSpacing: '0.15em',
-                    textTransform: 'uppercase',
-                    color: STYX.gold,
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    padding: 0,
-                    textDecoration: 'underline',
-                    textUnderlineOffset: 3,
-                  }}
+                  className="styx-catalog-clear"
                 >
                   Clear {activeFilterCount} filter
                   {activeFilterCount > 1 ? 's' : ''}
@@ -836,32 +764,18 @@ export default function Collection() {
               style={{display: 'flex', alignItems: 'center', gap: 12}}
             >
               <div
-                className="styx-collection-sort"
-                style={{display: 'flex', alignItems: 'center', gap: 0}}
+                className="styx-collection-sort styx-seg"
+                role="group"
+                aria-label="Sort"
               >
-                {SORT_OPTIONS.map((opt, i) => {
+                {SORT_OPTIONS.map((opt) => {
                   const isActive = currentSort === opt.value;
                   return (
                     <button
                       key={opt.value}
                       onClick={() => setSort(opt.value)}
                       aria-pressed={isActive}
-                      style={{
-                        fontFamily: FONT.inter,
-                        fontSize: 10,
-                        fontWeight: isActive ? 600 : 400,
-                        letterSpacing: '0.06em',
-                        textTransform: 'uppercase',
-                        color: isActive ? STYX.bone : STYX.silt,
-                        background: isActive ? STYX.ink : 'transparent',
-                        border: `1px solid ${isActive ? STYX.ink : STYX.line}`,
-                        borderRight:
-                          i < SORT_OPTIONS.length - 1 ? 'none' : undefined,
-                        padding: '7px 14px',
-                        height: 32,
-                        cursor: 'pointer',
-                        transition: 'all 0.15s ease',
-                      }}
+                      className="styx-seg-btn"
                     >
                       {opt.label}
                     </button>
@@ -900,7 +814,7 @@ export default function Collection() {
               return (
                 <div
                   key={key}
-                  style={{display: 'flex', alignItems: 'center', gap: 8}}
+                  style={{display: 'flex', alignItems: 'center', gap: 6}}
                 >
                   <FacetHeading>{FACET_TITLE_SHORT[key]}</FacetHeading>
                   {opts.map((o) => (
@@ -1005,9 +919,9 @@ export default function Collection() {
           <div
             className="styx-collection-products"
             style={{
-              maxWidth: 1440,
+              maxWidth: 1800,
               margin: '0 auto',
-              padding: '32px 56px 120px',
+              padding: '36px var(--styx-page-gutter) 120px',
             }}
           >
             <div
@@ -1018,17 +932,7 @@ export default function Collection() {
               }}
             >
               <PreviousLink
-                style={{
-                  fontFamily: FONT.cinzel,
-                  fontSize: 11,
-                  letterSpacing: '0.2em',
-                  textTransform: 'uppercase',
-                  color: STYX.silt,
-                  textDecoration: 'none',
-                  padding: '10px 24px',
-                  border: `1px solid ${STYX.line}`,
-                  borderRadius: 4,
-                }}
+                className="styx-ctl styx-catalog-more"
               >
                 {isLoading ? 'Loading...' : 'Load previous'}
               </PreviousLink>
@@ -1054,17 +958,7 @@ export default function Collection() {
             >
               <NextLink
                 ref={ref}
-                style={{
-                  fontFamily: FONT.cinzel,
-                  fontSize: 11,
-                  letterSpacing: '0.2em',
-                  textTransform: 'uppercase',
-                  color: STYX.silt,
-                  textDecoration: 'none',
-                  padding: '10px 24px',
-                  border: `1px solid ${STYX.line}`,
-                  borderRadius: 4,
-                }}
+                className="styx-ctl styx-catalog-more"
               >
                 {isLoading ? 'Loading...' : 'Load more products'}
               </NextLink>
@@ -1076,9 +970,11 @@ export default function Collection() {
       {/* ── Collection Story Section ── */}
       {(storyHeading || storyBody || collection.image) && (
         <section
+          className="styx-collection-story"
           style={{
-            background: STYX.taupe,
-            padding: '120px 56px',
+            background: '#ede9df',
+            borderTop: '1px solid var(--styx-border)',
+            padding: '96px var(--styx-page-gutter)',
             position: 'relative',
           }}
         >
@@ -1094,6 +990,7 @@ export default function Collection() {
           />
           <div style={{maxWidth: 1080, margin: '0 auto', position: 'relative'}}>
             <div
+              data-grid=""
               style={{
                 display: 'grid',
                 gridTemplateColumns: collection.image ? '1fr 1.4fr' : '1fr',
@@ -1134,13 +1031,8 @@ export default function Collection() {
                     <Obol size={44} color={STYX.ink} speed={6} />
                     {eraLabel && (
                       <span
-                        style={{
-                          fontFamily: FONT.cinzel,
-                          fontSize: 11,
-                          letterSpacing: '0.25em',
-                          textTransform: 'uppercase',
-                          color: STYX.graphite,
-                        }}
+                        className="styx-eyebrow"
+                        style={{margin: 0}}
                       >
                         {eraLabel}
                       </span>
@@ -1153,27 +1045,20 @@ export default function Collection() {
               <div>
                 {chapterKicker && (
                   <div
-                    style={{
-                      fontFamily: FONT.cinzel,
-                      fontSize: 11,
-                      letterSpacing: '0.25em',
-                      textTransform: 'uppercase',
-                      color: STYX.graphite,
-                      marginBottom: 18,
-                    }}
+                    className="styx-eyebrow"
+                    style={{marginBottom: 18}}
                   >
                     {chapterKicker}
                   </div>
                 )}
                 <div
                   style={{
-                    fontFamily: FONT.cinzel,
-                    fontSize: 64,
-                    fontWeight: 500,
-                    letterSpacing: '0.01em',
-                    lineHeight: 0.95,
-                    color: STYX.ink,
-                    textTransform: 'uppercase',
+                    fontFamily: FONT.cormorant,
+                    fontSize: 'clamp(40px, 4vw, 62px)',
+                    fontWeight: 400,
+                    letterSpacing: '-0.03em',
+                    lineHeight: 1,
+                    color: '#1a1815',
                   }}
                 >
                   {storyHeading || `On the`}
@@ -1262,11 +1147,10 @@ function FacetHeading({children}: {children: ReactNode}) {
   return (
     <span
       style={{
-        fontFamily: FONT.cinzel,
-        fontSize: 9,
-        letterSpacing: '0.2em',
-        textTransform: 'uppercase',
-        color: STYX.silt2,
+        fontFamily: FONT.inter,
+        fontSize: 11,
+        letterSpacing: '0.01em',
+        color: 'var(--styx-muted)',
         marginRight: 4,
       }}
     >
@@ -1316,22 +1200,21 @@ function ProductsLoadedOnScroll({
       >
         <div
           style={{
-            fontFamily: FONT.cinzel,
-            fontSize: 18,
-            color: STYX.silt,
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-            marginBottom: 12,
+            fontFamily: FONT.cormorant,
+            fontSize: 32,
+            fontWeight: 500,
+            color: '#1a1815',
+            letterSpacing: '-0.02em',
+            marginBottom: 10,
           }}
         >
           No pieces match
         </div>
         <div
           style={{
-            fontFamily: FONT.cormorant,
-            fontSize: 16,
-            fontStyle: 'italic',
-            color: STYX.silt2,
+            fontFamily: FONT.inter,
+            fontSize: 13,
+            color: 'var(--styx-muted)',
           }}
         >
           Try adjusting your filters.

@@ -1,4 +1,4 @@
-import {STYX, FONT} from './constants';
+import {FONT} from './constants';
 import {useScaleCalibration} from '~/context/ScaleCalibrationContext';
 import {usePrintList} from '~/context/PrintListContext';
 
@@ -151,14 +151,13 @@ export function TrueSizeControls({
       {showHint && !actualSizeOn && !onPrintList && (
         <div
           style={{
-            fontFamily: FONT.cormorant,
-            fontStyle: 'italic',
-            fontSize: 13,
-            lineHeight: 1.3,
-            color: STYX.ink,
-            background: 'rgba(239,234,224,0.88)',
-            padding: '3px 10px',
-            borderRadius: 999,
+            fontFamily: FONT.inter,
+            fontSize: 11,
+            lineHeight: 1.4,
+            color: '#4c493f',
+            background: 'rgba(247,245,240,0.92)',
+            padding: '4px 10px',
+            borderRadius: 3,
             maxWidth: '100%',
             pointerEvents: 'none',
           }}
@@ -210,24 +209,21 @@ function Pill({
         gap: 8,
         minHeight: 44,
         padding: '0 16px',
-        borderRadius: 999,
-        border: `1px solid ${active ? STYX.gold : STYX.line}`,
-        background: 'rgba(239,234,224,0.92)',
-        backdropFilter: 'blur(4px)',
-        WebkitBackdropFilter: 'blur(4px)',
-        boxShadow: '0 2px 10px rgba(0,0,0,0.10)',
+        borderRadius: 3,
+        border: `1px solid ${active ? '#887346' : 'var(--styx-border)'}`,
+        boxShadow: active ? 'inset 0 0 0 1px #887346' : 'none',
+        background: active ? '#fffefa' : 'rgba(247,245,240,0.94)',
         cursor: disabled ? 'not-allowed' : 'pointer',
         opacity: disabled ? 0.5 : 1,
-        fontFamily: FONT.mono,
-        fontSize: 11,
-        letterSpacing: '0.12em',
-        textTransform: 'uppercase',
+        fontFamily: FONT.inter,
+        fontSize: 12,
+        letterSpacing: '0.01em',
         whiteSpace: 'nowrap',
-        color: active ? STYX.goldDeep : STYX.ink,
+        color: active ? '#242a24' : '#1a1815',
         transition: 'border-color 140ms, color 140ms',
       }}
     >
-      <span style={{display: 'inline-flex', color: active ? STYX.gold : STYX.ink}}>
+      <span style={{display: 'inline-flex', color: active ? '#887346' : '#1a1815'}}>
         {icon}
       </span>
       {children}

@@ -105,11 +105,10 @@ export function DeliveryReturns() {
         style={{
           marginTop: 16,
           textAlign: 'center',
-          fontFamily: FONT.cormorant,
-          fontSize: 14,
-          fontStyle: 'italic',
-          color: STYX.silt,
-          lineHeight: 1.5,
+          fontFamily: FONT.inter,
+          fontSize: 11,
+          color: 'var(--styx-muted)',
+          lineHeight: 1.6,
         }}
       >
         Ships fully insured in 1 to 2 business days. Domestic delivery
@@ -126,17 +125,17 @@ export function DeliveryReturns() {
             appearance: 'none',
             background: 'transparent',
             border: 'none',
-            borderBottom: `1px solid ${STYX.gold}`,
-            padding: '0 0 3px',
+            borderBottom: '1px solid #bcb5a6',
+            padding: '0 0 4px',
             cursor: 'pointer',
-            fontFamily: FONT.cinzel,
-            fontSize: 11,
-            letterSpacing: '0.22em',
-            textTransform: 'uppercase',
-            color: STYX.ink,
+            fontFamily: FONT.inter,
+            fontSize: 12,
+            fontWeight: 500,
+            letterSpacing: '0.01em',
+            color: '#1a1815',
           }}
         >
-          Delivery &amp; Returns
+          Delivery &amp; returns
         </button>
       </div>
 
@@ -167,7 +166,8 @@ export function DeliveryReturns() {
         className="styx-dr-panel"
         data-open={open ? 'true' : 'false'}
         style={{
-          background: STYX.bone,
+          background: 'var(--styx-surface)',
+          borderLeft: '1px solid var(--styx-border)',
           boxShadow: '-24px 0 60px rgba(26,24,21,0.12)',
           display: 'flex',
           flexDirection: 'column',
@@ -177,7 +177,7 @@ export function DeliveryReturns() {
         <div
           style={{
             padding: '20px 24px',
-            borderBottom: `1px solid ${STYX.line}`,
+            borderBottom: '1px solid var(--styx-border)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -188,11 +188,11 @@ export function DeliveryReturns() {
             <div
               style={{
                 fontFamily: FONT.mono,
-                fontSize: 9,
-                letterSpacing: '0.25em',
+                fontSize: 10,
+                letterSpacing: '0.13em',
                 textTransform: 'uppercase',
-                color: STYX.gold,
-                marginBottom: 4,
+                color: '#7a5c28',
+                marginBottom: 6,
               }}
             >
               Service
@@ -200,15 +200,15 @@ export function DeliveryReturns() {
             <div
               id={titleId}
               style={{
-                fontFamily: FONT.cinzel,
-                fontSize: 20,
+                fontFamily: FONT.cormorant,
+                fontSize: 30,
                 fontWeight: 500,
-                letterSpacing: '0.06em',
-                color: STYX.ink,
-                textTransform: 'uppercase',
+                lineHeight: 1.1,
+                letterSpacing: '-0.02em',
+                color: '#1a1815',
               }}
             >
-              Delivery &amp; Returns
+              Delivery &amp; returns
             </div>
           </div>
           <button
@@ -219,8 +219,8 @@ export function DeliveryReturns() {
             style={{
               width: 36,
               height: 36,
-              borderRadius: '50%',
-              border: `1px solid ${STYX.line}`,
+              borderRadius: 3,
+              border: '1px solid var(--styx-border)',
               background: 'transparent',
               cursor: 'pointer',
               display: 'flex',
@@ -249,16 +249,15 @@ export function DeliveryReturns() {
               key={label}
               style={{
                 padding: '18px 0',
-                borderBottom: `1px solid ${STYX.line}`,
+                borderBottom: '1px solid var(--styx-border)',
               }}
             >
               <div
                 style={{
-                  fontFamily: FONT.cinzel,
-                  fontSize: 10,
-                  letterSpacing: '0.3em',
-                  textTransform: 'uppercase',
-                  color: STYX.gold,
+                  fontFamily: FONT.inter,
+                  fontSize: 12,
+                  fontWeight: 500,
+                  color: '#242a24',
                   marginBottom: 6,
                 }}
               >
@@ -266,10 +265,10 @@ export function DeliveryReturns() {
               </div>
               <div
                 style={{
-                  fontFamily: FONT.cormorant,
-                  fontSize: 17,
-                  lineHeight: 1.5,
-                  color: STYX.ink,
+                  fontFamily: FONT.inter,
+                  fontSize: 13,
+                  lineHeight: 1.75,
+                  color: 'var(--styx-muted)',
                 }}
               >
                 {body}
@@ -299,18 +298,19 @@ export function DeliveryReturns() {
                   justifyContent: 'space-between',
                   gap: 12,
                   textDecoration: 'none',
-                  fontFamily: FONT.cinzel,
-                  fontSize: 11,
-                  letterSpacing: '0.2em',
-                  textTransform: 'uppercase',
-                  color: STYX.ink,
-                  border: `1px solid ${STYX.line}`,
+                  fontFamily: FONT.inter,
+                  fontSize: 12,
+                  color: '#1a1815',
+                  border: '1px solid var(--styx-border)',
+                  borderRadius: 3,
+                  background: '#fffefa',
                   padding: '14px 16px',
+                  minHeight: 48,
                 }}
               >
                 <span>{label}</span>
-                <span aria-hidden="true" style={{color: STYX.gold}}>
-                  &rarr;
+                <span aria-hidden="true" style={{color: '#9a7942'}}>
+                  ↗
                 </span>
               </Link>
             ))}

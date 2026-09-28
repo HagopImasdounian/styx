@@ -3,7 +3,7 @@ import {Money, type OptimisticCartLineInput} from '@shopify/hydrogen';
 import type {MoneyV2} from '@shopify/hydrogen/storefront-api-types';
 
 import {AddToCartButton} from '~/components/AddToCartButton';
-import {STYX, FONT} from './constants';
+import {FONT} from './constants';
 import {WishlistButton} from './WishlistButton';
 
 /**
@@ -68,12 +68,13 @@ export function StickyBuyBar({
     flexShrink: 0,
     padding: '0 18px',
     height: 40,
-    background: STYX.ink,
-    color: STYX.bone,
-    fontFamily: FONT.cinzel,
-    fontSize: 11,
-    letterSpacing: '0.2em',
-    textTransform: 'uppercase',
+    borderRadius: 3,
+    background: '#242a24',
+    color: '#f7f5f0',
+    fontFamily: FONT.inter,
+    fontSize: 13,
+    letterSpacing: '0.025em',
+    textTransform: 'none',
     border: 'none',
     cursor: 'pointer',
     display: 'inline-flex',
@@ -102,8 +103,8 @@ export function StickyBuyBar({
         boxSizing: 'border-box',
         alignItems: 'center',
         gap: 10,
-        background: STYX.bone,
-        borderTop: `1px solid ${STYX.line}`,
+        background: 'var(--styx-surface)',
+        borderTop: '1px solid var(--styx-border)',
         transform: visible ? 'translateY(0)' : 'translateY(100%)',
         visibility: visible ? 'visible' : 'hidden',
         transition:
@@ -114,11 +115,11 @@ export function StickyBuyBar({
       <div style={{flex: 1, minWidth: 0}}>
         <div
           style={{
-            fontFamily: FONT.cinzel,
+            fontFamily: FONT.inter,
             fontSize: 12,
-            letterSpacing: '0.06em',
-            textTransform: 'uppercase',
-            color: STYX.ink,
+            fontWeight: 500,
+            letterSpacing: '0.005em',
+            color: '#1a1815',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
@@ -130,11 +131,12 @@ export function StickyBuyBar({
         {price && parseFloat(price.amount) > 0 && (
           <div
             style={{
-              fontFamily: FONT.mono,
-              fontSize: 12,
-              color: STYX.silt,
-              fontVariantNumeric: 'tabular-nums',
-              lineHeight: 1.3,
+              fontFamily: FONT.cormorant,
+              fontSize: 17,
+              fontWeight: 500,
+              color: '#1a1815',
+              fontVariantNumeric: 'lining-nums tabular-nums',
+              lineHeight: 1.2,
               display: 'flex',
               gap: 8,
             }}

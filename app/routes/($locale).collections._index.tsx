@@ -6,12 +6,9 @@ import {getStyxSeoMeta} from '~/lib/seo-meta';
 import {validateLocale} from '~/lib/utils';
 import {CACHE_LONG, routeHeaders} from '~/data/cache';
 import {
-  STYX,
-  FONT,
   GoldTicker,
   StyxNav,
   StyxFooter,
-  StyxLabel,
   PlaceholderImage,
 } from '~/components/styx';
 
@@ -105,194 +102,82 @@ export default function CollectionsIndex() {
   );
   const allChains = live.find((c: any) => c.handle === 'chains');
 
+  const allChainsDesigns = allChains
+    ? designCount(allChainsCount ?? allChains.products?.nodes?.length ?? 0, 250)
+    : null;
+
   return (
-    <div style={{background: STYX.paper}}>
+    <div className="styx-catalog" style={{background: 'var(--styx-surface)'}}>
       <GoldTicker />
       <StyxNav collections={collections} />
 
-      {/* All Chains banner */}
-      {allChains && (
-        <Link
-      data-reveal=""
-          to={`/collections/${allChains.handle}`}
-          prefetch="intent"
-          className="styx-ci-banner"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '28px 56px',
-            background: STYX.ink,
-            color: STYX.bone,
-            textDecoration: 'none',
-            borderBottom: `1px solid rgba(239,234,224,0.08)`,
-          }}
-        >
-          <div style={{display: 'flex', alignItems: 'center', gap: 16}}>
-            <span
-              style={{
-                fontFamily: FONT.cinzel,
-                fontSize: 14,
-                letterSpacing: '0.2em',
-                textTransform: 'uppercase',
-              }}
-            >
-              All Chains
-            </span>
-            <span
-              style={{
-                fontFamily: FONT.mono,
-                fontSize: 11,
-                color: STYX.gold,
-              }}
-            >
-              {designCount(
-                allChainsCount ?? allChains.products?.nodes?.length ?? 0,
-                250,
-              )}
-            </span>
+      {/* Chain families: same card system as the homepage collection edit */}
+      <section className="styx-collection-edit styx-ci-edit">
+        <div className="styx-section-heading">
+          <div>
+            <p className="styx-eyebrow">
+              Collections · {live.length} collections, {chainTypes.length}{' '}
+              chain families
+            </p>
+            <h1 className="styx-catalog-heading">
+              Every weave <em>we carry.</em>
+            </h1>
           </div>
-          <span
-            style={{
-              fontFamily: FONT.cinzel,
-              fontSize: 11,
-              letterSpacing: '0.2em',
-              color: STYX.gold,
-              textTransform: 'uppercase',
-            }}
-          >
-            Browse all →
-          </span>
-        </Link>
-      )}
-
-      {/* Chain families grid */}
-      <section className="styx-ci-families" style={{padding: '40px 56px 48px'}}>
-        {/* "Collections" is the page's eyebrow, the old full-height hero is gone */}
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'baseline',
-            gap: 24,
-          }}
-        >
-          <StyxLabel>Collections</StyxLabel>
-          <span
-            style={{
-              fontFamily: FONT.cormorant,
-              fontStyle: 'italic',
-              fontSize: 16,
-              color: STYX.silt,
-            }}
-          >
-            {live.length} collections · {chainTypes.length} chain families
-          </span>
+          {allChains && (
+            <Link
+              to={`/collections/${allChains.handle}`}
+              prefetch="intent"
+              className="styx-text-link"
+            >
+              Shop all chains
+              {allChainsDesigns ? (
+                <span className="styx-catalog-link-meta">
+                  {allChainsDesigns}
+                </span>
+              ) : null}
+              <span aria-hidden="true">↗</span>
+            </Link>
+          )}
         </div>
-        <h1
-          style={{
-            fontFamily: FONT.cinzel,
-            fontSize: 36,
-            fontWeight: 400,
-            color: STYX.ink,
-            margin: '12px 0 36px',
-            textTransform: 'uppercase',
-            letterSpacing: '0.04em',
-          }}
-        >
-          Every weave we carry.
-        </h1>
 
-        <div
-          className="styx-ci-families-grid"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: 20,
-          }}
-        >
-          {chainTypes.map((collection: any) => (
-            <CollectionTile key={collection.id} collection={collection} />
+        <div className="styx-collection-edit-grid styx-ci-grid">
+          {chainTypes.map((collection: any, index: number) => (
+            <CollectionTile
+              key={collection.id}
+              collection={collection}
+              index={index}
+            />
           ))}
         </div>
       </section>
 
       {/* Filter collections (metal, karat) */}
       {filterCollections.length > 0 && (
-        <section
-          className="styx-ci-karat"
-          style={{
-            padding: '48px 56px 64px',
-            background: STYX.bone,
-            borderTop: `1px solid ${STYX.line}`,
-          }}
-        >
-          <h2
-            data-reveal=""
-            style={{
-              fontFamily: FONT.cinzel,
-              fontSize: 28,
-              fontWeight: 400,
-              color: STYX.ink,
-              margin: '0 0 32px',
-              textTransform: 'uppercase',
-              letterSpacing: '0.04em',
-            }}
-          >
-            Shop by material.
-          </h2>
-          <div
-            className="styx-ci-karat-grid"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: `repeat(${Math.min(
-                filterCollections.length,
-                5,
-              )}, 1fr)`,
-              gap: 2,
-              background: STYX.line,
-            }}
-          >
+        <section className="styx-ci-materials">
+          <div className="styx-section-heading">
+            <div>
+              <p className="styx-eyebrow">Metal and karat</p>
+              <h2 data-reveal="">
+                Shop by <em>material.</em>
+              </h2>
+            </div>
+          </div>
+          <div className="styx-ci-materials-grid">
             {filterCollections.map((c: any) => (
               <Link
-      data-reveal=""
+                data-reveal=""
                 key={c.id}
                 to={`/collections/${c.handle}`}
                 prefetch="intent"
-                style={{
-                  background: STYX.paper,
-                  padding: '32px 28px',
-                  textDecoration: 'none',
-                  transition: 'background 0.2s',
-                }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.background = STYX.parchment)
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.background = STYX.paper)
-                }
+                className="styx-ci-material"
               >
-                <div
-                  style={{
-                    fontFamily: FONT.cinzel,
-                    fontSize: 16,
-                    letterSpacing: '0.06em',
-                    color: STYX.ink,
-                    textTransform: 'uppercase',
-                    marginBottom: 6,
-                  }}
-                >
-                  {c.title}
-                </div>
-                <div
-                  style={{
-                    fontFamily: FONT.mono,
-                    fontSize: 11,
-                    color: STYX.gold,
-                  }}
-                >
+                <span className="styx-ci-material-title">{c.title}</span>
+                <span className="styx-ci-material-meta">
                   {designCount(c.products?.nodes?.length ?? 0)}
-                </div>
+                </span>
+                <span className="styx-collection-card-arrow" aria-hidden="true">
+                  ↗
+                </span>
               </Link>
             ))}
           </div>
@@ -304,113 +189,41 @@ export default function CollectionsIndex() {
   );
 }
 
-function CollectionTile({collection}: {collection: any}) {
+function CollectionTile({
+  collection,
+  index,
+}: {
+  collection: any;
+  index: number;
+}) {
   return (
     <Link
       data-reveal=""
       to={`/collections/${collection.handle}`}
       prefetch="intent"
-      style={{
-        display: 'block',
-        textDecoration: 'none',
-        position: 'relative',
-        overflow: 'hidden',
-      }}
-      onMouseEnter={(e) => {
-        const overlay = e.currentTarget.querySelector(
-          '[data-overlay]',
-        ) as HTMLElement;
-        if (overlay) overlay.style.opacity = '0.6';
-      }}
-      onMouseLeave={(e) => {
-        const overlay = e.currentTarget.querySelector(
-          '[data-overlay]',
-        ) as HTMLElement;
-        if (overlay) overlay.style.opacity = '0';
-      }}
+      className="styx-collection-card"
     >
-      {/* Image */}
-      <div
-        style={{aspectRatio: '4/5', position: 'relative', overflow: 'hidden'}}
-      >
+      <div className="styx-collection-card-image">
+        <span className="styx-collection-card-number" aria-hidden="true">
+          {String(index + 1).padStart(2, '0')}
+        </span>
         {collection.image ? (
           <Image
             data={collection.image}
             alt={collection.image.altText ?? collection.title}
-            aspectRatio="4/5"
-            sizes="(min-width: 1200px) 25vw, 50vw"
-            style={{width: '100%', height: '100%', objectFit: 'cover'}}
+            aspectRatio="1/1"
+            sizes="(max-width: 600px) 50vw, (max-width: 1000px) 33vw, 25vw"
           />
         ) : (
-          <PlaceholderImage aspect="4/5" label={collection.title} tone="warm" />
+          <PlaceholderImage aspect="1/1" label={collection.title} tone="warm" />
         )}
-
-        {/* Hover overlay */}
-        <div
-          data-overlay
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background: `linear-gradient(transparent 40%, ${STYX.ink})`,
-            opacity: 0,
-            transition: 'opacity 0.3s ease',
-            pointerEvents: 'none',
-          }}
-        />
-
-        {/* Product count badge */}
-        <div
-          style={{
-            position: 'absolute',
-            top: 12,
-            right: 12,
-            background: 'rgba(239,234,224,0.92)',
-            backdropFilter: 'blur(8px)',
-            padding: '5px 10px',
-            borderRadius: 20,
-            fontFamily: FONT.mono,
-            fontSize: 10,
-            color: STYX.ink,
-            letterSpacing: '0.05em',
-          }}
-        >
-          {(collection.products?.nodes?.length ?? 0) >= 100
-            ? '100+'
-            : collection.products?.nodes?.length ?? 0}
-        </div>
+        <span className="styx-collection-card-arrow" aria-hidden="true">
+          ↗
+        </span>
       </div>
-
-      {/* Info */}
-      <div
-        style={{
-          paddingTop: 16,
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'baseline',
-        }}
-      >
-        <div
-          style={{
-            fontFamily: FONT.cinzel,
-            fontSize: 14,
-            textTransform: 'uppercase',
-            letterSpacing: '0.1em',
-            color: STYX.ink,
-          }}
-        >
-          {collection.title}
-        </div>
-        <div
-          style={{
-            fontFamily: FONT.cinzel,
-            fontSize: 10,
-            letterSpacing: '0.2em',
-            color: STYX.gold,
-            textTransform: 'uppercase',
-          }}
-        >
-          Shop →
-        </div>
+      <div className="styx-collection-card-info">
+        <h3>{collection.title}</h3>
+        <span>{designCount(collection.products?.nodes?.length ?? 0)}</span>
       </div>
     </Link>
   );

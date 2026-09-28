@@ -1,6 +1,5 @@
 import {useSyncExternalStore} from 'react';
 import {useNonce} from '@shopify/hydrogen';
-import {STYX, FONT} from './constants';
 
 /* ═══════════════════════════════════════════════════════════════
    Grid density (listing pages)
@@ -131,19 +130,7 @@ export function GridDensityToggle({
         aria-label={label}
         title={label}
         onClick={() => onChange(value)}
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: 34,
-          height: 32,
-          padding: 0,
-          border: `1px solid ${pressed ? STYX.ink : STYX.line}`,
-          background: pressed ? STYX.ink : 'transparent',
-          color: pressed ? STYX.bone : STYX.silt,
-          cursor: 'pointer',
-          transition: 'all 0.15s ease',
-        }}
+        className="styx-seg-btn styx-seg-icon"
       >
         <SquaresIcon count={icon} />
       </button>
@@ -153,11 +140,9 @@ export function GridDensityToggle({
     <div
       role="group"
       aria-label="Grid density"
-      className={className}
-      style={{display: 'inline-flex', gap: 0}}
+      className={`styx-seg ${className ?? ''}`.trim()}
     >
       {btn('compact', 'Smaller product images', 4)}
-      <span style={{width: 0, borderLeft: 'none'}} aria-hidden="true" />
       {btn('large', 'Larger product images', 2)}
     </div>
   );
@@ -176,8 +161,8 @@ function SlidersIcon() {
     >
       <line x1="1" y1="3.5" x2="13" y2="3.5" />
       <line x1="1" y1="10.5" x2="13" y2="10.5" />
-      <circle cx="5" cy="3.5" r="1.8" fill={STYX.bone} />
-      <circle cx="9.5" cy="10.5" r="1.8" fill={STYX.bone} />
+      <circle cx="5" cy="3.5" r="1.8" fill="var(--styx-slider-knob, #f7f5f0)" />
+      <circle cx="9.5" cy="10.5" r="1.8" fill="var(--styx-slider-knob, #f7f5f0)" />
     </svg>
   );
 }
@@ -209,28 +194,13 @@ export function FilterSortButton({
       aria-haspopup="dialog"
       aria-expanded={open}
       aria-label={label}
-      className={className}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: 8,
-        fontFamily: FONT.cinzel,
-        fontSize: 10,
-        letterSpacing: '0.15em',
-        textTransform: 'uppercase',
-        padding: '0 14px',
-        height: 32,
-        border: `1px solid ${fill || activeCount > 0 ? STYX.ink : STYX.line}`,
-        background: fill ? STYX.ink : 'transparent',
-        color: fill ? STYX.bone : STYX.ink,
-        cursor: 'pointer',
-        whiteSpace: 'nowrap',
-      }}
+      className={`styx-ctl${fill ? ' styx-ctl-fill' : ''} ${className ?? ''}`.trim()}
+      data-active={activeCount > 0 ? 'true' : undefined}
     >
-      <span style={{color: fill ? STYX.bone : STYX.silt, display: 'flex'}}>
+      <span className="styx-ctl-icon">
         <SlidersIcon />
       </span>
-      Filter &amp; Sort
+      Filter &amp; sort
       {activeCount > 0 && <span aria-hidden="true">({activeCount})</span>}
     </button>
   );

@@ -197,11 +197,10 @@ function PlaceholderStyle() {
       dangerouslySetInnerHTML={{
         __html: `
       .styx-predictive-input::placeholder {
-        font-family: ${FONT.cinzel};
-        font-size: 11px;
-        letter-spacing: 0.22em;
-        text-transform: uppercase;
-        color: ${STYX.silt2};
+        font-family: ${FONT.inter};
+        font-size: 13px;
+        letter-spacing: 0.01em;
+        color: #686257;
         opacity: 1;
       }
       .styx-search-chip {
@@ -244,11 +243,11 @@ function BlockLabel({
     >
       <span
         style={{
-          fontFamily: FONT.cinzel,
-          fontSize: 11,
-          letterSpacing: '0.22em',
-          textTransform: 'uppercase',
-          color: STYX.gold,
+          fontFamily: FONT.inter,
+          fontSize: 12,
+          fontWeight: 500,
+          letterSpacing: '0.01em',
+          color: '#242a24',
         }}
       >
         {children}
@@ -377,11 +376,10 @@ function SectionLabel({children}: {children: React.ReactNode}) {
     <div
       aria-hidden
       style={{
-        fontFamily: FONT.mono,
-        fontSize: 9,
-        letterSpacing: '0.25em',
-        textTransform: 'uppercase',
-        color: STYX.gold,
+        fontFamily: FONT.inter,
+        fontSize: 11,
+        letterSpacing: '0.01em',
+        color: '#686257',
         padding: '14px 0 6px',
       }}
     >
@@ -519,21 +517,19 @@ function CollectionRow({
       <span
         aria-hidden
         style={{
-          fontFamily: FONT.cinzel,
-          fontSize: 9,
-          letterSpacing: '0.1em',
-          color: STYX.gold,
+          fontFamily: FONT.inter,
+          fontSize: 11,
+          color: '#9a7942',
         }}
       >
-        →
+        ↗
       </span>
       <span
         style={{
-          fontFamily: FONT.cinzel,
-          fontSize: 12,
-          letterSpacing: '0.12em',
-          textTransform: 'uppercase',
-          color: STYX.ink,
+          fontFamily: FONT.inter,
+          fontSize: 13,
+          letterSpacing: '0.005em',
+          color: '#1a1815',
         }}
       >
         {collection.title}
@@ -555,17 +551,20 @@ function ViewAllLink({
       to={`${prefix}/search?q=${encodeURIComponent(query.trim())}`}
       onClick={onClick}
       style={{
-        display: 'inline-block',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 14,
         marginTop: 16,
-        fontFamily: FONT.cinzel,
-        fontSize: 10,
-        letterSpacing: '0.25em',
-        textTransform: 'uppercase',
-        color: STYX.gold,
+        fontFamily: FONT.inter,
+        fontSize: 12,
+        fontWeight: 500,
+        color: '#1a1815',
         textDecoration: 'none',
+        borderBottom: '1px solid #bcb5a6',
+        paddingBottom: 4,
       }}
     >
-      View all results →
+      View all results <span aria-hidden="true">↗</span>
     </Link>
   );
 }
@@ -771,11 +770,9 @@ export function PredictiveSearchPanel({onClose}: {onClose: () => void}) {
             {loading && (
               <span
                 style={{
-                  fontFamily: FONT.mono,
-                  fontSize: 9,
-                  letterSpacing: '0.2em',
-                  textTransform: 'uppercase',
-                  color: STYX.silt2,
+                  fontFamily: FONT.inter,
+                  fontSize: 11,
+                  color: '#686257',
                   flexShrink: 0,
                 }}
               >
@@ -963,11 +960,9 @@ export function MobileMenuSearch({onClose}: {onClose: () => void}) {
         {loading && (
           <span
             style={{
-              fontFamily: FONT.mono,
-              fontSize: 9,
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              color: STYX.silt2,
+              fontFamily: FONT.inter,
+              fontSize: 11,
+              color: '#686257',
               flexShrink: 0,
             }}
           >

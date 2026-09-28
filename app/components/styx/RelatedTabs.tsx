@@ -1,7 +1,6 @@
 import {useId, useRef, useState} from 'react';
 
-import {STYX, FONT} from './constants';
-import {StyxLabel} from './StyxLabel';
+import {FONT} from './constants';
 import {StyxProductCard} from './StyxProductCard';
 import {useRecentlyViewedProducts} from './RecentlyViewed';
 
@@ -51,7 +50,7 @@ export function RelatedTabs({
     tabs.push({
       key: 'recommended',
       label: 'You may also like',
-      eyebrow: 'Continue the Crossing',
+      eyebrow: 'Continue the crossing',
       items: recommendedItems,
     });
   }
@@ -59,7 +58,7 @@ export function RelatedTabs({
     tabs.push({
       key: 'recent',
       label: 'Recently viewed',
-      eyebrow: 'Retrace Your Steps',
+      eyebrow: 'Retrace your steps',
       items: recentItems,
     });
   }
@@ -106,19 +105,25 @@ export function RelatedTabs({
   return (
     <section
       className="styx-product-related"
-      style={{maxWidth: 1440, margin: '0 auto', padding: '80px 56px'}}
+      style={{
+        maxWidth: 1800,
+        margin: '0 auto',
+        padding: '80px var(--styx-page-gutter)',
+      }}
     >
-      <StyxLabel>{current.eyebrow}</StyxLabel>
+      <p className="styx-eyebrow" style={{marginBottom: 12}}>
+        {current.eyebrow}
+      </p>
       <h2
         data-reveal=""
         style={{
-          fontFamily: FONT.cinzel,
-          fontSize: 36,
+          fontFamily: FONT.cormorant,
+          fontSize: 'clamp(36px, 3.6vw, 54px)',
           fontWeight: 400,
-          color: STYX.ink,
-          margin: tabs.length > 1 ? '8px 0 20px' : '8px 0 40px',
-          textTransform: 'uppercase',
-          letterSpacing: '0.04em',
+          lineHeight: 1,
+          color: '#1a1815',
+          margin: tabs.length > 1 ? '0 0 24px' : '0 0 40px',
+          letterSpacing: '-0.03em',
         }}
       >
         {current.label}
@@ -133,7 +138,7 @@ export function RelatedTabs({
           style={{
             display: 'flex',
             gap: 28,
-            borderBottom: `1px solid ${STYX.line}`,
+            borderBottom: '1px solid var(--styx-border)',
             marginBottom: 32,
           }}
         >
@@ -160,13 +165,14 @@ export function RelatedTabs({
                   padding: '0 0 12px',
                   marginBottom: -1,
                   cursor: 'pointer',
-                  fontFamily: FONT.cinzel,
-                  fontSize: 11,
-                  letterSpacing: '0.25em',
-                  textTransform: 'uppercase',
-                  color: selected ? STYX.ink : STYX.silt2,
-                  borderBottom: `2px solid ${
-                    selected ? STYX.gold : 'transparent'
+                  minHeight: 44,
+                  fontFamily: FONT.inter,
+                  fontSize: 13,
+                  fontWeight: selected ? 500 : 400,
+                  letterSpacing: '0.005em',
+                  color: selected ? '#1a1815' : 'var(--styx-muted)',
+                  borderBottom: `1px solid ${
+                    selected ? '#1a1815' : 'transparent'
                   }`,
                   transition: 'color 0.2s ease, border-color 0.2s ease',
                 }}

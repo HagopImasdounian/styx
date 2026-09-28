@@ -10,7 +10,6 @@ import {
   getSeoMeta,
 } from '@shopify/hydrogen';
 
-import {PageHeader, Section} from '~/components/Text';
 import {StyxProductCard} from '~/components/styx/StyxProductCard';
 import {
   GridDensityScript,
@@ -79,14 +78,19 @@ export default function AllProducts() {
   const [density, setDensity] = useGridDensity();
 
   return (
-    <div className="styx-listing-page">
-      <PageHeader heading="All Products" variant="allCollections" />
-      <Section>
-        <div
-          style={{display: 'flex', justifyContent: 'flex-end', marginTop: 8}}
-        >
-          <GridDensityToggle density={density} onChange={setDensity} />
-        </div>
+    <div
+      className="styx-listing-page styx-catalog styx-catalog-chrome"
+      style={{background: 'var(--styx-surface)', minHeight: '100vh'}}
+    >
+      <header className="styx-catalog-header">
+        <p className="styx-eyebrow">The catalog</p>
+        <h1 className="styx-catalog-title">All products</h1>
+      </header>
+      <div className="styx-catalog-toolbar">
+        <span className="styx-catalog-count">Every piece we carry</span>
+        <GridDensityToggle density={density} onChange={setDensity} />
+      </div>
+      <div className="styx-catalog-body">
         <Pagination connection={products}>
           {({nodes, isLoading, NextLink, PreviousLink}) => {
             const itemsMarkup = nodes.map((product: any, i: number) => (
@@ -95,8 +99,8 @@ export default function AllProducts() {
 
             return (
               <>
-                <div className="flex items-center justify-center mt-6">
-                  <PreviousLink className="inline-block rounded font-medium text-center py-3 px-6 border border-primary/10 bg-contrast text-primary w-full">
+                <div className="styx-catalog-pager">
+                  <PreviousLink className="styx-ctl styx-catalog-more">
                     {isLoading ? 'Loading...' : 'Previous'}
                   </PreviousLink>
                 </div>
@@ -114,8 +118,8 @@ export default function AllProducts() {
                   {itemsMarkup}
                 </div>
                 <GridDensityScript />
-                <div className="flex items-center justify-center mt-6">
-                  <NextLink className="inline-block rounded font-medium text-center py-3 px-6 border border-primary/10 bg-contrast text-primary w-full">
+                <div className="styx-catalog-pager">
+                  <NextLink className="styx-ctl styx-catalog-more">
                     {isLoading ? 'Loading...' : 'Next'}
                   </NextLink>
                 </div>
@@ -123,7 +127,7 @@ export default function AllProducts() {
             );
           }}
         </Pagination>
-      </Section>
+      </div>
     </div>
   );
 }

@@ -38,7 +38,7 @@ export function ListingFilterDrawer({
   sort,
   sortOptions,
   onApply,
-  title = 'Filter & Sort',
+  title = 'Filter & sort',
 }: {
   open: boolean;
   onClose: () => void;
@@ -123,12 +123,12 @@ export function ListingFilterDrawer({
   const sectionTitle = (text: string) => (
     <div
       style={{
-        fontFamily: FONT.cinzel,
-        fontSize: 9,
-        letterSpacing: '0.25em',
-        textTransform: 'uppercase',
-        color: STYX.silt2,
-        margin: '22px 0 6px',
+        fontFamily: FONT.inter,
+        fontSize: 12,
+        fontWeight: 500,
+        letterSpacing: '0.01em',
+        color: '#242a24',
+        margin: '26px 0 4px',
       }}
     >
       {text}
@@ -166,7 +166,7 @@ export function ListingFilterDrawer({
                   padding: '11px 0',
                   background: 'none',
                   border: 'none',
-                  borderBottom: `1px solid ${STYX.lineSoft}`,
+                  borderBottom: '1px solid #e9e5dc',
                   cursor: disabled ? 'default' : 'pointer',
                   opacity: disabled ? 0.38 : 1,
                   textAlign: 'left',
@@ -179,8 +179,9 @@ export function ListingFilterDrawer({
                     width: 14,
                     height: 14,
                     flexShrink: 0,
-                    border: `1px solid ${selected ? STYX.ink : STYX.silt2}`,
-                    background: selected ? STYX.ink : 'transparent',
+                    borderRadius: 2,
+                    border: `1px solid ${selected ? '#242a24' : '#bcb5a6'}`,
+                    background: selected ? '#242a24' : '#fffefa',
                     display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -191,7 +192,7 @@ export function ListingFilterDrawer({
                       <path
                         d="M1 3.5 3.4 6 8 1"
                         fill="none"
-                        stroke={STYX.bone}
+                        stroke="#f7f5f0"
                         strokeWidth="1.4"
                       />
                     </svg>
@@ -212,10 +213,9 @@ export function ListingFilterDrawer({
                 )}
                 <span
                   style={{
-                    fontFamily: FONT.cinzel,
-                    fontSize: 11,
-                    letterSpacing: '0.12em',
-                    textTransform: 'uppercase',
+                    fontFamily: FONT.inter,
+                    fontSize: 13,
+                    letterSpacing: '0.005em',
                     flex: 1,
                   }}
                 >
@@ -224,9 +224,9 @@ export function ListingFilterDrawer({
                 <span
                   aria-hidden="true"
                   style={{
-                    fontFamily: FONT.inter,
-                    fontSize: 11,
-                    color: STYX.silt2,
+                    fontFamily: FONT.mono,
+                    fontSize: 10,
+                    color: 'var(--styx-muted)',
                     fontVariantNumeric: 'tabular-nums',
                   }}
                 >
@@ -266,10 +266,10 @@ export function ListingFilterDrawer({
         className="styx-fsd-panel"
         style={{
           position: 'absolute',
-          background: STYX.bone,
+          background: 'var(--styx-surface)',
           display: 'flex',
           flexDirection: 'column',
-          borderLeft: `1px solid ${STYX.line}`,
+          borderLeft: '1px solid var(--styx-border)',
         }}
       >
         {/* Header */}
@@ -279,19 +279,19 @@ export function ListingFilterDrawer({
             alignItems: 'center',
             justifyContent: 'space-between',
             padding: '18px 24px',
-            borderBottom: `1px solid ${STYX.line}`,
+            borderBottom: '1px solid var(--styx-border)',
             flexShrink: 0,
           }}
         >
           <h2
             id={titleId}
             style={{
-              fontFamily: FONT.cinzel,
-              fontSize: 13,
-              fontWeight: 400,
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              color: STYX.ink,
+              fontFamily: FONT.cormorant,
+              fontSize: 28,
+              fontWeight: 500,
+              letterSpacing: '-0.02em',
+              lineHeight: 1.1,
+              color: '#1a1815',
               margin: 0,
             }}
           >
@@ -309,10 +309,11 @@ export function ListingFilterDrawer({
               alignItems: 'center',
               justifyContent: 'center',
               background: 'none',
-              border: `1px solid ${STYX.line}`,
-              color: STYX.ink,
+              border: '1px solid var(--styx-border)',
+              borderRadius: 3,
+              color: '#1a1815',
               cursor: 'pointer',
-              fontSize: 16,
+              fontSize: 14,
               lineHeight: 1,
             }}
           >
@@ -346,7 +347,7 @@ export function ListingFilterDrawer({
                     padding: '11px 0',
                     background: 'none',
                     border: 'none',
-                    borderBottom: `1px solid ${STYX.lineSoft}`,
+                    borderBottom: '1px solid #e9e5dc',
                     cursor: 'pointer',
                     textAlign: 'left',
                     color: STYX.ink,
@@ -358,7 +359,8 @@ export function ListingFilterDrawer({
                       width: 14,
                       height: 14,
                       borderRadius: '50%',
-                      border: `1px solid ${checked ? STYX.ink : STYX.silt2}`,
+                      border: `1px solid ${checked ? '#887346' : '#bcb5a6'}`,
+                      background: '#fffefa',
                       display: 'inline-flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -371,17 +373,16 @@ export function ListingFilterDrawer({
                           width: 6,
                           height: 6,
                           borderRadius: '50%',
-                          background: STYX.ink,
+                          background: '#887346',
                         }}
                       />
                     )}
                   </span>
                   <span
                     style={{
-                      fontFamily: FONT.cinzel,
-                      fontSize: 11,
-                      letterSpacing: '0.12em',
-                      textTransform: 'uppercase',
+                      fontFamily: FONT.inter,
+                      fontSize: 13,
+                      letterSpacing: '0.005em',
                     }}
                   >
                     {opt.label}
@@ -403,8 +404,8 @@ export function ListingFilterDrawer({
             gap: 16,
             padding: '14px 24px',
             paddingBottom: 'calc(14px + env(safe-area-inset-bottom, 0px))',
-            borderTop: `1px solid ${STYX.line}`,
-            background: STYX.paper,
+            borderTop: '1px solid var(--styx-border)',
+            background: 'var(--styx-surface)',
           }}
         >
           <button
@@ -414,17 +415,18 @@ export function ListingFilterDrawer({
             }}
             disabled={stagedActive === 0}
             style={{
-              fontFamily: FONT.cinzel,
-              fontSize: 10,
-              letterSpacing: '0.15em',
-              textTransform: 'uppercase',
-              color: stagedActive === 0 ? STYX.silt2 : STYX.gold,
+              fontFamily: FONT.inter,
+              fontSize: 12,
+              letterSpacing: '0.01em',
+              color: stagedActive === 0 ? 'var(--styx-muted)' : '#7a5c28',
               background: 'none',
               border: 'none',
               cursor: stagedActive === 0 ? 'default' : 'pointer',
               padding: 0,
               textDecoration: 'underline',
-              textUnderlineOffset: 3,
+              textUnderlineOffset: 5,
+              textDecorationColor: '#bcb5a6',
+              minHeight: 44,
               opacity: stagedActive === 0 ? 0.5 : 1,
               whiteSpace: 'nowrap',
             }}
@@ -436,14 +438,14 @@ export function ListingFilterDrawer({
             onClick={() => onApply(staged, stagedSort)}
             style={{
               flex: 1,
-              fontFamily: FONT.cinzel,
-              fontSize: 11,
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              padding: '14px 18px',
-              background: STYX.ink,
-              color: STYX.bone,
-              border: `1px solid ${STYX.ink}`,
+              fontFamily: FONT.inter,
+              fontSize: 13,
+              letterSpacing: '0.025em',
+              padding: '16px 18px',
+              borderRadius: 3,
+              background: '#242a24',
+              color: '#f7f5f0',
+              border: '1px solid #242a24',
               cursor: 'pointer',
             }}
           >

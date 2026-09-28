@@ -76,27 +76,23 @@ export default function Search() {
   }, [searchTerm]);
 
   return (
-    <div style={{maxWidth: 1200, margin: '0 auto'}}>
+    <div
+      className="styx-catalog styx-catalog-chrome styx-search-page"
+      style={{maxWidth: 1200, margin: '0 auto'}}
+    >
       {/* ───── Heading + search form ───── */}
       <div style={{textAlign: 'center', marginBottom: 40}}>
-        <h1
-          style={{
-            fontFamily: FONT.cinzel,
-            fontSize: 28,
-            fontWeight: 500,
-            letterSpacing: '0.08em',
-            color: STYX.ink,
-            marginBottom: 8,
-          }}
-        >
+        <p className="styx-eyebrow" style={{marginBottom: 14}}>
+          Search the catalog
+        </p>
+        <h1 className="styx-catalog-title" style={{margin: '0 0 12px'}}>
           Search
         </h1>
         <p
           style={{
-            fontFamily: FONT.cormorant,
-            fontSize: 17,
-            fontStyle: 'italic',
-            color: STYX.silt,
+            fontFamily: FONT.inter,
+            fontSize: 13,
+            color: 'var(--styx-muted)',
             margin: '0 0 28px',
           }}
         >
@@ -109,8 +105,10 @@ export default function Search() {
             display: 'flex',
             maxWidth: 560,
             margin: '0 auto',
-            border: `1px solid ${STYX.line}`,
-            background: STYX.paper,
+            border: '1px solid var(--styx-border)',
+            borderRadius: 3,
+            overflow: 'hidden',
+            background: '#fffefa',
           }}
         >
           <input
@@ -137,14 +135,13 @@ export default function Search() {
             type="submit"
             style={{
               padding: '0 26px',
-              background: STYX.ink,
-              color: STYX.bone,
+              background: '#242a24',
+              color: '#f7f5f0',
               border: 'none',
-              fontFamily: FONT.cinzel,
-              fontSize: 11,
-              fontWeight: 600,
-              letterSpacing: '0.15em',
-              textTransform: 'uppercase',
+              fontFamily: FONT.inter,
+              fontSize: 13,
+              fontWeight: 400,
+              letterSpacing: '0.025em',
               cursor: 'pointer',
             }}
           >
@@ -158,11 +155,9 @@ export default function Search() {
         <p
           style={{
             textAlign: 'center',
-            fontFamily: FONT.mono,
-            fontSize: 11,
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-            color: STYX.silt,
+            fontFamily: FONT.inter,
+            fontSize: 12,
+            color: 'var(--styx-muted)',
             padding: '24px 0 64px',
           }}
         >
@@ -173,8 +168,10 @@ export default function Search() {
           <p
             style={{
               fontFamily: FONT.cormorant,
-              fontSize: 20,
-              color: STYX.ink,
+              fontSize: 30,
+              fontWeight: 500,
+              letterSpacing: '-0.02em',
+              color: '#1a1815',
               margin: '0 auto 10px',
               maxWidth: 520,
             }}
@@ -185,7 +182,7 @@ export default function Search() {
             style={{
               fontFamily: FONT.inter,
               fontSize: 13,
-              color: STYX.silt,
+              color: 'var(--styx-muted)',
               margin: '0 auto 30px',
               maxWidth: 460,
             }}
@@ -193,22 +190,8 @@ export default function Search() {
             Try a different spelling, a weave name like cuban or rope, or
             explore the full collection.
           </p>
-          <Link
-            to="/collections/chains"
-            style={{
-              display: 'inline-block',
-              padding: '14px 28px',
-              background: STYX.ink,
-              color: STYX.bone,
-              fontFamily: FONT.cinzel,
-              fontSize: 11,
-              fontWeight: 600,
-              letterSpacing: '0.15em',
-              textTransform: 'uppercase',
-              textDecoration: 'none',
-            }}
-          >
-            Explore the Collection
+          <Link to="/collections/chains" className="styx-shop-button">
+            Explore the collection <span aria-hidden="true">↗</span>
           </Link>
         </div>
       ) : (
@@ -218,16 +201,14 @@ export default function Search() {
               {/* Result count */}
               <p
                 style={{
-                  fontFamily: FONT.mono,
-                  fontSize: 11,
-                  letterSpacing: '0.1em',
-                  textTransform: 'uppercase',
-                  color: STYX.silt,
+                  fontFamily: FONT.inter,
+                  fontSize: 12,
+                  color: 'var(--styx-muted)',
                   textAlign: 'center',
                   margin: '0 0 32px',
                 }}
               >
-                <span style={{color: STYX.goldDeep}}>
+                <span style={{fontFamily: FONT.mono, color: '#1a1815'}}>
                   {nodes.length}
                   {hasNextPage ? '+' : ''}
                 </span>{' '}
@@ -236,7 +217,7 @@ export default function Search() {
               </p>
 
               <div style={{display: 'flex', justifyContent: 'center', marginBottom: 28}}>
-                <PreviousLink style={paginationLinkStyle}>
+                <PreviousLink className="styx-ctl styx-catalog-more">
                   {isLoading ? 'Loading…' : 'Previous'}
                 </PreviousLink>
               </div>
@@ -257,8 +238,8 @@ export default function Search() {
               </div>
 
               <div style={{display: 'flex', justifyContent: 'center', marginTop: 48}}>
-                <NextLink style={paginationLinkStyle}>
-                  {isLoading ? 'Loading…' : 'Load More'}
+                <NextLink className="styx-ctl styx-catalog-more">
+                  {isLoading ? 'Loading…' : 'Load more'}
                 </NextLink>
               </div>
             </>
@@ -270,20 +251,6 @@ export default function Search() {
     </div>
   );
 }
-
-const paginationLinkStyle: React.CSSProperties = {
-  display: 'inline-block',
-  padding: '12px 26px',
-  border: `1px solid ${STYX.line}`,
-  background: 'transparent',
-  fontFamily: FONT.cinzel,
-  fontSize: 11,
-  fontWeight: 600,
-  letterSpacing: '0.13em',
-  textTransform: 'uppercase',
-  color: STYX.ink,
-  textDecoration: 'none',
-};
 
 const SEARCH_QUERY = `#graphql
   query PaginatedProductsSearch(

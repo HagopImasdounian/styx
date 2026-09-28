@@ -338,10 +338,10 @@ export function StyxProductCard({
               display: 'flex',
               alignItems: 'center',
               gap: 6,
-              background: 'rgba(255,255,255,0.88)',
-              backdropFilter: 'blur(8px)',
-              padding: '5px 10px 5px 7px',
-              borderRadius: 20,
+              background: 'rgba(247,245,240,0.92)',
+              border: '1px solid var(--styx-border)',
+              padding: '4px 9px 4px 6px',
+              borderRadius: 3,
               pointerEvents: 'none',
             }}
           >
@@ -358,10 +358,9 @@ export function StyxProductCard({
             <span
               style={{
                 fontFamily: FONT.inter,
-                fontSize: 9,
-                fontWeight: 500,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
+                fontSize: 11,
+                fontWeight: 400,
+                letterSpacing: '0.01em',
                 color: STYX.ink,
               }}
               className="styx-card-swatch-label"
@@ -379,19 +378,17 @@ export function StyxProductCard({
               position: 'absolute',
               bottom: 0,
               right: 0,
-              padding: '7px 11px',
-              background: 'rgba(26,24,21,0.88)',
-              backdropFilter: 'blur(6px)',
-              color: STYX.bone,
+              padding: '5px 8px',
+              background: '#242a24',
+              color: '#f7f5f0',
               fontFamily: FONT.mono,
-              fontSize: 10,
-              letterSpacing: '0.06em',
+              fontSize: 9,
+              letterSpacing: '0.04em',
               pointerEvents: 'none',
             }}
           >
-            <span style={{color: STYX.gold}}>{pureGold.toFixed(1)}g</span>
-            <span style={{opacity: 0.5, margin: '0 5px'}}>|</span>
-            <span style={{opacity: 0.7}}>pure gold</span>
+            <span style={{color: STYX.goldLight}}>{pureGold.toFixed(1)}g</span>
+            <span style={{opacity: 0.7, marginLeft: 5}}>pure gold</span>
           </div>
         )}
 
@@ -432,19 +429,18 @@ export function StyxProductCard({
         <div
           className="styx-card-title"
           style={{
-            fontFamily: FONT.cinzel,
-            fontSize: 12,
+            fontFamily: FONT.inter,
+            fontSize: 13,
             fontWeight: 500,
-            textTransform: 'uppercase',
-            letterSpacing: '0.06em',
-            lineHeight: 1.4,
-            color: STYX.ink,
-            marginBottom: 4,
+            letterSpacing: '0.005em',
+            lineHeight: 1.45,
+            color: '#1a1815',
+            marginBottom: 2,
           }}
         >
           {product.title}
           {colorLabel && (
-            <span style={{color: STYX.silt, fontWeight: 400}}>
+            <span style={{color: 'var(--styx-muted)', fontWeight: 400}}>
               {' '}
               {colorLabel}
             </span>
@@ -455,12 +451,13 @@ export function StyxProductCard({
         <div
           className="styx-card-price"
           style={{
-            fontFamily: FONT.cinzel,
-            fontSize: 18,
-            fontWeight: 400,
-            color: STYX.ink,
-            fontVariantNumeric: 'tabular-nums',
-            letterSpacing: '0.02em',
+            fontFamily: FONT.cormorant,
+            fontSize: 22,
+            fontWeight: 500,
+            lineHeight: 1.2,
+            color: '#1a1815',
+            fontVariantNumeric: 'lining-nums tabular-nums',
+            letterSpacing: '-0.01em',
             marginBottom: 6,
           }}
         >
@@ -468,15 +465,14 @@ export function StyxProductCard({
             <span
               style={{
                 fontFamily: FONT.inter,
-                fontSize: 10,
+                fontSize: 11,
                 fontWeight: 400,
-                letterSpacing: '0.06em',
-                textTransform: 'uppercase',
-                color: STYX.silt,
-                marginRight: 4,
+                letterSpacing: '0.01em',
+                color: 'var(--styx-muted)',
+                marginRight: 6,
               }}
             >
-              from
+              From
             </span>
           )}
           {minPrice > 0
@@ -493,8 +489,8 @@ export function StyxProductCard({
           style={{
             fontFamily: FONT.mono,
             fontSize: 10,
-            letterSpacing: '0.04em',
-            color: STYX.silt,
+            letterSpacing: '0.02em',
+            color: 'var(--styx-muted)',
             display: 'flex',
             alignItems: 'center',
             gap: 0,
@@ -535,7 +531,7 @@ export function StyxProductCard({
               marginTop: 8,
               display: 'inline-flex',
               alignItems: 'center',
-              gap: 5,
+              gap: 7,
             }}
           >
             <span
@@ -543,27 +539,21 @@ export function StyxProductCard({
                 width: 5,
                 height: 5,
                 borderRadius: '50%',
-                background: STYX.gold,
-                boxShadow: `0 0 6px ${STYX.gold}`,
+                background: '#a98648',
                 flexShrink: 0,
               }}
             />
             <span
+              className="styx-card-stock"
               style={{
-                fontFamily: FONT.mono,
-                fontSize: 9,
-                fontWeight: 500,
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase',
-                background: `linear-gradient(90deg, ${STYX.goldDeep} 0%, ${STYX.goldLight} 25%, ${STYX.gold} 50%, ${STYX.goldLight} 75%, ${STYX.goldDeep} 100%)`,
-                backgroundSize: '200% auto',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                animation: 'styx-shimmer 3s linear infinite',
+                fontFamily: FONT.inter,
+                fontSize: 11,
+                fontWeight: 400,
+                letterSpacing: '0.01em',
+                color: 'var(--styx-muted)',
               }}
             >
-              In Stock
+              In stock
             </span>
           </div>
         )}
