@@ -1,4 +1,4 @@
-import {useLocation, useRouteLoaderData} from 'react-router';
+import {useLocation, useRouteLoaderData, useMatches} from 'react-router';
 import type {MoneyV2} from '@shopify/hydrogen/storefront-api-types';
 import type {FulfillmentStatus} from '@shopify/hydrogen/customer-account-api-types';
 import typographicBase from 'typographic-base';
@@ -320,29 +320,11 @@ export function useIsHomePath() {
  * header and footer for these.
  */
 export function useIsStyxPath() {
-  const {pathname} = useLocation();
-  const rootData = useRouteLoaderData<RootLoader>('root');
-  const selectedLocale = rootData?.selectedLocale ?? DEFAULT_LOCALE;
-  const p = pathname.replace(selectedLocale.pathPrefix, '');
-  return (
-    p === '/' ||
-    p === '/collections' ||
-    p.startsWith('/collections/') ||
-    p.startsWith('/products/') ||
-    p === '/about' ||
-    p === '/contact' ||
-    p === '/customize' ||
-    p === '/journal' ||
-    p.startsWith('/journal/') ||
-    p === '/shipping' ||
-    p === '/privacy' ||
-    p === '/terms' ||
-    p === '/faq' ||
-    p === '/compare' ||
-    p.startsWith('/compare/') ||
-    p === '/print-list' ||
-    p === '/wishlist'
-  );
+  // Routes that render their own GoldTicker + StyxNav + StyxFooter declare
+  // `export const handle = {ownChrome: true}`. PageLayout then skips the
+  // default chrome. One source of truth: no path allowlist to keep in sync.
+  const matches = useMatches();
+  return matches.some((m) => Boolean((m.handle as {ownChrome?: boolean} | undefined)?.ownChrome));
 }
 
 export function parseAsCurrency(value: number, locale: I18nLocale) {

@@ -20,6 +20,9 @@ import {parseCompareItems} from '~/context/CompareContext';
 import {validateLocale} from '~/lib/utils';
 import type {RootLoader} from '~/root';
 
+/** This route renders its own GoldTicker + StyxNav + StyxFooter. */
+export const handle = {ownChrome: true};
+
 export async function loader({request, params, context}: LoaderFunctionArgs) {
   validateLocale(params);
   const url = new URL(request.url);

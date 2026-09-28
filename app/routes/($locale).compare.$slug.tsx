@@ -15,6 +15,9 @@ import {getComparisonBySlug, getRelatedComparisons} from '~/data/comparisons';
 import type {RootLoader} from '~/root';
 import {validateLocale} from '~/lib/utils';
 
+/** This route renders its own GoldTicker + StyxNav + StyxFooter. */
+export const handle = {ownChrome: true};
+
 export async function loader({params, request, context}: LoaderFunctionArgs) {
   validateLocale(params);
   const {slug} = params;

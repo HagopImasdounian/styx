@@ -6,6 +6,9 @@ import {getStyxSeoMeta} from '~/lib/seo-meta';
 import {validateLocale} from '~/lib/utils';
 import {CACHE_LONG, routeHeaders} from '~/data/cache';
 
+/** This route renders its own GoldTicker + StyxNav + StyxFooter. */
+export const handle = {ownChrome: true};
+
 export const headers = routeHeaders;
 
 export async function loader({request, params}: LoaderFunctionArgs) {

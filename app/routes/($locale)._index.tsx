@@ -32,6 +32,9 @@ import {collectionCutoutUrl} from '~/components/styx/constants';
 import type {ChainTile, PriceSample, JournalTeaser} from '~/components/styx';
 import {HERO_IMAGE, HERO_WIDTHS} from '~/components/styx';
 
+/** This route renders its own GoldTicker + StyxNav + StyxFooter. */
+export const handle = {ownChrome: true};
+
 export const headers = routeHeaders;
 
 // Preload the hero (LCP) image from the document head so the browser starts

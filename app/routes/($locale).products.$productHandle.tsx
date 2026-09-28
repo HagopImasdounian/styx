@@ -55,6 +55,9 @@ import {useWishlist} from '~/context/WishlistContext';
 import {useScaleCalibration} from '~/context/ScaleCalibrationContext';
 import {parseMm as parseThicknessMm} from '~/lib/chains';
 
+/** This route renders its own GoldTicker + StyxNav + StyxFooter. */
+export const handle = {ownChrome: true};
+
 export const headers = routeHeaders;
 
 export async function loader(args: LoaderFunctionArgs) {

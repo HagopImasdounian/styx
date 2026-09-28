@@ -15,6 +15,9 @@ import {
   PlaceholderImage,
 } from '~/components/styx';
 
+/** This route renders its own GoldTicker + StyxNav + StyxFooter. */
+export const handle = {ownChrome: true};
+
 export const headers = routeHeaders;
 
 export const loader = async ({

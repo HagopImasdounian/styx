@@ -10,6 +10,9 @@ import {usePrefixPathWithLocale, validateLocale} from '~/lib/utils';
 import {STYX_PRINT_LOGO} from '~/components/styx/printLogo';
 import {styleToSlug} from '~/lib/chains';
 
+/** This route renders its own GoldTicker + StyxNav + StyxFooter. */
+export const handle = {ownChrome: true};
+
 // Customer-facing site URL shown on the printout. Edit to the live domain.
 const SITE_URL = 'styxgold.com';
 

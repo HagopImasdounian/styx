@@ -9,6 +9,9 @@ import {useCompare, encodeCompareItems} from '~/context/CompareContext';
 import {usePrintList} from '~/context/PrintListContext';
 import {usePrefixPathWithLocale, validateLocale} from '~/lib/utils';
 
+/** This route renders its own GoldTicker + StyxNav + StyxFooter. */
+export const handle = {ownChrome: true};
+
 export async function loader({request, params, context}: LoaderFunctionArgs) {
   validateLocale(params);
   const url = new URL(request.url);

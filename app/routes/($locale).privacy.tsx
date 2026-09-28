@@ -4,6 +4,9 @@ import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel} from '~/componen
 import {getStyxSeoMeta} from '~/lib/seo-meta';
 import {validateLocale} from '~/lib/utils';
 
+/** This route renders its own GoldTicker + StyxNav + StyxFooter. */
+export const handle = {ownChrome: true};
+
 export async function loader({request, params}: LoaderFunctionArgs) {
   validateLocale(params);
   return {url: request.url};

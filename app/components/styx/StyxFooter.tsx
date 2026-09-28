@@ -148,7 +148,7 @@ export function StyxFooter({collections = []}: {collections?: CollectionNode[]})
               maxWidth: 280,
             }}
           >
-            Gold for men who carry weight. Solid-cast, delivered worldwide.
+            Gold for men who carry weight. Cast in real gold, delivered worldwide.
           </p>
         </div>
 

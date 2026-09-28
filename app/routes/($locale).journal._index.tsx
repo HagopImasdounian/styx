@@ -16,6 +16,9 @@ import {validateLocale} from '~/lib/utils';
 import {CACHE_LONG, routeHeaders} from '~/data/cache';
 import {HIDDEN_ARTICLE_HANDLES} from '~/data/journal-articles';
 
+/** This route renders its own GoldTicker + StyxNav + StyxFooter. */
+export const handle = {ownChrome: true};
+
 export const headers = routeHeaders;
 
 /* ─── Hero image lookup: handle → hero image path ─── */
