@@ -143,7 +143,7 @@ export function ActualSizeImagePanel({
               color: STYX.silt,
             }}
           >
-            Looks off?
+            Calibrate to fit your screen
           </span>
           <NudgeBtn
             label="−"
