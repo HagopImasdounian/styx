@@ -13,7 +13,7 @@ export function Newsletter() {
   const [smsOptIn, setSmsOptIn] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
-  // Honeypot — hidden from humans; bots that fill it get silently discarded
+  // Honeypot, hidden from humans; bots that fill it get silently discarded
   // server-side. Field name matches the api.form-submit honeypot check.
   const [website, setWebsite] = useState('');
 
@@ -46,7 +46,7 @@ export function Newsletter() {
       });
 
       if (!res.ok) {
-        setError('Something went wrong — try again');
+        setError('Something went wrong, try again');
         return;
       }
 
@@ -59,7 +59,7 @@ export function Newsletter() {
 
       setSubmitted(true);
     } catch {
-      setError('Something went wrong — try again');
+      setError('Something went wrong, try again');
     } finally {
       setSubmitting(false);
     }
@@ -140,7 +140,7 @@ export function Newsletter() {
           }}
           className="styx-newsletter-form"
         >
-          {/* Honeypot — invisible to humans, catches naive bots. */}
+          {/* Honeypot, invisible to humans, catches naive bots. */}
           <input
             type="text"
             name="website"
@@ -313,7 +313,7 @@ export function Newsletter() {
             {submitting ? 'Subscribing...' : 'Subscribe'}
           </button>
 
-          {/* Inline error — shown when the submit request fails. */}
+          {/* Inline error, shown when the submit request fails. */}
           {error && (
             <p
               role="alert"

@@ -148,7 +148,7 @@ export function WeighIn({
   const rows: Row[] = [
     {
       num: ROMAN[0],
-      label: 'Your Toll',
+      label: 'The Fare',
       sub: "retail price, today's fix",
       render: (c) => <span>${c.minPrice.toLocaleString()}</span>,
       winIdx: cheapestIdx,
@@ -197,7 +197,7 @@ export function WeighIn({
     {
       num: ROMAN[4],
       label: 'Pure Gold',
-      sub: 'alloy stripped — what melts to bullion',
+      sub: 'alloy stripped, what melts to bullion',
       render: (c) => (
         <PureGoldBar
           pure={c.pureGold || 0}
@@ -307,7 +307,7 @@ export function WeighIn({
           </h2>
         </div>
         <div className="weighin-subtitle">
-          A ledger, not a tagline. Same scale, same fix, same math — so you can
+          A ledger, not a tagline. Same scale, same fix, same math, so you can
           pick the piece that's right and the price that's honest.
         </div>
       </div>
@@ -528,7 +528,7 @@ export function WeighIn({
   );
 }
 
-/* ─── Verdict text — auto-narrates across N chains ─── */
+/* ─── Verdict text, auto-narrates across N chains ─── */
 
 function VerdictText({
   chains,
@@ -581,14 +581,14 @@ function VerdictText({
           <NumInline>
             ${ppgs.find((p) => p !== Infinity)?.toFixed(0)}/g
           </NumInline>{' '}
-          of pure gold — equal value.{' '}
+          of pure gold, equal value.{' '}
         </>
       ) : null}
       {allSameKarat
-        ? `All are ${chains[0].karat}K — same fineness, different masters.`
+        ? `All are ${chains[0].karat}K, same fineness, different masters.`
         : `${[...new Set(chains.map((c) => `${c.karat}K`))].join(
             ' vs ',
-          )} — different fineness, same honesty about it.`}
+          )}, different fineness, same honesty about it.`}
     </>
   );
 }
@@ -1118,7 +1118,7 @@ function weighinCSS(count: number) {
     max-width: 100%;
     font-size: 15px;
   }
-  /* Chain cards side by side — compact columns with a small image each */
+  /* Chain cards side by side, compact columns with a small image each */
   .weighin-columns {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 8px;

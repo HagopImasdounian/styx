@@ -291,7 +291,7 @@ export function ImageLightbox({
       aria-modal="true"
       aria-label={alt || 'Image viewer'}
       onKeyDown={(e) => {
-        // Single focusable control — keep Tab on the close button.
+        // Single focusable control, keep Tab on the close button.
         if (e.key === 'Tab') {
           e.preventDefault();
           closeRef.current?.focus();
@@ -306,7 +306,7 @@ export function ImageLightbox({
         transition: fade,
       }}
     >
-      {/* Gesture stage — overlay tap closes, image tap doesn't */}
+      {/* Gesture stage, overlay tap closes, image tap doesn't */}
       <div
         ref={stageRef}
         role="presentation"
@@ -345,7 +345,7 @@ export function ImageLightbox({
         />
       </div>
 
-      {/* Close — 44px tap target */}
+      {/* Close, 44px tap target */}
       <button
         ref={closeRef}
         type="button"

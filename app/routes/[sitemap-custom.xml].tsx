@@ -16,6 +16,8 @@ const STATIC_PATHS = [
   '/',
   '/journal',
   '/about',
+  '/lore',
+  '/buyback',
   '/contact',
   '/faq',
   '/customize',

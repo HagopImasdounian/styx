@@ -13,7 +13,7 @@ import {STYX, FONT} from './constants';
  *
  * It renders ONLY when Shopify can actually present both currencies (i.e. CAD
  * has been enabled in Shopify Markets via Shopify Payments). Until then
- * `availableCurrencies` is ['USD'] and this returns null — zero impact on the
+ * `availableCurrencies` is ['USD'] and this returns null, zero impact on the
  * current USD-only store. It self-activates the moment CAD goes live.
  */
 const OPTIONS = [

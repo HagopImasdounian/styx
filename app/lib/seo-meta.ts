@@ -5,7 +5,7 @@ import {type SeoConfig, getSeoMeta} from '@shopify/hydrogen';
  * this module must NOT live in (or import from) seo.server.ts.
  */
 
-// 1200px-wide ~130 KB derivative of hero.jpg — full-size hero (2.9 MB) is too
+// 1200px-wide ~130 KB derivative of hero.jpg, full-size hero (2.9 MB) is too
 // heavy for WhatsApp/Slack link previews, which cap fetch size.
 export const DEFAULT_OG_IMAGE_PATH = '/images/og-default.jpg';
 
@@ -50,7 +50,7 @@ export function getStyxSeoMeta(
 
   const hasTag = (pred: (t: any) => boolean) => Boolean(get(pred));
 
-  // twitter:card — large image when we have an image, otherwise summary.
+  // twitter:card, large image when we have an image, otherwise summary.
   if (!hasTag((t) => t.name === 'twitter:card')) {
     (tags as any[]).push({
       name: 'twitter:card',

@@ -2,7 +2,7 @@
  * Best-effort per-IP rate limiting for abuse-prone endpoints (email senders).
  *
  * Uses the worker Cache API (available on Oxygen and mini-oxygen), so counts
- * are per-colo and not atomic — good enough to blunt spam/quota-burn abuse,
+ * are per-colo and not atomic, good enough to blunt spam/quota-burn abuse,
  * not a hard quota. Fails OPEN: any cache error allows the request.
  */
 
@@ -35,7 +35,7 @@ export async function rateLimitAllow(
 ): Promise<boolean> {
   try {
     const cache = await caches.open(CACHE_NAME);
-    // Synthetic URL — the Cache API keys entries by request URL.
+    // Synthetic URL, the Cache API keys entries by request URL.
     const cacheKey = new Request(
       `https://rate-limit.invalid/${encodeURIComponent(
         key,

@@ -3,7 +3,7 @@ import {STYX, FONT} from './constants';
 import {StyxLabel} from './StyxLabel';
 
 /**
- * "Tools of the Trade" — homepage band that surfaces the two buying tools
+ * "Tools of the Trade", homepage band that surfaces the two buying tools
  * nobody discovers on their own: side-by-side comparison and print-to-scale.
  */
 
@@ -12,7 +12,7 @@ const TOOLS = [
     numeral: 'I',
     title: 'Compare',
     copy:
-      'Line up to four chains side by side — width, weight, melt value, price per gram of pure gold. Decide like a dealer, not a guesser.',
+      'Line up to four chains side by side, width, weight, melt value, price per gram of pure gold. Decide like a dealer, not a guesser.',
     cta: 'Open the Comparison Table',
     href: '/compare',
   },
@@ -20,7 +20,7 @@ const TOOLS = [
     numeral: 'II',
     title: 'Print to Scale',
     copy:
-      'Print any chain at its true physical width — hold the paper up and see exactly how it wears before you spend a dollar.',
+      'Print any chain at its true physical width, hold the paper up and see exactly how it wears before you spend a dollar.',
     cta: 'See It at True Size',
     href: '/print-list',
   },

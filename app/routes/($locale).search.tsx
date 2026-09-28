@@ -52,7 +52,7 @@ export async function loader({
         updatedAt: new Date().toISOString(),
       },
     }),
-    // Search results are query-driven duplicates — keep them out of the index
+    // Search results are query-driven duplicates, keep them out of the index
     // (also disallowed in robots.txt).
     robots: {noIndex: true, noFollow: false},
   };
@@ -69,7 +69,7 @@ export default function Search() {
   const hasQuery = Boolean(searchTerm);
   const noResults = hasQuery && products?.nodes?.length === 0;
 
-  // GTM search event — effect (not render body) so it fires once per term,
+  // GTM search event, effect (not render body) so it fires once per term,
   // not on every re-render.
   useEffect(() => {
     if (searchTerm) trackSearch(searchTerm);
@@ -241,7 +241,7 @@ export default function Search() {
                 </PreviousLink>
               </div>
 
-              {/* One card per product — no per-color explosion on search */}
+              {/* One card per product, no per-color explosion on search */}
               <div
                 data-test="product-grid"
                 style={{

@@ -35,7 +35,7 @@ export const HIDDEN_ARTICLE_HANDLES = new Set<string>([
 
 export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
   'history-of-gold-chains': {
-    title: "The Almanac: A History of Gold — From Mesopotamian Links to Wearable Bullion",
+    title: "The Almanac: A History of Gold: From Mesopotamian Links to Wearable Bullion",
     seoTitle: "A History of Gold Chains",
     category: "The Almanac",
     vol: 0,
@@ -142,13 +142,13 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           &ldquo;A gold chain is not jewelry. It is a five-thousand-year-old financial technology that happens to look good on your neck.&rdquo;
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
-          &mdash; The Ferryman
+          The Ferryman
         </div>
       </div>
     `,
   },
   'history-of-the-ball-chain': {
-    title: "On the Ball Chain — United States, c. 1940",
+    title: "On the Ball Chain: United States, c. 1940",
     category: "Vol III",
     vol: 3,
     readTime: "7 min",
@@ -234,14 +234,14 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           &ldquo;The ball chain was built for machines and drafted into a war. It identified the people who mattered most when nothing else could. In gold, it carries a different kind of identity, but the engineering has not changed.&rdquo;
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
-          &mdash; The Ferryman
+          The Ferryman
         </div>
       </div>
 
     `,
   },
   'history-of-the-box-chain': {
-    title: "On the Box Chain — The Venetian Standard",
+    title: "On the Box Chain: The Venetian Standard",
     category: "Vol IV",
     vol: 4,
     readTime: "8 min",
@@ -337,14 +337,14 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           &ldquo;The Box chain does not ask to be noticed. It asks to be trusted. Centuries of Venetian engineering say you can.&rdquo;
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
-          &mdash; The Ferryman
+          The Ferryman
         </div>
       </div>
 
     `,
   },
   'history-of-the-byzantine-chain': {
-    title: "On the Byzantine — Constantinople, c. 500 AD",
+    title: "On the Byzantine: Constantinople, c. 500 AD",
     category: "Vol III",
     vol: 3,
     readTime: "8 min",
@@ -432,14 +432,14 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           &ldquo;The Byzantine chain was the original wearable bank account. Cut a link, weigh it, spend it. Fifteen centuries later, the weave still holds.&rdquo;
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
-          &mdash; The Ferryman
+          The Ferryman
         </div>
       </div>
 
     `,
   },
   'history-of-the-cable-chain': {
-    title: "On the Cable Chain — Sumer, c. 2600 BC",
+    title: "On the Cable Chain: Sumer, c. 2600 BC",
     category: "Vol III",
     vol: 3,
     readTime: "7 min",
@@ -533,14 +533,14 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           &ldquo;The cable chain is the definition of enough. Forty centuries of jewelry design, and no one has found a simpler way to connect two points with gold.&rdquo;
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
-          &mdash; The Ferryman
+          The Ferryman
         </div>
       </div>
 
     `,
   },
   'history-of-the-criss-cross-chain': {
-    title: "On the Criss-Cross Chain — Italy, The Modern Era",
+    title: "On the Criss-Cross Chain: Italy, The Modern Era",
     category: "Vol II",
     vol: 2,
     readTime: "7 min",
@@ -619,13 +619,13 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           &ldquo;The Criss-Cross proves that presence has nothing to do with weight. Two grams of gold, cut correctly, can outshine an ounce.&rdquo;
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
-          &mdash; The Ferryman
+          The Ferryman
         </div>
       </div>
     `,
   },
   'history-of-the-cuban-link': {
-    title: "On the Cuban Link — Miami, Late 1970s",
+    title: "On the Cuban Link: Miami, Late 1970s",
     category: "Vol I",
     vol: 1,
     readTime: "12 min",
@@ -771,14 +771,14 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           &ldquo;The Cuban Link is not a chain. It is a financial instrument that happens to go with everything.&rdquo;
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
-          &mdash; The Ferryman
+          The Ferryman
         </div>
       </div>
 
     `,
   },
   'history-of-the-curb-chain': {
-    title: "On the Curb Chain — Ancient Sumer, c. 2600 BC",
+    title: "On the Curb Chain: Ancient Sumer, c. 2600 BC",
     category: "Vol I",
     vol: 1,
     readTime: "8 min",
@@ -889,13 +889,13 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           &ldquo;The Curb is not a style. It is a species. Every other chain is a mutation of this one idea: flat links, interlocked, lying against skin. Four thousand years and counting.&rdquo;
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
-          &mdash; The Ferryman
+          The Ferryman
         </div>
       </div>
     `,
   },
   'history-of-the-figaro-chain': {
-    title: "On the Figaro Chain — Italy, 18th Century",
+    title: "On the Figaro Chain: Italy, 18th Century",
     category: "Vol I",
     vol: 1,
     readTime: "10 min",
@@ -986,13 +986,13 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           &ldquo;Every other chain is a monotone. The Figaro is a melody. Three-one, three-one: an 18th-century rhythm hammered into gold and still playing.&rdquo;
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
-          &mdash; The Ferryman
+          The Ferryman
         </div>
       </div>
     `,
   },
   'history-of-the-forsantina-chain': {
-    title: "On the Forsantina Chain — Vicenza, Mid-20th Century",
+    title: "On the Forsantina Chain: Vicenza, Mid-20th Century",
     category: "Vol II",
     vol: 2,
     readTime: "7 min",
@@ -1069,13 +1069,13 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           &ldquo;The Forsantina is not the chain you notice. It is the chain that makes everything else you are wearing look right.&rdquo;
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
-          &mdash; The Ferryman
+          The Ferryman
         </div>
       </div>
     `,
   },
   'history-of-the-franco-chain': {
-    title: "On the Franco Chain — Italy, Late 20th Century",
+    title: "On the Franco Chain: Italy, Late 20th Century",
     category: "Vol I",
     vol: 1,
     readTime: "8 min",
@@ -1178,13 +1178,13 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           &ldquo;The Cuban announces. The Franco carries. It is the chain for people who do not need you to notice what they are wearing. They need it to hold.&rdquo;
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
-          &mdash; The Ferryman
+          The Ferryman
         </div>
       </div>
     `,
   },
   'history-of-the-heart-chain': {
-    title: "On the Heart Chain — France, 13th Century",
+    title: "On the Heart Chain: France, 13th Century",
     category: "Vol V",
     vol: 5,
     readTime: "7 min",
@@ -1254,14 +1254,14 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           &ldquo;A single heart pendant is a statement. A heart chain is a manifesto: 200 declarations of love, interlocked in gold, with no beginning and no end.&rdquo;
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
-          &mdash; The Ferryman
+          The Ferryman
         </div>
       </div>
 
     `,
   },
   'history-of-the-herringbone-chain': {
-    title: "On the Herringbone — Egypt, The Skin of Gold",
+    title: "On the Herringbone: Egypt, The Skin of Gold",
     category: "Vol IV",
     vol: 4,
     readTime: "8 min",
@@ -1345,14 +1345,14 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           &ldquo;The Herringbone is the only chain that moves like liquid. It is also the only one that can be destroyed by a careless fold. That is the price of perfection.&rdquo;
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
-          &mdash; The Ferryman
+          The Ferryman
         </div>
       </div>
 
     `,
   },
   'history-of-the-mariner-chain': {
-    title: "On the Mariner Chain — Maritime Europe, 19th Century",
+    title: "On the Mariner Chain: Maritime Europe, 19th Century",
     category: "Vol I",
     vol: 1,
     readTime: "8 min",
@@ -1449,13 +1449,13 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           &ldquo;The bar across the center of each link is not decoration. It is the reason ten-ton ships do not drift into the Atlantic. Miniaturized in gold, it is the reason this chain never tangles.&rdquo;
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
-          &mdash; The Ferryman
+          The Ferryman
         </div>
       </div>
     `,
   },
   'history-of-the-paperclip-chain': {
-    title: "On the Paperclip — Oslo, 1940",
+    title: "On the Paperclip: Oslo, 1940",
     category: "Vol IV",
     vol: 4,
     readTime: "8 min",
@@ -1539,14 +1539,14 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           &ldquo;The Paperclip chain was a weapon before it was fashion. In Oslo, it meant unity. In Paris, it meant rebellion. In gold, it means both.&rdquo;
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
-          &mdash; The Ferryman
+          The Ferryman
         </div>
       </div>
 
     `,
   },
   'history-of-the-peanut-chain': {
-    title: "On the Peanut Chain — East Asia, Ancient & Modern",
+    title: "On the Peanut Chain: East Asia, Ancient & Modern",
     category: "Vol V",
     vol: 5,
     readTime: "7 min",
@@ -1616,14 +1616,14 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           &ldquo;The Peanut chain proves that imperfection can be engineered. Each crimp is deliberate. Each bump scatters light. The most textured chain in the collection is also one of the toughest.&rdquo;
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
-          &mdash; The Ferryman
+          The Ferryman
         </div>
       </div>
 
     `,
   },
   'history-of-the-rolo-chain': {
-    title: "On the Rolo Chain — Georgian London, c. 1800",
+    title: "On the Rolo Chain: Georgian London, c. 1800",
     category: "Vol III",
     vol: 3,
     readTime: "7 min",
@@ -1707,14 +1707,14 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           &ldquo;The Rolo took its name from a prizefighter and ended up at Tiffany. That is the range of a perfect circle.&rdquo;
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
-          &mdash; The Ferryman
+          The Ferryman
         </div>
       </div>
 
     `,
   },
   'history-of-the-rope-chain': {
-    title: "On the Rope Chain — The Nile Delta, Antiquity",
+    title: "On the Rope Chain: The Nile Delta, Antiquity",
     category: "Vol II",
     vol: 2,
     readTime: "8 min",
@@ -1813,13 +1813,13 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           &ldquo;The rope chain is the only design that connects an Egyptian tomb to a New York block party in a single, unbroken helix. Thousands of years. Same braid.&rdquo;
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
-          &mdash; The Ferryman
+          The Ferryman
         </div>
       </div>
     `,
   },
   'history-of-the-s-link-chain': {
-    title: "On the S-Link — From Mesopotamia to Modernism",
+    title: "On the S-Link: From Mesopotamia to Modernism",
     category: "Vol IV",
     vol: 4,
     readTime: "7 min",
@@ -1895,14 +1895,14 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           &ldquo;The S-Link does not look like a chain. It looks like someone poured gold into a ribbon mold. That is exactly the point.&rdquo;
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
-          &mdash; The Ferryman
+          The Ferryman
         </div>
       </div>
 
     `,
   },
   'history-of-the-scroll-chain': {
-    title: "On the Scroll — The Meander of the Mediterranean",
+    title: "On the Scroll: The Meander of the Mediterranean",
     category: "Vol V",
     vol: 5,
     readTime: "7 min",
@@ -1984,14 +1984,14 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           &ldquo;The Scroll chain is a Greek Key rendered in gold. Every link is a spiral. Every spiral is a reference to infinity. It is the most quietly intellectual chain in the collection.&rdquo;
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
-          &mdash; The Ferryman
+          The Ferryman
         </div>
       </div>
 
     `,
   },
   'history-of-the-singapore-chain': {
-    title: "On the Singapore Chain — Italy, The Twisted Curb",
+    title: "On the Singapore Chain: Italy, The Twisted Curb",
     category: "Vol III",
     vol: 3,
     readTime: "7 min",
@@ -2067,14 +2067,14 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           &ldquo;The Singapore chain was named for a city it has never visited. But the shimmer it produces needs no passport. It is universally understood.&rdquo;
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
-          &mdash; The Ferryman
+          The Ferryman
         </div>
       </div>
 
     `,
   },
   'history-of-the-snake-chain': {
-    title: "On the Snake Chain — London, 1839",
+    title: "On the Snake Chain: London, 1839",
     category: "Vol IV",
     vol: 4,
     readTime: "7 min",
@@ -2158,14 +2158,14 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           &ldquo;The Snake chain is the only design where the metal disappears. No links, no gaps, no texture, just a continuous cylinder of gold that exists to make everything else you wear look better.&rdquo;
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
-          &mdash; The Ferryman
+          The Ferryman
         </div>
       </div>
 
     `,
   },
   'history-of-the-tennis-chain': {
-    title: "On the Tennis Chain — New York City, 1987",
+    title: "On the Tennis Chain: New York City, 1987",
     category: "Vol V",
     vol: 5,
     readTime: "8 min",
@@ -2227,14 +2227,14 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           &ldquo;The Tennis chain was born from a mishap and perfected by engineering. Chris Evert refused to play until her diamonds were found. We refuse to sell a chain without a clasp that makes losing them impossible.&rdquo;
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
-          &mdash; The Ferryman
+          The Ferryman
         </div>
       </div>
 
     `,
   },
   'history-of-the-tinsel-chain': {
-    title: "On the Tinsel Chain — New York, The Late 1990s",
+    title: "On the Tinsel Chain: New York, The Late 1990s",
     category: "Vol II",
     vol: 2,
     readTime: "7 min",
@@ -2302,14 +2302,14 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           &ldquo;The Tinsel chain is the only piece in this collection designed to be welded shut. No clasp, no decision, no removal. Just gold against skin, shimmering, forever.&rdquo;
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
-          &mdash; The Ferryman
+          The Ferryman
         </div>
       </div>
 
     `,
   },
   'history-of-the-tulip-chain': {
-    title: "On the Tulip Chain — Constantinople, 18th Century",
+    title: "On the Tulip Chain: Constantinople, 18th Century",
     category: "Vol V",
     vol: 5,
     readTime: "7 min",
@@ -2379,14 +2379,14 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           &ldquo;The Tulip chain is among the heaviest fancy links made. Each petal is a casting. Each chain is a garden. The biggest of them carry the better part of 100 grams. That is not jewelry. That is architecture.&rdquo;
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
-          &mdash; The Ferryman
+          The Ferryman
         </div>
       </div>
 
     `,
   },
   'history-of-the-valentino-chain': {
-    title: "On the Valentino Chain — Vicenza, Late 20th Century",
+    title: "On the Valentino Chain: Vicenza, Late 20th Century",
     category: "Vol V",
     vol: 5,
     readTime: "7 min",
@@ -2448,14 +2448,14 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           &ldquo;The Valentino is not a chain of weight. It is a chain of light. Every link is a mirror. Every movement is a signal.&rdquo;
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
-          &mdash; The Ferryman
+          The Ferryman
         </div>
       </div>
 
     `,
   },
   'history-of-the-wheat-chain': {
-    title: "On the Wheat Chain — Vicenza, The Spiga",
+    title: "On the Wheat Chain: Vicenza, The Spiga",
     category: "Vol II",
     vol: 2,
     readTime: "8 min",
@@ -2544,13 +2544,13 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           &ldquo;The Wheat chain is not the flashiest link in the collection. It is the one your jeweler recommends when you ask: which chain will never let me down?&rdquo;
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
-          &mdash; The Ferryman
+          The Ferryman
         </div>
       </div>
     `,
   },
   'understanding-gold-karats': {
-    title: "Understanding Gold Karats: 10K, 14K, 18K, 22K & 24K — What Actually Matters for Chains",
+    title: "Understanding Gold Karats: 10K, 14K, 18K, 22K & 24K: What Actually Matters for Chains",
     category: "Gold Education",
     vol: 28,
     readTime: "8 min",
@@ -2614,7 +2614,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>The word "karat" itself derives from the carob seed, a Mediterranean legume so uniform in weight that ancient traders used it as a counterbalance on gold scales. The 24-part purity scale traces to the Roman <em>solidus</em>, a coin reckoned at twenty-four of those seed-weights of pure gold. The system has endured for the better part of two millennia because it does not need to change.</p>
 
-      <h2 style="font-family: 'Cinzel', serif; font-size: 28px; margin-top: 64px;">II. 10K Gold — The Workhorse</h2>
+      <h2 style="font-family: 'Cinzel', serif; font-size: 28px; margin-top: 64px;">II. 10K Gold. The Workhorse</h2>
 
       <p>10K gold is 41.7% pure gold and 58.3% alloy metals, primarily copper, silver, and zinc. That high alloy content is not a weakness. It is the point. Those metals make 10K the hardest, most scratch-resistant, most durable gold you can buy. It is the chainmail of the karat world.</p>
 
@@ -2633,7 +2633,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
         </p>
       </div>
 
-      <h2 style="font-family: 'Cinzel', serif; font-size: 28px; margin-top: 64px;">III. 14K Gold — The Sweet Spot</h2>
+      <h2 style="font-family: 'Cinzel', serif; font-size: 28px; margin-top: 64px;">III. 14K Gold. The Sweet Spot</h2>
 
       <p>14K is the American standard, and for good reason. At 58.3% pure gold, it crosses the majority threshold: more than half of every gram is precious metal. The color shifts noticeably warmer than 10K. A richer, more saturated yellow that reads unmistakably as "gold" to the eye.</p>
 
@@ -2641,7 +2641,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>14K dominates the US jewelry market for a reason that has nothing to do with marketing: it is the ratio where color, durability, and price reach equilibrium. You get gold that looks like gold, wears like steel, and does not require a second mortgage. For the buyer who wants one chain for life and does not want to think about it again, 14K is the answer more often than not.</p>
 
-      <h2 style="font-family: 'Cinzel', serif; font-size: 28px; margin-top: 64px;">IV. 18K Gold — The European Standard</h2>
+      <h2 style="font-family: 'Cinzel', serif; font-size: 28px; margin-top: 64px;">IV. 18K Gold. The European Standard</h2>
 
       <p>At 75% pure gold, 18K is where the metal begins to feel different in your hand. There is a warmth to it, not just in color, but in weight and texture. The higher gold content makes 18K measurably denser than 10K or 14K. A chain that looks identical to its 14K counterpart will feel heavier on the neck. That density is not just psychological. It is physics.</p>
 
@@ -2650,7 +2650,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
       <p>The tradeoff is softness. 18K gold scratches more readily. It can deform under impact. Thinner chains in 18K require more careful handling than their 10K or 14K equivalents. For daily-wear thin chains, it is not the ideal choice. For thicker ropes, heavier Cubans, or special-occasion pieces that spend most of their time in a box, 18K delivers a depth of color and heft that lower karats cannot replicate.</p>
 
 
-      <h2 style="font-family: 'Cinzel', serif; font-size: 28px; margin-top: 64px;">V. 22K & 24K — Pure Gold Territory</h2>
+      <h2 style="font-family: 'Cinzel', serif; font-size: 28px; margin-top: 64px;">V. 22K & 24K. Pure Gold Territory</h2>
 
       <p>22K gold is 91.7% pure. It is the standard in Indian and Middle Eastern jewelry, cultures where gold is purchased as much for investment as for adornment. The color is intense: a deep, saturated yellow with orange undertones that bears little resemblance to the pale champagne of 10K. In these markets, anything below 22K is considered diluted.</p>
 
@@ -2686,7 +2686,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           &ldquo;Karats are not a quality ranking. They are a ratio. Once you understand the math, no jeweler can confuse you again.&rdquo;
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
-          &mdash; The Ferryman
+          The Ferryman
         </div>
       </div>
     `,

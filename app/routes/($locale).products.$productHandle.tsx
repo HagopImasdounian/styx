@@ -68,7 +68,7 @@ export async function loader(args: LoaderFunctionArgs) {
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
 
-  // PDP prices float with the gold spot price — never cache longer than
+  // PDP prices float with the gold spot price, never cache longer than
   // CACHE_SHORT (max-age=1 with a short stale-while-revalidate window).
   return data(
     {...deferredData, ...criticalData},
@@ -124,7 +124,7 @@ async function loadCriticalData({
   );
 
   // Cross-sell: nearest same-style/construction pieces + matching bracelet/necklace.
-  // Deliberately NOT awaited — it's a below-fold module and must not block TTFB.
+  // Deliberately NOT awaited, it's a below-fold module and must not block TTFB.
   // Streamed to the client and rendered via <Suspense>/<Await> like `recommended`.
   const crossSell = getCrossSellProducts(context.storefront, product);
 
@@ -179,7 +179,7 @@ export default function Product() {
     'idle' | 'submitting' | 'success' | 'error'
   >('idle');
   const wishlist = useWishlist();
-  // Actual-size swaps the LEAD IMAGE in place (Alex Moss pattern) — no strip
+  // Actual-size swaps the LEAD IMAGE in place (Alex Moss pattern), no strip
   // in the spec column, no scrolling. Off (or unparseable width) → photo.
   const {actualSizeOn, pxPerMm} = useScaleCalibration();
   const wished = wishlist.has(product.handle);
@@ -276,7 +276,7 @@ export default function Product() {
   const storyBody = p.story_body?.value || null;
   const pullQuote = p.pull_quote?.value || null;
   const pullQuoteAttr = p.pull_quote_attr?.value || null;
-  // spec_weave / spec_profile intentionally not shown — redundant with Chain Style
+  // spec_weave / spec_profile intentionally not shown, redundant with Chain Style
   const specClasp = p.spec_clasp?.value || null;
   const specCast = p.spec_cast?.value || null;
 
@@ -286,7 +286,7 @@ export default function Product() {
     : null;
 
   // Variant weight takes priority (changes with length), then metafield
-  // No fake weights — only show transparency when we have real data
+  // No fake weights, only show transparency when we have real data
   const displayWeight = variantWeight || weightGrams || null;
 
   // Detect karat from selected variant options (e.g. "14k" → 14)
@@ -447,7 +447,7 @@ export default function Product() {
           display: 'grid',
           gridTemplateColumns: '1.15fr 1fr',
           // Row 1 hugs the lead image; the tall spanning info column dumps all
-          // its extra height into row 2 — otherwise row 1 stretches and opens
+          // its extra height into row 2, otherwise row 1 stretches and opens
           // a gap between the lead image and the rest of the gallery.
           gridTemplateRows: 'auto 1fr',
           columnGap: 80,
@@ -456,7 +456,7 @@ export default function Product() {
           alignItems: 'start',
         }}
       >
-        {/* ── Gallery — Mobile swipe carousel (hidden on desktop via CSS;
+        {/* ── Gallery. Mobile swipe carousel (hidden on desktop via CSS;
             phones swipe through every image/video instead of scrolling a
             stacked column) ── */}
         <div className="styx-gallery-carousel">
@@ -515,12 +515,12 @@ export default function Product() {
           )}
         </div>
 
-        {/* ── Gallery — Lead Image (desktop stacked gallery) ── */}
+        {/* ── Gallery. Lead Image (desktop stacked gallery) ── */}
         <div
           className="styx-gallery-lead"
           style={{gridColumn: '1 / 2', gridRow: '1', background: '#FFFFFF'}}
         >
-          {/* Lead image — variant image if available, else first color-matched
+          {/* Lead image, variant image if available, else first color-matched
               media. When actual-size is on, the true-size panel swaps in where
               the photo was. */}
           {showActualSize ? (
@@ -573,7 +573,7 @@ export default function Product() {
                     </div>
                   )}
 
-                  {/* Actual-size overlay button — swaps this photo for the
+                  {/* Actual-size overlay button, swaps this photo for the
                     true-size panel in place */}
                   {leadImage && chainThickness && <ActualSizeImageButton />}
 
@@ -632,7 +632,7 @@ export default function Product() {
           )}
         </div>
 
-        {/* ── Gallery — Remaining Media (desktop stacked gallery) ── */}
+        {/* ── Gallery. Remaining Media (desktop stacked gallery) ── */}
         <div
           className="styx-gallery-rest"
           style={{
@@ -644,7 +644,7 @@ export default function Product() {
             background: '#FFFFFF',
           }}
         >
-          {/* Remaining media — large, stacked; skip whichever image leads */}
+          {/* Remaining media, large, stacked; skip whichever image leads */}
           {remainingMedia.map((m: any, i: number) => {
             const img = m.image || m.previewImage;
             if (!img) return null;
@@ -666,7 +666,7 @@ export default function Product() {
           })}
         </div>
 
-        {/* ── Right Column — Product Info (sticky) ── */}
+        {/* ── Right Column. Product Info (sticky) ── */}
         <div
           className="styx-product-info"
           style={{
@@ -677,10 +677,10 @@ export default function Product() {
             paddingTop: 8,
           }}
         >
-          {/* ── Breadcrumb — lives above the title (not in its own top bar)
+          {/* ── Breadcrumb, lives above the title (not in its own top bar)
               so the lead image stays fully above the fold ── */}
           <div style={{marginBottom: 18}}>
-            {/* Full trail — desktop / tablet */}
+            {/* Full trail, desktop / tablet */}
             <nav
               className="styx-breadcrumb-full"
               style={{
@@ -717,7 +717,7 @@ export default function Product() {
               <span style={{opacity: 0.4}}>/</span>
               <span style={{color: STYX.ink}}>{title}</span>
             </nav>
-            {/* Single back link — mobile (product name is in the H1 right below) */}
+            {/* Single back link, mobile (product name is in the H1 right below) */}
             <nav
               className="styx-breadcrumb-back"
               style={{
@@ -820,7 +820,7 @@ export default function Product() {
                         gap: 12,
                       }}
                     >
-                      {/* Credit Card — default / emphasized */}
+                      {/* Credit Card, default / emphasized */}
                       <div
                         style={{
                           flex: 1,
@@ -934,7 +934,7 @@ export default function Product() {
                             marginTop: 4,
                           }}
                         >
-                          Approximate &mdash; each piece is hand-finished, so
+                          Approximate: each piece is hand-finished, so
                           weight may vary by a few percent.
                         </div>
                       </div>
@@ -1084,7 +1084,7 @@ export default function Product() {
                                 title={
                                   available
                                     ? undefined
-                                    : 'Sold out — select to request this size'
+                                    : 'Sold out. Select to request this size'
                                 }
                               >
                                 {name}
@@ -1167,7 +1167,7 @@ export default function Product() {
                                 title={
                                   available
                                     ? undefined
-                                    : 'Sold out — select to request this color'
+                                    : 'Sold out. Select to request this color'
                                 }
                               >
                                 <span
@@ -1278,7 +1278,7 @@ export default function Product() {
                                 title={
                                   available
                                     ? undefined
-                                    : 'Sold out — select to request this size'
+                                    : 'Sold out. Select to request this size'
                                 }
                               >
                                 {swatch?.color ||
@@ -1435,8 +1435,8 @@ export default function Product() {
                       }}
                     >
                       {isOutOfStock
-                        ? 'This size is sold out — send a request and we’ll source it for you.'
-                        : 'Pricing for this piece is being updated — send a request and we’ll quote it for you.'}
+                        ? 'This size is sold out. Send a request and we’ll source it for you.'
+                        : 'Pricing for this piece is being updated. Send a request and we’ll quote it for you.'}
                     </div>
                   </div>
                 ) : (
@@ -1503,7 +1503,7 @@ export default function Product() {
                 )}
               </div>
 
-              {/* Make an Offer — quiet text link, deliberately demoted below ATC */}
+              {/* Make an Offer, quiet text link, deliberately demoted below ATC */}
               {!isOutOfStock && !isUnpriced && (
                 <div style={{marginTop: 14, textAlign: 'center'}}>
                   <button
@@ -1532,7 +1532,7 @@ export default function Product() {
                 </div>
               )}
 
-              {/* Favorites + Compare + Print — three equal actions */}
+              {/* Favorites + Compare + Print, three equal actions */}
               <div
                 style={{
                   marginTop: 16,
@@ -1593,7 +1593,7 @@ export default function Product() {
             </div>
           )}
 
-          {/* ── Product Details — the piece's specs come before the boilerplate
+          {/* ── Product Details, the piece's specs come before the boilerplate
               trust signals ── */}
           <div
             style={{
@@ -1664,7 +1664,7 @@ export default function Product() {
                         fontSize: 17,
                         color: STYX.ink,
                         // Cormorant defaults to old-style figures, where "1"
-                        // reads as a dotless i ("1mm" → "ımm") — force lining
+                        // reads as a dotless i ("1mm" → "ımm"), force lining
                         // numerals so spec values stay unambiguous.
                         fontVariantNumeric: 'lining-nums',
                       }}
@@ -1740,7 +1740,7 @@ export default function Product() {
               })}
             </div>
 
-            {/* Delivery promise — exact terms from the shipping policy:
+            {/* Delivery promise, exact terms from the shipping policy:
                   ships in 1–2 business days, domestic transit 3–5,
                   fully insured with signature on delivery. */}
             <div
@@ -1754,11 +1754,11 @@ export default function Product() {
                 lineHeight: 1.5,
               }}
             >
-              Ships fully insured in 1&ndash;2 business days &mdash; domestic
-              delivery typically 3&ndash;5 business days, signature on arrival.
+              Ships fully insured in 1 to 2 business days. Domestic
+              delivery typically 3 to 5 business days, signature on arrival.
             </div>
 
-            {/* FAQ link — same quiet idiom as the Make-an-Offer link */}
+            {/* FAQ link, same quiet idiom as the Make-an-Offer link */}
             <div style={{marginTop: 8, textAlign: 'center'}}>
               <Link
                 to="/faq"
@@ -1917,7 +1917,7 @@ export default function Product() {
                 </div>
 
                 {offerStatus === 'success' ? (
-                  /* Inline confirmation — replaces the form once the submission lands */
+                  /* Inline confirmation, replaces the form once the submission lands */
                   <div style={{padding: '8px 0 4px', textAlign: 'center'}}>
                     <div
                       style={{
@@ -1982,7 +1982,7 @@ export default function Product() {
                       }}
                     >
                       {offerMode === 'request'
-                        ? 'This size is currently sold out, but every piece is backorderable. Leave your details and we’ll confirm availability, price, and timing within 24 hours — then place the order for you.'
+                        ? 'This size is currently sold out, but every piece is backorderable. Leave your details and we’ll confirm availability, price, and timing within 24 hours, then place the order for you.'
                         : 'Offers are reviewed within 24 hours. Once accepted, you have 48 hours to complete your purchase at the agreed price. Offers not completed within this window expire automatically.'}
                     </div>
 
@@ -2183,7 +2183,7 @@ export default function Product() {
                             lineHeight: 1.5,
                           }}
                         >
-                          Something went wrong &mdash; your{' '}
+                          Something went wrong: your{' '}
                           {offerMode === 'request' ? 'request' : 'offer'} was
                           not sent. Please try again in a moment.
                         </div>
@@ -2267,7 +2267,7 @@ export default function Product() {
         </div>
       </div>
 
-      {/* ── Transparency Narrative Section — only with real weight data.
+      {/* ── Transparency Narrative Section, only with real weight data.
           Skipped for unpriced ($0) variants: the labor math would go negative. ── */}
       {displayWeight && !isUnpriced && (
         <section
@@ -2313,7 +2313,7 @@ export default function Product() {
                 marginTop: 48,
               }}
             >
-              {/* Narrative — story + the plain-math paragraph, stacked */}
+              {/* Narrative, story + the plain-math paragraph, stacked */}
               <div style={{display: 'flex', flexDirection: 'column', gap: 28}}>
                 <div
                   style={{
@@ -2327,8 +2327,8 @@ export default function Product() {
                   {storyBody || (
                     <>
                       Most jewelers mark gold up 8 to 12 times. That is not
-                      because gold is expensive &mdash; gold is a commodity,
-                      priced openly on global markets &mdash; it is because the
+                      because gold is expensive. Gold is a commodity,
+                      priced openly on global markets. It is because the
                       business is built on mystery. We are not.
                     </>
                   )}
@@ -2341,24 +2341,23 @@ export default function Product() {
                     lineHeight: 1.75,
                   }}
                 >
-                  This piece weighs {displayWeight}g of solid {karat}k gold. At
-                  today&rsquo;s live market price, that is{' '}
+                  This piece weighs {displayWeight}g of {karat}k gold. At
+                  today&rsquo;s live gold price, the gold alone is worth{' '}
+                  {formatUSD(displayWeight * perGramSelected)}. The rest,{' '}
                   {formatUSD(
-                    goldBreakdown
-                      ? goldBreakdown.materialCost
-                      : displayWeight * perGramSelected,
-                  )}{' '}
-                  in raw material. We add{' '}
-                  {formatUSD(
-                    goldBreakdown ? goldBreakdown.laborCost : laborCost,
-                  )}{' '}
-                  for manufacturing and finishing, and our margin keeps the
-                  lights on. That is the whole math. Nothing hidden in a velvet
-                  box.
+                    Math.max(
+                      0,
+                      parseFloat(selectedVariant?.price?.amount ?? '0') -
+                        displayWeight * perGramSelected,
+                    ),
+                  )}
+                  {', '}is the craft: casting, finishing, testing, insured
+                  shipping, and our margin, said out loud. That is the whole
+                  math. Nothing hidden in a velvet box.
                 </div>
               </div>
 
-              {/* Live-price receipt — the numbers behind the narrative */}
+              {/* Live-price receipt, the numbers behind the narrative */}
               {selectedVariant?.price && (
                 <LivePriceReceipt
                   price={selectedVariant.price}
@@ -2430,7 +2429,7 @@ export default function Product() {
                       textTransform: 'uppercase',
                     }}
                   >
-                    &mdash; {pullQuoteAttr}
+                    {pullQuoteAttr}
                   </div>
                 )}
               </div>
@@ -2439,7 +2438,7 @@ export default function Product() {
         </section>
       )}
 
-      {/* ── Recently Viewed (localStorage, client-only) — above the Pact ── */}
+      {/* ── Recently Viewed (localStorage, client-only), above the Pact ── */}
       <RecentlyViewed excludeHandle={product.handle} />
 
       {/* ── Ferryman's Pact Banner ── */}
@@ -2489,7 +2488,7 @@ export default function Product() {
             >
               Every piece carries a 5-year buyback guarantee. If you ever wish
               to return to shore, we will buy back your gold at the prevailing
-              market price&mdash;minus only the original labor. The metal never
+              market price, minus only the original labor. The metal never
               loses its passage.
             </p>
           </div>
@@ -2552,8 +2551,11 @@ export default function Product() {
 
 /* ─────────────────────────── Helper Components ─────────────────────────── */
 
-/** Dark "Live Price · No Hidden Math" receipt — the itemized melt-value math.
-    Lives in the transparency section, beside the narrative it substantiates. */
+/** Dark "The price, in full" receipt: the itemized gold vs. craft math.
+    Lives in the transparency section, beside the narrative it substantiates.
+    Same math as before, new framing: the non-gold portion is "the craft"
+    with its contents named, the buyback floor sits inside the box, and the
+    price appears exactly once. */
 function LivePriceReceipt({
   price,
   displayWeight,
@@ -2568,17 +2570,30 @@ function LivePriceReceipt({
   spotPerOz: number;
 }) {
   const ourPrice = parseFloat(price.amount);
-  const pureGoldGrams = displayWeight * selectedPurity;
-  const meltValue = pureGoldGrams * (spotPerOz / 31.1035);
-  const difference = ourPrice - meltValue;
+  // Guards: a $0 variant or missing weight must never render negative or
+  // broken numbers. The caller already skips those cases, but be defensive.
+  const safeWeight = displayWeight > 0 ? displayWeight : 0;
+  const perGramPure = spotPerOz / 31.1035;
+  const pureGoldGrams = safeWeight * selectedPurity;
+  const meltValue = pureGoldGrams * perGramPure;
+  const priced = ourPrice > 0;
+  // "The craft": everything that is not gold. Clamped so a price below melt
+  // (a catalog error) never shows a negative line.
+  const craft = priced ? Math.max(0, ourPrice - meltValue) : 0;
   const wirePrice = Math.round(ourPrice * 0.96 * 100) / 100;
+  const goldShare = priced ? Math.min(1, Math.max(0, meltValue / ourPrice)) : 0;
+  const goldPct = Math.round(goldShare * 100);
+  const craftPct = 100 - goldPct;
+  const dim = 'rgba(239,234,224,0.5)';
+  const line = 'rgba(239,234,224,0.12)';
 
   return (
     <div
       style={{
         background: STYX.ink,
         color: STYX.bone,
-        padding: '28px 32px',
+        padding: '28px clamp(20px, 4vw, 32px)',
+        minWidth: 0,
       }}
     >
       {/* Header */}
@@ -2587,9 +2602,11 @@ function LivePriceReceipt({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          gap: 12,
+          flexWrap: 'wrap',
           marginBottom: 20,
           paddingBottom: 16,
-          borderBottom: '1px solid rgba(239,234,224,0.12)',
+          borderBottom: `1px solid ${line}`,
         }}
       >
         <div style={{display: 'flex', alignItems: 'center', gap: 10}}>
@@ -2601,6 +2618,7 @@ function LivePriceReceipt({
               background: '#7DB86F',
               boxShadow: '0 0 8px #7DB86F',
               display: 'inline-block',
+              flexShrink: 0,
             }}
           />
           <span
@@ -2612,78 +2630,157 @@ function LivePriceReceipt({
               color: STYX.gold,
             }}
           >
-            Live Price &middot; No Hidden Math
+            The price, in full
           </span>
         </div>
         <span
           style={{
-            fontFamily: FONT.cinzel,
-            fontSize: 10,
-            letterSpacing: '0.2em',
-            textTransform: 'uppercase',
+            fontFamily: FONT.mono,
+            fontSize: 11,
+            letterSpacing: '0.08em',
             color: 'rgba(239,234,224,0.45)',
+            whiteSpace: 'nowrap',
           }}
         >
-          Live Gold Price
+          Gold ${perGramPure.toFixed(2)}/g &middot; live
         </span>
       </div>
 
       {/* Receipt Rows */}
       <div style={{fontFamily: FONT.mono, fontSize: 13, lineHeight: 1}}>
-        <ReceiptSection label="MELT VALUE" />
+        <ReceiptSection label="The gold" />
         <ReceiptRow
-          label={`${displayWeight}g total weight`}
+          label={`${safeWeight}g total weight`}
           value={`${karat}K gold`}
         />
         <ReceiptRow
           label={`${pureGoldGrams.toFixed(2)}g pure gold (${(
             selectedPurity * 100
           ).toFixed(0)}%)`}
-          value={`@ $${(spotPerOz / 31.1035).toFixed(2)}/g`}
+          value={`@ $${perGramPure.toFixed(2)}/g`}
         />
         <ReceiptRow
-          label="Gold melt value"
+          label="Worth today, by weight"
           value={formatUSD(meltValue)}
           highlight
         />
 
         <div style={{height: 20}} />
-        <ReceiptSection label="DIFFERENCE" />
+        <ReceiptSection label="The craft" />
         <ReceiptRow
-          label="Labor, craftsmanship, overhead"
-          value={formatUSD(difference)}
+          label="Casting, finishing, testing, insured shipping & our margin"
+          value={priced ? formatUSD(craft) : '—'}
           highlight
-        />
-
-        <div style={{height: 20}} />
-        <ReceiptSection label="OUR PRICE" />
-        <ReceiptRow
-          label="Melt value + markup"
-          value={formatUSD(ourPrice)}
-          highlight
-        />
-
-        <div style={{height: 12}} />
-        <ReceiptRow
-          label="Wire transfer (save 4%)"
-          value={formatUSD(wirePrice)}
         />
       </div>
+
+      {/* Proportional split: GOLD | CRAFT */}
+      <div
+        role="img"
+        aria-label={`Gold ${goldPct}%, craft ${craftPct}%`}
+        style={{
+          display: 'flex',
+          height: 6,
+          margin: '18px 0 6px',
+          background: line,
+        }}
+      >
+        <div style={{width: `${goldPct}%`, background: STYX.gold}} />
+        <div
+          style={{width: `${craftPct}%`, background: 'rgba(239,234,224,0.28)'}}
+        />
+      </div>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          fontFamily: FONT.mono,
+          fontSize: 10,
+          letterSpacing: '0.12em',
+          color: dim,
+        }}
+      >
+        <span>GOLD {goldPct}%</span>
+        <span>CRAFT {craftPct}%</span>
+      </div>
+
+      {/* Buyback floor, inside the box where the price anxiety happens */}
+      <Link
+        to="/buyback"
+        prefetch="intent"
+        style={{
+          display: 'block',
+          marginTop: 22,
+          border: `1px solid ${STYX.gold}`,
+          padding: '14px 16px',
+          color: STYX.bone,
+          textDecoration: 'none',
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'baseline',
+            gap: 12,
+          }}
+        >
+          <span
+            style={{
+              fontFamily: FONT.mono,
+              fontSize: 13,
+              letterSpacing: '0.03em',
+              fontWeight: 500,
+              minWidth: 0,
+            }}
+          >
+            We&rsquo;ll buy it back for its gold value
+          </span>
+          <span
+            style={{
+              fontFamily: FONT.mono,
+              fontSize: 11,
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              color: STYX.gold,
+              border: `1px solid ${STYX.gold}`,
+              padding: '3px 7px',
+              whiteSpace: 'nowrap',
+              flexShrink: 0,
+            }}
+          >
+            5 yrs
+          </span>
+        </div>
+        <div
+          style={{
+            fontFamily: FONT.cormorant,
+            fontStyle: 'italic',
+            fontSize: 15,
+            lineHeight: 1.45,
+            color: 'rgba(239,234,224,0.6)',
+            marginTop: 6,
+          }}
+        >
+          Whatever gold is worth on the day you sell it back.
+        </div>
+      </Link>
 
       {/* Divider */}
       <div
         style={{
           borderTop: '1px dashed rgba(239,234,224,0.2)',
-          margin: '18px 0',
+          margin: '22px 0 18px',
         }}
       />
 
-      {/* Total */}
+      {/* Total: the price appears once */}
       <div
         style={{
           display: 'flex',
           alignItems: 'baseline',
           justifyContent: 'space-between',
+          gap: 12,
         }}
       >
         <span
@@ -2692,10 +2789,10 @@ function LivePriceReceipt({
             fontSize: 13,
             letterSpacing: '0.2em',
             textTransform: 'uppercase',
-            color: STYX.bone,
+            color: STYX.gold,
           }}
         >
-          Your Toll
+          The fare
         </span>
         <span
           style={{
@@ -2704,11 +2801,25 @@ function LivePriceReceipt({
             fontWeight: 600,
             color: STYX.bone,
             fontVariantNumeric: 'tabular-nums',
+            whiteSpace: 'nowrap',
           }}
         >
-          <Money data={price as any} as="span" />
+          {priced ? <Money data={price as any} as="span" /> : '—'}
         </span>
       </div>
+      {priced && (
+        <div
+          style={{
+            fontFamily: FONT.mono,
+            fontSize: 12,
+            color: dim,
+            textAlign: 'right',
+            marginTop: 4,
+          }}
+        >
+          {formatUSD(wirePrice)} by wire transfer
+        </div>
+      )}
     </div>
   );
 }
@@ -2747,6 +2858,7 @@ function ReceiptRow({
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'baseline',
+        gap: 16,
         padding: highlight ? '8px 0' : '5px 0',
       }}
     >
@@ -2754,9 +2866,11 @@ function ReceiptRow({
         style={{
           fontFamily: FONT.mono,
           fontSize: 13,
+          lineHeight: 1.4,
           color: highlight ? STYX.bone : 'rgba(239,234,224,0.5)',
           letterSpacing: '0.03em',
           fontWeight: highlight ? 500 : 400,
+          minWidth: 0,
         }}
       >
         {label}
@@ -2768,6 +2882,8 @@ function ReceiptRow({
           color: highlight ? STYX.gold : STYX.bone,
           fontWeight: highlight ? 600 : 400,
           fontVariantNumeric: 'tabular-nums',
+          whiteSpace: 'nowrap',
+          flexShrink: 0,
         }}
       >
         {value}
@@ -2918,7 +3034,7 @@ function MobileMediaCarousel({
 
       {slides.length > 1 && (
         <>
-          {/* Counter — top right, ledger style */}
+          {/* Counter, top right, ledger style */}
           <div
             style={{
               position: 'absolute',
@@ -2937,7 +3053,7 @@ function MobileMediaCarousel({
             {index + 1} / {slides.length}
           </div>
 
-          {/* Dots — tappable, 24px hit targets */}
+          {/* Dots, tappable, 24px hit targets */}
           <div
             style={{
               display: 'flex',
@@ -3562,7 +3678,7 @@ function parseConstruction(
 }
 
 /**
- * Cross-sell is strict: only the true counterpart piece — same weave, same
+ * Cross-sell is strict: only the true counterpart piece, same weave, same
  * thickness, same karat, opposite product type (chain <-> bracelet).
  * A 3mm rope chain pairs with the 3mm rope chain bracelet, or nothing at all.
  * Returns [] when there is no exact counterpart.
@@ -3584,7 +3700,7 @@ async function getCrossSellProducts(
   const myKarat = parseKarat(product?.karat?.value, styleTitle);
 
   // Without a known style, width, and karat we can't guarantee a true
-  // counterpart — suggest nothing rather than something unrelated.
+  // counterpart, suggest nothing rather than something unrelated.
   if (!style || myMm == null || myKarat == null) return [];
   if (myType !== 'chain' && myType !== 'bracelet') return [];
 
@@ -3612,7 +3728,7 @@ async function getCrossSellProducts(
       );
       if (cStyle !== myStyle) return false;
       const cMm = parseMm(c.chain_thickness?.value) ?? parseMm(c.title);
-      // Titles round to the nearest 0.5mm — absorb that, but never let a
+      // Titles round to the nearest 0.5mm, absorb that, but never let a
       // genuinely different width (0.5mm+ apart) through.
       if (cMm == null || Math.abs(cMm - myMm) > 0.25) return false;
       const cKarat = parseKarat(c.chain_karat?.value, c.title);

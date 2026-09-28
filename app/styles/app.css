@@ -1223,3 +1223,100 @@ shop-pay-button {
     animation: styx-loading 1200ms ease-in-out infinite;
   }
 }
+
+/* ── Homepage (2026-09 rebuild) ───────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   Homepage responsive overrides (app/routes/($locale)._index.tsx)
+   Sections use inline styles; these media queries only reflow them.
+   Inline styles win on specificity, so !important is required here.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Tablet: ≤ 60em (960px) */
+@media (max-width: 60em) {
+  .styx-home-hands-grid,
+  .styx-home-ledger-grid {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+  .styx-home-chains-grid,
+  .styx-home-code-grid,
+  .styx-home-journal-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Mobile: ≤ 48em (768px) */
+@media (max-width: 48em) {
+  .styx-home-pillars {
+    padding: 0 20px !important;
+  }
+  .styx-home-pillars-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .styx-home-pillar {
+    padding: 28px 0 !important;
+    border-left: none !important;
+    border-top: 1px solid rgba(26, 24, 21, 0.12) !important;
+  }
+  .styx-home-pillar:first-child {
+    border-top: none !important;
+  }
+
+  .styx-home-hands,
+  .styx-home-chains,
+  .styx-home-ledger,
+  .styx-home-lore,
+  .styx-home-journal {
+    padding: 72px 20px !important;
+  }
+  .styx-home-code-inner {
+    padding: 72px 20px !important;
+  }
+  .styx-home-head {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 20px !important;
+    margin-bottom: 36px !important;
+  }
+  .styx-home-journal-grid {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+  .styx-home-receipt {
+    padding: 28px 22px !important;
+  }
+  .styx-home-lore-film {
+    margin-top: 36px !important;
+  }
+}
+
+/* Small mobile: ≤ 32em (512px), 390px target */
+@media (max-width: 32em) {
+  .styx-home-pillars {
+    padding: 0 16px !important;
+  }
+  .styx-home-hands,
+  .styx-home-chains,
+  .styx-home-ledger,
+  .styx-home-lore,
+  .styx-home-journal,
+  .styx-home-code-inner {
+    padding: 64px 16px !important;
+  }
+  .styx-home-chains-grid,
+  .styx-home-code-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .styx-home-chain-tile {
+    padding: 18px !important;
+  }
+  .styx-home-code-grid > div {
+    padding: 28px 22px !important;
+  }
+  .styx-home-receipt {
+    padding: 24px 18px !important;
+  }
+  .styx-home-receipt > div > div {
+    font-size: 12px !important;
+  }
+}

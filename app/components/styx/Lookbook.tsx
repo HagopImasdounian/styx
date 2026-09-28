@@ -7,7 +7,7 @@ import {CTAButton} from './CTAButton';
 const COLLECTION_ORDER = ['cuban', 'curb', 'rope', 'box', 'figaro', 'cable', 'wheat', 'rolo', 'singapore'];
 
 /**
- * Shopify CDN images arrive full-resolution — request a resized rendition
+ * Shopify CDN images arrive full-resolution, request a resized rendition
  * instead. Tiles render at ~25vw, so 800px wide is plenty. Preserves any
  * existing query params (e.g. ?v=cache-buster).
  */
@@ -92,7 +92,7 @@ export function Lookbook({collections = []}: {collections?: CollectionNode[]}) {
         </div>
       </div>
 
-      {/* Weave grid — rows of 4 on desktop, rows of 2 on mobile (no swiping) */}
+      {/* Weave grid, rows of 4 on desktop, rows of 2 on mobile (no swiping) */}
       <div
         style={{
           display: 'grid',

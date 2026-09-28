@@ -55,12 +55,12 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
 
 export const meta = ({data}: MetaArgs<typeof loader>) => {
   return getStyxSeoMeta({
-    title: 'Compare Gold Chains — Side by Side',
+    title: 'Compare Gold Chains: Side by Side',
     titleTemplate: '%s | STYX Gold',
     description:
-      'Compare solid gold chains side by side — weight, karat, gold content, and live price per gram. See exactly what your money buys. No markup mystery.',
+      'Compare gold chains side by side, weight, karat, gold content, and live price per gram. See exactly what your money buys. No markup mystery.',
     url: data?.url,
-    // This page renders from localStorage/query-string selections — no stable
+    // This page renders from localStorage/query-string selections, no stable
     // indexable content. Curated /compare/<slug> pages stay indexable.
     robots: {noIndex: true, noFollow: false},
   });
@@ -294,7 +294,7 @@ export default function ComparePage() {
             Chain Comparison
           </h1>
           <p style={{fontFamily: FONT.cormorant, fontSize: 18, color: STYX.silt, marginBottom: 32, maxWidth: 500, margin: '0 auto 32px'}}>
-            Compare up to 4 chains side by side — pick from our collection or enter specs from any chain you're considering.
+            Compare up to 4 chains side by side, pick from our collection or enter specs from any chain you're considering.
           </p>
 
           <div style={{display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap'}}>

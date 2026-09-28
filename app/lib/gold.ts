@@ -1,9 +1,9 @@
 /**
- * Gold price calculations — shared between server and client.
+ * Gold price calculations, shared between server and client.
  * No server-only imports here.
  */
 
-/** Karat purity lookup — exact fraction of pure gold (karat/24). */
+/** Karat purity lookup, exact fraction of pure gold (karat/24). */
 export const KARAT_PURITY: Record<number, number> = {
   10: 10 / 24, // 0.41666...
   14: 14 / 24, // 0.58333...
@@ -72,7 +72,7 @@ export function computeGoldPrice({
   };
 }
 
-/** "$14,489.00" — dollar amounts shown in the UI always get digit grouping. */
+/** "$14,489.00", dollar amounts shown in the UI always get digit grouping. */
 export function formatUSD(n: number): string {
   return `$${n.toLocaleString('en-US', {
     minimumFractionDigits: 2,

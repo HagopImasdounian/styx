@@ -35,19 +35,19 @@ const CHAIN_INTROS: Record<
 > = {
   cuban: {
     intro:
-      'The Cuban Link is the undisputed heavyweight of gold chains. Born in Miami in the 1970s, its flat-filed interlocking links create a mirror-smooth surface that catches light from every angle. Solid, dense, and engineered to lay flat against the chest — this is the chain that built a culture.',
+      'The Cuban Link is the undisputed heavyweight of gold chains. Born in Miami in the 1970s, its flat-filed interlocking links create a mirror-smooth surface that catches light from every angle. Solid, dense, and engineered to lay flat against the chest, this is the chain that built a culture.',
     journal: 'history-of-the-cuban-link',
     journalTitle: 'Read: The History of the Cuban Link →',
   },
   curb: {
     intro:
-      'The Curb Chain is the oldest and most universal chain design in existence, dating back to 2600 BC in ancient Sumer. Its flat, twisted links were inspired by horse curb bits — the same geometry that controls a stallion now adorns the neck. From Victorian pocket watches to modern streetwear, the curb has never gone out of style.',
+      'The Curb Chain is the oldest and most universal chain design in existence, dating back to 2600 BC in ancient Sumer. Its flat, twisted links were inspired by horse curb bits, the same geometry that controls a stallion now adorns the neck. From Victorian pocket watches to modern streetwear, the curb has never gone out of style.',
     journal: 'history-of-the-curb-chain',
     journalTitle: 'Read: The History of the Curb Chain →',
   },
   box: {
     intro:
-      "The Box Chain originated in 6th-century Venice, where goldsmiths discovered that square links interlocked at 90-degree angles create a chain with perfect geometric precision. Clean, architectural, and virtually kink-proof — the box chain is the engineer's choice.",
+      "The Box Chain originated in 6th-century Venice, where goldsmiths discovered that square links interlocked at 90-degree angles create a chain with perfect geometric precision. Clean, architectural, and virtually kink-proof, the box chain is the engineer's choice.",
     journal: 'history-of-the-box-chain',
     journalTitle: 'Read: The History of the Box Chain →',
   },
@@ -59,69 +59,69 @@ const CHAIN_INTROS: Record<
   },
   cable: {
     intro:
-      'The Cable Chain is the DNA of all chain designs — simple interlocking oval links, unchanged since the Royal Tombs of Ur. Its strength lies in its simplicity: lightweight, versatile, and nearly indestructible. The cable chain is the foundation upon which every other weave was built.',
+      'The Cable Chain is the DNA of all chain designs, simple interlocking oval links, unchanged since the Royal Tombs of Ur. Its strength lies in its simplicity: lightweight, versatile, and nearly indestructible. The cable chain is the foundation upon which every other weave was built.',
     journal: 'history-of-the-cable-chain',
     journalTitle: 'Read: The History of the Cable Chain →',
   },
   figaro: {
     intro:
-      'The Figaro Chain was born in the goldsmithing workshops of Vicenza, Italy, around 1885. Its distinctive pattern — three small links followed by one elongated link — creates a visual rhythm unlike any other chain. Named after the clever barber of Seville, the Figaro is Italian craftsmanship at its most playful.',
+      'The Figaro Chain was born in the goldsmithing workshops of Vicenza, Italy, around 1885. Its distinctive pattern, three small links followed by one elongated link, creates a visual rhythm unlike any other chain. Named after the clever barber of Seville, the Figaro is Italian craftsmanship at its most playful.',
     journal: 'history-of-the-figaro-chain',
     journalTitle: 'Read: The History of the Figaro Chain →',
   },
   wheat: {
     intro:
-      'The Wheat Chain, known in Italy as the Spiga, mimics the overlapping husks of a wheat ear — four strands of oval links woven into a tight, flexible tube. Born during the Renaissance in Vicenza, it is one of the strongest chain weaves per gram. Substantial enough to carry a heavy pendant, elegant enough to wear alone.',
+      'The Wheat Chain, known in Italy as the Spiga, mimics the overlapping husks of a wheat ear, four strands of oval links woven into a tight, flexible tube. Born during the Renaissance in Vicenza, it is one of the strongest chain weaves per gram. Substantial enough to carry a heavy pendant, elegant enough to wear alone.',
     journal: 'history-of-the-wheat-chain',
     journalTitle: 'Read: The History of the Wheat Chain →',
   },
   rolo: {
     intro:
-      'The Rolo Chain emerged in Victorian London around 1850 — perfectly round, symmetrical links that interlock in a clean, modern pattern. Heavier and more substantial than a cable chain, the rolo carries a satisfying weight that you feel against your chest. Minimal, bold, timeless.',
+      'The Rolo Chain emerged in Victorian London around 1850, perfectly round, symmetrical links that interlock in a clean, modern pattern. Heavier and more substantial than a cable chain, the rolo carries a satisfying weight that you feel against your chest. Minimal, bold, timeless.',
     journal: 'history-of-the-rolo-chain',
     journalTitle: 'Read: The History of the Rolo Chain →',
   },
   singapore: {
     intro:
-      'The Singapore Chain was developed by Italian chain-makers in the 1970s and named for its popularity in Southeast Asian gold markets. Its twisted, braided links create a diamond-cut surface that shimmers with every movement — a chain that sparkles like no other, even in the thinnest widths.',
+      'The Singapore Chain was developed by Italian chain-makers in the 1970s and named for its popularity in Southeast Asian gold markets. Its twisted, braided links create a diamond-cut surface that shimmers with every movement, a chain that sparkles like no other, even in the thinnest widths.',
     journal: 'history-of-the-singapore-chain',
     journalTitle: 'Read: The History of the Singapore Chain →',
   },
   franco: {
     intro:
-      'The Franco Chain was born in the goldsmithing workshops of Northern Italy in the late 1970s — a flat-sided square weave so dense it reads as a solid bar of gold. It is the chain you choose when you need mass that can carry serious pendant weight and still lie flat against the chest.',
+      'The Franco Chain was born in the goldsmithing workshops of Northern Italy in the late 1970s, a flat-sided square weave so dense it reads as a solid bar of gold. It is the chain you choose when you need mass that can carry serious pendant weight and still lie flat against the chest.',
     journal: 'history-of-the-franco-chain',
     journalTitle: 'Read: The History of the Franco Chain →',
   },
   herringbone: {
     intro:
-      'The Herringbone traces back to ancient Egypt around 3000 BCE — flat, slanted links laid in a tight fishbone pattern that turns the entire chain into a mirror-smooth ribbon of liquid gold. Sleek, flexible, and unmistakable under light, it lies perfectly flat against the skin.',
+      'The Herringbone traces back to ancient Egypt around 3000 BCE, flat, slanted links laid in a tight fishbone pattern that turns the entire chain into a mirror-smooth ribbon of liquid gold. Sleek, flexible, and unmistakable under light, it lies perfectly flat against the skin.',
     journal: 'history-of-the-herringbone-chain',
     journalTitle: 'Read: The History of the Herringbone →',
   },
   snake: {
     intro:
-      "The Snake Chain emerged in Victorian London around 1840 — tightly fitted links that form a smooth, round, flexible tube with the faint banding of a serpent's skin. Completely seamless to the touch, it catches the light in one continuous, unbroken line.",
+      "The Snake Chain emerged in Victorian London around 1840, tightly fitted links that form a smooth, round, flexible tube with the faint banding of a serpent's skin. Completely seamless to the touch, it catches the light in one continuous, unbroken line.",
     journal: 'history-of-the-snake-chain',
     journalTitle: 'Read: The History of the Snake Chain →',
   },
   paperclip: {
     intro:
-      'The Paperclip Chain is the modern minimalist — elongated, uniform oval links inspired by the humble office clip, first popularized in Oslo around 1940. Clean, architectural, and effortlessly contemporary, it wears as well on its own as it does carrying a charm.',
+      'The Paperclip Chain is the modern minimalist, elongated, uniform oval links inspired by the humble office clip, first popularized in Oslo around 1940. Clean, architectural, and effortlessly contemporary, it wears as well on its own as it does carrying a charm.',
     journal: 'history-of-the-paperclip-chain',
     journalTitle: 'Read: The History of the Paperclip →',
   },
   '10k-gold': {
     intro:
-      '10K gold is 41.7% pure gold alloyed with copper, silver, and zinc — making it the most durable karat we carry. Its hardness means thinner chains hold up to daily wear without stretching or deforming. The color is a refined, pale champagne-gold. For everyday chains, 10K is the workhorse: real gold, built to last, priced honestly.',
+      '10K gold is 41.7% pure gold alloyed with copper, silver, and zinc, making it the most durable karat we carry. Its hardness means thinner chains hold up to daily wear without stretching or deforming. The color is a refined, pale champagne-gold. For everyday chains, 10K is the workhorse: real gold, built to last, priced honestly.',
     journal: 'understanding-gold-karats',
-    journalTitle: 'Read: Understanding Gold Karats — 10K to 24K →',
+    journalTitle: 'Read: Understanding Gold Karats, 10K to 24K →',
   },
   '14k-gold': {
     intro:
-      '14K gold is 58.3% pure gold — the American standard for fine jewelry. Richer and warmer in color than 10K, with enough alloy to remain durable for daily wear. This is the sweet spot: unmistakably gold, strong enough for any chain style, and the most popular karat in the United States for good reason.',
+      '14K gold is 58.3% pure gold, the American standard for fine jewelry. Richer and warmer in color than 10K, with enough alloy to remain durable for daily wear. This is the sweet spot: unmistakably gold, strong enough for any chain style, and the most popular karat in the United States for good reason.',
     journal: 'understanding-gold-karats',
-    journalTitle: 'Read: Understanding Gold Karats — 10K to 24K →',
+    journalTitle: 'Read: Understanding Gold Karats, 10K to 24K →',
   },
 };
 import {FILTER_URL_PREFIX, type SortParam} from '~/components/SortFilter';
@@ -148,7 +148,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 
   // Server-side filters (`filter.*` params → Storefront API ProductFilter).
   // On this store only `price` and `available` have Search & Discovery filter
-  // definitions, so only those actually narrow the query — the mobile menu's
+  // definitions, so only those actually narrow the query, the mobile menu's
   // price buckets use `filter.price`.
   const filters = [...searchParams.entries()].reduce(
     (filters, [key, value]) => {
@@ -276,7 +276,7 @@ const SORT_OPTIONS: {label: string; value: SortParam | 'default'}[] = [
 ];
 
 /* ═══════════════════════════════════════════════════════════════
-   Filter helpers — extract available filter values from products
+   Filter helpers, extract available filter values from products
    ═══════════════════════════════════════════════════════════════ */
 
 const COLOR_HEX: Record<string, string> = {
@@ -297,10 +297,10 @@ const METAL_COLLECTION_COLOR: Record<string, string> = {
    Filter state lives in the URL (shareable / bookmarkable / back-safe)
 
    Two kinds of filters:
-   • SERVER filters — `filter.*` params parsed by the loader into Storefront
+   • SERVER filters, `filter.*` params parsed by the loader into Storefront
      API ProductFilters. Only `price` (and `available`) have Search &
      Discovery definitions on this store, so only those work server-side.
-   • CLIENT pills — `type`, `color`, `karat`, `width`, `construction`
+   • CLIENT pills, `type`, `color`, `karat`, `width`, `construction`
      params. The API silently ignores productType/tag/variantOption/
      productMetafield filters here, so these are applied client-side over
      the FULL collection set (loader fetches first: 250 when any is active).
@@ -368,7 +368,7 @@ function getThicknessMm(title: string): number | null {
 }
 
 // Karat lives in the product title (separate products per karat, not a variant
-// option), so parse it from there — falling back to a Karat variant option if
+// option), so parse it from there, falling back to a Karat variant option if
 // one ever exists.
 function getKaratLabel(title: string): string | null {
   if (/18\s*k/i.test(title)) return '18K';
@@ -436,7 +436,7 @@ function extractFilters(cards: ReturnType<typeof explodeByColor>) {
       }
     }
 
-    // Construction — normalized so we only ever surface distinct builds
+    // Construction, normalized so we only ever surface distinct builds
     // (the Solid/Hollow filter then only shows when both are actually present)
     constructions.add(normalizeConstruction(product));
   }
@@ -451,7 +451,7 @@ function extractFilters(cards: ReturnType<typeof explodeByColor>) {
     karats: [...karats].sort((a, b) => parseInt(a) - parseInt(b)),
     thicknesses,
     constructions: [...constructions].sort(),
-    // Necklace first, Bracelet second — only those actually present
+    // Necklace first, Bracelet second, only those actually present
     types: ['Necklace', 'Bracelet'].filter((t) => types.has(t)),
   };
 }
@@ -555,7 +555,7 @@ function FilterPill({
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Weave directory — all 13 chain families, shown on the Chains archive
+   Weave directory, all 13 chain families, shown on the Chains archive
    ═══════════════════════════════════════════════════════════════ */
 
 const WEAVES: Array<{handle: string; label: string}> = [
@@ -593,7 +593,7 @@ export default function Collection() {
   const collectionHandle = (collection as any).handle as string;
   const presetColor = METAL_COLLECTION_COLOR[collectionHandle] ?? null;
 
-  // All filter state is derived from the URL — shareable, bookmarkable,
+  // All filter state is derived from the URL, shareable, bookmarkable,
   // back-button safe. Pills toggle their param via setSearchParams below.
   const clientFilters = resolveClientFilters(searchParams, collectionHandle);
   const {
@@ -606,7 +606,7 @@ export default function Collection() {
 
   // Complete collection set (post server filters): in full-set mode the main
   // products query holds everything; otherwise use the lightweight index.
-  // Drives the result count + which pills are shown — never just loaded pages.
+  // Drives the result count + which pills are shown, never just loaded pages.
   const fullSetCards = useMemo(() => {
     const nodes =
       fullSet || !allProductIndex ? collection.products.nodes : allProductIndex;
@@ -684,7 +684,7 @@ export default function Collection() {
     setSearchParams(params, {preventScrollReset: true});
   };
 
-  // Chain close-up cutout (transparent PNG) for the hero — from the
+  // Chain close-up cutout (transparent PNG) for the hero, from the
   // collection's custom.cutout_image metafield, set in Shopify admin
   const heroChainImage =
     (collection as any).cutout?.reference?.image?.url ?? null;
@@ -767,7 +767,7 @@ export default function Collection() {
         </div>
       </div>
 
-      {/* ── Shop by Weave — every chain family, on the all-chains archive ── */}
+      {/* ── Shop by Weave, every chain family, on the all-chains archive ── */}
       {(collection as any).handle === 'chains' && (
         <div
           style={{
@@ -911,7 +911,7 @@ export default function Collection() {
         );
       })()}
 
-      {/* ── Sticky Filter Toolbar — pins exactly below the (auto-hiding) header ── */}
+      {/* ── Sticky Filter Toolbar, pins exactly below the (auto-hiding) header ── */}
       <div
         style={{
           position: 'sticky',
@@ -1179,7 +1179,7 @@ export default function Collection() {
             )}
 
             {/* Active server-side filters (e.g. price bucket from the
-                mobile menu) — click to remove */}
+                mobile menu), click to remove */}
             {appliedFilters.length > 0 && (
               <div style={{display: 'flex', alignItems: 'center', gap: 8}}>
                 <span
@@ -1464,7 +1464,7 @@ function explodeByColor(products: any[]) {
       }
     }
     if (seenColors.size <= 1) {
-      // No Color option or single color — one card
+      // No Color option or single color, one card
       cards.push({product, variantIndex: 0, key: product.id});
     } else {
       // One card per color
@@ -1662,7 +1662,7 @@ const COLLECTION_QUERY = `#graphql
         }
       }
     }
-    # Lightweight index of the ENTIRE collection (post server filters) —
+    # Lightweight index of the ENTIRE collection (post server filters)
     # powers the exact result count + available filter pills while the main
     # products query stays paginated. Skipped in full-set mode.
     allIndex: collection(handle: $handle) @include(if: $fetchIndex) {

@@ -69,7 +69,7 @@ export function CategoryTiles({
             fontStyle: 'italic',
           }}
         >
-          Solid and hollow gold chains — 10K and 14K. Every piece weighed, tested, and
+          Solid and hollow gold chains, 10K and 14K. Every piece weighed, tested, and
           priced transparently from live gold markets.
         </div>
       </div>

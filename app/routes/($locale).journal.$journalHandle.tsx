@@ -635,7 +635,7 @@ export default function Article() {
         </section>
       )}
 
-      {/* ─── Other Chapters — index ─────────────────────────── */}
+      {/* ─── Other Chapters, index ─────────────────────────── */}
       <section
         style={{
           padding: '96px 56px',
@@ -820,7 +820,7 @@ export default function Article() {
         .journal-article p {
           margin: 0 0 28px;
         }
-        /* Direct child only — figure captions and blockquote paragraphs are
+        /* Direct child only, figure captions and blockquote paragraphs are
            nested in wrappers and must never get the drop cap. */
         .journal-article > p:first-of-type::first-letter {
           font-family: ${FONT.cinzel};
@@ -885,7 +885,7 @@ export default function Article() {
           color: inherit;
         }
 
-        /* ── Tables — ledger style ── */
+        /* ── Tables, ledger style ── */
         .journal-article table {
           width: 100%;
           border-collapse: collapse;

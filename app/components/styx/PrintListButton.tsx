@@ -50,7 +50,7 @@ export function PrintListButton({
         ...style,
       }}
     >
-      {/* Ruler icon — distinct from Compare's balance scale */}
+      {/* Ruler icon, distinct from Compare's balance scale */}
       <svg
         width={compact ? 14 : 16}
         height={compact ? 14 : 16}
@@ -64,7 +64,7 @@ export function PrintListButton({
         <rect x="2" y="8" width="20" height="8" rx="1" />
         <path d="M6 8v3M10 8v4M14 8v3M18 8v4" />
       </svg>
-      {!compact && <span>{isActive ? 'On Print List' : 'Add to Print'}</span>}
+      {!compact && <span>{isActive ? 'On Print List' : 'Download Print'}</span>}
     </button>
   );
 }

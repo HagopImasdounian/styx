@@ -2,7 +2,7 @@ import {useId} from 'react';
 import {STYX} from './constants';
 
 /**
- * The Obol — a 3D wireframe coin.
+ * The Obol, a 3D wireframe coin.
  * Uses CSS 3D transforms: front/back faces separated on Z-axis,
  * with stacked edge rings between them for visible thickness at 90°.
  * Flips on X-axis (coin-toss motion: top tilts back).
@@ -42,7 +42,7 @@ export function Obol({
       <circle cx="50" cy="50" r="47" fill={`url(#obol-face-${id})`} />
       {Array.from({length: teeth}).map((_, i) => {
         const a = (i * (360 / teeth) * Math.PI) / 180;
-        // Round so server and client render identical attribute strings —
+        // Round so server and client render identical attribute strings
         // raw trig floats differ in the last bits across JS engines and
         // cause hydration mismatches.
         const r3 = (n: number) => Math.round(n * 1000) / 1000;
@@ -87,7 +87,7 @@ export function Obol({
   // The parent rotates on X-axis, so at 90° you see the Z-depth edge.
   const coinInternals = (
     <>
-      {/* FRONT face — pushed forward on Z */}
+      {/* FRONT face, pushed forward on Z */}
       <div style={{
         position: 'absolute' as const, inset: 0,
         backfaceVisibility: 'hidden' as const,
@@ -95,7 +95,7 @@ export function Obol({
       }}>
         {coinFaceSvg}
       </div>
-      {/* BACK face — pushed back on Z, flipped so it reads correctly from behind */}
+      {/* BACK face, pushed back on Z, flipped so it reads correctly from behind */}
       <div style={{
         position: 'absolute' as const, inset: 0,
         backfaceVisibility: 'hidden' as const,
@@ -103,7 +103,7 @@ export function Obol({
       }}>
         {coinFaceSvg}
       </div>
-      {/* EDGE — stacked rings across Z depth, visible at 90° */}
+      {/* EDGE, stacked rings across Z depth, visible at 90° */}
       {Array.from({length: edgeLayers}).map((_, i) => {
         const z = halfT - (i / (edgeLayers - 1)) * thickness;
         const shade = 0.3 + (i / (edgeLayers - 1)) * 0.5;

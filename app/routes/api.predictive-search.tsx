@@ -61,7 +61,7 @@ export async function loader({
 
     // Spec-style queries ("6mm cuban") often miss in predictiveSearch's
     // prefix matching but hit in the products(query:) search the /search
-    // page runs — fall back to it so suggestions agree with full results.
+    // page runs, fall back to it so suggestions agree with full results.
     if (products.length === 0) {
       const fallback = (await storefront.query(FALLBACK_PRODUCTS_QUERY, {
         variables: {q, ...i18n},
@@ -78,7 +78,7 @@ export async function loader({
       {headers: {'Cache-Control': CACHE_SHORT}},
     );
   } catch {
-    // Suggestions are an enhancement — never let a Storefront hiccup break
+    // Suggestions are an enhancement, never let a Storefront hiccup break
     // the nav. The full /search page remains the reliable path.
     return data(EMPTY, {headers: {'Cache-Control': 'no-store'}});
   }
@@ -143,5 +143,5 @@ const PREDICTIVE_SEARCH_QUERY = `#graphql
   }
 ` as const;
 
-// Resource route — intentionally no default export so GET requests return
+// Resource route, intentionally no default export so GET requests return
 // the loader's JSON directly instead of a rendered HTML document.

@@ -52,7 +52,7 @@ export async function loader({
 
     return data({products: ordered}, {headers: {'Cache-Control': CACHE_SHORT}});
   } catch {
-    // The strip is an enhancement — never surface a Storefront hiccup.
+    // The strip is an enhancement, never surface a Storefront hiccup.
     return data({products: []}, {headers: {'Cache-Control': 'no-store'}});
   }
 }

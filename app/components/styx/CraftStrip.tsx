@@ -2,7 +2,7 @@ import {STYX, FONT} from './constants';
 import {StyxLabel} from './StyxLabel';
 
 const USPS = [
-  {num: '01', title: 'Solid Gold', desc: 'Every gram is real karat gold. 10K and 14K — no plating, no fill.'},
+  {num: '01', title: 'Real Gold', desc: 'Every gram is real karat gold. 10K and 14K: no plating, no fill.'},
   {num: '02', title: 'Weighed & Tested', desc: 'Every piece is weighed and tested multiple times to meet or exceed the stamped karat weight.'},
   {num: '03', title: 'Transparent Price', desc: 'We show you the spot price, the weight, the labor, and our margin. That\'s it.'},
 ];
@@ -68,7 +68,7 @@ export function CraftStrip() {
             }}
           >
             Diamond-encrusted chains lose 90% of their value the moment you walk
-            out the store. Solid gold holds its weight — literally. We believe gold
+            out the store. Gold holds its weight, literally. We believe gold
             is going up, and we want you holding real metal, not decoration.
           </p>
 

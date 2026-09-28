@@ -266,7 +266,7 @@ export default function ShippingReturns() {
               Return Shipping
             </p>
             <p style={{margin: 0}}>
-              Return shipping is the buyer&rsquo;s responsibility. We strongly recommend insured, trackable shipping &mdash; USPS Registered Mail is required for items valued over $500. Styx Gold is not responsible for items lost, stolen, or damaged during return transit.
+              Return shipping is the buyer&rsquo;s responsibility. We strongly recommend insured, trackable shipping. USPS Registered Mail is required for items valued over $500. Styx Gold is not responsible for items lost, stolen, or damaged during return transit.
             </p>
           </PolicyBlock>
         </section>
@@ -276,7 +276,7 @@ export default function ShippingReturns() {
           <SectionHeading kicker="IV" title="Exchanges" />
           <PolicyBlock>
             <p style={{margin: 0}}>
-              Want a different length, karat, or style? Contact us within 14 days of delivery to request an exchange. An RMA number is required. If there is a price difference between the original and replacement item &mdash; including any change in gold spot price &mdash; we will charge or refund the difference. The original item must meet the same return conditions listed above. No restocking fee applies to even exchanges of equal value.
+              Want a different length, karat, or style? Contact us within 14 days of delivery to request an exchange. An RMA number is required. If there is a price difference between the original and replacement item, including any change in gold spot price, we will charge or refund the difference. The original item must meet the same return conditions listed above. No restocking fee applies to even exchanges of equal value.
             </p>
           </PolicyBlock>
         </section>
@@ -289,7 +289,7 @@ export default function ShippingReturns() {
               If your item arrives damaged or defective, contact us within <strong>48 hours</strong> of delivery with clear photographs showing the issue from multiple angles, including the packaging. We will review the evidence and, if warranted, arrange a prepaid return label for inspection.
             </p>
             <p style={{margin: 0}}>
-              Upon confirming the defect at our facility, we will ship a replacement or issue a full refund &mdash; your choice. No restocking fee or market loss adjustment applies to verified manufacturing defects. We reserve the right to deny a claim if inspection determines the item was damaged after delivery or is not in the condition originally shipped.
+              Upon confirming the defect at our facility, we will ship a replacement or issue a full refund, your choice. No restocking fee or market loss adjustment applies to verified manufacturing defects. We reserve the right to deny a claim if inspection determines the item was damaged after delivery or is not in the condition originally shipped.
             </p>
           </PolicyBlock>
         </section>

@@ -1,6 +1,6 @@
 /**
- * Estimate a screen's true physical pixel density — CSS px per physical
- * millimetre — WITHOUT asking the shopper to do anything.
+ * Estimate a screen's true physical pixel density. CSS px per physical
+ * millimetre. WITHOUT asking the shopper to do anything.
  *
  * The card-calibration overlay is exact but high-friction. For most visitors we
  * can get within a few percent automatically from the device's own metrics, so
@@ -16,12 +16,12 @@
  *          CSS px      = physicalPixels / devicePixelRatio.
  *
  * So the whole job is inferring the device's real PPI:
- *   • Android — Chrome derives devicePixelRatio from a 160-dpi baseline, so one
+ *   • Android. Chrome derives devicePixelRatio from a 160-dpi baseline, so one
  *     CSS px ≈ 1/160 inch on essentially every Android. pxPerMm ≈ 6.30, flat.
- *   • iPhone  — a small, fixed catalogue. Nearly all Face-ID models are ~459 PPI
+ *   • iPhone, a small, fixed catalogue. Nearly all Face-ID models are ~459 PPI
  *     at DPR 3; classic 4.7"/XR are 326 at DPR 2. A tiny table nails it.
- *   • iPad    — ~264 PPI (DPR 2); a couple of minis at 326.
- *   • Mac Retina / desktop — progressively less certain; the monitor's real DPI
+ *   • iPad, ~264 PPI (DPR 2); a couple of minis at 326.
+ *   • Mac Retina / desktop, progressively less certain; the monitor's real DPI
  *     can't be read, so we return a best-guess at low confidence and lean on the
  *     card. (Plain DPR-1 desktops fall back to the CSS-spec 96 dpi.)
  */
@@ -35,7 +35,7 @@ export type ScaleEstimate = {
   pxPerMm: number;
   dpr: number;
   confidence: ScaleConfidence;
-  /** Short, human label of how we got it — handy for debugging / copy. */
+  /** Short, human label of how we got it, handy for debugging / copy. */
   basis: string;
 };
 
@@ -46,14 +46,14 @@ export type ScaleEstimate = {
  * the heuristic below, which is correct for the bulk of the line-up.
  */
 const IPHONE_PPI: Record<string, number> = {
-  // Classic 4.7" Touch-ID (6/7/8/SE2/SE3) and 5/5S/SE1 — 326 @ DPR2.
+  // Classic 4.7" Touch-ID (6/7/8/SE2/SE3) and 5/5S/SE1, 326 @ DPR2.
   '320x2': 326,
   '375x2': 326,
-  // XR / 11 — 6.1" LCD, 326 @ DPR2.
+  // XR / 11, 6.1" LCD, 326 @ DPR2.
   '414x2': 326,
-  // mini (12 mini / 13 mini) — unusually dense, 476 @ DPR3.
+  // mini (12 mini / 13 mini), unusually dense, 476 @ DPR3.
   '360x3': 476,
-  // Plus LCD (6+/7+/8+) — downsampled, ~401 @ DPR3.
+  // Plus LCD (6+/7+/8+), downsampled, ~401 @ DPR3.
   '414x3': 401,
 };
 
@@ -123,7 +123,7 @@ export function estimatePxPerMm(): ScaleEstimate | null {
   }
 
   // ── Plain desktop: the monitor's real DPI is unknowable. Fall back to the
-  //    CSS-spec 96 dpi (1 CSS px = 1/96 in). Often wrong — the card overlay is
+  //    CSS-spec 96 dpi (1 CSS px = 1/96 in). Often wrong, the card overlay is
   //    the honest fix here, which is why confidence is low. ──
   return {pxPerMm: 96 / MM_PER_IN, dpr, confidence: 'low', basis: 'css-default-96dpi'};
 }

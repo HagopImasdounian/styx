@@ -14,7 +14,7 @@ export function GoldTicker() {
   const rootData = useRouteLoaderData<RootLoader>('root');
   const goldData = (rootData as any)?.goldData;
 
-  // No real data — don't show the ticker at all
+  // No real data, don't show the ticker at all
   if (!goldData?.spotPerOz) return null;
 
   const spot: number = goldData.spotPerOz;
@@ -62,7 +62,7 @@ export function GoldTicker() {
         overflow: 'hidden',
       }}
     >
-      {/* Live indicator — softened (no pulse glow) when showing a fallback price */}
+      {/* Live indicator, softened (no pulse glow) when showing a fallback price */}
       <div style={{display: 'flex', alignItems: 'center', gap: 8, flex: '0 0 auto'}}>
         <span
           style={{

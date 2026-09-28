@@ -57,7 +57,9 @@ export function StyxFooter({collections = []}: {collections?: CollectionNode[]})
       heading: 'The House',
       links: [
         {label: 'Our Story', to: '/about'},
+        {label: 'The Lore', to: '/lore'},
         {label: 'The Journal', to: '/journal'},
+        {label: 'Buyback', to: '/buyback'},
         {label: 'Customize', to: '/customize'},
       ],
     },
@@ -119,7 +121,7 @@ export function StyxFooter({collections = []}: {collections?: CollectionNode[]})
               style={{
                 height: 40,
                 width: 'auto',
-                // Dark-ink logo asset on a dark footer — render it bone-white.
+                // Dark-ink logo asset on a dark footer, render it bone-white.
                 filter: 'brightness(0) invert(1)',
                 opacity: 0.92,
               }}

@@ -3,7 +3,7 @@ import {StyxLabel} from './StyxLabel';
 import {StyxProductCard} from './StyxProductCard';
 
 /**
- * Shared "row of product cards" section — one block, reused everywhere a PDP
+ * Shared "row of product cards" section, one block, reused everywhere a PDP
  * shows a grid of related products (You Might Also Like, Recently Viewed, …).
  * Renders the same <StyxProductCard> in the same 4-up grid so every such
  * section lines up identically. Returns null when there's nothing to show.

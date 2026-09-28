@@ -51,7 +51,7 @@ export const meta = ({matches}: MetaArgs<typeof loader>) => {
 };
 
 /** "17 designs", "1 design", or "100+ designs" when the fetch cap was hit.
- * "Designs" (products), deliberately not "pieces" — collection pages count
+ * "Designs" (products), deliberately not "pieces", collection pages count
  * color-split cards, so the same collection shows a higher "pieces" number. */
 function designCount(n: number, cap = 100) {
   if (n >= cap) return `${cap}+ designs`;
@@ -165,7 +165,7 @@ export default function CollectionsIndex() {
 
       {/* Chain families grid */}
       <section className="styx-ci-families" style={{padding: '40px 56px 48px'}}>
-        {/* "Collections" is the page's eyebrow — the old full-height hero is gone */}
+        {/* "Collections" is the page's eyebrow, the old full-height hero is gone */}
         <div
           style={{
             display: 'flex',
@@ -434,7 +434,7 @@ const COLLECTIONS_QUERY = `#graphql
         title
         handle
         description
-        # ids only — rendered as the per-collection piece count (capped at 100)
+        # ids only, rendered as the per-collection piece count (capped at 100)
         products(first: 100) {
           nodes {
             id

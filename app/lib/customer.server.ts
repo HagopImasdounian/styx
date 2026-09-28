@@ -29,7 +29,7 @@ export function requireCustomerAccount(
 
 /**
  * Logs the customer out. Lives here (not in the logout route) because route
- * files may not re-export helpers that touch `.server` modules — the React
+ * files may not re-export helpers that touch `.server` modules, the React
  * Router compiler refuses to split them.
  */
 export async function doLogout(context: AppLoadContext) {

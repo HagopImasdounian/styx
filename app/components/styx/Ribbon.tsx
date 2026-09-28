@@ -1,7 +1,7 @@
 import {STYX, FONT} from './constants';
 
 const ITEMS = [
-  'Solid gold · 10k & 14k',
+  'Real karat gold · 10K & 14K',
   'Every piece weighed & tested',
   'Transparent pricing',
   'Launch: 1g free per $2k spent',

@@ -17,7 +17,7 @@ export const meta = ({data}: MetaArgs<typeof loader>) => {
     title: 'About',
     titleTemplate: '%s | STYX Gold',
     description:
-      'Three generations and fifty years in the gold trade. The story behind STYX — solid gold chains priced honestly from the London fix.',
+      'Three generations and fifty years in the gold trade. The story behind STYX: real karat gold chains priced honestly from the London fix.',
     url: data?.url,
   });
 };
@@ -135,14 +135,14 @@ export default function About() {
                 }}
               >
                 <p data-reveal="" style={{margin: 0}}>
-                  It starts with an uncle who still works the way goldsmiths did a century ago.
+                  It starts with our uncle who still works the way goldsmiths did a century ago.
                   Carving wax models by hand under a single lamp. Casting in a crucible he's
                   used for thirty years. Setting stones with tools older than most of his
                   apprentices. He doesn't use CAD. He doesn't need to. His hands remember
                   what the software is still trying to learn.
                 </p>
                 <p data-reveal="" style={{margin: 0}}>
-                  On the other side of the family — one of the largest wholesale jewelry
+                  On the other side of the family: one of the largest wholesale jewelry
                   operations in Canada. Not a boutique. Not a brand. The kind of business
                   that supplies the businesses. The one the retailers call when they need
                   volume, when they need it right, and when they need to trust the assay.
@@ -153,7 +153,7 @@ export default function About() {
                   We grew up between these two worlds. The craftsman's bench
                   and the wholesaler's vault. We watched our uncle turn raw metal into
                   art, and we watched the family move tonnage across borders. We learned
-                  what gold costs — actually costs — before we learned what retail meant.
+                  what gold costs, actually costs, before we learned what retail meant.
                 </p>
               </div>
             </div>
@@ -201,7 +201,7 @@ export default function About() {
             <p data-reveal="" style={{margin: 0}}>
               Gold is a commodity. It trades around the clock on live markets, and
               there's nothing mysterious about what it costs. And yet the jewelry
-              industry has been built on that mystery — hiding margins behind "retail
+              industry has been built on that mystery, hiding margins behind "retail
               price" and hoping you don't ask questions. The typical markup? Eight to
               twelve times what the gold is worth.
             </p>
@@ -221,8 +221,59 @@ export default function About() {
         </div>
       </section>
 
-      {/* Values Grid */}
+      {/* The Future: expansion */}
       <section style={{background: STYX.paper}}>
+        <div
+          style={{
+            maxWidth: 900,
+            margin: '0 auto',
+            padding: '100px 56px',
+          }}
+          className="styx-about-future"
+        >
+          <StyxLabel>What's Next</StyxLabel>
+          <h2
+            data-reveal=""
+            style={{
+              fontFamily: FONT.cinzel,
+              fontSize: 32,
+              fontWeight: 400,
+              textTransform: 'uppercase',
+              letterSpacing: '0.04em',
+              color: STYX.ink,
+              margin: '12px 0 32px',
+            }}
+          >
+            Crossing the Border
+          </h2>
+          <div
+            style={{
+              fontFamily: FONT.inter,
+              fontSize: 16,
+              lineHeight: 1.8,
+              color: STYX.graphite,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 24,
+              maxWidth: 720,
+            }}
+          >
+            <p data-reveal="" style={{margin: 0}}>
+              We've spent fifty years building one of Canada's most trusted wholesale
+              gold operations. Now we're taking that knowledge, and those prices, south.
+              Styx is how our family enters the American market: not as another luxury brand,
+              but as the source.
+            </p>
+            <p data-reveal="" style={{margin: 0}}>
+              We don't need to convince you gold is valuable. You already know.
+              We just need to show you what it should actually cost.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Values Grid */}
+      <section>
         <div
           style={{
             maxWidth: 1440,
@@ -264,12 +315,12 @@ export default function About() {
               {
                 num: 'II',
                 title: 'Solid & Hollow Gold',
-                body: "Solid for investment and longevity. Hollow for lighter everyday wear. Both are real karat gold — no plating, no gold-fill, no imitations. Choose the construction that suits you.",
+                body: "Solid for investment and longevity. Hollow for lighter everyday wear. Both are real karat gold: no plating, no gold-fill, no imitations. Choose the construction that suits you.",
               },
               {
                 num: 'III',
                 title: 'Wholesale Pricing',
-                body: "We price based on our wholesale cost — not retail markups. Our family buys gold at prices most brands can't access. That advantage goes directly to you.",
+                body: "We price based on our wholesale cost, not retail markups. Our family buys gold at prices most brands can't access. That advantage goes directly to you.",
               },
               {
                 num: 'IV',
@@ -336,57 +387,6 @@ export default function About() {
         </div>
       </section>
 
-      {/* The Future — expansion */}
-      <section>
-        <div
-          style={{
-            maxWidth: 900,
-            margin: '0 auto',
-            padding: '100px 56px',
-          }}
-          className="styx-about-future"
-        >
-          <StyxLabel>What's Next</StyxLabel>
-          <h2
-            data-reveal=""
-            style={{
-              fontFamily: FONT.cinzel,
-              fontSize: 32,
-              fontWeight: 400,
-              textTransform: 'uppercase',
-              letterSpacing: '0.04em',
-              color: STYX.ink,
-              margin: '12px 0 32px',
-            }}
-          >
-            Crossing the Border
-          </h2>
-          <div
-            style={{
-              fontFamily: FONT.inter,
-              fontSize: 16,
-              lineHeight: 1.8,
-              color: STYX.graphite,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 24,
-              maxWidth: 720,
-            }}
-          >
-            <p data-reveal="" style={{margin: 0}}>
-              We've spent fifty years building one of Canada's most trusted wholesale
-              gold operations. Now we're taking that knowledge — and those prices — south.
-              Styx is how our family enters the American market: not as another luxury brand,
-              but as the source.
-            </p>
-            <p data-reveal="" style={{margin: 0}}>
-              We don't need to convince you gold is valuable. You already know.
-              We just need to show you what it should actually cost.
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* CTA Banner */}
       <section style={{background: STYX.taupe, color: STYX.bone}}>
         <div
@@ -426,7 +426,7 @@ export default function About() {
                 maxWidth: 600,
               }}
             >
-              We're real people who know gold. Ask us anything — about a piece,
+              We're real people who know gold. Ask us anything: about a piece,
               about pricing, about how chains are made. We'll give you a straight answer.
             </p>
           </div>

@@ -9,11 +9,11 @@ import type {
 } from '~/routes/api.predictive-search';
 
 /* ═══════════════════════════════════════════════════════════════
-   Predictive search — shared hook + desktop overlay + mobile input
+   Predictive search, shared hook + desktop overlay + mobile input
 
    Suggestions come from /api/predictive-search (Storefront API
    predictiveSearch). Submitting goes to /search?q= where the search
-   page itself pushes the GTM `search` event — nothing is tracked
+   page itself pushes the GTM `search` event, nothing is tracked
    per keystroke here.
    ═══════════════════════════════════════════════════════════════ */
 
@@ -83,9 +83,9 @@ function formatPrice(amount: string, currencyCode: string) {
   }
 }
 
-/** Uppercase, tracked placeholder — ::placeholder isn't reachable inline. */
+/** Uppercase, tracked placeholder, ::placeholder isn't reachable inline. */
 function PlaceholderStyle() {
-  // dangerouslySetInnerHTML (static, no user input) — text children of
+  // dangerouslySetInnerHTML (static, no user input), text children of
   // <style> get HTML-escaped by React (' → &#x27;), which breaks the CSS
   // in SSR output and causes a hydration text mismatch.
   return (
@@ -307,7 +307,7 @@ function ViewAllLink({
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Desktop overlay — bone dropdown under the header
+   Desktop overlay, bone dropdown under the header
    ═══════════════════════════════════════════════════════════════ */
 
 export function PredictiveSearchPanel({onClose}: {onClose: () => void}) {
@@ -405,7 +405,7 @@ export function PredictiveSearchPanel({onClose}: {onClose: () => void}) {
   return (
     <>
       <PlaceholderStyle />
-      {/* Scrim under the header — click closes */}
+      {/* Scrim under the header, click closes */}
       <div
         onClick={onClose}
         style={{
@@ -477,7 +477,7 @@ export function PredictiveSearchPanel({onClose}: {onClose: () => void}) {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={onKeyDown}
-              placeholder={'SEARCH CHAINS — TRY "6MM CUBAN"'}
+              placeholder={'SEARCH CHAINS. TRY "6MM CUBAN"'}
               role="combobox"
               aria-expanded={showResults}
               aria-controls="styx-predictive-listbox"
@@ -589,7 +589,7 @@ export function PredictiveSearchPanel({onClose}: {onClose: () => void}) {
                 padding: '18px 0 4px',
               }}
             >
-              Nothing in the vault matches &ldquo;{trimmed}&rdquo; — try a weave,
+              Nothing in the vault matches &ldquo;{trimmed}&rdquo;, try a weave,
               karat or width.
             </div>
           )}
@@ -602,7 +602,7 @@ export function PredictiveSearchPanel({onClose}: {onClose: () => void}) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Mobile menu search — sits at the top of the root pane
+   Mobile menu search, sits at the top of the root pane
    ═══════════════════════════════════════════════════════════════ */
 
 export function MobileMenuSearch({onClose}: {onClose: () => void}) {
@@ -653,7 +653,7 @@ export function MobileMenuSearch({onClose}: {onClose: () => void}) {
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder={'SEARCH CHAINS — TRY "6MM CUBAN"'}
+          placeholder={'SEARCH CHAINS. TRY "6MM CUBAN"'}
           aria-label="Search chains"
           autoComplete="off"
           spellCheck={false}
@@ -713,7 +713,7 @@ export function MobileMenuSearch({onClose}: {onClose: () => void}) {
                 paddingTop: 12,
               }}
             >
-              No matches — try a weave, karat or width.
+              No matches, try a weave, karat or width.
             </div>
           )}
           <ViewAllLink query={query} onClick={onClose} />

@@ -86,7 +86,7 @@ export default async function handleRequest(
       'https://fonts.gstatic.com',
       'data:',
     ],
-    // form-action does NOT fall back to default-src — without it, an injected
+    // form-action does NOT fall back to default-src, without it, an injected
     // form could submit anywhere. Checkout posts to the myshopify domain.
     formAction: [
       "'self'",
@@ -128,7 +128,7 @@ export default async function handleRequest(
   responseHeaders.set('X-Content-Type-Options', 'nosniff');
   responseHeaders.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   // No app code uses camera/microphone/geolocation (screen calibration is
-  // CSS/manual — no getUserMedia), so deny all three.
+  // CSS/manual, no getUserMedia), so deny all three.
   responseHeaders.set(
     'Permissions-Policy',
     'camera=(), microphone=(), geolocation=()',

@@ -1,7 +1,7 @@
 import {STYX, FONT} from './constants';
 import {CTAButton} from './CTAButton';
 
-// Shopify CDN serves resized variants via the `width` query param — the
+// Shopify CDN serves resized variants via the `width` query param; the
 // original is 1.38 MB; these keep the LCP image proportional to the viewport.
 // Exported so the homepage route can emit a <link rel="preload"> for the
 // LCP image with matching srcset/sizes.
@@ -21,7 +21,7 @@ export function HeroGallery() {
         alignItems: 'center',
       }}
     >
-      {/* Full-bleed background image (LCP — load eagerly at high priority) */}
+      {/* Full-bleed background image (LCP: load eagerly at high priority) */}
       <img
         className="styx-hero-image"
         src={`${HERO_IMAGE}&width=1600`}
@@ -83,7 +83,7 @@ export function HeroGallery() {
           position: 'relative',
           zIndex: 2,
           padding: '120px 56px 80px',
-          maxWidth: 640,
+          maxWidth: 760,
         }}
       >
         {/* Eyebrow */}
@@ -97,38 +97,38 @@ export function HeroGallery() {
             textTransform: 'uppercase',
           }}
         >
-          Launch · 1g of 24K gold free per $2,000 spent
+          Three generations in the gold trade
         </div>
 
         {/* Main heading */}
         <h1
           style={{
             fontFamily: FONT.cinzel,
-            fontSize: 72,
+            fontSize: 60,
             fontWeight: 400,
             letterSpacing: '0.03em',
             color: STYX.bone,
             textTransform: 'uppercase',
-            lineHeight: 0.95,
+            lineHeight: 1,
             margin: 0,
           }}
         >
-          Gold That
-          <br />
-          Holds Its
-          <br />
+          Gold, priced by{' '}
           <span
             style={{
               fontFamily: FONT.cormorant,
               fontStyle: 'italic',
               textTransform: 'none',
-              fontSize: '0.85em',
+              fontSize: '0.95em',
               fontWeight: 400,
               letterSpacing: '0.01em',
+              color: STYX.goldLight,
             }}
           >
             weight.
           </span>
+          <br />
+          Not by mystery.
         </h1>
 
         {/* Subtitle */}
@@ -137,14 +137,13 @@ export function HeroGallery() {
             fontFamily: FONT.cormorant,
             fontSize: 20,
             color: 'rgba(239,234,224,0.8)',
-            maxWidth: 440,
+            maxWidth: 470,
             lineHeight: 1.7,
             margin: '28px 0 40px',
           }}
         >
-          Solid gold chains priced at what they're worth — not what the industry
-          pretends. Every piece weighed, tested, and priced from the London fix.
-          No markup mystery.
+          Every chain shows you what its gold is worth today, what the craft
+          costs, and what we&apos;ll pay to buy it back.
         </p>
 
         {/* CTAs */}
@@ -154,24 +153,24 @@ export function HeroGallery() {
         >
           <CTAButton
             variant="primary"
-            href="/collections/chains"
+            href="/collections"
             style={{
               background: STYX.gold,
               borderColor: STYX.gold,
               color: STYX.ink,
             }}
           >
-            Shop Chains
+            Shop chains
           </CTAButton>
           <CTAButton
-            variant="ghost"
-            href="/about"
+            variant="gold"
+            href="#how-we-price"
             style={{
               color: STYX.bone,
-              borderBottomColor: 'rgba(239,234,224,0.45)',
+              borderColor: 'rgba(239,234,224,0.45)',
             }}
           >
-            Our Promise
+            How we price
           </CTAButton>
         </div>
       </div>

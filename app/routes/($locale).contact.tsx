@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {data, type LoaderFunctionArgs, type MetaArgs} from 'react-router';
+import {data, useSearchParams, type LoaderFunctionArgs, type MetaArgs} from 'react-router';
 import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel} from '~/components/styx';
 import {trackFormSubmit} from '~/components/GTMDataLayer';
 import {getStyxSeoMeta} from '~/lib/seo-meta';
@@ -18,7 +18,7 @@ export const meta = ({data}: MetaArgs<typeof loader>) => {
     title: 'Contact',
     titleTemplate: '%s | STYX Gold',
     description:
-      'Get in touch with STYX Gold — questions about chains, live pricing, custom orders, or anything else. Real people in the gold trade.',
+      'Get in touch with STYX Gold, questions about chains, live pricing, custom orders, or anything else. Real people in the gold trade.',
     url: data?.url,
   });
 };
@@ -27,6 +27,13 @@ export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  // /contact?subject=Buyback (linked from /buyback) preselects the dropdown.
+  const [searchParams] = useSearchParams();
+  const defaultSubject = (searchParams.get('subject') || '')
+    .toLowerCase()
+    .startsWith('buyback')
+    ? 'Buyback / Returns'
+    : undefined;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -377,6 +384,7 @@ export default function Contact() {
                 </label>
                 <select
                   name="subject"
+                  defaultValue={defaultSubject}
                   style={{
                     width: '100%',
                     padding: '14px 16px',

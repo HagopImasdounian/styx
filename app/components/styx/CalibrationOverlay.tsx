@@ -16,7 +16,7 @@ import {CARD_LONG_MM, CARD_SHORT_MM} from '~/lib/chains';
  * Landscape phones are short: a true-size card is ~300px tall, which leaves no
  * vertical room for controls stacked beneath it. So when the viewport is wide
  * but short we lay the controls BESIDE the card (there's plenty of horizontal
- * room) — letting the card grow all the way to true size while the slider and
+ * room), letting the card grow all the way to true size while the slider and
  * buttons stay reachable. Rendered once, globally, in PageLayout.
  */
 const SHORT_RATIO = CARD_SHORT_MM / CARD_LONG_MM; // ~0.63
@@ -26,7 +26,7 @@ const CTRL_COL = 230; // width reserved for the controls column in side-by-side 
 export function CalibrationOverlay() {
   const {isOpen, closeCalibration, setCalibration, pxPerMm} = useScaleCalibration();
 
-  // The card's LONG (85.6mm) edge, in CSS px — the thing being matched.
+  // The card's LONG (85.6mm) edge, in CSS px, the thing being matched.
   const [longPx, setLongPx] = useState(330);
   const [maxPx, setMaxPx] = useState(820);
   const [portrait, setPortrait] = useState(false);
@@ -49,7 +49,7 @@ export function CalibrationOverlay() {
     let cap: number;
     if (isPortrait) {
       // Long edge is vertical; height-bound, minus the controls below. The
-      // heading now lives INSIDE the card, so there's more room — the max must
+      // heading now lives INSIDE the card, so there's more room, the max must
       // comfortably EXCEED a real card (≈85.6mm) or it can't be matched.
       cap = Math.min(Math.round(vh - 240), 820);
     } else if (sideBySide) {
@@ -149,7 +149,7 @@ export function CalibrationOverlay() {
           touchAction: 'none',
         }}
       >
-        {/* Heading lives INSIDE the card cutout — keeps the instructions out of
+        {/* Heading lives INSIDE the card cutout, keeps the instructions out of
             the way of the controls (which otherwise get pushed off the bottom
             of a phone) and reads naturally as the face of the card. */}
         <div
@@ -227,7 +227,7 @@ export function CalibrationOverlay() {
         />
       </div>
 
-      {/* Controls — below the card (column) or beside it (landscape phone). */}
+      {/* Controls, below the card (column) or beside it (landscape phone). */}
       <div
         style={{
           display: 'flex',
@@ -240,8 +240,8 @@ export function CalibrationOverlay() {
         }}
       >
         {/* Size control. The slider is deliberately NARROWER than the screen so
-            both thumb extremes stay well inside the edges — your finger reaches
-            full/empty without sliding off the side of the phone — and a shorter
+            both thumb extremes stay well inside the edges, your finger reaches
+            full/empty without sliding off the side of the phone, and a shorter
             track means more size change per unit of travel (more sensitive). The
             fine +/– buttons are grouped in the centre, not pinned to the edges
             where they were hard to thumb. */}

@@ -36,7 +36,7 @@ export function ProductGallery({
                 // generic "Product image" repeated for every photo.
                 altText:
                   med.alt ||
-                  `${productTitle || 'Product'} — image ${i + 1} of ${media.length}`,
+                  `${productTitle || 'Product'}, image ${i + 1} of ${media.length}`,
               }
             : null;
 

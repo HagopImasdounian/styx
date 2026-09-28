@@ -18,7 +18,7 @@ export const meta = ({data}: MetaArgs<typeof loader>) => {
     title: 'FAQ',
     titleTemplate: '%s | STYX Gold',
     description:
-      'Frequently asked questions about STYX Gold chains — live pricing, shipping, returns, gold purity, and care.',
+      'Frequently asked questions about STYX Gold chains, live pricing, shipping, returns, gold purity, and care.',
     url: data?.url,
   });
 };
@@ -33,7 +33,7 @@ const FAQ_SECTIONS = [
       },
       {
         q: 'What is the difference between 10K, 14K, and 18K gold?',
-        a: '10K is 41.7% pure gold — the hardest wearing and most affordable. 14K is 58.5% pure — the sweet spot of durability and color. 18K is 75% pure — richer color, softer metal. All three are real, solid gold alloys.',
+        a: '10K is 41.7% pure gold, the hardest wearing and most affordable. 14K is 58.5% pure, the sweet spot of durability and color. 18K is 75% pure, richer color, softer metal. All three are real karat gold alloys.',
       },
       {
         q: 'What is the wire transfer discount?',
@@ -45,7 +45,7 @@ const FAQ_SECTIONS = [
       },
       {
         q: 'Is your gold plated or filled?',
-        a: 'No. Every piece is solid karat gold — cast or machine-made from real gold alloy. No plating, no gold-fill, no vermeil.',
+        a: 'No. Every piece is solid karat gold, cast or machine-made from real gold alloy. No plating, no gold-fill, no vermeil.',
       },
     ],
   },
@@ -54,7 +54,7 @@ const FAQ_SECTIONS = [
     items: [
       {
         q: 'What is the difference between solid and hollow chains?',
-        a: 'Solid chains are made from a continuous piece of gold alloy — they are denser, heavier, and more durable. Hollow chains use a tube construction to achieve a larger look at a fraction of the weight and cost. Both are real karat gold.',
+        a: 'Solid chains are made from a continuous piece of gold alloy, they are denser, heavier, and more durable. Hollow chains use a tube construction to achieve a larger look at a fraction of the weight and cost. Both are real karat gold.',
       },
       {
         q: 'Which should I choose?',
@@ -113,7 +113,7 @@ const FAQ_SECTIONS = [
       },
       {
         q: 'Can I shower or swim with my chain?',
-        a: 'Solid gold will not tarnish in water. However, chlorine and salt water can weaken solder joints over time. We recommend removing your chain before swimming. Showering is generally fine for solid chains.',
+        a: 'Gold will not tarnish in water. However, chlorine and salt water can weaken solder joints over time. We recommend removing your chain before swimming. Showering is generally fine for solid chains.',
       },
       {
         q: 'Will my chain tarnish?',

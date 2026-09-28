@@ -235,7 +235,7 @@ type ChainItem = {name: string; handle: string; popular?: boolean};
 type ChainGroup = {group: string; kicker: string; chains: ChainItem[]};
 
 // Chain cutout PNGs come from each collection's custom.cutout_image metafield
-// (set in Shopify admin) — loaded via the root collections query, no hardcoding.
+// (set in Shopify admin), loaded via the root collections query, no hardcoding.
 
 const CHAIN_TAXONOMY: ChainGroup[] = [
   {
@@ -327,15 +327,15 @@ const METALS = [
 const KARATS = [
   {
     label: '10k · Durable',
-    detail: '41.7% pure — hardest wearing',
+    detail: '41.7% pure, hardest wearing',
     handle: '10k-gold',
   },
   {
     label: '14k · Everyday',
-    detail: '58.5% pure — strong and versatile',
+    detail: '58.5% pure, strong and versatile',
     handle: '14k-gold',
   },
-  {label: '18k · Premium', detail: '75% pure — rich color', handle: '18k-gold'},
+  {label: '18k · Premium', detail: '75% pure: rich color', handle: '18k-gold'},
 ];
 
 const PRICE_TIERS = [
@@ -504,7 +504,7 @@ function MenuLink({
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   CHAINS mega-panel — the main event
+   CHAINS mega-panel, the main event
    ═══════════════════════════════════════════════════════════════ */
 
 function ChainCard({chain}: {chain: ChainItem}) {
@@ -687,7 +687,7 @@ function ChainsMegaPanel() {
         </MegaLink>
       </div>
 
-      {/* Chain grid — 9 columns for the 9 chain types */}
+      {/* Chain grid, 9 columns for the 9 chain types */}
       <div
         style={{
           display: 'grid',
@@ -704,7 +704,7 @@ function ChainsMegaPanel() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   COLLECTIONS mega-panel — fully dynamic from Shopify
+   COLLECTIONS mega-panel, fully dynamic from Shopify
    ═══════════════════════════════════════════════════════════════ */
 
 // Handles to exclude from the collections menu (shown elsewhere or internal)
@@ -1289,8 +1289,10 @@ const NAV_ITEMS: NavItem[] = [
   {label: 'Chains', to: '/collections/chains', mega: 'Chains'},
   {label: 'Collections', to: '/collections', mega: 'Collections'},
   {label: 'Customize', to: '/customize'},
+  {label: 'The Lore', to: '/lore'},
   {label: 'About', to: '/about'},
   {label: 'Journal', to: '/journal', mega: 'Journal'},
+  {label: 'Buyback', to: '/buyback'},
 ];
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1315,7 +1317,7 @@ function HamburgerIcon() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Mobile Menu — full-screen, slides from right, multi-layer
+   Mobile Menu, full-screen, slides from right, multi-layer
    ═══════════════════════════════════════════════════════════════ */
 
 function MobileMenu({
@@ -1419,9 +1421,11 @@ function MobileMenu({
     {numeral: 'I', label: 'Gold Chains', drillTo: 'Chains'},
     {numeral: 'II', label: 'Collections', drillTo: 'Collections'},
     {numeral: 'III', label: 'Customize', to: '/customize'},
-    {numeral: 'IV', label: 'About', to: '/about'},
-    {numeral: 'V', label: 'Journal', to: '/journal'},
-    {numeral: 'VI', label: 'Contact', to: '/contact'},
+    {numeral: 'IV', label: 'The Lore', to: '/lore'},
+    {numeral: 'V', label: 'About', to: '/about'},
+    {numeral: 'VI', label: 'Journal', to: '/journal'},
+    {numeral: 'VII', label: 'Buyback', to: '/buyback'},
+    {numeral: 'VIII', label: 'Contact', to: '/contact'},
   ];
 
   // Metal swatches link to their collections; ones without a published
@@ -1589,7 +1593,7 @@ function MobileMenu({
               flexDirection: 'column',
             }}
           >
-            {/* Search — debounced predictive suggestions; tapping a result
+            {/* Search, debounced predictive suggestions; tapping a result
                 navigates and closes the menu. The input participates in the
                 focus trap via the focusables() selector above. */}
             <MobileMenuSearch onClose={onClose} />
@@ -2424,7 +2428,7 @@ function StyxCartDrawer({open, onClose}: {open: boolean; onClose: () => void}) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Auto-hide header hook — hides on scroll down, shows on scroll up (mobile only)
+   Auto-hide header hook, hides on scroll down, shows on scroll up (mobile only)
    ═══════════════════════════════════════════════════════════════ */
 function useAutoHideHeader() {
   const [hidden, setHidden] = useState(false);
@@ -2474,7 +2478,7 @@ function AnnouncementBar() {
         setDismissed(true);
       }
     } catch {
-      // sessionStorage unavailable (private mode etc.) — bar stays visible.
+      // sessionStorage unavailable (private mode etc.), bar stays visible.
     }
   }, []);
 
@@ -2504,9 +2508,9 @@ function AnnouncementBar() {
         lineHeight: 1.4,
       }}
     >
-      <span style={{opacity: 0.5, marginRight: 10}}>&mdash;</span>
+      <span style={{opacity: 0.5, marginRight: 10}}>, </span>
       Launch Offer: Free 1g of 24K Gold with Every Order Over $2,000
-      <span style={{opacity: 0.5, marginLeft: 10}}>&mdash;</span>
+      <span style={{opacity: 0.5, marginLeft: 10}}>, </span>
       <button
         onClick={dismiss}
         aria-label="Dismiss"
@@ -2572,7 +2576,7 @@ export function StyxNav({
 
   // Publish the header's true height (announcement bar + nav) as a CSS var so
   // sticky elements below it (e.g. the collection filter toolbar) can pin
-  // exactly beneath the header — and slide up to the viewport top when the
+  // exactly beneath the header, and slide up to the viewport top when the
   // header auto-hides, instead of being overlapped when it returns.
   useEffect(() => {
     const el = headerRef.current;
@@ -2622,7 +2626,7 @@ export function StyxNav({
 
   return (
     <>
-      {/* Cart Drawer — Styx styled */}
+      {/* Cart Drawer. Styx styled */}
       <StyxCartDrawer open={isCartOpen} onClose={closeCart} />
 
       {/* Mobile Menu */}
@@ -2681,7 +2685,7 @@ export function StyxNav({
                     if (item.mega) {
                       setOpenMenu(item.mega);
                       // Mega panel and search overlay share the same slot
-                      // under the header — never show both.
+                      // under the header, never show both.
                       setSearchOpen(false);
                     }
                   }}
@@ -2719,6 +2723,7 @@ export function StyxNav({
                       position: 'relative',
                       paddingBottom: 4,
                       transition: 'color 0.2s',
+                      whiteSpace: 'nowrap',
                     }}
                   >
                     {item.label}
@@ -2836,7 +2841,7 @@ export function StyxNav({
             <WishlistNavIcon />
             <PrintListNavIcon />
             <CartCount openCart={openCart} />
-            {/* Mobile hamburger — hidden on desktop via CSS */}
+            {/* Mobile hamburger, hidden on desktop via CSS */}
             <button
               className="styx-nav-hamburger"
               onClick={openMobileMenu}

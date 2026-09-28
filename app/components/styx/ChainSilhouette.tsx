@@ -11,7 +11,7 @@ import {STYX} from './constants';
  *    down the window. Good for side-by-side width comparison (compare columns).
  *  - `horizontal`: chain runs left→right, thickness = height, tiles across the
  *    full width. Reads like laying the chain on a ruler and costs far less
- *    vertical space — used on the product page.
+ *    vertical space, used on the product page.
  *
  * On screen (px mode) we use a real photographic gold-chain tile so shoppers see
  * the actual metal at true size; print (mm mode) keeps the crisp black line-art
@@ -41,7 +41,7 @@ export function ChainSilhouette({
 }) {
   const px = pxPerMm != null;
   const horizontal = orientation === 'horizontal';
-  // The chain's TRUE dimension — its thickness.
+  // The chain's TRUE dimension, its thickness.
   const thickness = px ? `${widthMm * pxPerMm!}px` : `${widthMm}mm`;
   // Run length (the non-true axis): fills the container in horizontal mode.
   const runLen = px ? `${heightPx ?? 220}px` : heightCss ?? '90mm';

@@ -1,5 +1,5 @@
 import {data, type LoaderFunctionArgs, type MetaArgs} from 'react-router';
-import {useState} from 'react';
+import {useEffect, useMemo, useRef, useState} from 'react';
 
 import {Link} from '~/components/Link';
 import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel, Obol} from '~/components/styx';
@@ -31,21 +31,21 @@ const CUSTOM_OPTIONS = [
     icon: '⚓',
     title: 'Custom Clasp',
     subtitle: 'Lobster, box, toggle, or something entirely yours',
-    description: 'The clasp is the first thing you touch and the last thing you see. We can fabricate custom clasps in any style — from oversized lobster claws to hidden magnetic closures to hand-engraved box clasps with your initials.',
+    description: 'The clasp is the first thing you touch and the last thing you see. We can fabricate custom clasps in any style, from oversized lobster claws to hidden magnetic closures to hand-engraved box clasps with your initials.',
   },
   {
     id: 'diamonds',
     icon: '◆',
     title: 'Diamond Accents',
     subtitle: 'A little bit of diamonds never hurt nobody',
-    description: 'Set VS1/VS2 natural diamonds directly into your chain links, clasp, or a custom pendant bail. Micro-pave, channel-set, or bezel — we work with your vision and budget to add just the right amount of fire.',
+    description: 'Set VS1/VS2 natural diamonds directly into your chain links, clasp, or a custom pendant bail. Micro-pave, channel-set, or bezel, we work with your vision and budget to add just the right amount of fire.',
   },
   {
     id: 'length',
     icon: '↔',
     title: 'Bespoke Length',
     subtitle: 'Sized to your frame, not a factory default',
-    description: 'Standard lengths are 16" to 26". We can go shorter, longer, or anywhere in between — measured to your exact neck circumference for a perfect lay. Bracelets and anklets too.',
+    description: 'Standard lengths are 16" to 26". We can go shorter, longer, or anywhere in between, measured to your exact neck circumference for a perfect lay. Bracelets and anklets too.',
   },
   {
     id: 'width',
@@ -66,39 +66,148 @@ const CUSTOM_OPTIONS = [
     icon: '①',
     title: 'One of One',
     subtitle: 'Something that has never existed before',
-    description: 'If you have a design in mind — a sketch, a photo, a memory — we can bring it to life in solid gold. Our master jewelers have built everything from replica vintage chains to completely original link patterns. Start the conversation.',
+    description: 'If you have a design in mind, a sketch, a photo, a memory, we can bring it to life in solid gold. Our master jewelers have built everything from replica vintage chains to completely original link patterns. Start the conversation.',
   },
 ];
+
+// Client-side mirror of the limits enforced in api.customize-submit.
+const SKETCH_MAX_FILES = 3;
+const SKETCH_MAX_FILE_BYTES = 5 * 1024 * 1024;
+const SKETCH_MAX_TOTAL_BYTES = 12 * 1024 * 1024;
+const SKETCH_ALLOWED_TYPES = new Set([
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/heic',
+  'image/heif',
+]);
+const HEIC_EXT_RE = /\.(heic|heif)$/i;
+
+function formatBytes(bytes: number): string {
+  if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function isHeic(file: File): boolean {
+  const t = (file.type || '').toLowerCase();
+  return t === 'image/heic' || t === 'image/heif' || HEIC_EXT_RE.test(file.name);
+}
+
+function isAllowedImage(file: File): boolean {
+  const t = (file.type || '').toLowerCase();
+  if (SKETCH_ALLOWED_TYPES.has(t)) return true;
+  return (t === '' || t === 'application/octet-stream') && HEIC_EXT_RE.test(file.name);
+}
+
+/** Returns an error string, or null when the combined list is acceptable. */
+function validateSketches(files: File[]): string | null {
+  if (files.length > SKETCH_MAX_FILES) {
+    return `You can attach up to ${SKETCH_MAX_FILES} images.`;
+  }
+  let total = 0;
+  for (const f of files) {
+    if (!isAllowedImage(f)) {
+      return `"${f.name}" is not a supported image. Please use JPG, PNG, WebP, or HEIC.`;
+    }
+    if (f.size > SKETCH_MAX_FILE_BYTES) {
+      return `"${f.name}" is ${formatBytes(f.size)}. Each image must be 5 MB or smaller.`;
+    }
+    total += f.size;
+  }
+  if (total > SKETCH_MAX_TOTAL_BYTES) {
+    return `Your images total ${formatBytes(total)}. Together they must be 12 MB or smaller.`;
+  }
+  return null;
+}
 
 export default function Customize() {
   const [activeOption, setActiveOption] = useState<string | null>(null);
   const [formSent, setFormSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const [sketches, setSketches] = useState<File[]>([]);
+  const [sketchError, setSketchError] = useState<string | null>(null);
+  const [dragging, setDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Object URLs for thumbnails. HEIC does not render in most browsers, so
+  // those get a filename chip instead (null URL).
+  const previews = useMemo(
+    () =>
+      sketches.map((f) =>
+        isHeic(f) ? null : URL.createObjectURL(f),
+      ),
+    [sketches],
+  );
+  useEffect(() => {
+    return () => {
+      previews.forEach((u) => u && URL.revokeObjectURL(u));
+    };
+  }, [previews]);
+
+  const addSketches = (incoming: FileList | File[] | null) => {
+    if (!incoming) return;
+    const list = Array.from(incoming);
+    if (list.length === 0) return;
+    // Dedupe on name+size so re-picking the same photo does not double up.
+    const key = (f: File) => `${f.name}:${f.size}`;
+    const seen = new Set(sketches.map(key));
+    const merged = [...sketches, ...list.filter((f) => !seen.has(key(f)))];
+    const err = validateSketches(merged);
+    if (err) {
+      setSketchError(err);
+      return;
+    }
+    setSketchError(null);
+    setSketches(merged);
+  };
+
+  const removeSketch = (index: number) => {
+    setSketches((prev) => prev.filter((_, i) => i !== index));
+    setSketchError(null);
+  };
 
   const handleCommissionSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (submitting) return;
     const form = e.currentTarget;
-    const fd = new FormData(form);
-    const name = (fd.get('name') as string) || '';
-    const email = (fd.get('email') as string) || '';
 
-    const payload = {
-      formId: 'custom-commission',
-      formName: 'custom-commission',
-      name,
-      email,
-      phone: (fd.get('phone') as string) || undefined,
-      message: (fd.get('description') as string) || '',
-      fields: {
-        budget: (fd.get('budget') as string) || '',
-      },
-    };
+    const err = validateSketches(sketches);
+    if (err) {
+      setSketchError(err);
+      return;
+    }
+
+    const source = new FormData(form);
+    const name = (source.get('name') as string) || '';
+    const email = (source.get('email') as string) || '';
+    const fd = new FormData();
+    for (const field of ['name', 'email', 'phone', 'budget', 'description', 'website']) {
+      const v = source.get(field);
+      if (typeof v === 'string') fd.append(field, v);
+    }
+    sketches.forEach((f) => fd.append('sketches', f, f.name));
+
+    setSubmitting(true);
+    setSubmitError(null);
 
     try {
-      await fetch('/api/form-submit', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(payload),
-      });
+      // No Content-Type header: the browser sets the multipart boundary.
+      const res = await fetch('/api/customize-submit', {method: 'POST', body: fd});
+
+      if (!res.ok && res.status >= 400 && res.status < 500) {
+        // Validation or rate-limit problem the customer can act on.
+        let message = 'Something went wrong. Please check your details and try again.';
+        try {
+          const json = (await res.json()) as {error?: string};
+          if (json?.error) message = json.error;
+        } catch {
+          // fall through with the generic message
+        }
+        setSubmitError(message);
+        return;
+      }
 
       trackFormSubmit({
         formId: 'custom-commission',
@@ -106,10 +215,13 @@ export default function Customize() {
         email,
         name,
       });
-    } catch {
-      // Don't block the confirmation UI on email/webhook failure.
-    } finally {
       setFormSent(true);
+    } catch {
+      // Network failure or 5xx: do not block the confirmation UI on
+      // email/webhook delivery problems (matches the other forms).
+      setFormSent(true);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -165,7 +277,7 @@ export default function Customize() {
               maxWidth: 600,
             }}
           >
-            Every chain in our vault can be modified, and anything not in our vault can be built from scratch. Custom clasps, diamond settings, bespoke lengths, engravings, and true one-of-one pieces — all in solid gold.
+            Every chain in our vault can be modified, and anything not in our vault can be built from scratch. Custom clasps, diamond settings, bespoke lengths, engravings, and true one-of-one pieces, all in solid gold.
           </p>
         </div>
       </section>
@@ -283,9 +395,9 @@ export default function Customize() {
           </h2>
           <div style={{display: 'flex', flexDirection: 'column', gap: 0}}>
             {[
-              {step: '01', title: 'Tell Us What You Want', desc: 'Fill out the form below with as much detail as possible. Photos, sketches, references — anything helps. We respond within 24 hours.'},
-              {step: '02', title: 'We Quote It', desc: 'Our team prices the piece based on gold weight, labor, and any stone settings. You get a transparent breakdown — no hidden fees, no markups on materials.'},
-              {step: '03', title: 'You Approve', desc: 'Once you approve the quote, we collect a 50% deposit and begin fabrication. Timeline depends on complexity — typically 2 to 4 weeks.'},
+              {step: '01', title: 'Tell Us What You Want', desc: 'Fill out the form below with as much detail as possible. Photos, sketches, references: anything helps. We respond within 24 hours.'},
+              {step: '02', title: 'We Quote It', desc: 'Our team prices the piece based on gold weight, labor, and any stone settings. You get a transparent breakdown: no hidden fees, no markups on materials.'},
+              {step: '03', title: 'You Approve', desc: 'Once you approve the quote, we collect a 50% deposit and begin fabrication. Timeline depends on complexity: typically 2 to 4 weeks.'},
               {step: '04', title: 'We Deliver', desc: 'Final balance due on completion. Your piece ships fully insured with signature confirmation. Every custom piece includes a certificate of authenticity.'},
             ].map((item, i) => (
               <div
@@ -455,13 +567,179 @@ export default function Customize() {
                   name="description"
                   required
                   rows={5}
-                  placeholder="Describe your vision — chain type, width, length, karat, clasp style, diamond details, or anything else. Attach references if you have them."
+                  placeholder="Describe your vision: chain type, width, length, karat, clasp style, diamond details, or anything else. Add sketches or reference photos below if you have them."
                   style={{width: '100%', padding: '14px', border: `1px solid ${STYX.line}`, background: '#fff', fontFamily: FONT.cormorant, fontSize: 17, color: STYX.ink, outline: 'none', resize: 'vertical'}}
                 />
               </div>
 
+              {/* Sketches / references */}
+              <div>
+                <label
+                  htmlFor="customize-sketches"
+                  style={{fontFamily: FONT.cinzel, fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: STYX.silt, display: 'block', marginBottom: 6}}
+                >
+                  Sketches or references
+                </label>
+                <div
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Add sketches or reference images"
+                  onClick={() => fileInputRef.current?.click()}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      fileInputRef.current?.click();
+                    }
+                  }}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    if (!dragging) setDragging(true);
+                  }}
+                  onDragLeave={() => setDragging(false)}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setDragging(false);
+                    addSketches(e.dataTransfer?.files ?? null);
+                  }}
+                  style={{
+                    border: `1px dashed ${dragging ? STYX.gold : STYX.line}`,
+                    background: dragging ? STYX.paper : '#fff',
+                    padding: '22px 16px',
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    transition: 'border-color 0.2s, background 0.2s',
+                  }}
+                >
+                  <div style={{fontFamily: FONT.cormorant, fontSize: 17, color: STYX.ink}}>
+                    {sketches.length >= SKETCH_MAX_FILES
+                      ? 'Three images attached'
+                      : 'Drop images here or tap to choose'}
+                  </div>
+                  <div style={{fontFamily: FONT.inter, fontSize: 12, color: STYX.silt2, marginTop: 4}}>
+                    Up to 3 images, 5 MB each. Phone photos are fine.
+                  </div>
+                  <input
+                    ref={fileInputRef}
+                    id="customize-sketches"
+                    type="file"
+                    accept="image/*,.heic,.heif"
+                    multiple
+                    onClick={(e) => e.stopPropagation()}
+                    onChange={(e) => {
+                      addSketches(e.currentTarget.files);
+                      // Reset so choosing the same file again re-fires onChange.
+                      e.currentTarget.value = '';
+                    }}
+                    style={{display: 'none'}}
+                  />
+                </div>
+
+                {sketches.length > 0 && (
+                  <div style={{display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 10}}>
+                    {sketches.map((f, i) => {
+                      const url = previews[i];
+                      return (
+                        <div
+                          key={`${f.name}:${f.size}`}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 10,
+                            border: `1px solid ${STYX.line}`,
+                            background: STYX.paper,
+                            padding: 6,
+                            paddingRight: 8,
+                            maxWidth: '100%',
+                          }}
+                        >
+                          {url ? (
+                            <img
+                              src={url}
+                              alt=""
+                              width={56}
+                              height={56}
+                              style={{width: 56, height: 56, objectFit: 'cover', display: 'block', background: '#fff'}}
+                            />
+                          ) : (
+                            <div
+                              aria-hidden="true"
+                              style={{
+                                width: 56,
+                                height: 56,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                background: '#fff',
+                                border: `1px solid ${STYX.line}`,
+                                fontFamily: FONT.mono,
+                                fontSize: 10,
+                                letterSpacing: '0.1em',
+                                color: STYX.silt2,
+                              }}
+                            >
+                              HEIC
+                            </div>
+                          )}
+                          <div style={{minWidth: 0}}>
+                            <div
+                              title={f.name}
+                              style={{fontFamily: FONT.inter, fontSize: 12, color: STYX.ink, maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}
+                            >
+                              {f.name}
+                            </div>
+                            <div style={{fontFamily: FONT.inter, fontSize: 11, color: STYX.silt2}}>
+                              {formatBytes(f.size)}
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            aria-label={`Remove ${f.name}`}
+                            onClick={() => removeSketch(i)}
+                            style={{
+                              border: 'none',
+                              background: 'transparent',
+                              color: STYX.silt,
+                              cursor: 'pointer',
+                              fontFamily: FONT.inter,
+                              fontSize: 16,
+                              lineHeight: 1,
+                              padding: '6px 4px',
+                            }}
+                          >
+                            &times;
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {sketchError && (
+                  <div role="alert" style={{fontFamily: FONT.inter, fontSize: 13, color: STYX.taupe, marginTop: 8}}>
+                    {sketchError}
+                  </div>
+                )}
+              </div>
+
+              {/* Honeypot: hidden from humans, bots tend to fill it. */}
+              <input
+                type="text"
+                name="website"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                style={{position: 'absolute', left: -9999, width: 1, height: 1, opacity: 0}}
+              />
+
+              {submitError && (
+                <div role="alert" style={{fontFamily: FONT.inter, fontSize: 13, color: STYX.taupe}}>
+                  {submitError}
+                </div>
+              )}
+
               <button
                 type="submit"
+                disabled={submitting}
                 style={{
                   padding: '18px 24px',
                   background: STYX.ink,
@@ -471,11 +749,16 @@ export default function Customize() {
                   letterSpacing: '0.2em',
                   textTransform: 'uppercase',
                   border: 'none',
-                  cursor: 'pointer',
-                  transition: 'background 0.2s',
+                  cursor: submitting ? 'wait' : 'pointer',
+                  opacity: submitting ? 0.7 : 1,
+                  transition: 'background 0.2s, opacity 0.2s',
                 }}
               >
-                Submit Request
+                {submitting
+                  ? sketches.length > 0
+                    ? 'Uploading'
+                    : 'Sending'
+                  : 'Submit Request'}
               </button>
             </form>
           )}

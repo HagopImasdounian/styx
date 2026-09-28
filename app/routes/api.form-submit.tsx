@@ -10,7 +10,7 @@ type FormPayload = {
   subject?: string;
   message?: string;
   fields?: Record<string, unknown>;
-  // Honeypot fields — real users never fill these (hidden inputs).
+  // Honeypot fields, real users never fill these (hidden inputs).
   _gotcha?: string;
   website?: string;
   // Make-an-Offer specific fields
@@ -41,7 +41,7 @@ export async function action({request, context}: ActionFunctionArgs) {
     return data({error: 'Method not allowed'}, {status: 405});
   }
 
-  // Each submission triggers outbound email from our verified domain —
+  // Each submission triggers outbound email from our verified domain
   // throttle per IP so bots can't burn quota or spam arbitrary inboxes.
   if (
     !(await rateLimitAllow(request, 'form-submit', {
@@ -50,7 +50,7 @@ export async function action({request, context}: ActionFunctionArgs) {
     }))
   ) {
     return data(
-      {error: 'Too many requests — please try again in a few minutes'},
+      {error: 'Too many requests, please try again in a few minutes'},
       {status: 429},
     );
   }
@@ -69,7 +69,7 @@ export async function action({request, context}: ActionFunctionArgs) {
     return data({error: 'Invalid request body'}, {status: 400});
   }
 
-  // Honeypot: hidden fields humans never fill. If present, silently discard —
+  // Honeypot: hidden fields humans never fill. If present, silently discard
   // pretend success so bots don't learn they were caught.
   const gotcha = body._gotcha ?? body.website;
   if (typeof gotcha === 'string' && gotcha.trim() !== '') {
@@ -130,7 +130,7 @@ export async function action({request, context}: ActionFunctionArgs) {
 
   // 2. Send emails via Resend HTTP API
   if (resendKey) {
-    // 2a. OWNER notification — every submitted field, scannable summary.
+    // 2a. OWNER notification, every submitted field, scannable summary.
     try {
       const res = await fetch('https://api.resend.com/emails', {
         method: 'POST',
@@ -155,7 +155,7 @@ export async function action({request, context}: ActionFunctionArgs) {
       }`;
     }
 
-    // 2b. CUSTOMER confirmation — short, branded, no internal info.
+    // 2b. CUSTOMER confirmation, short, branded, no internal info.
     try {
       const res = await fetch('https://api.resend.com/emails', {
         method: 'POST',
@@ -178,7 +178,7 @@ export async function action({request, context}: ActionFunctionArgs) {
     }
   }
 
-  // Keep delivery details server-side only — never leak webhook/notification
+  // Keep delivery details server-side only, never leak webhook/notification
   // internals to the client. Log failures for operator visibility.
   const failures = Object.entries(results).filter(
     ([, status]) => status !== 'sent',
@@ -295,11 +295,11 @@ function buildOwnerEmail(friendlyFormName: string, data: FormPayload): string {
 }
 
 function getConfirmationSubject(formName?: string): string {
-  if (formName === 'newsletter') return 'Welcome to The Dispatch — STYX Gold';
+  if (formName === 'newsletter') return 'Welcome to The Dispatch. STYX Gold';
   if (formName === 'make-offer' || formName === 'offer') {
-    return "We've received your offer — STYX Gold";
+    return "We've received your offer. STYX Gold";
   }
-  return "We've received your inquiry — STYX Gold";
+  return "We've received your inquiry. STYX Gold";
 }
 
 function buildConfirmationEmail(formName?: string, name?: string): string {
@@ -354,7 +354,7 @@ function wrapBrandedEmail(heading: string, innerHtml: string): string {
                 )}</h1>
                 <div style="font-family:Helvetica,Arial,sans-serif;font-size:15px;line-height:1.7;color:#cfc8b8">
                   ${innerHtml}
-                  <p style="margin:24px 0 0;color:#cfc8b8">— The STYX Gold Team</p>
+                  <p style="margin:24px 0 0;color:#cfc8b8">, The STYX Gold Team</p>
                 </div>
               </td>
             </tr>

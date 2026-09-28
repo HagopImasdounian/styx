@@ -53,7 +53,7 @@ export function PageLayout({children, layout}: LayoutProps) {
   const revealRef = useReveal<HTMLElement>(pathname);
 
   // Styx pages (home, collections, products) handle their own
-  // GoldTicker + StyxNav + StyxFooter — skip the default chrome.
+  // GoldTicker + StyxNav + StyxFooter, skip the default chrome.
   if (isStyxPage) {
     return (
       <CompareProvider>

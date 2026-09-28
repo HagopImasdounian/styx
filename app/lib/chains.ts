@@ -1,5 +1,5 @@
 /**
- * Shared chain-weave helpers — keep the family list in ONE place so the
+ * Shared chain-weave helpers, keep the family list in ONE place so the
  * print sheet, product page and compare page can't drift apart.
  */
 

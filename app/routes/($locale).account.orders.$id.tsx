@@ -11,9 +11,9 @@ import {CUSTOMER_ORDER_QUERY} from '~/graphql/customer-account/CustomerOrderQuer
 import {requireCustomerAccount} from '~/lib/customer.server';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  // Private order detail — never index.
+  // Private order detail, never index.
   return [
-    {title: `Order ${data?.order?.name} — STYX Gold`},
+    {title: `Order ${data?.order?.name}: STYX Gold`},
     {name: 'robots', content: 'noindex, nofollow'},
   ];
 };

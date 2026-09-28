@@ -33,7 +33,7 @@ export function NotFound({type = 'page'}: {type?: string}) {
         }}
       />
 
-      {/* Text — upper area above the chain */}
+      {/* Text, upper area above the chain */}
       <div
         style={{
           position: 'absolute',
@@ -72,7 +72,7 @@ export function NotFound({type = 'page'}: {type?: string}) {
             color: STYX.graphite,
             margin: 0,
             fontStyle: 'italic',
-            // On short viewports this line lands on the chain image —
+            // On short viewports this line lands on the chain image
             // a bone glow keeps the dark italic legible either way.
             textShadow:
               '0 1px 20px rgba(239,234,224,0.95), 0 0 8px rgba(239,234,224,0.85)',

@@ -3,7 +3,7 @@ import {useEffect, useState} from 'react';
 import {ProductGridSection} from './ProductGridSection';
 
 /**
- * Recently Viewed strip — localStorage-backed, no context needed.
+ * Recently Viewed strip, localStorage-backed, no context needed.
  *
  * SSR-safe by the same pattern as WishlistContext: initial state is empty
  * (server renders nothing), entries hydrate in a useEffect after mount.
@@ -19,7 +19,7 @@ export type RecentlyViewedEntry = {
   title: string;
   /** Product image URL (variant or first media image). */
   image?: string | null;
-  /** Raw price amount, e.g. "1234.56" — formatted at render time. */
+  /** Raw price amount, e.g. "1234.56", formatted at render time. */
   price?: string | null;
   /** ISO currency code for the price, defaults to USD. */
   currencyCode?: string | null;
@@ -57,14 +57,14 @@ export function recordRecentlyViewed(entry: RecentlyViewedEntry) {
     const next = [entry, ...rest].slice(0, MAX_ENTRIES);
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
   } catch {
-    // Storage unavailable (private mode, quota) — viewing history is optional.
+    // Storage unavailable (private mode, quota), viewing history is optional.
   }
 }
 
 export function RecentlyViewed({
   excludeHandle,
 }: {
-  /** Current product handle — excluded from its own strip. */
+  /** Current product handle, excluded from its own strip. */
   excludeHandle?: string;
 }) {
   // Full ProductCard data, fetched for the stored handles so this strip renders

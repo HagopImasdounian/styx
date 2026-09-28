@@ -77,14 +77,14 @@ export function ActualSizeImagePanel({
           }}
         >
           {source === 'calibration'
-            ? `${mm} mm — true size, calibrated to your screen`
+            ? `${mm} mm, true size, calibrated to your screen`
             : source === 'manual'
-            ? `${mm} mm — true size, adjusted to your screen`
-            : `${mm} mm — true size on your screen`}
+            ? `${mm} mm, true size, adjusted to your screen`
+            : `${mm} mm, true size on your screen`}
         </div>
       </div>
 
-      {/* Horizontal so the chain's true thickness is its HEIGHT — reads like
+      {/* Horizontal so the chain's true thickness is its HEIGHT, reads like
           laying the chain on a ruler in front of you. */}
       <div
         style={{
@@ -123,8 +123,8 @@ export function ActualSizeImagePanel({
             }}
           >
             {staleZoom
-              ? 'Your browser zoom changed — re-check against a card'
-              : 'Estimated for this screen — fine-tune below or check with a card'}
+              ? 'Your browser zoom changed, re-check against a card'
+              : 'Estimated for this screen, fine-tune below or check with a card'}
           </div>
         )}
 
@@ -180,7 +180,7 @@ export function ActualSizeImagePanel({
         </div>
       </div>
 
-      {/* Same overlay button as the photo, now reading "Actual size: on" —
+      {/* Same overlay button as the photo, now reading "Actual size: on"
           tapping it swaps the photo back. */}
       <ActualSizeImageButton />
     </div>

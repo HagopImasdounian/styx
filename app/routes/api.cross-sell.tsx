@@ -9,8 +9,8 @@ export const headers = routeHeaders;
 /**
  * GET /api/cross-sell?handle=<product-handle>
  *
- * Returns the strict counterpart piece for a product — same weave, same
- * width, same karat, opposite product type (chain <-> bracelet) — or null.
+ * Returns the strict counterpart piece for a product, same weave, same
+ * width, same karat, opposite product type (chain <-> bracelet), or null.
  *
  * The matching logic mirrors getCrossSellProducts in
  * ($locale).products.$productHandle.tsx (the PDP's "Pairs Well With"
@@ -51,7 +51,7 @@ export async function loader({
       {headers: {'Cache-Control': CACHE_SHORT}},
     );
   } catch {
-    // The upsell is an enhancement — never surface a Storefront hiccup.
+    // The upsell is an enhancement, never surface a Storefront hiccup.
     return data<CrossSellResponse>(
       {product: null},
       {headers: {'Cache-Control': 'no-store'}},
@@ -88,7 +88,7 @@ async function findCounterpart(
   const myKarat = parseKarat(product.karat?.value, styleTitle);
 
   // Without a known style, width, and karat we can't guarantee a true
-  // counterpart — suggest nothing rather than something unrelated.
+  // counterpart, suggest nothing rather than something unrelated.
   if (!style || myMm == null || myKarat == null) return null;
   if (myType !== 'chain' && myType !== 'bracelet') return null;
 
@@ -110,7 +110,7 @@ async function findCounterpart(
       const cStyle = normalize(parseStyle(c.chain_style?.value, c.tags, c.title));
       if (cStyle !== myStyle) return false;
       const cMm = parseMm(c.chain_thickness?.value) ?? parseMm(c.title);
-      // Titles round to the nearest 0.5mm — absorb that, but never let a
+      // Titles round to the nearest 0.5mm, absorb that, but never let a
       // genuinely different width (0.5mm+ apart) through.
       if (cMm == null || Math.abs(cMm - myMm) > 0.25) return false;
       const cKarat = parseKarat(c.chain_karat?.value, c.title);
@@ -150,7 +150,7 @@ async function findCounterpart(
   };
 }
 
-/* ─────────── Matching helpers — kept in lockstep with the PDP ─────────── */
+/* ─────────── Matching helpers, kept in lockstep with the PDP ─────────── */
 
 /** Parse first mm number out of a thickness string or title. */
 function parseMm(value?: string | null): number | null {
@@ -285,5 +285,5 @@ const COUNTERPART_QUERY = `#graphql
   }
 ` as const;
 
-// Resource route — intentionally no default export so GET requests return
+// Resource route, intentionally no default export so GET requests return
 // the loader's JSON directly instead of a rendered HTML document.

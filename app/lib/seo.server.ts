@@ -31,7 +31,7 @@ function defaultOgImage(url: Request['url']): SeoConfig['media'] {
     return {
       type: 'image',
       url: new URL(DEFAULT_OG_IMAGE_PATH, new URL(url).origin).toString(),
-      altText: 'STYX Gold — solid gold chains',
+      altText: 'STYX Gold: real gold chains',
     };
   } catch {
     return undefined;
@@ -50,7 +50,7 @@ function root({
     titleTemplate: '%s | STYX Gold',
     description: truncate(
       shop?.description ??
-        'Solid gold chains — 10K & 14K — priced transparently from the London fix. No markup mystery.',
+        'Gold chains in 10K and 14K, priced transparently from the London fix. No markup mystery.',
     ),
     handle: '@styxgold',
     url,
@@ -66,7 +66,7 @@ function root({
       noFollow: false,
     },
     // Site-wide structured data (WebSite/SearchAction + JewelryStore) is
-    // emitted only on the homepage — see home() below — so it isn't
+    // emitted only on the homepage, see home() below, so it isn't
     // duplicated on every page.
   };
 }
@@ -74,10 +74,10 @@ function root({
 function home({url}: {url: Request['url']}): SeoConfig {
   const origin = new URL(url).origin;
   return {
-    title: 'Solid Gold Chains — Priced Honestly',
+    title: 'Gold Chains, Priced Honestly',
     titleTemplate: '%s | STYX Gold',
     description:
-      'Solid gold chains — 10K & 14K — weighed, tested, and priced from the London fix. No markup mystery. Three generations in the gold trade.',
+      'Gold chains in 10K and 14K, weighed, tested, and priced from the London fix. No markup mystery. Three generations in the gold trade.',
     url,
     media: defaultOgImage(url),
     robots: {
@@ -88,9 +88,9 @@ function home({url}: {url: Request['url']}): SeoConfig {
       {
         '@context': 'https://schema.org',
         '@type': 'WebPage',
-        name: 'STYX Gold — Solid Gold Chains',
+        name: 'STYX Gold: Gold Chains',
         description:
-          'Solid gold chains priced transparently from the London fix.',
+          'Gold chains priced transparently from the London fix.',
         url,
       },
       {
@@ -111,7 +111,7 @@ function home({url}: {url: Request['url']}): SeoConfig {
         '@type': 'JewelryStore',
         name: 'STYX Gold',
         description:
-          'Three generations in the gold trade. Solid gold chains — 10K & 14K — priced from the London fix.',
+          'Three generations in the gold trade. Gold chains in 10K and 14K, priced from the London fix.',
         url: origin,
         logo: `${origin}/images/styx-logo-512.png`,
         image: `${origin}/images/styx-logo-512.png`,
@@ -137,7 +137,7 @@ type ProductRequiredFields = Pick<
       'sku' | 'price' | 'selectedOptions' | 'availableForSale'
     >
   >;
-  /** Product media (when queried) — used to emit every product image. */
+  /** Product media (when queried), used to emit every product image. */
   media?: null | {
     nodes?: Array<{image?: null | Partial<Image>} | null> | null;
   };
@@ -216,7 +216,7 @@ function productJsonLd({
     {
       '@context': 'https://schema.org',
       '@type': 'Product',
-      // Always the storefront brand — product.vendor carries the supplier
+      // Always the storefront brand, product.vendor carries the supplier
       // name, which must never appear in public structured data.
       brand: {
         '@type': 'Brand',
@@ -251,7 +251,7 @@ function product({
   const title = product?.seo?.title || product?.title;
 
   // Prefer Shopify's authored SEO description. Otherwise generate one from the
-  // product body — strip HTML and any leftover spec lines, then truncate at a
+  // product body, strip HTML and any leftover spec lines, then truncate at a
   // word boundary. No templated "Shop the … in …" prefix (it duplicated the
   // title and ate the character budget).
   const description = truncate(
@@ -344,8 +344,8 @@ function collection({
       collection?.seo?.description || cleanText(collection?.description ?? ''),
     ) ||
     `Shop ${
-      collection?.title ?? 'solid gold chains'
-    } — 10K & 14K, priced transparently from the London fix. No markup mystery.`;
+      collection?.title ?? 'gold chains'
+    }, 10K & 14K, priced transparently from the London fix. No markup mystery.`;
 
   return {
     title,
@@ -409,7 +409,7 @@ function listCollections({
     title: 'Collections',
     titleTemplate: '%s | STYX Gold',
     description:
-      'Browse all solid gold chain collections — by style, weight, karat, and metal.',
+      'Browse all gold chain collections by style, weight, karat, and metal.',
     url,
     jsonLd: collectionsJsonLd({collections, url}),
   };

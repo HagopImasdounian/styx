@@ -7,7 +7,7 @@ import {formatUSD} from '~/lib/gold';
 /**
  * Cross-sell "Pairs Well With" module shown below the add-to-cart flow on the
  * product page. The route loader is strict: it only returns the true
- * counterpart piece — same weave, same thickness, same karat, opposite product
+ * counterpart piece, same weave, same thickness, same karat, opposite product
  * type (chain <-> bracelet). Renders nothing when there is no exact match.
  */
 

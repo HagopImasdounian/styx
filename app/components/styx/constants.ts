@@ -27,7 +27,7 @@ export type CollectionNode = {
     width?: number | null;
     height?: number | null;
   } | null;
-  /** custom.cutout_image metafield — transparent chain PNG (mega menu, weave strip) */
+  /** custom.cutout_image metafield, transparent chain PNG (mega menu, weave strip) */
   cutout?: {
     reference?: {
       image?: {url: string} | null;
@@ -36,7 +36,7 @@ export type CollectionNode = {
 };
 
 /** Cutout PNG URL for a collection, if set in Shopify (custom.cutout_image).
- * Always request a resized variant — the originals are 100–300 KB PNGs, and
+ * Always request a resized variant, the originals are 100–300 KB PNGs, and
  * Shopify's CDN serves a ~20 KB AVIF/WebP once a `width` param is present.
  * 400px covers the largest rendered size (mega-menu card ≈ 130–200 CSS px)
  * at 2–3× DPR. */

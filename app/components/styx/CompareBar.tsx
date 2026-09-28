@@ -7,7 +7,7 @@ export function CompareBar() {
   const {pathname} = useLocation();
 
   if (items.length === 0) return null;
-  // Redundant on the compare page itself — you're already there.
+  // Redundant on the compare page itself, you're already there.
   if (pathname.includes('/compare')) return null;
 
   return (
@@ -43,7 +43,7 @@ export function CompareBar() {
           {items.length}/4
         </span>
 
-        {/* Chips — hidden on mobile, there's never room for names */}
+        {/* Chips, hidden on mobile, there's never room for names */}
         <div className="styx-compare-chips" style={{display: 'flex', gap: 8, overflow: 'hidden', flexWrap: 'wrap'}}>
           {items.map((item) => (
             <div

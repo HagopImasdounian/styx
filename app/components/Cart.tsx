@@ -73,7 +73,7 @@ export function CartDetails({
   cart: CartType | null;
   onClose?: () => void;
 }) {
-  // Gold spot price for the drawer strip — from the root loader's goldData.
+  // Gold spot price for the drawer strip, from the root loader's goldData.
   const rootData = useRouteLoaderData<RootLoader>('root');
   const goldData = (rootData as any)?.goldData as
     | {spotPerOz?: number; isFallback?: boolean}
@@ -88,7 +88,7 @@ export function CartDetails({
   if (layout === 'drawer') {
     return (
       <div style={{display: 'flex', flexDirection: 'column', height: '100%'}}>
-        {/* Spot price strip — live gold spot from the root loader. When the
+        {/* Spot price strip, live gold spot from the root loader. When the
             price is a fallback (API unreachable), drop the pulse + "Live". */}
         {spotPerOz ? (
           <div
@@ -143,7 +143,7 @@ export function CartDetails({
         {/* Cart items */}
         <div style={{flex: 1, overflowY: 'auto'}}>
           <CartLines lines={cart?.lines} layout={layout} />
-          {/* "Complete the set" — strict counterpart upsell (chain <-> bracelet) */}
+          {/* "Complete the set", strict counterpart upsell (chain <-> bracelet) */}
           <CompleteTheSetRow cart={cart} onClose={onClose} />
         </div>
 
@@ -480,16 +480,16 @@ function StyxCartLineItem({line}: {line: CartLine}) {
 /**
  * Session cache for counterpart lookups, keyed by product handle. The drawer
  * unmounts on close (headlessui Transition), so without this every open would
- * refetch. `null` (no counterpart) is cached too — it's the common answer.
+ * refetch. `null` (no counterpart) is cached too, it's the common answer.
  */
 const counterpartCache = new Map<string, CrossSellCounterpart | null>();
 
 /**
- * "Complete the set" — one slim receipt-style row between the line items and
+ * "Complete the set", one slim receipt-style row between the line items and
  * the summary. Looks up the strict counterpart (same weave/karat/width,
  * opposite type) for the FIRST cart line via /api/cross-sell. Renders nothing
  * when there's no counterpart, the counterpart is already in the cart, it's
- * sold out, or the fetch fails — silence over noise.
+ * sold out, or the fetch fails, silence over noise.
  *
  * No add-to-cart button by design: length must be chosen on the PDP (price
  * varies by length), so the row links there instead.
@@ -511,7 +511,7 @@ function CompleteTheSetRow({
   );
 
   // Fetch once per first-line product (on drawer open / first line change),
-  // never on unrelated re-renders — the [firstHandle] dependency plus the
+  // never on unrelated re-renders, the [firstHandle] dependency plus the
   // module-level cache take care of both.
   useEffect(() => {
     if (!firstHandle) {
@@ -533,7 +533,7 @@ function CompleteTheSetRow({
         if (!cancelled) setCounterpart(product);
       })
       .catch(() => {
-        // Silent — the upsell is an enhancement, never an error state.
+        // Silent, the upsell is an enhancement, never an error state.
         if (!cancelled) setCounterpart(null);
       });
     return () => {
@@ -763,7 +763,7 @@ function GoldOfferProgress({cost}: {cost: CartCost}) {
     }
   };
 
-  // Past the first gram and barely into the next band — lead with what's
+  // Past the first gram and barely into the next band, lead with what's
   // earned; only nudge toward the next gram once meaningfully close (>50%).
   const showNextGramNudge = gramsEarned > 0 && progress > 0.5;
 
@@ -792,7 +792,7 @@ function GoldOfferProgress({cost}: {cost: CartCost}) {
         }}
       >
         {gramsEarned === 0 ? (
-          <>Add {fmt(remaining)} to receive 1g of 24K gold — on the house.</>
+          <>Add {fmt(remaining)} to receive 1g of 24K gold, on the house.</>
         ) : (
           <>
             You&rsquo;ve earned {gramsEarned}g of 24K gold.
@@ -805,7 +805,7 @@ function GoldOfferProgress({cost}: {cost: CartCost}) {
           </>
         )}
       </div>
-      {/* Thin 2px bar — gold fill on a faint ink track */}
+      {/* Thin 2px bar, gold fill on a faint ink track */}
       <div
         role="progressbar"
         aria-valuemin={0}
@@ -849,7 +849,7 @@ function CartSummary({
           background: STYX.bone,
         }}
       >
-        {/* Gold-offer progress — sits above the receipt lines */}
+        {/* Gold-offer progress, sits above the receipt lines */}
         <GoldOfferProgress cost={cost} />
 
         {/* Receipt lines */}
@@ -966,7 +966,7 @@ function CartSummary({
             lineHeight: 1.45,
           }}
         >
-          Paying by wire transfer? Save 4% off the card price — wire pricing is
+          Paying by wire transfer? Save 4% off the card price, wire pricing is
           shown on every product page.
         </div>
 
@@ -1048,7 +1048,7 @@ export function CartEmpty({
 }) {
   if (hidden) return null;
 
-  // Same treatment for drawer and page — the page previously fell through to
+  // Same treatment for drawer and page, the page previously fell through to
   // an unstyled fallback that broke the site's visual language.
   return (
     <div

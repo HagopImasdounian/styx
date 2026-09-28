@@ -4,7 +4,7 @@ import {rateLimitAllow} from '~/lib/rate-limit.server';
 /**
  * Sends a customer's wishlist to an email address via Resend.
  *
- * This route owns its own Resend call on purpose — the shared form-submit email
+ * This route owns its own Resend call on purpose, the shared form-submit email
  * code is maintained separately, so we instantiate everything locally here to
  * avoid collisions. Uses the same verified from-address as api.form-submit.tsx.
  *
@@ -13,7 +13,7 @@ import {rateLimitAllow} from '~/lib/rate-limit.server';
  *   note:   optional short message from the sender (capped at 500 chars)
  *   items:  [{ handle, title, length?, price?, currency?, image? }] (max 8)
  *
- * Security: the link origin is ALWAYS derived from the request URL — any
+ * Security: the link origin is ALWAYS derived from the request URL, any
  * client-supplied `origin` is ignored (phishing-link injection vector).
  * Item handles must match /^[a-z0-9-]+$/ and images must be hosted on
  * cdn.shopify.com; anything else is dropped.
@@ -77,7 +77,7 @@ export async function action({request, context}: ActionFunctionArgs) {
     return data({error: 'Method not allowed'}, {status: 405});
   }
 
-  // Sends email to an arbitrary recipient — throttle per IP (spam vector).
+  // Sends email to an arbitrary recipient, throttle per IP (spam vector).
   if (
     !(await rateLimitAllow(request, 'wishlist-email', {
       limit: 3,
@@ -85,7 +85,7 @@ export async function action({request, context}: ActionFunctionArgs) {
     }))
   ) {
     return data(
-      {error: 'Too many requests — please try again in a few minutes'},
+      {error: 'Too many requests, please try again in a few minutes'},
       {status: 429},
     );
   }
@@ -125,7 +125,7 @@ export async function action({request, context}: ActionFunctionArgs) {
     return data({error: 'Email is not configured'}, {status: 500});
   }
 
-  // SECURITY: never trust a client-supplied origin — derive it from the request.
+  // SECURITY: never trust a client-supplied origin, derive it from the request.
   const origin = new URL(request.url).origin.replace(/\/$/, '');
 
   try {
@@ -247,7 +247,7 @@ function buildWishlistEmail(
       <tr>
         <td style="padding:32px 32px 0;text-align:center">
           <div style="font-family:'Times New Roman',serif;font-size:22px;letter-spacing:0.2em;color:#1a1815;text-transform:uppercase">STYX</div>
-          <div style="font-family:'Courier New',monospace;font-size:9px;letter-spacing:0.18em;color:#8A6A32;text-transform:uppercase;margin-top:6px">Solid Gold Chains</div>
+          <div style="font-family:'Courier New',monospace;font-size:9px;letter-spacing:0.18em;color:#8A6A32;text-transform:uppercase;margin-top:6px">Gold Chains</div>
         </td>
       </tr>
       <tr>
@@ -271,7 +271,7 @@ function buildWishlistEmail(
       </tr>
       <tr>
         <td style="padding:0 32px 32px;text-align:center;border-top:1px solid #e5e0d6">
-          <p style="font-family:'Courier New',monospace;font-size:9px;letter-spacing:0.1em;color:#8a8378;text-transform:uppercase;margin:20px 0 0">Solid gold, every weight in the open — styxgold.com</p>
+          <p style="font-family:'Courier New',monospace;font-size:9px;letter-spacing:0.1em;color:#8a8378;text-transform:uppercase;margin:20px 0 0">Real gold, every weight in the open, styxgold.com</p>
         </td>
       </tr>
     </table>

@@ -1,7 +1,7 @@
 import {type LoaderFunctionArgs} from 'react-router';
 
 /**
- * llms.txt — a concise, factual site summary for AI crawlers and assistants
+ * llms.txt, a concise, factual site summary for AI crawlers and assistants
  * (https://llmstxt.org). Served like robots.txt, cached for a day.
  */
 export const loader = ({request}: LoaderFunctionArgs) => {
@@ -46,6 +46,8 @@ Key facts:
 - [The Journal](${origin}/journal): researched histories of each chain weave and gold itself
 - [FAQ](${origin}/faq)
 - [About / Our promise](${origin}/about)
+- [The Buyback](${origin}/buyback): 5-year buyback of every piece at its gold value
+- [The Lore](${origin}/lore): Charon, the obol, and why gold is the only thing that crosses over
 - [Shipping & returns](${origin}/shipping)
 
 ## Data

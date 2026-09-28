@@ -80,7 +80,7 @@ export function StyxProductCard({
   product: ProductNode;
   variantIndex?: number;
   index?: number;
-  /** Set when the card renders below the fold (e.g. homepage FeaturedRow) —
+  /** Set when the card renders below the fold (e.g. homepage FeaturedRow)
    * keeps its images lazy so they don't compete with the page's LCP image. */
   belowFold?: boolean;
 }) {
@@ -89,7 +89,7 @@ export function StyxProductCard({
   const [isHovered, setIsHovered] = useState(false);
   if (!variant) return null;
 
-  // First 4 cards are above the fold on collection grids — load them eagerly,
+  // First 4 cards are above the fold on collection grids, load them eagerly,
   // and give the very first card top fetch priority (lowercase attribute:
   // React 18 doesn't forward camelCase fetchPriority to the DOM).
   const eager = !belowFold && index < 4;
@@ -116,7 +116,7 @@ export function StyxProductCard({
   const colorLabel = colorOpt?.value || null;
   const swatchHex = colorLabel ? COLOR_HEX[colorLabel] : null;
 
-  // Weight — use displayed variant's weight, or fall back to any variant with weight
+  // Weight, use displayed variant's weight, or fall back to any variant with weight
   const rawWeight =
     variant.weight != null && variant.weight > 0
       ? {w: variant.weight, u: variant.weightUnit}
@@ -148,7 +148,7 @@ export function StyxProductCard({
       )
     : product.variants.nodes;
 
-  // $0 variants are catalog errors — never let them set a "from $0.00" floor.
+  // $0 variants are catalog errors, never let them set a "from $0.00" floor.
   const prices = sameColorVariants
     .map((v) => parseFloat(v.price.amount))
     .filter((p) => p > 0);
@@ -212,7 +212,7 @@ export function StyxProductCard({
           />
         )}
 
-        {/* Color swatch — top left */}
+        {/* Color swatch, top left */}
         {swatchHex && (
           <div
             style={{
@@ -253,7 +253,7 @@ export function StyxProductCard({
           </div>
         )}
 
-        {/* Pure gold badge — bottom right */}
+        {/* Pure gold badge, bottom right */}
         {pureGold != null && (
           <div
             style={{
@@ -287,7 +287,7 @@ export function StyxProductCard({
           }}
         />
 
-        {/* Compare + print-size buttons — top right */}
+        {/* Compare + print-size buttons, top right */}
         <div
           style={{
             position: 'absolute',
@@ -324,7 +324,7 @@ export function StyxProductCard({
           {colorLabel && (
             <span style={{color: STYX.silt, fontWeight: 400}}>
               {' '}
-              &mdash; {colorLabel}
+              {colorLabel}
             </span>
           )}
         </div>

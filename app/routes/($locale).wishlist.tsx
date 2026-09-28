@@ -48,13 +48,13 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
 
 export const meta: MetaFunction = () => {
   return [
-    {title: 'Wishlist — STYX Gold'},
+    {title: 'Wishlist: STYX Gold'},
     {
       name: 'description',
       content:
-        'Your saved gold chains, kept in one place — live priced from the London fix so you always see the real number.',
+        'Your saved gold chains, kept in one place, live priced from the London fix so you always see the real number.',
     },
-    // Personal, query-param-driven list — not meant for the search index.
+    // Personal, query-param-driven list, not meant for the search index.
     {name: 'robots', content: 'noindex, follow'},
   ];
 };
@@ -84,7 +84,7 @@ export default function WishlistPage() {
     const chosen = handles.slice(0, MAX_COMPARE);
     if (chosen.length === 0) return;
     compare.clear();
-    // length is null here — wishlist saves the whole product, and Compare
+    // length is null here, wishlist saves the whole product, and Compare
     // scopes to the full length range when length is omitted.
     chosen.forEach((h) => compare.add(h, null));
     const param = encodeCompareItems(chosen.map((h) => ({handle: h, length: null})));
@@ -436,7 +436,7 @@ export default function WishlistPage() {
                           {p.title}
                         </div>
                         {price && (
-                          // goldDeep (not gold) — 4.5:1 contrast on light paper
+                          // goldDeep (not gold), 4.5:1 contrast on light paper
                           <div style={{fontFamily: FONT.mono, fontSize: 12, color: STYX.goldDeep, marginTop: 6}}>
                             <Money data={price} />
                           </div>
@@ -495,7 +495,7 @@ const emailInputStyle: React.CSSProperties = {
   boxSizing: 'border-box',
 };
 
-// NOTE: deliberately no `#graphql` tag — this fragment is interpolated into a
+// NOTE: deliberately no `#graphql` tag, this fragment is interpolated into a
 // dynamically-built aliased query in the loader, so codegen must skip it.
 const WISHLIST_PRODUCT_FRAGMENT = `
   fragment WishlistProduct on Product {

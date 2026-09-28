@@ -14,7 +14,7 @@ export const meta = ({data}: MetaArgs<typeof loader>) => {
     title: 'Terms & Conditions',
     titleTemplate: '%s | STYX Gold',
     description:
-      'The terms and conditions for buying solid gold chains from STYX Gold — pricing, ordering, payment, and your rights. Read before purchasing.',
+      'The terms and conditions for buying gold chains from STYX Gold, pricing, ordering, payment, and your rights. Read before purchasing.',
     url: data?.url,
   });
 };
@@ -290,7 +290,7 @@ export default function Terms() {
           <section>
             <SectionHeading number="13" title="Intellectual Property" />
             <Paragraph>
-              All content on this Site — including text, images, logos, product descriptions, journal articles, and design — is the property of Styx Gold and protected by applicable copyright and trademark laws. You may not reproduce, distribute, or create derivative works from any content without written permission.
+              All content on this Site, including text, images, logos, product descriptions, journal articles, and design, is the property of Styx Gold and protected by applicable copyright and trademark laws. You may not reproduce, distribute, or create derivative works from any content without written permission.
             </Paragraph>
           </section>
 

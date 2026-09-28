@@ -45,13 +45,13 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
 
 export const meta: MetaFunction = () => {
   return [
-    {title: 'Print List — STYX Gold'},
+    {title: 'Print List: STYX Gold'},
     {
       name: 'description',
       content:
-        'A printable, true-to-scale spec sheet of your selected gold chains — widths shown at actual physical size.',
+        'A printable, true-to-scale spec sheet of your selected gold chains, widths shown at actual physical size.',
     },
-    // Transient, query-param-driven utility page — keep it out of the index.
+    // Transient, query-param-driven utility page, keep it out of the index.
     {name: 'robots', content: 'noindex, follow'},
   ];
 };
@@ -284,7 +284,7 @@ export default function PrintListPage() {
           </h1>
           <p style={{fontFamily: FONT.cormorant, fontSize: 18, color: STYX.silt, margin: '0 auto 32px', maxWidth: 520}}>
             Add chains to your print list, then print this page at actual size to see and
-            measure each width in real life — perfect for comparing a 3&nbsp;mm to a
+            measure each width in real life, perfect for comparing a 3&nbsp;mm to a
             5.4&nbsp;mm side by side.
           </p>
           <div style={{marginBottom: 28}}>{searchBox}</div>
@@ -327,7 +327,7 @@ export default function PrintListPage() {
             Print to Scale
           </h1>
           <p style={{fontFamily: FONT.mono, fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: STYX.silt}}>
-            {specs.length} chain{specs.length !== 1 ? 's' : ''} — measured in real millimeters &amp; inches
+            {specs.length} chain{specs.length !== 1 ? 's' : ''}, measured in real millimeters &amp; inches
           </p>
         </div>
 
@@ -338,7 +338,7 @@ export default function PrintListPage() {
           </div>
           <ol style={{margin: 0, paddingLeft: 18, fontFamily: FONT.inter, fontSize: 13, color: STYX.silt, lineHeight: 1.7}}>
             <li>In the print dialog set <strong>Scale</strong> to <strong>100%</strong> (“Actual Size”). Do <strong>not</strong> use “Fit to page”.</li>
-            <li><strong>No ruler?</strong> Lay a credit card or ID over the <strong>dashed card box</strong> at the bottom — if it fills the outline edge&#8209;to&#8209;edge, your scale is correct. Or check the <strong>ruler</strong> beside it reads <strong>6&nbsp;cm / 2&nbsp;in</strong> exactly. If either is off, adjust the scale and reprint.</li>
+            <li><strong>No ruler?</strong> Lay a credit card or ID over the <strong>dashed card box</strong> at the bottom, if it fills the outline edge&#8209;to&#8209;edge, your scale is correct. Or check the <strong>ruler</strong> beside it reads <strong>6&nbsp;cm / 2&nbsp;in</strong> exactly. If either is off, adjust the scale and reprint.</li>
           </ol>
         </div>
 
@@ -401,7 +401,7 @@ export default function PrintListPage() {
         {/* Search to add any item (screen only) */}
         <div className="pl-no-print">{searchBox}</div>
 
-        {/* View at actual size on this screen (card-calibrated) — screen only.
+        {/* View at actual size on this screen (card-calibrated), screen only.
             The printed sheet stays true on paper; this is for shoppers without
             a printer who want real size right on their phone or laptop. */}
         <div className="pl-no-print" style={{maxWidth: 820, margin: '0 auto 40px', textAlign: 'center'}}>
@@ -437,7 +437,7 @@ export default function PrintListPage() {
               <div style={{marginTop: 16, display: 'flex', flexDirection: 'column', gap: 6}}>
                 {staleZoom && (
                   <span style={{fontFamily: FONT.mono, fontSize: 9, letterSpacing: '0.08em', textTransform: 'uppercase', color: STYX.goldDeep}}>
-                    Your browser zoom changed — re-calibrate for accuracy
+                    Your browser zoom changed, re-calibrate for accuracy
                   </span>
                 )}
                 <button
@@ -513,7 +513,7 @@ export default function PrintListPage() {
 
         {/* ───── The printable sheet (also shown on screen, actual size) ───── */}
         <div className="pl-no-print" style={{fontFamily: FONT.mono, fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase', color: STYX.silt, textAlign: 'center', marginBottom: 10}}>
-          Preview — shown at actual size (scroll sideways on small screens)
+          Preview, shown at actual size (scroll sideways on small screens)
         </div>
 
         <div className="pl-sheet-scroll"><div className="pl-sheet">
@@ -521,12 +521,12 @@ export default function PrintListPage() {
           <div className="pl-head">
             <img className="pl-logo" src={STYX_PRINT_LOGO} alt="STYX" />
             <div className="pl-head-right">
-              <div className="pl-brand">STYX · Solid Gold Chains</div>
+              <div className="pl-brand">STYX · Gold Chains</div>
               <div className="pl-url">{SITE_URL}</div>
             </div>
           </div>
           <div className="pl-subhead">
-            <span className="pl-subhead-title">Chain Widths — Actual Size</span>
+            <span className="pl-subhead-title">Chain Widths. Actual Size</span>
             <span className="pl-subhead-note">Print at 100% to keep scale</span>
           </div>
 
@@ -578,7 +578,7 @@ export default function PrintListPage() {
             slightly from this illustration.
           </div>
 
-          {/* Scale check — a thin dual ruler for those who have one, plus a
+          {/* Scale check, a thin dual ruler for those who have one, plus a
               card cutout for those who don't. */}
           <div className="pl-scale">
             {/* One hairline ruler: inches above the line, centimetres below. */}
@@ -626,7 +626,7 @@ export default function PrintListPage() {
 
           {/* Branded footer */}
           <div className="pl-foot">
-            <span>Solid gold, every weight in the open — {SITE_URL}</span>
+            <span>Real gold, every weight in the open, {SITE_URL}</span>
             <span>STYX</span>
           </div>
         </div></div>
@@ -773,7 +773,7 @@ const PRINT_CSS = `
   letter-spacing: 0.08em;
 }
 
-/* Mobile: the A4 sheet preview is wider than the screen — let it scroll
+/* Mobile: the A4 sheet preview is wider than the screen, let it scroll
    sideways (true size preserved) instead of overflowing the page. */
 @media screen and (max-width: 760px) {
   .pl-shell { padding: 28px 14px 96px !important; }

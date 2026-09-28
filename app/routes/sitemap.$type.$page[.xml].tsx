@@ -11,7 +11,7 @@ export async function loader({
     storefront,
     request,
     params,
-    // Single active market (en-US, no path prefix) — no hreflang alternates.
+    // Single active market (en-US, no path prefix), no hreflang alternates.
     locales: [],
     getLink: ({type, baseUrl, handle}) => {
       // Make sure the generated sitemap urls are reflective of the routes

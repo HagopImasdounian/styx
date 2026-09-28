@@ -43,7 +43,7 @@ const INLINE_CSS = import.meta.env.PROD;
 /**
  * Preload href for a self-hosted font. Oxygen's deploy pipeline rewrites
  * url(/fonts/…) inside built CSS to deploy-specific CDN URLs
- * (cdn.shopify.com/oxygen-v2/…/fonts/…) — but it does NOT rewrite hardcoded
+ * (cdn.shopify.com/oxygen-v2/…/fonts/…), but it does NOT rewrite hardcoded
  * hrefs in links(). A hardcoded '/fonts/…' preload therefore fetches a URL
  * the CSS never requests: the font downloads twice and the browser logs
  * "preloaded but not used". Reading the URL out of the (already rewritten)
@@ -101,7 +101,7 @@ export const links: LinksFunction = () => {
       href: 'https://shop.app',
     },
     // Above-the-fold fonts: preload so text paints without a font swap.
-    // (Self-hosted in /public/fonts — see app/styles/fonts.css.)
+    // (Self-hosted in /public/fonts, see app/styles/fonts.css.)
     {
       rel: 'preload',
       href: preloadFontHref('cinzel-var.woff2'),
@@ -116,9 +116,9 @@ export const links: LinksFunction = () => {
       type: 'font/woff2',
       crossOrigin: 'anonymous' as const,
     },
-    // (inter-var deliberately not preloaded — it isn't used above the fold,
+    // (inter-var deliberately not preloaded, it isn't used above the fold,
     // and the browser flags the wasted preload.)
-    // fonts.css is inlined as a <style> in production (see Layout) — only
+    // fonts.css is inlined as a <style> in production (see Layout), only
     // link it in dev.
     ...(INLINE_CSS
       ? []
@@ -157,7 +157,7 @@ async function loadCriticalData({request, context}: LoaderFunctionArgs) {
     // 1.2s timeout + last-good-price cache in gold.server.ts, so the
     // worst-case TTFB tax is small and it never throws.
     getGoldData(),
-    // Menu imagery is non-essential — a Storefront API blip here must not 500
+    // Menu imagery is non-essential, a Storefront API blip here must not 500
     // every page. Nav renders without weave tiles when this is null.
     context.storefront
       .query(ROOT_COLLECTIONS_QUERY, {
@@ -175,7 +175,7 @@ async function loadCriticalData({request, context}: LoaderFunctionArgs) {
   const {storefront, env} = context;
 
   // Distinct presentment currencies Shopify can actually serve. Drives whether
-  // the USD/CAD toggle renders — it stays hidden until CAD is enabled in Markets.
+  // the USD/CAD toggle renders, it stays hidden until CAD is enabled in Markets.
   const availableCurrencies = Array.from(
     new Set(
       (localizationData?.localization?.availableCountries || [])
@@ -220,7 +220,7 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
 }
 
 export const meta = ({data}: MetaArgs<typeof loader>) => {
-  // data is undefined when the loader threw (error-boundary render) — fall
+  // data is undefined when the loader threw (error-boundary render), fall
   // back to a static title instead of crashing meta generation.
   if (!data?.seo) return [{title: 'STYX Gold'}];
   return getSeoMeta(data.seo as SeoConfig);
@@ -253,7 +253,7 @@ function Layout({children}: {children?: React.ReactNode}) {
         <Meta />
         <Links />
         {/* Google Tag Manager is injected post-hydration from GTMDataLayer.tsx
-            (loadGTM) — an inline bootstrap here mutated the <head> before
+            (loadGTM), an inline bootstrap here mutated the <head> before
             React hydrated and caused hydration mismatches. */}
       </head>
       <body>

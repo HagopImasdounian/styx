@@ -5,7 +5,7 @@ const STORAGE_KEY = 'styx-compare';
 
 /**
  * A compare entry is a product plus the price-affecting variant option (length).
- * Colour does not change price, so it is intentionally NOT part of the key —
+ * Colour does not change price, so it is intentionally NOT part of the key
  * comparing a 16" and an 18" of the same chain yields two entries, but toggling
  * colour on the same length does not.
  */

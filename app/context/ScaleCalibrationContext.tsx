@@ -17,11 +17,11 @@ import {estimatePxPerMm, type ScaleConfidence} from '~/lib/screen-size';
  * true physical size we need to know how many CSS pixels equal one physical
  * millimetre on THIS screen. We get that two ways, in order of preference:
  *
- *   1. Auto-estimate (`~/lib/screen-size`) — derived from the device's own
+ *   1. Auto-estimate (`~/lib/screen-size`), derived from the device's own
  *      metrics (platform, devicePixelRatio, resolution). Right within a few
  *      percent for phones/tablets, so actual-size can switch on with zero
  *      friction. Recomputed each load; never persisted.
- *   2. Card calibration — the shopper matches an on-screen box to a real ID-1
+ *   2. Card calibration, the shopper matches an on-screen box to a real ID-1
  *      card (85.6mm). Exact, persisted, and overrides the estimate. This is the
  *      "validate it with your credit card" path, and the honest fix on desktop
  *      where the monitor's real size can't be inferred.
@@ -33,7 +33,7 @@ import {estimatePxPerMm, type ScaleConfidence} from '~/lib/screen-size';
 const STORAGE_KEY = 'styx-screen-calibration';
 // Whether the shopper wants actual-size on. Persisted so that, once calibrated
 // and switched on, every page they visit (and future visits) shows true size
-// without re-toggling — we already know their screen.
+// without re-toggling, we already know their screen.
 const PREF_KEY = 'styx-actual-size-on';
 
 // How a persisted, user-set scale was arrived at: matched to a card, or
@@ -44,7 +44,7 @@ type Stored = {pxPerMm: number; dpr: number; source?: CalibSource};
 /** Where the active `pxPerMm` came from. */
 export type ScaleSource = 'calibration' | 'manual' | 'estimate' | null;
 
-// One nudge step = ±2% — fine enough to dial in, coarse enough to feel.
+// One nudge step = ±2%, fine enough to dial in, coarse enough to feel.
 const NUDGE_STEP = 0.02;
 
 type Ctx = {
@@ -136,7 +136,7 @@ export function ScaleCalibrationProvider({children}: {children: React.ReactNode}
           setDpr(typeof parsed.dpr === 'number' ? parsed.dpr : null);
         }
       }
-      // Restore the on/off preference — once on, stays on across pages/visits.
+      // Restore the on/off preference, once on, stays on across pages/visits.
       // No longer gated on a stored calibration, since the estimate alone is
       // enough to render at (close to) true size.
       if (localStorage.getItem(PREF_KEY) === '1') setActualSizeOnState(true);

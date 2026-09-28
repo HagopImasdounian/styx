@@ -103,7 +103,7 @@ const ALL_JOURNAL_VOLUMES = [
         title: 'Understanding Gold Karats',
         subtitle: '10K, 14K, 18K, 22K & 24K',
         preview:
-          "Most jewelers want you confused about karats. The truth is simple math — here's what it means for the chain around your neck.",
+          "Most jewelers want you confused about karats. The truth is simple math, here's what it means for the chain around your neck.",
         readTime: '8 min',
         image: HERO_IMAGES['understanding-gold-karats'],
       },
@@ -131,7 +131,7 @@ const ALL_JOURNAL_VOLUMES = [
         title: 'The Franco',
         subtitle: "Milan's Strongest Weave",
         preview:
-          'An Italian engineering marvel — interlocking V-shaped links that flex without ever kinking.',
+          'An Italian engineering marvel, interlocking V-shaped links that flex without ever kinking.',
         readTime: '4 min',
         image: HERO_IMAGES['history-of-the-franco-chain'],
       },
@@ -149,7 +149,7 @@ const ALL_JOURNAL_VOLUMES = [
         title: 'The Figaro',
         subtitle: 'Vicenza, 1885',
         preview:
-          'Three short links, one long — the rhythmic Italian pattern that broke every design rule.',
+          'Three short links, one long, the rhythmic Italian pattern that broke every design rule.',
         readTime: '5 min',
         image: HERO_IMAGES['history-of-the-figaro-chain'],
       },
@@ -177,7 +177,7 @@ const ALL_JOURNAL_VOLUMES = [
         title: 'The Rope Chain',
         subtitle: 'A Twist Through Time',
         preview:
-          'Two helical strands wound tight — the chain that catches light from every angle.',
+          'Two helical strands wound tight, the chain that catches light from every angle.',
         readTime: '4 min',
         image: HERO_IMAGES['history-of-the-rope-chain'],
       },
@@ -204,7 +204,7 @@ const ALL_JOURNAL_VOLUMES = [
         title: 'The Forsantina',
         subtitle: 'Venice, Mid-20th Century',
         preview:
-          'A Venetian specialty — elongated links with figure-eight connectors that drape like liquid.',
+          'A Venetian specialty, elongated links with figure-eight connectors that drape like liquid.',
         readTime: '3 min',
         image: HERO_IMAGES['history-of-the-forsantina-chain'],
       },
@@ -223,7 +223,7 @@ const ALL_JOURNAL_VOLUMES = [
         title: 'The Cable Chain',
         subtitle: 'Sumer, c. 2600 BC',
         preview:
-          'The simplest geometry in jewelry — uniform oval links, alternating orientation, infinite elegance.',
+          'The simplest geometry in jewelry, uniform oval links, alternating orientation, infinite elegance.',
         readTime: '4 min',
         image: HERO_IMAGES['history-of-the-cable-chain'],
       },
@@ -241,7 +241,7 @@ const ALL_JOURNAL_VOLUMES = [
         title: 'The Ball Chain',
         subtitle: 'United States, c. 1940',
         preview:
-          'Uniform spheres connected by short bars — military dog tags made it iconic.',
+          'Uniform spheres connected by short bars, military dog tags made it iconic.',
         readTime: '3 min',
         image: HERO_IMAGES['history-of-the-ball-chain'],
       },
@@ -259,7 +259,7 @@ const ALL_JOURNAL_VOLUMES = [
         title: 'The Byzantine',
         subtitle: 'Constantinople, 500 AD',
         preview:
-          'An intricate weave of interlocking rings from the Eastern Roman Empire — chainmail elevated to jewelry.',
+          'An intricate weave of interlocking rings from the Eastern Roman Empire, chainmail elevated to jewelry.',
         readTime: '5 min',
         image: HERO_IMAGES['history-of-the-byzantine-chain'],
       },
@@ -287,7 +287,7 @@ const ALL_JOURNAL_VOLUMES = [
         title: 'The Snake Chain',
         subtitle: 'Victorian Era',
         preview:
-          "Interlocking wavy plates forming a smooth, round tube — sleek as the creature it's named for.",
+          "Interlocking wavy plates forming a smooth, round tube, sleek as the creature it's named for.",
         readTime: '4 min',
         image: HERO_IMAGES['history-of-the-snake-chain'],
       },
@@ -296,7 +296,7 @@ const ALL_JOURNAL_VOLUMES = [
         title: 'The Box Chain',
         subtitle: 'Venice, 6th Century',
         preview:
-          'Square links connected at right angles — the most structurally rigid chain ever designed.',
+          'Square links connected at right angles, the most structurally rigid chain ever designed.',
         readTime: '4 min',
         image: HERO_IMAGES['history-of-the-box-chain'],
       },
@@ -333,7 +333,7 @@ const ALL_JOURNAL_VOLUMES = [
         title: 'The Tennis Chain',
         subtitle: 'Forest Hills, 1978',
         preview:
-          'A single row of individually set stones — named after the bracelet Chris Evert lost mid-match.',
+          'A single row of individually set stones, named after the bracelet Chris Evert lost mid-match.',
         readTime: '5 min',
         image: HERO_IMAGES['history-of-the-tennis-chain'],
       },
@@ -342,7 +342,7 @@ const ALL_JOURNAL_VOLUMES = [
         title: 'The Valentino',
         subtitle: 'Vicenza, High Fashion',
         preview:
-          'Flat, polished links with geometric precision — Italian high fashion distilled into a chain.',
+          'Flat, polished links with geometric precision. Italian high fashion distilled into a chain.',
         readTime: '4 min',
         image: HERO_IMAGES['history-of-the-valentino-chain'],
       },
@@ -360,7 +360,7 @@ const ALL_JOURNAL_VOLUMES = [
         title: 'The Heart Chain',
         subtitle: 'France, 13th Century',
         preview:
-          'Interlocking heart-shaped links from medieval France — sentiment forged into solid gold.',
+          'Interlocking heart-shaped links from medieval France, sentiment forged into solid gold.',
         readTime: '4 min',
         image: HERO_IMAGES['history-of-the-heart-chain'],
       },
@@ -369,7 +369,7 @@ const ALL_JOURNAL_VOLUMES = [
         title: 'The Peanut Chain',
         subtitle: 'East Asia, Prosperity Symbol',
         preview:
-          'Textured oval capsules linked end to end — an East Asian symbol of prosperity and abundance.',
+          'Textured oval capsules linked end to end, an East Asian symbol of prosperity and abundance.',
         readTime: '4 min',
         image: HERO_IMAGES['history-of-the-peanut-chain'],
       },
@@ -378,7 +378,7 @@ const ALL_JOURNAL_VOLUMES = [
         title: 'The Scroll Chain',
         subtitle: 'Classical Greece',
         preview:
-          'Spiraling wire forms that echo ancient Greek scroll motifs — decorative metalwork at its finest.',
+          'Spiraling wire forms that echo ancient Greek scroll motifs, decorative metalwork at its finest.',
         readTime: '4 min',
         image: HERO_IMAGES['history-of-the-scroll-chain'],
       },
@@ -441,7 +441,7 @@ export async function loader({request, params}: LoaderFunctionArgs) {
         media: {
           type: 'image' as const,
           url: `${origin}/images/hero.jpg`,
-          altText: 'STYX Gold — The Journal',
+          altText: 'STYX Gold. The Journal',
         },
       },
     },
@@ -560,7 +560,7 @@ export default function JournalIndex() {
               }}
             >
               A running index of the chapters, essays, and dispatches behind
-              every Styx piece — on craft, on transparency, on why the weight in
+              every Styx piece, on craft, on transparency, on why the weight in
               your hand is worth what we say it is.
             </div>
           </div>
@@ -714,7 +714,7 @@ export default function JournalIndex() {
                     }}
                   >
                     <StyxLabel>{featured.cat}</StyxLabel>
-                    {/* The Almanac's volume label equals its category —
+                    {/* The Almanac's volume label equals its category
                         don't print the same words twice. */}
                     {featured.vol !== featured.cat && (
                       <>
@@ -784,7 +784,7 @@ export default function JournalIndex() {
         </section>
       )}
 
-      {/* ─── Grid — remaining entries ─────────────────────── */}
+      {/* ─── Grid, remaining entries ─────────────────────── */}
       <section
         style={{padding: '32px 56px 96px'}}
         className="styx-ja-grid-section"
@@ -840,7 +840,7 @@ export default function JournalIndex() {
             wonder why a chain costs what it costs, or where a weave came from,
             the answer is probably somewhere on this page.
           </div>
-          <StyxLabel>&mdash; A. Demetrios, Founder</StyxLabel>
+          <StyxLabel>, A. Demetrios, Founder</StyxLabel>
         </div>
       </section>
 
@@ -952,7 +952,7 @@ function JournalCard({entry, n}: {entry: JournalEntry; n: number}) {
           }}
         >
           <StyxLabel>{entry.cat}</StyxLabel>
-          {/* Almanac entries: volume label duplicates the category — skip it */}
+          {/* Almanac entries: volume label duplicates the category, skip it */}
           {entry.vol !== entry.cat && (
             <>
               <div

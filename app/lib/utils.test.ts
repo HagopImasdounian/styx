@@ -27,7 +27,7 @@ describe('validateLocale', () => {
 
   it('rejects en-ca while only the default (unprefixed en-us) market is active', () => {
     // countries.ts currently contains only the `default` key; any /locale/
-    // prefix — even a real-looking one — must 404 to avoid duplicate content.
+    // prefix, even a real-looking one, must 404 to avoid duplicate content.
     expect(() => validateLocale({locale: 'en-ca'})).toThrow();
     expect(() => validateLocale({locale: 'EN-CA'})).toThrow();
   });

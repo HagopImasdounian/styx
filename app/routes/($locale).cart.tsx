@@ -11,9 +11,9 @@ import {isLocalPath} from '~/lib/utils';
 import {Cart} from '~/components/Cart';
 
 export const meta: MetaFunction = () => {
-  // The cart is personal and transient — not something to index.
+  // The cart is personal and transient, not something to index.
   return [
-    {title: 'Your Vault — STYX Gold'},
+    {title: 'Your Vault: STYX Gold'},
     {name: 'robots', content: 'noindex, follow'},
   ];
 };

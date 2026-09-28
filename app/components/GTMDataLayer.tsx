@@ -52,7 +52,7 @@ function loadGTM() {
 
   window.dataLayer = window.dataLayer || [];
 
-  // gtag shim — must push the `arguments` object itself (not an array)
+  // gtag shim, must push the `arguments` object itself (not an array)
   // for GTM/gtag.js to recognize consent commands.
   function gtag(..._args: any[]) {
     // eslint-disable-next-line prefer-rest-params
@@ -66,7 +66,7 @@ function loadGTM() {
   });
 
   // Defer the container script (144 KB + whatever tags it loads) until after
-  // the window `load` event — on throttled mobile it otherwise competes with
+  // the window `load` event, on throttled mobile it otherwise competes with
   // the LCP image for bandwidth. Events pushed in the meantime queue in the
   // dataLayer array and GTM replays them when it boots.
   const inject = () => {
@@ -89,7 +89,7 @@ function loadGTM() {
 }
 
 /**
- * PageView tracker — fires on every route change.
+ * PageView tracker, fires on every route change.
  * Also responsible for injecting GTM itself post-hydration (this component
  * is rendered app-wide from root.tsx).
  */

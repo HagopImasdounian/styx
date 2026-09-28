@@ -14,7 +14,7 @@ export const meta = ({data}: MetaArgs<typeof loader>) => {
     title: 'Privacy Policy',
     titleTemplate: '%s | STYX Gold',
     description:
-      'Privacy policy for STYX Gold — how we collect, use, and protect your personal information.',
+      'Privacy policy for STYX Gold, how we collect, use, and protect your personal information.',
     url: data?.url,
   });
 };
@@ -172,7 +172,7 @@ export default function Privacy() {
               <strong>How we handle your ID:</strong> If you submit a photo ID for verification, it is reviewed solely to confirm your identity against your order details. ID images are stored securely and retained for up to ninety (90) days after the order is fulfilled, after which they are permanently deleted. We do not use your ID for any purpose other than order verification and fraud prevention.
             </Paragraph>
             <Paragraph>
-              We use automated fraud screening tools provided by our payment processor (Shopify Payments) that analyze transaction data, device information, and behavioral patterns to assign risk scores to orders. Orders flagged as high-risk may be held for manual review. These tools do not make autonomous decisions to deny orders &mdash; final decisions are made by our team.
+              We use automated fraud screening tools provided by our payment processor (Shopify Payments) that analyze transaction data, device information, and behavioral patterns to assign risk scores to orders. Orders flagged as high-risk may be held for manual review. These tools do not make autonomous decisions to deny orders, final decisions are made by our team.
             </Paragraph>
           </section>
 
