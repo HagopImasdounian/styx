@@ -2,6 +2,7 @@ import {useEffect, useMemo, useRef, useState} from 'react';
 import {Link, useNavigate, useParams} from 'react-router';
 
 import {STYX, FONT} from './constants';
+import {styleToSlug} from '~/lib/chains';
 import type {
   PredictiveSearchCollection,
   PredictiveSearchProduct,
@@ -21,6 +22,109 @@ const MIN_QUERY_LENGTH = 2;
 const DEBOUNCE_MS = 280;
 
 const EMPTY_RESULTS: PredictiveSearchResult = {products: [], collections: []};
+
+/* ── Recent searches (localStorage, no network) ─────────────────── */
+
+export const RECENT_SEARCHES_KEY = 'styx:recent-searches';
+export const RECENT_SEARCHES_MAX = 6;
+
+function safeStorage(): Storage | null {
+  try {
+    if (typeof window === 'undefined') return null;
+    return window.localStorage;
+  } catch {
+    // Private mode / blocked storage throws on access.
+    return null;
+  }
+}
+
+/** Most recent first, deduped case-insensitively, capped at RECENT_SEARCHES_MAX. */
+export function readRecentSearches(): string[] {
+  const store = safeStorage();
+  if (!store) return [];
+  try {
+    const raw = store.getItem(RECENT_SEARCHES_KEY);
+    if (!raw) return [];
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .filter((v): v is string => typeof v === 'string')
+      .map((v) => v.trim())
+      .filter(Boolean)
+      .slice(0, RECENT_SEARCHES_MAX);
+  } catch {
+    return [];
+  }
+}
+
+/** Pure merge so it can be unit tested without a DOM. */
+export function mergeRecentSearch(list: string[], term: string): string[] {
+  const q = term.trim();
+  if (!q) return list;
+  const lower = q.toLowerCase();
+  return [q, ...list.filter((v) => v.toLowerCase() !== lower)].slice(
+    0,
+    RECENT_SEARCHES_MAX,
+  );
+}
+
+export function pushRecentSearch(term: string): string[] {
+  const next = mergeRecentSearch(readRecentSearches(), term);
+  const store = safeStorage();
+  if (store) {
+    try {
+      store.setItem(RECENT_SEARCHES_KEY, JSON.stringify(next));
+    } catch {
+      // Quota / disabled storage, ignore.
+    }
+  }
+  return next;
+}
+
+export function clearRecentSearches() {
+  const store = safeStorage();
+  if (!store) return;
+  try {
+    store.removeItem(RECENT_SEARCHES_KEY);
+  } catch {
+    // ignore
+  }
+}
+
+/** Hydrates after mount so SSR markup never depends on browser storage. */
+function useRecentSearches() {
+  const [recent, setRecent] = useState<string[]>([]);
+  useEffect(() => {
+    setRecent(readRecentSearches());
+  }, []);
+  const record = (term: string) => setRecent(pushRecentSearch(term));
+  const clear = () => {
+    clearRecentSearches();
+    setRecent([]);
+  };
+  return {recent, record, clear};
+}
+
+/* ── Trending, a fixed list of weaves mapped to real collection handles ── */
+
+const TRENDING_STYLES = [
+  'Cuban Link',
+  'Rope',
+  'Figaro',
+  'Franco',
+  'Curb',
+  'Box',
+  'Wheat',
+  'Paperclip',
+  'Herringbone',
+  'Singapore',
+] as const;
+
+export const TRENDING_SEARCHES: {label: string; handle: string}[] =
+  TRENDING_STYLES.flatMap((label) => {
+    const handle = styleToSlug(label);
+    return handle ? [{label, handle}] : [];
+  });
 
 function usePredictiveSearch(query: string) {
   const [results, setResults] = useState<PredictiveSearchResult>(EMPTY_RESULTS);
@@ -100,9 +204,169 @@ function PlaceholderStyle() {
         color: ${STYX.silt2};
         opacity: 1;
       }
+      .styx-search-chip {
+        text-decoration: underline;
+        text-decoration-color: transparent;
+        text-underline-offset: 4px;
+        text-decoration-thickness: 1px;
+        transition: text-decoration-color 0.15s, color 0.15s;
+      }
+      .styx-search-chip:hover,
+      .styx-search-chip:focus-visible {
+        color: ${STYX.ink};
+        text-decoration-color: ${STYX.gold};
+        outline: none;
+      }
     `,
       }}
     />
+  );
+}
+
+/* ── Empty-input state: Recent + Trending ──────────────────────── */
+
+function BlockLabel({
+  children,
+  action,
+}: {
+  children: React.ReactNode;
+  action?: React.ReactNode;
+}) {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'baseline',
+        justifyContent: 'space-between',
+        gap: 16,
+        marginBottom: 10,
+      }}
+    >
+      <span
+        style={{
+          fontFamily: FONT.cinzel,
+          fontSize: 11,
+          letterSpacing: '0.22em',
+          textTransform: 'uppercase',
+          color: STYX.gold,
+        }}
+      >
+        {children}
+      </span>
+      {action}
+    </div>
+  );
+}
+
+const chipStyle: React.CSSProperties = {
+  fontFamily: FONT.mono,
+  fontSize: 11,
+  letterSpacing: '0.04em',
+  color: STYX.silt,
+  background: 'none',
+  border: 'none',
+  padding: '4px 0',
+  cursor: 'pointer',
+  lineHeight: 1.4,
+  // Comfortable tap target on mobile without visual bulk.
+  minHeight: 28,
+  display: 'inline-flex',
+  alignItems: 'center',
+};
+
+function ChipRow({children}: {children: React.ReactNode}) {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        columnGap: 22,
+        rowGap: 4,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+/**
+ * Shown while the input is empty. Recent chips re-run the search on
+ * /search?q=; Trending chips link straight to the weave's collection.
+ * Nothing here touches the network on open.
+ */
+function SearchSuggestions({
+  recent,
+  onClearRecent,
+  onRecentPick,
+  onTrendingPick,
+  compact,
+}: {
+  recent: string[];
+  onClearRecent: () => void;
+  onRecentPick: (term: string) => void;
+  onTrendingPick: () => void;
+  compact?: boolean;
+}) {
+  const prefix = useLocalePrefix();
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: compact ? 18 : 24,
+        paddingTop: compact ? 14 : 22,
+      }}
+    >
+      {recent.length > 0 && (
+        <section aria-label="Recent searches">
+          <BlockLabel
+            action={
+              <button
+                type="button"
+                className="styx-search-chip"
+                onClick={onClearRecent}
+                style={{...chipStyle, color: STYX.silt2, minHeight: 0, padding: 0}}
+              >
+                Clear all
+              </button>
+            }
+          >
+            Recent
+          </BlockLabel>
+          <ChipRow>
+            {recent.map((term) => (
+              <Link
+                key={term}
+                to={`${prefix}/search?q=${encodeURIComponent(term)}`}
+                className="styx-search-chip"
+                onClick={() => onRecentPick(term)}
+                style={chipStyle}
+              >
+                {term}
+              </Link>
+            ))}
+          </ChipRow>
+        </section>
+      )}
+
+      <section aria-label="Trending chain styles">
+        <BlockLabel>Trending</BlockLabel>
+        <ChipRow>
+          {TRENDING_SEARCHES.map(({label, handle}) => (
+            <Link
+              key={handle}
+              to={`${prefix}/collections/${handle}`}
+              prefetch="intent"
+              className="styx-search-chip"
+              onClick={onTrendingPick}
+              style={chipStyle}
+            >
+              {label}
+            </Link>
+          ))}
+        </ChipRow>
+      </section>
+    </div>
   );
 }
 
@@ -314,6 +578,7 @@ export function PredictiveSearchPanel({onClose}: {onClose: () => void}) {
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(-1);
   const {results, loading} = usePredictiveSearch(query);
+  const {recent, record, clear} = useRecentSearches();
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const prefix = useLocalePrefix();
@@ -321,6 +586,12 @@ export function PredictiveSearchPanel({onClose}: {onClose: () => void}) {
   const trimmed = query.trim();
   const hasQuery = trimmed.length >= MIN_QUERY_LENGTH;
   const {products, collections} = hasQuery ? results : EMPTY_RESULTS;
+
+  // Picking a result counts as a search worth remembering.
+  const pickResult = () => {
+    if (trimmed) record(trimmed);
+    onClose();
+  };
 
   // Flattened keyboard order: products, then collections.
   const items = useMemo(
@@ -359,6 +630,7 @@ export function PredictiveSearchPanel({onClose}: {onClose: () => void}) {
   }, [onClose]);
 
   const submitToSearch = () => {
+    record(trimmed);
     // The /search page pushes the GTM `search` event itself.
     navigate(`${prefix}/search?q=${encodeURIComponent(trimmed)}`);
     onClose();
@@ -387,7 +659,7 @@ export function PredictiveSearchPanel({onClose}: {onClose: () => void}) {
       const selected = activeIndex >= 0 ? items[activeIndex] : null;
       if (selected) {
         navigate(selected.url);
-        onClose();
+        pickResult();
       } else if (trimmed) {
         submitToSearch();
       }
@@ -551,7 +823,7 @@ export function PredictiveSearchPanel({onClose}: {onClose: () => void}) {
                         product={p}
                         active={activeIndex === i}
                         id={`styx-ps-option-${i}`}
-                        onClick={onClose}
+                        onClick={pickResult}
                         onPointerEnter={() => setActiveIndex(i)}
                       />
                     ))}
@@ -568,7 +840,7 @@ export function PredictiveSearchPanel({onClose}: {onClose: () => void}) {
                           collection={c}
                           active={activeIndex === index}
                           id={`styx-ps-option-${index}`}
-                          onClick={onClose}
+                          onClick={pickResult}
                           onPointerEnter={() => setActiveIndex(index)}
                         />
                       );
@@ -594,7 +866,19 @@ export function PredictiveSearchPanel({onClose}: {onClose: () => void}) {
             </div>
           )}
 
-          {hasQuery && <ViewAllLink query={query} onClick={onClose} />}
+          {hasQuery && <ViewAllLink query={query} onClick={pickResult} />}
+
+          {trimmed.length === 0 && (
+            <SearchSuggestions
+              recent={recent}
+              onClearRecent={clear}
+              onRecentPick={(term) => {
+                record(term);
+                onClose();
+              }}
+              onTrendingPick={onClose}
+            />
+          )}
         </div>
       </div>
     </>
@@ -608,6 +892,7 @@ export function PredictiveSearchPanel({onClose}: {onClose: () => void}) {
 export function MobileMenuSearch({onClose}: {onClose: () => void}) {
   const [query, setQuery] = useState('');
   const {results, loading} = usePredictiveSearch(query);
+  const {recent, record, clear} = useRecentSearches();
   const navigate = useNavigate();
   const prefix = useLocalePrefix();
 
@@ -615,6 +900,11 @@ export function MobileMenuSearch({onClose}: {onClose: () => void}) {
   const hasQuery = trimmed.length >= MIN_QUERY_LENGTH;
   const {products, collections} = hasQuery ? results : EMPTY_RESULTS;
   const hasResults = products.length > 0 || collections.length > 0;
+
+  const pickResult = () => {
+    if (trimmed) record(trimmed);
+    onClose();
+  };
 
   return (
     <div style={{borderBottom: `1px solid ${STYX.line}`}}>
@@ -624,6 +914,7 @@ export function MobileMenuSearch({onClose}: {onClose: () => void}) {
         onSubmit={(e) => {
           e.preventDefault();
           if (!trimmed) return;
+          record(trimmed);
           // The /search page pushes the GTM `search` event itself.
           navigate(`${prefix}/search?q=${encodeURIComponent(trimmed)}`);
           onClose();
@@ -691,7 +982,7 @@ export function MobileMenuSearch({onClose}: {onClose: () => void}) {
             <>
               <SectionLabel>Chains</SectionLabel>
               {products.map((p) => (
-                <ProductRow key={p.id} product={p} onClick={onClose} />
+                <ProductRow key={p.id} product={p} onClick={pickResult} />
               ))}
             </>
           )}
@@ -699,7 +990,7 @@ export function MobileMenuSearch({onClose}: {onClose: () => void}) {
             <>
               <SectionLabel>Collections</SectionLabel>
               {collections.map((c) => (
-                <CollectionRow key={c.id} collection={c} onClick={onClose} />
+                <CollectionRow key={c.id} collection={c} onClick={pickResult} />
               ))}
             </>
           )}
@@ -716,7 +1007,22 @@ export function MobileMenuSearch({onClose}: {onClose: () => void}) {
               No matches, try a weave, karat or width.
             </div>
           )}
-          <ViewAllLink query={query} onClick={onClose} />
+          <ViewAllLink query={query} onClick={pickResult} />
+        </div>
+      )}
+
+      {trimmed.length === 0 && (
+        <div style={{padding: '0 24px 20px'}}>
+          <SearchSuggestions
+            compact
+            recent={recent}
+            onClearRecent={clear}
+            onRecentPick={(term) => {
+              record(term);
+              onClose();
+            }}
+            onTrendingPick={onClose}
+          />
         </div>
       )}
     </div>
