@@ -42,8 +42,24 @@ const normalize = (value: string) => value.trim().toLowerCase();
 const colorOf = (variant: GalleryVariant) =>
   variant.selectedOptions?.find((option) => normalize(option.name) === 'color')
     ?.value;
+const lengthOf = (variant: GalleryVariant) => {
+  const value = variant.selectedOptions?.find(
+    (option) => normalize(option.name) === 'length',
+  )?.value;
+  const match = value?.match(/\d+(?:\.\d+)?/);
+  return match ? Number(match[0]) : null;
+};
+/** Length named in alt text: "…, 16 in, on the scale…", "18 inch", "20\"". */
+export function altLength(alt: string): number | null {
+  const match = alt.match(
+    /(?:^|[\s,(])(\d{1,2}(?:\.\d)?)\s?(?:in|inch|inches|")(?=[\s,.)]|$)/i,
+  );
+  return match ? Number(match[1]) : null;
+}
 
-/** Blank alt text is unknown, not evidence that a photo suits every finish. */
+/** Blank alt text is unknown, not evidence that a photo suits every finish.
+ * Photos whose alt names a length ("16 in") show only for that length and sit
+ * right after the cover; photos without a length are shared across lengths. */
 export function selectedGalleryMedia<T extends ColorMedia>(
   media: T[],
   selected: GalleryVariant,
@@ -60,12 +76,17 @@ export function selectedGalleryMedia<T extends ColorMedia>(
     ? galleryImageKey(selected.image.url)
     : null;
   const multiColor = new Set(colors.map(normalize)).size > 1;
+  const selectedLength = lengthOf(selected);
+  const altOf = (item: T) => normalize(item.alt || item.image?.altText || '');
 
-  return media.filter((item) => {
+  const kept = media.filter((item) => {
     const url = item.image?.url || item.previewImage?.url;
     if (!url) return false;
     const key = galleryImageKey(url);
-    const alt = normalize(item.alt || item.image?.altText || '');
+    const alt = altOf(item);
+    const length = altLength(alt);
+    if (length !== null && selectedLength !== null && length !== selectedLength)
+      return false;
     const namedColors = colorNames.filter((color) => alt.includes(color));
     // Explicit finish metadata wins over stale cross-color assignments.
     if (selectedColor && namedColors.length)
@@ -89,4 +110,19 @@ export function selectedGalleryMedia<T extends ColorMedia>(
     // Explicitly shared detail/packaging photos can be marked in Shopify alt text.
     return !multiColor || alt.includes('[shared]');
   });
+  if (selectedLength === null) return kept;
+  // Cover first, then this length's own photos, then the shared views.
+  const isCover = (item: T) => {
+    const url = item.image?.url || item.previewImage?.url || '';
+    return (
+      (leadKey !== null && galleryImageKey(url) === leadKey) ||
+      altOf(item).endsWith(', main')
+    );
+  };
+  const forLength = (item: T) => altLength(altOf(item)) === selectedLength;
+  return [
+    ...kept.filter(isCover),
+    ...kept.filter((item) => !isCover(item) && forLength(item)),
+    ...kept.filter((item) => !isCover(item) && !forLength(item)),
+  ];
 }

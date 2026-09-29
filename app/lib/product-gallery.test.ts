@@ -50,7 +50,7 @@ describe('remainingGalleryMedia', () => {
   });
 });
 
-import {selectedGalleryMedia} from './product-gallery';
+import {altLength, selectedGalleryMedia} from './product-gallery';
 const selected = {
   image: {url: `${base}white.jpg`},
   selectedOptions: [
@@ -139,5 +139,59 @@ describe('selectedGalleryMedia', () => {
         ['White Gold', 'Yellow Gold'],
       ),
     ).toEqual([]);
+  });
+
+  it("shows only the selected length's photos, right after the cover", () => {
+    const cover = {...image('white.jpg'), alt: 'Chain, White Gold, main'};
+    const hung = {...image('hung.jpg'), alt: 'Chain, White Gold, hanging'};
+    const scale16 = {
+      ...image('w16.jpg'),
+      alt: 'Chain, White Gold, 16 in, on the scale showing its real weight',
+    };
+    const scale18 = {
+      ...image('w18.jpg'),
+      alt: 'Chain, White Gold, 18 in, on the scale showing its real weight',
+    };
+    const clasp18 = {
+      ...image('c18.jpg'),
+      alt: 'Chain, White Gold, 18 in, clasp detail',
+    };
+    const yellow18 = {
+      ...image('y18.jpg'),
+      alt: 'Chain, Yellow Gold, 18 in, on the scale',
+    };
+    expect(
+      selectedGalleryMedia(
+        [cover, hung, scale16, scale18, clasp18, yellow18],
+        selected,
+        [selected, yellow],
+        ['White Gold', 'Yellow Gold'],
+      ),
+    ).toEqual([cover, scale18, clasp18, hung]);
+  });
+
+  it('keeps shared views when the selected length has no photos of its own', () => {
+    const cover = {...image('white.jpg'), alt: 'Chain, White Gold, main'};
+    const hung = {...image('hung.jpg'), alt: 'Chain, White Gold, hanging'};
+    const scale16 = {
+      ...image('w16.jpg'),
+      alt: 'Chain, White Gold, 16 in, on the scale',
+    };
+    expect(
+      selectedGalleryMedia(
+        [cover, hung, scale16],
+        selected,
+        [selected, yellow],
+        ['White Gold', 'Yellow Gold'],
+      ),
+    ).toEqual([cover, hung]);
+  });
+
+  it('does not read millimetre widths in titles as lengths', () => {
+    expect(
+      altLength('10k gold 8.6mm cuban link chain, white gold, main'),
+    ).toBeNull();
+    expect(altLength('chain, yellow gold, 22 in, on the scale')).toBe(22);
+    expect(altLength('chain 20" hanging')).toBe(20);
   });
 });
