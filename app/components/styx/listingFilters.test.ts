@@ -9,7 +9,10 @@ import {
   explodeByColor,
   facetCounts,
   facetOptions,
+  groupCardsByThickness,
   parseFacetSelection,
+  productThicknessMm,
+  sortCardsByThickness,
   parseInches,
   priceBucketValue,
   toggleFacetValue,
@@ -63,7 +66,12 @@ const cards = explodeByColor([curb14, curb10, bracelet]);
 
 describe('explodeByColor', () => {
   it('makes one card per color and one for colorless products', () => {
-    expect(cards.map((c) => c.key)).toEqual(['p1-Yellow Gold', 'p1-White Gold', 'p2', 'p3']);
+    expect(cards.map((c) => c.key)).toEqual([
+      'p1-Yellow Gold',
+      'p1-White Gold',
+      'p2',
+      'p3',
+    ]);
   });
 });
 
@@ -99,8 +107,18 @@ describe('facetOptions', () => {
     expect(o.color.map((x) => x.value)).toEqual(['White Gold', 'Yellow Gold']);
     expect(o.karat.map((x) => x.value)).toEqual(['10K', '14K']);
     expect(o.width.map((x) => x.value)).toEqual(['3–5mm', '5–8mm']);
-    expect(o.length.map((x) => x.label)).toEqual(['8.5"', '18"', '20"', '22"', '24"']);
-    expect(o.price.map((x) => x.value)).toEqual(['under-500', '500-1500', '1500-5000']);
+    expect(o.length.map((x) => x.label)).toEqual([
+      '8.5"',
+      '18"',
+      '20"',
+      '22"',
+      '24"',
+    ]);
+    expect(o.price.map((x) => x.value)).toEqual([
+      'under-500',
+      '500-1500',
+      '1500-5000',
+    ]);
     expect(o.construction.map((x) => x.value)).toEqual(['Hollow', 'Solid']);
   });
 });
@@ -108,7 +126,10 @@ describe('facetOptions', () => {
 describe('applyFacets', () => {
   it('is AND across facets, OR within a facet', () => {
     const sel = {...emptySelection(), length: ['20', '24']};
-    expect(applyFacets(cards, sel).map((c) => c.key)).toEqual(['p1-Yellow Gold', 'p2']);
+    expect(applyFacets(cards, sel).map((c) => c.key)).toEqual([
+      'p1-Yellow Gold',
+      'p2',
+    ]);
     const sel2 = {...sel, karat: ['10K']};
     expect(applyFacets(cards, sel2).map((c) => c.key)).toEqual(['p2']);
   });
@@ -126,8 +147,18 @@ describe('facetCounts', () => {
     expect(counts.karat).toEqual({'10K': 2, '14K': 2});
     // Other facets are narrowed to 10K cards (p2 + bracelet)
     expect(counts.type).toEqual({Necklace: 1, Bracelet: 1});
-    expect(counts.length).toEqual({'8.5': 1, '18': 0, '20': 1, '22': 0, '24': 1});
-    expect(counts.price).toEqual({'under-500': 1, '500-1500': 0, '1500-5000': 1});
+    expect(counts.length).toEqual({
+      '8.5': 1,
+      '18': 0,
+      '20': 1,
+      '22': 0,
+      '24': 1,
+    });
+    expect(counts.price).toEqual({
+      'under-500': 1,
+      '500-1500': 0,
+      '1500-5000': 1,
+    });
   });
 });
 
@@ -141,19 +172,38 @@ describe('URL round trip', () => {
     expect(countActive(sel)).toBe(4);
   });
   it('writes and re-reads the same selection', () => {
-    const sel = {...emptySelection(), color: ['Yellow Gold', 'White Gold'], width: ['2–3mm']};
-    const p = writeFacetSelection(new URLSearchParams('sort=newest&cursor=abc'), sel);
+    const sel = {
+      ...emptySelection(),
+      color: ['Yellow Gold', 'White Gold'],
+      width: ['2–3mm'],
+    };
+    const p = writeFacetSelection(
+      new URLSearchParams('sort=newest&cursor=abc'),
+      sel,
+    );
     expect(p.get('sort')).toBe('newest');
     expect(p.has('cursor')).toBe(false);
     expect(parseFacetSelection(p)).toEqual(sel);
   });
   it('handles a metal collection preset color', () => {
     const preset = 'White Gold';
-    expect(parseFacetSelection(new URLSearchParams(''), preset).color).toEqual([preset]);
-    expect(parseFacetSelection(new URLSearchParams('color=all'), preset).color).toEqual([]);
-    const cleared = writeFacetSelection(new URLSearchParams(), emptySelection(), preset);
+    expect(parseFacetSelection(new URLSearchParams(''), preset).color).toEqual([
+      preset,
+    ]);
+    expect(
+      parseFacetSelection(new URLSearchParams('color=all'), preset).color,
+    ).toEqual([]);
+    const cleared = writeFacetSelection(
+      new URLSearchParams(),
+      emptySelection(),
+      preset,
+    );
     expect(cleared.get('color')).toBe('all');
-    const same = writeFacetSelection(new URLSearchParams(), {...emptySelection(), color: [preset]}, preset);
+    const same = writeFacetSelection(
+      new URLSearchParams(),
+      {...emptySelection(), color: [preset]},
+      preset,
+    );
     expect(same.has('color')).toBe(false);
   });
 });
@@ -166,7 +216,63 @@ describe('toggleFacetValue / activeFacetChips', () => {
     expect(b.karat).toEqual([]);
   });
   it('lists chips with human labels', () => {
-    const sel = {...emptySelection(), type: ['Bracelet'], length: ['18'], price: ['5000-plus']};
-    expect(activeFacetChips(sel).map((c) => c.label)).toEqual(['Bracelets', '18"', '$5,000+']);
+    const sel = {
+      ...emptySelection(),
+      type: ['Bracelet'],
+      length: ['18'],
+      price: ['5000-plus'],
+    };
+    expect(activeFacetChips(sel).map((c) => c.label)).toEqual([
+      'Bracelets',
+      '18"',
+      '$5,000+',
+    ]);
+  });
+});
+
+describe('thickness ordering', () => {
+  it('prefers the chain.thickness metafield over the title', () => {
+    expect(
+      productThicknessMm({
+        title: '10K Gold 3.3mm Curb Chain',
+        chain_thickness: {value: '3.5mm'},
+      }),
+    ).toBe(3.5);
+    expect(productThicknessMm({title: '10K Gold 3.3mm Curb Chain'})).toBe(3.3);
+    expect(productThicknessMm({title: 'Gift card'})).toBeNull();
+  });
+  it('sorts thin to thick, colours of one product side by side, unknown last', () => {
+    const gift = {
+      id: 'g',
+      title: 'Gift card',
+      variants: {nodes: [variant({Amount: '100'}, '100.00')]},
+    };
+    const sorted = sortCardsByThickness(
+      explodeByColor([gift, curb10, curb14, bracelet]),
+    );
+    expect(sorted.map((c) => `${c.product.id}:${c.variantIndex}`)).toEqual([
+      'p1:0', // 3mm yellow
+      'p1:3', // 3mm white
+      'p3:0', // 3mm bracelet
+      'p2:0', // 6mm
+      'g:0',
+    ]);
+  });
+  it('groups per exact mm with a label', () => {
+    const groups = groupCardsByThickness(cards);
+    expect(groups.map((g) => [g.label, g.cards.length])).toEqual([
+      ['3mm', 3],
+      ['6mm', 1],
+    ]);
+  });
+  it('exposes a style facet from custom.spec_style', () => {
+    const styled = explodeByColor([
+      {...curb10, spec_style: {value: 'Concave'}},
+      curb14,
+    ]);
+    expect(facetOptions(styled).style.map((o) => o.value)).toEqual(['Concave']);
+    expect(
+      applyFacets(styled, {...emptySelection(), style: ['Concave']}).length,
+    ).toBe(1);
   });
 });

@@ -6,7 +6,13 @@ import {
 import {useState, useRef, useCallback, useEffect, Suspense} from 'react';
 import {Disclosure} from '@headlessui/react';
 import {type MetaArgs, type LoaderFunctionArgs} from 'react-router';
-import {data, useLoaderData, Await, useRouteLoaderData} from 'react-router';
+import {
+  data,
+  useLoaderData,
+  Await,
+  useRouteLoaderData,
+  useNavigate,
+} from 'react-router';
 import {
   Money,
   Image,
@@ -53,6 +59,7 @@ import {RelatedTabs} from '~/components/styx/RelatedTabs';
 import {StickyBuyBar} from '~/components/styx/StickyBuyBar';
 import {DeliveryReturns} from '~/components/styx/DeliveryReturns';
 import {TrueSizeControls} from '~/components/styx/TrueSizeControls';
+import {SizeGuide} from '~/components/styx/SizeGuide';
 import {useWishlist} from '~/context/WishlistContext';
 import {useScaleCalibration} from '~/context/ScaleCalibrationContext';
 import {parseMm as parseThicknessMm} from '~/lib/chains';
@@ -270,6 +277,9 @@ export default function Product() {
     parseThicknessMm(chainThickness, title) != null;
   // One-line helper under the on-image true-size pills; gone after first tap.
   const [trueSizeHintDismissed, setTrueSizeHintDismissed] = useState(false);
+  // Size guide modal (lengths drawn on a neck-size model); follows the Length pills.
+  const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
+  const navigate = useNavigate();
   const trueSizeControls = chainThickness ? (
     <TrueSizeControls
       handle={product.handle}
@@ -293,6 +303,8 @@ export default function Product() {
   // spec_weave / spec_profile intentionally not shown, redundant with Chain Style
   const specClasp = p.spec_clasp?.value || null;
   const specCast = p.spec_cast?.value || null;
+  // Link style as seen in the photo (Plain / Beveled / Concave / Diamond Cut)
+  const specStyle = p.spec_style?.value || null;
 
   // Use variant weight if available (from Shopify variant grams), else metafield
   const variantWeight = (selectedVariant as any)?.weight
@@ -961,6 +973,15 @@ export default function Product() {
                       }}
                     >
                       <span>{option.name}</span>
+                      {option.name.toLowerCase() === 'length' && (
+                        <button
+                          type="button"
+                          className="styx-sizeguide-trigger"
+                          onClick={() => setSizeGuideOpen(true)}
+                        >
+                          Size guide
+                        </button>
+                      )}
                       {isKarat && (
                         <span
                           style={{
@@ -1606,6 +1627,7 @@ export default function Product() {
             >
               {[
                 {label: 'Chain Style', value: chainStyle},
+                {label: 'Link Style', value: specStyle},
                 {label: 'Thickness', value: chainThickness},
                 {label: 'Model', value: selectedVariant?.sku || null},
                 {label: 'Construction', value: chainConstruction},
@@ -2527,6 +2549,28 @@ export default function Product() {
         }}
       />
 
+      <SizeGuide
+        open={sizeGuideOpen}
+        onClose={() => setSizeGuideOpen(false)}
+        availableLengths={
+          product.options
+            ?.find((o: any) => o.name?.toLowerCase() === 'length')
+            ?.optionValues?.map((v: any) => v.name) ?? []
+        }
+        selectedLength={selectedLength}
+        thicknessMm={parseThicknessMm(chainThickness, product.title)}
+        productTitle={product.title}
+        onPickLength={(value) => {
+          const v = findVariantForLength(value);
+          if (!v) return;
+          const params = new URLSearchParams();
+          for (const o of v.selectedOptions ?? []) params.set(o.name, o.value);
+          navigate(`?${params.toString()}`, {
+            replace: true,
+            preventScrollReset: true,
+          });
+        }}
+      />
       <StyxFooter />
     </div>
   );
@@ -3547,6 +3591,9 @@ const PRODUCT_FRAGMENT = `#graphql
       value
     }
     spec_cast: metafield(namespace: "custom", key: "spec_cast") {
+      value
+    }
+    spec_style: metafield(namespace: "custom", key: "spec_style") {
       value
     }
   }

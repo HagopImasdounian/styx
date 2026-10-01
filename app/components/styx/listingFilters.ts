@@ -22,6 +22,7 @@ export const FACET_KEYS = [
   'color',
   'karat',
   'width',
+  'style',
   'length',
   'price',
   'construction',
@@ -34,6 +35,7 @@ export const FACET_TITLES: Record<FacetKey, string> = {
   color: 'Metal',
   karat: 'Karat',
   width: 'Width',
+  style: 'Style',
   length: 'Length',
   price: 'Price',
   construction: 'Build',
@@ -78,6 +80,7 @@ export function emptySelection(): FacetSelection {
     color: [],
     karat: [],
     width: [],
+    style: [],
     length: [],
     price: [],
     construction: [],
@@ -89,6 +92,18 @@ export function emptySelection(): FacetSelection {
 export function getThicknessMm(title: string): number | null {
   const m = title?.match(/(\d+(?:\.\d+)?)\s*mm/i);
   return m ? parseFloat(m[1]) : null;
+}
+
+/** Thickness in mm: the `chain.thickness` metafield ("2.5mm") first, title second. */
+export function productThicknessMm(product: any): number | null {
+  const mf = getThicknessMm(String(product?.chain_thickness?.value ?? ''));
+  return mf ?? getThicknessMm(product?.title || '');
+}
+
+/** Link style (Plain / Beveled / Concave / Diamond Cut) from `custom.spec_style`. */
+export function productStyle(product: any): string | null {
+  const v = String(product?.spec_style?.value ?? '').trim();
+  return v || null;
 }
 
 export function thicknessLabel(mm: number | null): string | null {
@@ -223,8 +238,12 @@ export function cardFacetValues(card: ListingCard, key: FacetKey): string[] {
       return k ? [k] : [];
     }
     case 'width': {
-      const l = thicknessLabel(getThicknessMm(product?.title || ''));
+      const l = thicknessLabel(productThicknessMm(product));
       return l ? [l] : [];
+    }
+    case 'style': {
+      const st = productStyle(product);
+      return st ? [st] : [];
     }
     case 'length':
       return cardLengths(card);
@@ -275,6 +294,65 @@ export function explodeByColor(products: any[]): ListingCard[] {
     }
   }
   return cards;
+}
+
+/* ─── Thickness ordering (default collection sort) ─── */
+
+const COLOR_ORDER = ['Yellow Gold', 'White Gold', 'Rose Gold'];
+
+function colorRank(card: ListingCard): number {
+  const i = COLOR_ORDER.indexOf(cardColor(card) ?? '');
+  return i === -1 ? COLOR_ORDER.length : i;
+}
+
+/**
+ * Thin to thick; within one thickness every colour of the same product sits
+ * side by side (Yellow, White, Rose), then the next product of that
+ * thickness in server order. Cards without a thickness go last, in input order.
+ */
+export function sortCardsByThickness(cards: ListingCard[]): ListingCard[] {
+  // Products of equal thickness keep their incoming (server) order.
+  const firstSeen = new Map<string, number>();
+  cards.forEach((c, i) => {
+    const id = String(c.product?.id);
+    if (!firstSeen.has(id)) firstSeen.set(id, i);
+  });
+  const rank = (c: ListingCard) => firstSeen.get(String(c.product?.id)) ?? 0;
+  return cards
+    .map((card, i) => ({card, i, mm: productThicknessMm(card.product)}))
+    .sort((a, b) => {
+      if (a.mm === null && b.mm === null) return a.i - b.i;
+      if (a.mm === null) return 1;
+      if (b.mm === null) return -1;
+      if (a.mm !== b.mm) return a.mm - b.mm;
+      const r = rank(a.card) - rank(b.card);
+      if (r !== 0) return r;
+      return colorRank(a.card) - colorRank(b.card) || a.i - b.i;
+    })
+    .map((x) => x.card);
+}
+
+export type ThicknessGroup = {
+  mm: number | null;
+  label: string;
+  cards: ListingCard[];
+};
+
+/** Sorted cards bucketed per exact thickness, for the grouped collection grid. */
+export function groupCardsByThickness(cards: ListingCard[]): ThicknessGroup[] {
+  const groups: ThicknessGroup[] = [];
+  for (const card of sortCardsByThickness(cards)) {
+    const mm = productThicknessMm(card.product);
+    const last = groups[groups.length - 1];
+    if (last && last.mm === mm) last.cards.push(card);
+    else
+      groups.push({
+        mm,
+        label: mm === null ? 'Other' : `${mm}mm`,
+        cards: [card],
+      });
+  }
+  return groups;
 }
 
 /* ─── Matching ─── */
@@ -328,6 +406,7 @@ export function facetOptions(cards: ListingCard[]): FacetOptions {
     color: new Set(),
     karat: new Set(),
     width: new Set(),
+    style: new Set(),
     length: new Set(),
     price: new Set(),
     construction: new Set(),
@@ -354,9 +433,10 @@ export function facetOptions(cards: ListingCard[]): FacetOptions {
     karat: [...present.karat]
       .sort((a, b) => parseInt(a) - parseInt(b))
       .map((v) => opt('karat', v)),
-    width: THICKNESS_RANGES.filter((r) => present.width.has(r.label)).map(
-      (r) => opt('width', r.label),
+    width: THICKNESS_RANGES.filter((r) => present.width.has(r.label)).map((r) =>
+      opt('width', r.label),
     ),
+    style: [...present.style].sort().map((v) => opt('style', v)),
     length: [...present.length]
       .sort((a, b) => parseFloat(a) - parseFloat(b))
       .map((v) => opt('length', v)),

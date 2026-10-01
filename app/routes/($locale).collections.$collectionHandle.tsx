@@ -1,4 +1,5 @@
 import {
+  Fragment,
   useCallback,
   useEffect,
   useMemo,
@@ -42,6 +43,7 @@ import {
   emptySelection,
   explodeByColor,
   facetOptions,
+  groupCardsByThickness,
   parseFacetSelection,
   toggleFacetValue,
   writeFacetSelection,
@@ -175,9 +177,8 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 
   const searchParams = new URL(request.url).searchParams;
 
-  const {sortKey, reverse} = getSortValuesFromParam(
-    (searchParams.get('sort') as SortParam) || 'price-low-high',
-  );
+  const sortParam = searchParams.get('sort') || DEFAULT_SORT;
+  const {sortKey, reverse} = getSortValuesFromParam(sortParam as SortParam);
 
   // Server-side filters (`filter.*` params → Storefront API ProductFilter).
   // On this store only `price` and `available` have Search & Discovery filter
@@ -205,7 +206,9 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     searchParams,
     METAL_COLLECTION_COLOR[collectionHandle] ?? null,
   );
-  const fullSet = countActive(selection) > 0;
+  // The default "Thickness" order is computed client-side (Shopify cannot
+  // sort by metafield), so it needs the full set too.
+  const fullSet = countActive(selection) > 0 || sortParam === THICKNESS_SORT;
 
   const paginationVariables = fullSet
     ? {first: FULL_SET_PAGE_SIZE}
@@ -304,7 +307,15 @@ export const meta = ({matches}: MetaArgs<typeof loader>) => {
   return getStyxSeoMeta(...matches.map((match) => (match.data as any).seo));
 };
 
-const SORT_OPTIONS: {label: string; value: SortParam | 'default'}[] = [
+// Client-side sort: thin → thick by chain.thickness, grouped per mm. Shopify
+// has no metafield sort key, so the loader fetches the full set for it.
+const THICKNESS_SORT = 'thickness';
+
+const SORT_OPTIONS: {
+  label: string;
+  value: SortParam | 'default' | 'thickness';
+}[] = [
+  {label: 'Thickness', value: THICKNESS_SORT},
   {label: 'Price ↑', value: 'price-low-high'},
   {label: 'Price ↓', value: 'price-high-low'},
   {label: 'Newest', value: 'newest'},
@@ -314,13 +325,14 @@ const SORT_OPTIONS: {label: string; value: SortParam | 'default'}[] = [
 // Plain-word sort labels for the drawer (arrows are fine in a segmented
 // control, less so in a radio list).
 const DRAWER_SORT_OPTIONS = [
+  {label: 'Thickness, thin to thick', value: THICKNESS_SORT},
   {label: 'Price, low to high', value: 'price-low-high'},
   {label: 'Price, high to low', value: 'price-high-low'},
   {label: 'Newest', value: 'newest'},
   {label: 'Popular', value: 'best-selling'},
 ];
 
-const DEFAULT_SORT = 'price-low-high';
+const DEFAULT_SORT = THICKNESS_SORT;
 
 /* ═══════════════════════════════════════════════════════════════
    Filter state lives in the URL (shareable / bookmarkable / back-safe)
@@ -330,8 +342,8 @@ const DEFAULT_SORT = 'price-low-high';
      API ProductFilters. Only `price` (and `available`) have Search &
      Discovery definitions on this store, so only those work server-side
      (the mega menu's price links use `filter.price`).
-   • CLIENT facets, `type`, `color`, `karat`, `width`, `length`, `price`,
-     `construction` params (comma-separated multi-values). The API silently
+   • CLIENT facets, `type`, `color`, `karat`, `width`, `style`, `length`,
+     `price`, `construction` params (comma-separated multi-values). The API silently
      ignores productType/tag/variantOption/productMetafield filters here, so
      these are applied client-side over the FULL collection set (loader
      fetches first: 250 when any is active). Model + URL codec live in
@@ -348,6 +360,7 @@ const QUICK_FACETS: FacetKey[] = [
   'color',
   'karat',
   'width',
+  'style',
   'construction',
 ];
 
@@ -391,7 +404,7 @@ function FilterPill({
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Weave directory, all 13 chain families, shown on the Chains archive
+   Weave directory, all 14 chain families, shown on the Chains archive
    ═══════════════════════════════════════════════════════════════ */
 
 const WEAVES: Array<{handle: string; label: string}> = [
@@ -408,6 +421,7 @@ const WEAVES: Array<{handle: string; label: string}> = [
   {handle: 'herringbone', label: 'Herringbone'},
   {handle: 'paperclip', label: 'Paperclip'},
   {handle: 'snake', label: 'Snake'},
+  {handle: 'marine', label: 'Marine'},
 ];
 
 export default function Collection() {
@@ -628,52 +642,21 @@ export default function Collection() {
                   key={w.handle}
                   to={`/collections/${w.handle}`}
                   prefetch="intent"
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 10,
-                    padding: '16px 10px 14px',
-                    background: '#fffefa',
-                    border: '1px solid var(--styx-border)',
-                    borderRadius: 3,
-                    textDecoration: 'none',
-                    transition: 'border-color 0.2s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = '#887346';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--styx-border)';
-                  }}
+                  className="styx-weave-tile"
+                  aria-current={
+                    w.handle === collectionHandle ? 'page' : undefined
+                  }
                 >
                   {weaveCutout(w.handle) ? (
                     <img
                       src={weaveCutout(w.handle)}
                       alt={`${w.label} chain close-up`}
                       loading="lazy"
-                      style={{
-                        height: 30,
-                        maxWidth: '100%',
-                        objectFit: 'contain',
-                      }}
                     />
                   ) : (
-                    <div style={{height: 30}} />
+                    <div style={{height: 36}} />
                   )}
-                  <span
-                    style={{
-                      fontFamily: FONT.inter,
-                      fontSize: 12,
-                      letterSpacing: '0.01em',
-                      color: '#1a1815',
-                      textAlign: 'center',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {w.label}
-                  </span>
+                  <span>{w.label}</span>
                 </Link>
               ))}
             </div>
@@ -931,9 +914,7 @@ export default function Collection() {
                 marginBottom: 24,
               }}
             >
-              <PreviousLink
-                className="styx-ctl styx-catalog-more"
-              >
+              <PreviousLink className="styx-ctl styx-catalog-more">
                 {isLoading ? 'Loading...' : 'Load previous'}
               </PreviousLink>
             </div>
@@ -945,6 +926,7 @@ export default function Collection() {
               state={state}
               selection={selection}
               gridClass={gridDensityClass(density)}
+              groupByThickness={currentSort === THICKNESS_SORT}
             />
             {/* Applies the stored grid density before hydration (no flash).
                 Must come after the grid in DOM order. */}
@@ -956,10 +938,7 @@ export default function Collection() {
                 marginTop: 48,
               }}
             >
-              <NextLink
-                ref={ref}
-                className="styx-ctl styx-catalog-more"
-              >
+              <NextLink ref={ref} className="styx-ctl styx-catalog-more">
                 {isLoading ? 'Loading...' : 'Load more products'}
               </NextLink>
             </div>
@@ -1030,10 +1009,7 @@ export default function Collection() {
                   >
                     <Obol size={44} color={STYX.ink} speed={6} />
                     {eraLabel && (
-                      <span
-                        className="styx-eyebrow"
-                        style={{margin: 0}}
-                      >
+                      <span className="styx-eyebrow" style={{margin: 0}}>
                         {eraLabel}
                       </span>
                     )}
@@ -1044,10 +1020,7 @@ export default function Collection() {
               {/* Right: Story text */}
               <div>
                 {chapterKicker && (
-                  <div
-                    className="styx-eyebrow"
-                    style={{marginBottom: 18}}
-                  >
+                  <div className="styx-eyebrow" style={{marginBottom: 18}}>
                     {chapterKicker}
                   </div>
                 )}
@@ -1138,6 +1111,7 @@ const FACET_TITLE_SHORT: Record<FacetKey, string> = {
   color: 'Metal',
   karat: 'Karat',
   width: 'Width',
+  style: 'Style',
   length: 'Length',
   price: 'Price',
   construction: 'Build',
@@ -1167,6 +1141,7 @@ function ProductsLoadedOnScroll({
   state,
   selection,
   gridClass,
+  groupByThickness,
 }: {
   nodes: any;
   inView: boolean;
@@ -1175,6 +1150,7 @@ function ProductsLoadedOnScroll({
   state: any;
   selection: FacetSelection;
   gridClass: string;
+  groupByThickness: boolean;
 }) {
   const navigate = useNavigate();
 
@@ -1189,6 +1165,10 @@ function ProductsLoadedOnScroll({
   }, [inView, navigate, state, nextPageUrl, hasNextPage]);
 
   const cards = applyFacets(explodeByColor(nodes), selection);
+  // Thickness order: thin → thick, one header per mm, every colour of that
+  // thickness side by side. Headers span the grid so density classes still
+  // apply to the cards.
+  const groups = groupByThickness ? groupCardsByThickness(cards) : null;
 
   if (cards.length === 0) {
     return (
@@ -1228,21 +1208,69 @@ function ProductsLoadedOnScroll({
       className={`styx-collection-product-grid ${gridClass}`.trim()}
       style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr)',
-        gap: 48,
+        gridTemplateColumns: 'repeat(4, 1fr)',
+        gap: '40px 32px',
       }}
       data-test="product-grid"
       // GridDensityScript may add the density classes before hydration
       suppressHydrationWarning
     >
-      {cards.map(({product, variantIndex, key}, i) => (
-        <StyxProductCard
-          key={key}
-          product={product}
-          variantIndex={variantIndex}
-          index={i}
-        />
-      ))}
+      {groups
+        ? groups.map((g, gi) => (
+            <Fragment key={g.label}>
+              <div
+                className="styx-thickness-head"
+                style={{
+                  gridColumn: '1 / -1',
+                  display: 'flex',
+                  alignItems: 'baseline',
+                  gap: 14,
+                  paddingTop: gi === 0 ? 0 : 24,
+                  paddingBottom: 4,
+                  borderBottom: '1px solid var(--styx-border)',
+                }}
+              >
+                <span
+                  style={{
+                    fontFamily: FONT.cormorant,
+                    fontSize: 28,
+                    fontWeight: 500,
+                    letterSpacing: '-0.02em',
+                    color: STYX.ink,
+                    fontVariantNumeric: 'lining-nums',
+                  }}
+                >
+                  {g.label}
+                </span>
+                <span
+                  style={{
+                    fontFamily: FONT.mono,
+                    fontSize: 10,
+                    letterSpacing: '0.04em',
+                    color: 'var(--styx-muted)',
+                  }}
+                >
+                  {g.cards.length} {g.cards.length === 1 ? 'piece' : 'pieces'}
+                </span>
+              </div>
+              {g.cards.map(({product, variantIndex, key}, i) => (
+                <StyxProductCard
+                  key={key}
+                  product={product}
+                  variantIndex={variantIndex}
+                  index={i}
+                />
+              ))}
+            </Fragment>
+          ))
+        : cards.map(({product, variantIndex, key}, i) => (
+            <StyxProductCard
+              key={key}
+              product={product}
+              variantIndex={variantIndex}
+              index={i}
+            />
+          ))}
     </div>
   );
 }
@@ -1341,6 +1369,12 @@ const COLLECTION_QUERY = `#graphql
           chain_construction: metafield(namespace: "chain", key: "construction") {
             value
           }
+          chain_thickness: metafield(namespace: "chain", key: "thickness") {
+            value
+          }
+          spec_style: metafield(namespace: "custom", key: "spec_style") {
+            value
+          }
           variants(first: 30) {
             nodes {
               price {
@@ -1380,7 +1414,10 @@ function getSortValuesFromParam(sortParam: SortParam | null): {
   sortKey: ProductCollectionSortKeys;
   reverse: boolean;
 } {
-  switch (sortParam) {
+  switch (sortParam as string) {
+    // Thickness is ordered client-side; price asc is the tiebreaker within a mm
+    case THICKNESS_SORT:
+      return {sortKey: 'PRICE', reverse: false};
     case 'price-high-low':
       return {
         sortKey: 'PRICE',

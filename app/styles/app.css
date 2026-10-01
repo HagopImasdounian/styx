@@ -1872,10 +1872,18 @@ shop-pay-button {
    ══════════════════════════════════════════════════════════════════════════ */
 
 /* ── Grid density ───────────────────────────────────────────────────────── */
-/* Default (no class) = today's layout: 3-up desktop, 2-up phone.
+/* Default (no class) = today's layout: 4-up desktop, 2-up phone.
    `.styx-grid-2up` + `.styx-grid-1up` are both added when the "large" density
    is on; each media query below picks the one that applies. Selectors carry
    [data-test] so they beat the earlier single-class !important rules. */
+/* 4-up needs ~1100px of width; tablets and small laptops fall back to 3-up. */
+@media (min-width: 769px) and (max-width: 1099px) {
+  .styx-collection-product-grid[data-test='product-grid'],
+  .styx-plp-grid[data-test='product-grid'] {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 32px 24px !important;
+  }
+}
 @media (min-width: 769px) {
   .styx-collection-product-grid.styx-grid-2up[data-test='product-grid'],
   .styx-plp-grid.styx-grid-2up[data-test='product-grid'] {
@@ -3204,6 +3212,9 @@ div:has(> #mainContent > .styx-catalog-chrome) {
     font-size: 11px !important;
     letter-spacing: 0.01em !important;
   }
+  .styx-weave-tile img {
+    height: 28px !important;
+  }
 
   /* Phone bottom bar on the quiet surface */
   .styx-listing-bottombar {
@@ -3300,4 +3311,297 @@ div:has(> #mainContent > .styx-catalog-chrome) {
 .styx-card .styx-card-sku {
   color: #1a1815 !important;
   font-weight: 500;
+}
+
+/* ── Shop-by-weave tiles (collection archive) ─────────────────────────────
+   Soft grey studio gradient (same tone as the bust renders) so the gold
+   cutouts read against it; bone-on-bone tiles looked flat. */
+.styx-weave-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 18px 10px 14px;
+  background: linear-gradient(180deg, #f1efec 0%, #e3e0dc 100%);
+  border: 1px solid rgba(26, 24, 21, 0.08);
+  border-radius: 4px;
+  text-decoration: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
+}
+.styx-weave-tile img {
+  height: 36px;
+  max-width: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 2px rgba(26, 24, 21, 0.18));
+}
+.styx-weave-tile span {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.01em;
+  color: #1a1815;
+  text-align: center;
+  white-space: nowrap;
+}
+.styx-weave-tile[aria-current='page'] {
+  border-color: #887346;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 0 0 1px #887346;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .styx-weave-tile:hover {
+    transform: translateY(-2px);
+    border-color: #887346;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.7),
+      0 8px 18px -10px rgba(26, 24, 21, 0.35);
+  }
+}
+
+/* ── Size guide modal (SizeGuide.tsx) ──────────────────────────────────── */
+.styx-sizeguide {
+  position: fixed;
+  inset: 0;
+  z-index: 2100;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(26, 24, 21, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: styx-fade-in 0.18s ease;
+}
+@keyframes styx-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.styx-sizeguide-panel {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 4fr);
+  width: min(1080px, 100%);
+  max-height: calc(100vh - 48px);
+  background: var(--styx-surface, #f7f5f0);
+  border: 1px solid var(--styx-border);
+  box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+.styx-sizeguide-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(26, 24, 21, 0.14);
+  background: rgba(255, 255, 255, 0.92);
+  color: #1a1815;
+  font-size: 14px;
+  cursor: pointer;
+}
+.styx-sizeguide-figure {
+  position: relative;
+  background: #e6e3df;
+  aspect-ratio: 1856 / 2304;
+  max-height: calc(100vh - 48px);
+  overflow: hidden;
+}
+.styx-sizeguide-figure > img,
+.styx-sizeguide-arcs {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.styx-sizeguide-arcs path { transition: d 0.35s ease, stroke-width 0.2s ease; }
+.styx-sizeguide-side {
+  padding: 36px 36px 28px;
+  overflow-y: auto;
+  max-height: calc(100vh - 48px);
+}
+.styx-sizeguide-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 500;
+  font-size: 34px;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: #1a1815;
+  margin: 0 0 6px;
+}
+.styx-sizeguide-product {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: var(--styx-muted);
+  margin: 0 0 22px;
+}
+.styx-sizeguide-label {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #2d2a24;
+  margin: 18px 0 10px;
+}
+.styx-sizeguide-necks {
+  display: flex;
+  width: 100%;
+}
+.styx-sizeguide-necks button {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 6px;
+  border: none;
+  border-radius: 2px;
+  background: transparent;
+  color: var(--styx-muted);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s, box-shadow 0.15s;
+}
+.styx-sizeguide-necks button small {
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+.styx-sizeguide-necks button.is-active {
+  background: #fffefa;
+  color: #1a1815;
+  box-shadow: inset 0 0 0 1px #887346;
+}
+.styx-sizeguide-lengths {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.styx-sizeguide-lengths .styx-chip {
+  height: auto;
+  flex-direction: column;
+  gap: 1px;
+  padding: 7px 14px 6px;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.styx-sizeguide-lengths .styx-chip small {
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--styx-muted);
+}
+.styx-sizeguide-lengths .styx-chip small.fit-good { color: #5f7a4e; }
+.styx-sizeguide-lengths .styx-chip small.fit-snug { color: #a4553a; }
+.styx-sizeguide-lengths .styx-chip.is-unavailable {
+  opacity: 0.45;
+  border-style: dashed;
+}
+.styx-sizeguide-where {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 18px;
+  line-height: 1.45;
+  color: #1a1815;
+  margin: 18px 0 14px;
+  min-height: 3.2em;
+}
+.styx-sizeguide-cta {
+  width: 100%;
+  height: 46px;
+  border: 1px solid #1a1815;
+  background: #1a1815;
+  color: #f7f5f0;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+.styx-sizeguide-cta:hover { background: #b8924a; border-color: #b8924a; }
+.styx-sizeguide-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 22px 0 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.styx-sizeguide-table caption {
+  text-align: left;
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #2d2a24;
+  padding-bottom: 8px;
+}
+.styx-sizeguide-table th,
+.styx-sizeguide-table td {
+  text-align: left;
+  padding: 7px 8px;
+  border-bottom: 1px solid var(--styx-border);
+  color: #1a1815;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.styx-sizeguide-table thead th {
+  font-weight: 500;
+  color: var(--styx-muted);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.styx-sizeguide-table tbody th { font-weight: 500; }
+.styx-sizeguide-table tr.is-active td,
+.styx-sizeguide-table tr.is-active th { background: #fffefa; }
+.styx-sizeguide-hint {
+  font-family: 'Inter', sans-serif;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--styx-muted);
+  margin: 8px 0 0;
+}
+.styx-sizeguide-trigger {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: #6b4423;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.styx-sizeguide-trigger:hover { color: #1a1815; }
+@media (max-width: 860px) {
+  .styx-sizeguide { padding: 0; align-items: end; }
+  .styx-sizeguide-panel {
+    grid-template-columns: 1fr;
+    width: 100%;
+    max-height: 100vh;
+    height: 100vh;
+    overflow-y: auto;
+    border: none;
+  }
+  .styx-sizeguide-figure {
+    aspect-ratio: auto;
+    height: 52vh;
+    max-height: none;
+    flex-shrink: 0;
+  }
+  .styx-sizeguide-side {
+    padding: 22px 16px 32px;
+    max-height: none;
+    overflow: visible;
+  }
+  .styx-sizeguide-title { font-size: 28px; }
 }

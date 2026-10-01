@@ -245,7 +245,7 @@ const CHAIN_TAXONOMY: ChainGroup[] = [
       {name: 'Cuban Link', handle: 'cuban'},
       {name: 'Curb Chain', handle: 'curb'},
       {name: 'Figaro Chain', handle: 'figaro'},
-      {name: 'Mariner Chain', handle: 'mariner'},
+      {name: 'Marine Chain', handle: 'marine'},
       {name: 'Gucci Link', handle: 'gucci'},
       {name: 'Panther Link', handle: 'panther'},
       {name: 'Rolo Chain', handle: 'rolo'},

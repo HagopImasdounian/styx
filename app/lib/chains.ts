@@ -5,11 +5,40 @@
 
 /** Chain weave families that have a silhouette/outline tile in /images/silhouettes/tiles. */
 export const CHAIN_FAMILIES = [
-  'cuban', 'curb', 'box', 'rope', 'cable', 'figaro', 'wheat',
-  'rolo', 'singapore', 'franco', 'herringbone', 'paperclip', 'snake',
+  'cuban',
+  'curb',
+  'box',
+  'rope',
+  'cable',
+  'figaro',
+  'wheat',
+  'rolo',
+  'singapore',
+  'franco',
+  'herringbone',
+  'paperclip',
+  'snake',
 ] as const;
 
 export type ChainFamily = (typeof CHAIN_FAMILIES)[number];
+
+/**
+ * Category (collection) families = the silhouette families plus weaves that
+ * have a live collection + cutout but no true-size silhouette tile yet.
+ * Used for category tiles / weave strips, NOT for silhouettes.
+ */
+export const CATEGORY_FAMILIES = [...CHAIN_FAMILIES, 'marine'] as const;
+export type CategoryFamily = (typeof CATEGORY_FAMILIES)[number];
+
+/** Collection handle/title → category family ("marine" also matches mariner/anchor). */
+export function categoryToSlug(
+  handle: string | null | undefined,
+  title = '',
+): CategoryFamily | null {
+  const hay = `${handle || ''} ${title || ''}`.toLowerCase();
+  if (/\b(marine|mariner|anchor)\b/.test(hay)) return 'marine';
+  return styleToSlug(handle, title);
+}
 
 /** Map a chain style label (or the product title) → family slug; null if none match. */
 export function styleToSlug(
@@ -26,8 +55,7 @@ export function parseMm(
   title = '',
 ): number | null {
   const src = thickness || title || '';
-  const m =
-    src.match(/(\d+(?:\.\d+)?)\s*mm/i) || src.match(/(\d+(?:\.\d+)?)/);
+  const m = src.match(/(\d+(?:\.\d+)?)\s*mm/i) || src.match(/(\d+(?:\.\d+)?)/);
   return m ? parseFloat(m[1]) : null;
 }
 

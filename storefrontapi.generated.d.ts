@@ -93,6 +93,8 @@ export type ProductCardFragment = Pick<
   chain_construction?: StorefrontAPI.Maybe<
     Pick<StorefrontAPI.Metafield, 'value'>
   >;
+  chain_thickness?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+  spec_style?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
 };
 
 export type FeaturedCollectionDetailsFragment = Pick<
@@ -389,6 +391,12 @@ export type ApiAllProductsQuery = {
         chain_construction?: StorefrontAPI.Maybe<
           Pick<StorefrontAPI.Metafield, 'value'>
         >;
+        chain_thickness?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'value'>
+        >;
+        spec_style?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'value'>
+        >;
       }
     >;
   };
@@ -490,6 +498,12 @@ export type CollectionDetailsQuery = {
             chain_construction?: StorefrontAPI.Maybe<
               Pick<StorefrontAPI.Metafield, 'value'>
             >;
+            chain_thickness?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Metafield, 'value'>
+            >;
+            spec_style?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Metafield, 'value'>
+            >;
           }
         >;
         pageInfo: Pick<
@@ -507,8 +521,15 @@ export type CollectionDetailsQuery = {
             chain_construction?: StorefrontAPI.Maybe<
               Pick<StorefrontAPI.Metafield, 'value'>
             >;
+            chain_thickness?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Metafield, 'value'>
+            >;
+            spec_style?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Metafield, 'value'>
+            >;
             variants: {
               nodes: Array<{
+                price: Pick<StorefrontAPI.MoneyV2, 'amount'>;
                 selectedOptions: Array<
                   Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
                 >;
@@ -717,6 +738,12 @@ export type FeaturedItemsQuery = {
           >;
         };
         chain_construction?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'value'>
+        >;
+        chain_thickness?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'value'>
+        >;
+        spec_style?: StorefrontAPI.Maybe<
           Pick<StorefrontAPI.Metafield, 'value'>
         >;
       }
@@ -1079,6 +1106,7 @@ export type ProductFragment = Pick<
   spec_profile?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
   spec_clasp?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
   spec_cast?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+  spec_style?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
 };
 
 export type ProductQueryVariables = StorefrontAPI.Exact<{
@@ -1281,6 +1309,7 @@ export type ProductQuery = {
       >;
       spec_clasp?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
       spec_cast?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+      spec_style?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
     }
   >;
   shop: Pick<StorefrontAPI.Shop, 'name'> & {
@@ -1345,6 +1374,12 @@ export type ProductRecommendationsQuery = {
         chain_construction?: StorefrontAPI.Maybe<
           Pick<StorefrontAPI.Metafield, 'value'>
         >;
+        chain_thickness?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'value'>
+        >;
+        spec_style?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'value'>
+        >;
       }
     >
   >;
@@ -1389,6 +1424,12 @@ export type ProductRecommendationsQuery = {
           >;
         };
         chain_construction?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'value'>
+        >;
+        chain_thickness?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'value'>
+        >;
+        spec_style?: StorefrontAPI.Maybe<
           Pick<StorefrontAPI.Metafield, 'value'>
         >;
       }
@@ -1448,57 +1489,16 @@ export type CollectionProductsQuery = {
           chain_construction?: StorefrontAPI.Maybe<
             Pick<StorefrontAPI.Metafield, 'value'>
           >;
+          chain_thickness?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.Metafield, 'value'>
+          >;
+          spec_style?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.Metafield, 'value'>
+          >;
         }
       >;
     };
   }>;
-};
-
-export type CrossSellProductsQueryVariables = StorefrontAPI.Exact<{
-  query: StorefrontAPI.Scalars['String']['input'];
-  count?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['Int']['input']>;
-  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
-  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
-}>;
-
-export type CrossSellProductsQuery = {
-  products: {
-    nodes: Array<
-      Pick<
-        StorefrontAPI.Product,
-        'id' | 'title' | 'handle' | 'productType' | 'tags'
-      > & {
-        chain_style?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.Metafield, 'value'>
-        >;
-        chain_thickness?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.Metafield, 'value'>
-        >;
-        chain_construction?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.Metafield, 'value'>
-        >;
-        chain_karat?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.Metafield, 'value'>
-        >;
-        variants: {
-          nodes: Array<
-            Pick<StorefrontAPI.ProductVariant, 'id' | 'availableForSale'> & {
-              image?: StorefrontAPI.Maybe<
-                Pick<
-                  StorefrontAPI.Image,
-                  'url' | 'altText' | 'width' | 'height'
-                >
-              >;
-              price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
-              selectedOptions: Array<
-                Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
-              >;
-            }
-          >;
-        };
-      }
-    >;
-  };
 };
 
 export type AllProductsQueryVariables = StorefrontAPI.Exact<{
@@ -1556,6 +1556,12 @@ export type AllProductsQuery = {
           >;
         };
         chain_construction?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'value'>
+        >;
+        chain_thickness?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'value'>
+        >;
+        spec_style?: StorefrontAPI.Maybe<
           Pick<StorefrontAPI.Metafield, 'value'>
         >;
       }
@@ -1625,6 +1631,12 @@ export type PaginatedProductsSearchQuery = {
           >;
         };
         chain_construction?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'value'>
+        >;
+        chain_thickness?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'value'>
+        >;
+        spec_style?: StorefrontAPI.Maybe<
           Pick<StorefrontAPI.Metafield, 'value'>
         >;
       }
@@ -1780,11 +1792,11 @@ interface GeneratedQueryTypes {
     return: StyxHomeCollectionsQuery;
     variables: StyxHomeCollectionsQueryVariables;
   };
-  '#graphql\n  query ApiAllProducts(\n    $query: String\n    $count: Int\n    $reverse: Boolean\n    $country: CountryCode\n    $language: LanguageCode\n    $sortKey: ProductSortKeys\n  ) @inContext(country: $country, language: $language) {\n    products(first: $count, sortKey: $sortKey, reverse: $reverse, query: $query) {\n      nodes {\n        ...ProductCard\n      }\n    }\n  }\n  #graphql\n  fragment ProductCard on Product {\n    id\n    title\n    publishedAt\n    handle\n    productType\n    tags\n    media(first: 8) {\n      nodes {\n        ... on MediaImage {\n          id\n          image {\n            url\n            altText\n            width\n            height\n          }\n        }\n      }\n    }\n    variants(first: 30) {\n      nodes {\n        id\n        sku\n        availableForSale\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n        weight\n        weightUnit\n      }\n    }\n    chain_construction: metafield(namespace: "chain", key: "construction") {\n      value\n    }\n  }\n\n': {
+  '#graphql\n  query ApiAllProducts(\n    $query: String\n    $count: Int\n    $reverse: Boolean\n    $country: CountryCode\n    $language: LanguageCode\n    $sortKey: ProductSortKeys\n  ) @inContext(country: $country, language: $language) {\n    products(first: $count, sortKey: $sortKey, reverse: $reverse, query: $query) {\n      nodes {\n        ...ProductCard\n      }\n    }\n  }\n  #graphql\n  fragment ProductCard on Product {\n    id\n    title\n    publishedAt\n    handle\n    productType\n    tags\n    media(first: 8) {\n      nodes {\n        ... on MediaImage {\n          id\n          image {\n            url\n            altText\n            width\n            height\n          }\n        }\n      }\n    }\n    variants(first: 30) {\n      nodes {\n        id\n        sku\n        availableForSale\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n        weight\n        weightUnit\n      }\n    }\n    chain_construction: metafield(namespace: "chain", key: "construction") {\n      value\n    }\n    chain_thickness: metafield(namespace: "chain", key: "thickness") {\n      value\n    }\n    spec_style: metafield(namespace: "custom", key: "spec_style") {\n      value\n    }\n  }\n\n': {
     return: ApiAllProductsQuery;
     variables: ApiAllProductsQueryVariables;
   };
-  '#graphql\n  query CollectionDetails(\n    $handle: String!\n    $country: CountryCode\n    $language: LanguageCode\n    $filters: [ProductFilter!]\n    $sortKey: ProductCollectionSortKeys!\n    $reverse: Boolean\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n    $fetchIndex: Boolean!\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      id\n      handle\n      title\n      description\n      seo {\n        description\n        title\n      }\n      image {\n        id\n        url\n        width\n        height\n        altText\n      }\n      story_heading: metafield(namespace: "custom", key: "story_heading") {\n        value\n      }\n      story_body: metafield(namespace: "custom", key: "story_body") {\n        value\n      }\n      era_label: metafield(namespace: "custom", key: "era_label") {\n        value\n      }\n      chapter_kicker: metafield(namespace: "custom", key: "chapter_kicker") {\n        value\n      }\n      cutout: metafield(namespace: "custom", key: "cutout_image") {\n        reference {\n          ... on MediaImage {\n            image {\n              url\n            }\n          }\n        }\n      }\n      products(\n        first: $first,\n        last: $last,\n        before: $startCursor,\n        after: $endCursor,\n        filters: $filters,\n        sortKey: $sortKey,\n        reverse: $reverse\n      ) {\n        filters {\n          id\n          label\n          type\n          values {\n            id\n            label\n            count\n            input\n          }\n        }\n        nodes {\n          ...ProductCard\n        }\n        pageInfo {\n          hasPreviousPage\n          hasNextPage\n          endCursor\n          startCursor\n        }\n      }\n    }\n    # Lightweight index of the ENTIRE collection (post server filters)\n    # powers the exact result count + available filter pills while the main\n    # products query stays paginated. Skipped in full-set mode.\n    allIndex: collection(handle: $handle) @include(if: $fetchIndex) {\n      id\n      products(first: 250, filters: $filters) {\n        nodes {\n          id\n          title\n          chain_construction: metafield(namespace: "chain", key: "construction") {\n            value\n          }\n          variants(first: 30) {\n            nodes {\n              selectedOptions {\n                name\n                value\n              }\n            }\n          }\n        }\n      }\n    }\n    collections(first: 100) {\n      edges {\n        node {\n          title\n          handle\n          cutout: metafield(namespace: "custom", key: "cutout_image") {\n            reference {\n              ... on MediaImage {\n                image {\n                  url\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n  #graphql\n  fragment ProductCard on Product {\n    id\n    title\n    publishedAt\n    handle\n    productType\n    tags\n    media(first: 8) {\n      nodes {\n        ... on MediaImage {\n          id\n          image {\n            url\n            altText\n            width\n            height\n          }\n        }\n      }\n    }\n    variants(first: 30) {\n      nodes {\n        id\n        sku\n        availableForSale\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n        weight\n        weightUnit\n      }\n    }\n    chain_construction: metafield(namespace: "chain", key: "construction") {\n      value\n    }\n  }\n\n': {
+  '#graphql\n  query CollectionDetails(\n    $handle: String!\n    $country: CountryCode\n    $language: LanguageCode\n    $filters: [ProductFilter!]\n    $sortKey: ProductCollectionSortKeys!\n    $reverse: Boolean\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n    $fetchIndex: Boolean!\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      id\n      handle\n      title\n      description\n      seo {\n        description\n        title\n      }\n      image {\n        id\n        url\n        width\n        height\n        altText\n      }\n      story_heading: metafield(namespace: "custom", key: "story_heading") {\n        value\n      }\n      story_body: metafield(namespace: "custom", key: "story_body") {\n        value\n      }\n      era_label: metafield(namespace: "custom", key: "era_label") {\n        value\n      }\n      chapter_kicker: metafield(namespace: "custom", key: "chapter_kicker") {\n        value\n      }\n      cutout: metafield(namespace: "custom", key: "cutout_image") {\n        reference {\n          ... on MediaImage {\n            image {\n              url\n            }\n          }\n        }\n      }\n      products(\n        first: $first,\n        last: $last,\n        before: $startCursor,\n        after: $endCursor,\n        filters: $filters,\n        sortKey: $sortKey,\n        reverse: $reverse\n      ) {\n        filters {\n          id\n          label\n          type\n          values {\n            id\n            label\n            count\n            input\n          }\n        }\n        nodes {\n          ...ProductCard\n        }\n        pageInfo {\n          hasPreviousPage\n          hasNextPage\n          endCursor\n          startCursor\n        }\n      }\n    }\n    # Lightweight index of the ENTIRE collection (post server filters)\n    # powers the exact result count + available filter pills while the main\n    # products query stays paginated. Skipped in full-set mode.\n    allIndex: collection(handle: $handle) @include(if: $fetchIndex) {\n      id\n      products(first: 250, filters: $filters) {\n        nodes {\n          id\n          title\n          chain_construction: metafield(namespace: "chain", key: "construction") {\n            value\n          }\n          chain_thickness: metafield(namespace: "chain", key: "thickness") {\n            value\n          }\n          spec_style: metafield(namespace: "custom", key: "spec_style") {\n            value\n          }\n          variants(first: 30) {\n            nodes {\n              price {\n                amount\n              }\n              selectedOptions {\n                name\n                value\n              }\n            }\n          }\n        }\n      }\n    }\n    collections(first: 100) {\n      edges {\n        node {\n          title\n          handle\n          cutout: metafield(namespace: "custom", key: "cutout_image") {\n            reference {\n              ... on MediaImage {\n                image {\n                  url\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n  #graphql\n  fragment ProductCard on Product {\n    id\n    title\n    publishedAt\n    handle\n    productType\n    tags\n    media(first: 8) {\n      nodes {\n        ... on MediaImage {\n          id\n          image {\n            url\n            altText\n            width\n            height\n          }\n        }\n      }\n    }\n    variants(first: 30) {\n      nodes {\n        id\n        sku\n        availableForSale\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n        weight\n        weightUnit\n      }\n    }\n    chain_construction: metafield(namespace: "chain", key: "construction") {\n      value\n    }\n    chain_thickness: metafield(namespace: "chain", key: "thickness") {\n      value\n    }\n    spec_style: metafield(namespace: "custom", key: "spec_style") {\n      value\n    }\n  }\n\n': {
     return: CollectionDetailsQuery;
     variables: CollectionDetailsQueryVariables;
   };
@@ -1800,7 +1812,7 @@ interface GeneratedQueryTypes {
     return: CompareProductQuery;
     variables: CompareProductQueryVariables;
   };
-  '#graphql\n  query FeaturedItems(\n    $country: CountryCode\n    $language: LanguageCode\n    $pageBy: Int = 12\n  ) @inContext(country: $country, language: $language) {\n    featuredCollections: collections(first: 3, sortKey: UPDATED_AT) {\n      nodes {\n        ...FeaturedCollectionDetails\n      }\n    }\n    featuredProducts: products(first: $pageBy) {\n      nodes {\n        ...ProductCard\n      }\n    }\n  }\n\n  #graphql\n  fragment ProductCard on Product {\n    id\n    title\n    publishedAt\n    handle\n    productType\n    tags\n    media(first: 8) {\n      nodes {\n        ... on MediaImage {\n          id\n          image {\n            url\n            altText\n            width\n            height\n          }\n        }\n      }\n    }\n    variants(first: 30) {\n      nodes {\n        id\n        sku\n        availableForSale\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n        weight\n        weightUnit\n      }\n    }\n    chain_construction: metafield(namespace: "chain", key: "construction") {\n      value\n    }\n  }\n\n  #graphql\n  fragment FeaturedCollectionDetails on Collection {\n    id\n    title\n    handle\n    image {\n      altText\n      width\n      height\n      url\n    }\n  }\n\n': {
+  '#graphql\n  query FeaturedItems(\n    $country: CountryCode\n    $language: LanguageCode\n    $pageBy: Int = 12\n  ) @inContext(country: $country, language: $language) {\n    featuredCollections: collections(first: 3, sortKey: UPDATED_AT) {\n      nodes {\n        ...FeaturedCollectionDetails\n      }\n    }\n    featuredProducts: products(first: $pageBy) {\n      nodes {\n        ...ProductCard\n      }\n    }\n  }\n\n  #graphql\n  fragment ProductCard on Product {\n    id\n    title\n    publishedAt\n    handle\n    productType\n    tags\n    media(first: 8) {\n      nodes {\n        ... on MediaImage {\n          id\n          image {\n            url\n            altText\n            width\n            height\n          }\n        }\n      }\n    }\n    variants(first: 30) {\n      nodes {\n        id\n        sku\n        availableForSale\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n        weight\n        weightUnit\n      }\n    }\n    chain_construction: metafield(namespace: "chain", key: "construction") {\n      value\n    }\n    chain_thickness: metafield(namespace: "chain", key: "thickness") {\n      value\n    }\n    spec_style: metafield(namespace: "custom", key: "spec_style") {\n      value\n    }\n  }\n\n  #graphql\n  fragment FeaturedCollectionDetails on Collection {\n    id\n    title\n    handle\n    image {\n      altText\n      width\n      height\n      url\n    }\n  }\n\n': {
     return: FeaturedItemsQuery;
     variables: FeaturedItemsQueryVariables;
   };
@@ -1828,27 +1840,23 @@ interface GeneratedQueryTypes {
     return: PrintProductQuery;
     variables: PrintProductQueryVariables;
   };
-  '#graphql\n  query Product(\n    $country: CountryCode\n    $language: LanguageCode\n    $handle: String!\n    $selectedOptions: [SelectedOptionInput!]!\n  ) @inContext(country: $country, language: $language) {\n    product(handle: $handle) {\n      ...Product\n    }\n    shop {\n      name\n      primaryDomain {\n        url\n      }\n      shippingPolicy {\n        body\n        handle\n      }\n      refundPolicy {\n        body\n        handle\n      }\n    }\n  }\n  #graphql\n  fragment Media on Media {\n    __typename\n    mediaContentType\n    alt\n    previewImage {\n      url\n    }\n    ... on MediaImage {\n      id\n      image {\n        id\n        url\n        width\n        height\n      }\n    }\n    ... on Video {\n      id\n      sources {\n        mimeType\n        url\n      }\n    }\n    ... on Model3d {\n      id\n      sources {\n        mimeType\n        url\n      }\n    }\n    ... on ExternalVideo {\n      id\n      embedUrl\n      host\n    }\n  }\n\n  #graphql\n  fragment Product on Product {\n    id\n    title\n    handle\n    productType\n    tags\n    descriptionHtml\n    description\n    encodedVariantExistence\n    encodedVariantAvailability\n    options {\n      name\n      optionValues {\n        name\n        firstSelectableVariant {\n          ...ProductVariant\n        }\n        swatch {\n          color\n          image {\n            previewImage {\n              url\n            }\n          }\n        }\n      }\n    }\n    selectedOrFirstAvailableVariant(selectedOptions: $selectedOptions, ignoreUnknownOptions: true, caseInsensitiveMatch: true) {\n      ...ProductVariant\n    }\n    adjacentVariants (selectedOptions: $selectedOptions) {\n      ...ProductVariant\n    }\n    collections(first: 5) {\n      nodes {\n        handle\n        title\n      }\n    }\n    seo {\n      description\n      title\n    }\n    media(first: 100) {\n      nodes {\n        ...Media\n      }\n    }\n    weight_grams: metafield(namespace: "custom", key: "weight_grams") {\n      value\n    }\n    karat: metafield(namespace: "chain", key: "karat") {\n      value\n    }\n    chain_thickness: metafield(namespace: "chain", key: "thickness") {\n      value\n    }\n    chain_construction: metafield(namespace: "chain", key: "construction") {\n      value\n    }\n    chain_style: metafield(namespace: "chain", key: "chain_style") {\n      value\n    }\n    labor_cost: metafield(namespace: "custom", key: "labor_cost") {\n      value\n    }\n    margin_percent: metafield(namespace: "custom", key: "margin_percent") {\n      value\n    }\n    chain_origin: metafield(namespace: "custom", key: "chain_origin") {\n      value\n    }\n    year_invented: metafield(namespace: "custom", key: "year_invented") {\n      value\n    }\n    roman_numeral: metafield(namespace: "custom", key: "roman_numeral") {\n      value\n    }\n    chain_blurb: metafield(namespace: "custom", key: "chain_blurb") {\n      value\n    }\n    story_heading: metafield(namespace: "custom", key: "story_heading") {\n      value\n    }\n    story_body: metafield(namespace: "custom", key: "story_body") {\n      value\n    }\n    pull_quote: metafield(namespace: "custom", key: "pull_quote") {\n      value\n    }\n    pull_quote_attr: metafield(namespace: "custom", key: "pull_quote_attr") {\n      value\n    }\n    spec_weave: metafield(namespace: "custom", key: "spec_weave") {\n      value\n    }\n    spec_profile: metafield(namespace: "custom", key: "spec_profile") {\n      value\n    }\n    spec_clasp: metafield(namespace: "custom", key: "spec_clasp") {\n      value\n    }\n    spec_cast: metafield(namespace: "custom", key: "spec_cast") {\n      value\n    }\n  }\n  #graphql\n  fragment ProductVariant on ProductVariant {\n    id\n    availableForSale\n    selectedOptions {\n      name\n      value\n    }\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n    price {\n      amount\n      currencyCode\n    }\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    sku\n    title\n    weight\n    unitPrice {\n      amount\n      currencyCode\n    }\n    product {\n      title\n      handle\n    }\n  }\n\n\n': {
+  '#graphql\n  query Product(\n    $country: CountryCode\n    $language: LanguageCode\n    $handle: String!\n    $selectedOptions: [SelectedOptionInput!]!\n  ) @inContext(country: $country, language: $language) {\n    product(handle: $handle) {\n      ...Product\n    }\n    shop {\n      name\n      primaryDomain {\n        url\n      }\n      shippingPolicy {\n        body\n        handle\n      }\n      refundPolicy {\n        body\n        handle\n      }\n    }\n  }\n  #graphql\n  fragment Media on Media {\n    __typename\n    mediaContentType\n    alt\n    previewImage {\n      url\n    }\n    ... on MediaImage {\n      id\n      image {\n        id\n        url\n        width\n        height\n      }\n    }\n    ... on Video {\n      id\n      sources {\n        mimeType\n        url\n      }\n    }\n    ... on Model3d {\n      id\n      sources {\n        mimeType\n        url\n      }\n    }\n    ... on ExternalVideo {\n      id\n      embedUrl\n      host\n    }\n  }\n\n  #graphql\n  fragment Product on Product {\n    id\n    title\n    handle\n    productType\n    tags\n    descriptionHtml\n    description\n    encodedVariantExistence\n    encodedVariantAvailability\n    options {\n      name\n      optionValues {\n        name\n        firstSelectableVariant {\n          ...ProductVariant\n        }\n        swatch {\n          color\n          image {\n            previewImage {\n              url\n            }\n          }\n        }\n      }\n    }\n    selectedOrFirstAvailableVariant(selectedOptions: $selectedOptions, ignoreUnknownOptions: true, caseInsensitiveMatch: true) {\n      ...ProductVariant\n    }\n    adjacentVariants (selectedOptions: $selectedOptions) {\n      ...ProductVariant\n    }\n    collections(first: 5) {\n      nodes {\n        handle\n        title\n      }\n    }\n    seo {\n      description\n      title\n    }\n    media(first: 100) {\n      nodes {\n        ...Media\n      }\n    }\n    weight_grams: metafield(namespace: "custom", key: "weight_grams") {\n      value\n    }\n    karat: metafield(namespace: "chain", key: "karat") {\n      value\n    }\n    chain_thickness: metafield(namespace: "chain", key: "thickness") {\n      value\n    }\n    chain_construction: metafield(namespace: "chain", key: "construction") {\n      value\n    }\n    chain_style: metafield(namespace: "chain", key: "chain_style") {\n      value\n    }\n    labor_cost: metafield(namespace: "custom", key: "labor_cost") {\n      value\n    }\n    margin_percent: metafield(namespace: "custom", key: "margin_percent") {\n      value\n    }\n    chain_origin: metafield(namespace: "custom", key: "chain_origin") {\n      value\n    }\n    year_invented: metafield(namespace: "custom", key: "year_invented") {\n      value\n    }\n    roman_numeral: metafield(namespace: "custom", key: "roman_numeral") {\n      value\n    }\n    chain_blurb: metafield(namespace: "custom", key: "chain_blurb") {\n      value\n    }\n    story_heading: metafield(namespace: "custom", key: "story_heading") {\n      value\n    }\n    story_body: metafield(namespace: "custom", key: "story_body") {\n      value\n    }\n    pull_quote: metafield(namespace: "custom", key: "pull_quote") {\n      value\n    }\n    pull_quote_attr: metafield(namespace: "custom", key: "pull_quote_attr") {\n      value\n    }\n    spec_weave: metafield(namespace: "custom", key: "spec_weave") {\n      value\n    }\n    spec_profile: metafield(namespace: "custom", key: "spec_profile") {\n      value\n    }\n    spec_clasp: metafield(namespace: "custom", key: "spec_clasp") {\n      value\n    }\n    spec_cast: metafield(namespace: "custom", key: "spec_cast") {\n      value\n    }\n    spec_style: metafield(namespace: "custom", key: "spec_style") {\n      value\n    }\n  }\n  #graphql\n  fragment ProductVariant on ProductVariant {\n    id\n    availableForSale\n    selectedOptions {\n      name\n      value\n    }\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n    price {\n      amount\n      currencyCode\n    }\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    sku\n    title\n    weight\n    unitPrice {\n      amount\n      currencyCode\n    }\n    product {\n      title\n      handle\n    }\n  }\n\n\n': {
     return: ProductQuery;
     variables: ProductQueryVariables;
   };
-  '#graphql\n  query productRecommendations(\n    $productId: ID!\n    $count: Int\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    recommended: productRecommendations(productId: $productId) {\n      ...ProductCard\n    }\n    additional: products(first: $count, sortKey: BEST_SELLING) {\n      nodes {\n        ...ProductCard\n      }\n    }\n  }\n  #graphql\n  fragment ProductCard on Product {\n    id\n    title\n    publishedAt\n    handle\n    productType\n    tags\n    media(first: 8) {\n      nodes {\n        ... on MediaImage {\n          id\n          image {\n            url\n            altText\n            width\n            height\n          }\n        }\n      }\n    }\n    variants(first: 30) {\n      nodes {\n        id\n        sku\n        availableForSale\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n        weight\n        weightUnit\n      }\n    }\n    chain_construction: metafield(namespace: "chain", key: "construction") {\n      value\n    }\n  }\n\n': {
+  '#graphql\n  query productRecommendations(\n    $productId: ID!\n    $count: Int\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    recommended: productRecommendations(productId: $productId) {\n      ...ProductCard\n    }\n    additional: products(first: $count, sortKey: BEST_SELLING) {\n      nodes {\n        ...ProductCard\n      }\n    }\n  }\n  #graphql\n  fragment ProductCard on Product {\n    id\n    title\n    publishedAt\n    handle\n    productType\n    tags\n    media(first: 8) {\n      nodes {\n        ... on MediaImage {\n          id\n          image {\n            url\n            altText\n            width\n            height\n          }\n        }\n      }\n    }\n    variants(first: 30) {\n      nodes {\n        id\n        sku\n        availableForSale\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n        weight\n        weightUnit\n      }\n    }\n    chain_construction: metafield(namespace: "chain", key: "construction") {\n      value\n    }\n    chain_thickness: metafield(namespace: "chain", key: "thickness") {\n      value\n    }\n    spec_style: metafield(namespace: "custom", key: "spec_style") {\n      value\n    }\n  }\n\n': {
     return: ProductRecommendationsQuery;
     variables: ProductRecommendationsQueryVariables;
   };
-  '#graphql\n  query collectionProducts(\n    $handle: String!\n    $count: Int\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      products(first: $count, sortKey: PRICE) {\n        nodes {\n          ...ProductCard\n        }\n      }\n    }\n  }\n  #graphql\n  fragment ProductCard on Product {\n    id\n    title\n    publishedAt\n    handle\n    productType\n    tags\n    media(first: 8) {\n      nodes {\n        ... on MediaImage {\n          id\n          image {\n            url\n            altText\n            width\n            height\n          }\n        }\n      }\n    }\n    variants(first: 30) {\n      nodes {\n        id\n        sku\n        availableForSale\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n        weight\n        weightUnit\n      }\n    }\n    chain_construction: metafield(namespace: "chain", key: "construction") {\n      value\n    }\n  }\n\n': {
+  '#graphql\n  query collectionProducts(\n    $handle: String!\n    $count: Int\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      products(first: $count, sortKey: PRICE) {\n        nodes {\n          ...ProductCard\n        }\n      }\n    }\n  }\n  #graphql\n  fragment ProductCard on Product {\n    id\n    title\n    publishedAt\n    handle\n    productType\n    tags\n    media(first: 8) {\n      nodes {\n        ... on MediaImage {\n          id\n          image {\n            url\n            altText\n            width\n            height\n          }\n        }\n      }\n    }\n    variants(first: 30) {\n      nodes {\n        id\n        sku\n        availableForSale\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n        weight\n        weightUnit\n      }\n    }\n    chain_construction: metafield(namespace: "chain", key: "construction") {\n      value\n    }\n    chain_thickness: metafield(namespace: "chain", key: "thickness") {\n      value\n    }\n    spec_style: metafield(namespace: "custom", key: "spec_style") {\n      value\n    }\n  }\n\n': {
     return: CollectionProductsQuery;
     variables: CollectionProductsQueryVariables;
   };
-  '#graphql\n  query crossSellProducts(\n    $query: String!\n    $count: Int\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    products(first: $count, query: $query) {\n      nodes {\n        id\n        title\n        handle\n        productType\n        tags\n        chain_style: metafield(namespace: "chain", key: "chain_style") {\n          value\n        }\n        chain_thickness: metafield(namespace: "chain", key: "thickness") {\n          value\n        }\n        chain_construction: metafield(namespace: "chain", key: "construction") {\n          value\n        }\n        chain_karat: metafield(namespace: "chain", key: "karat") {\n          value\n        }\n        variants(first: 20) {\n          nodes {\n            id\n            availableForSale\n            image {\n              url\n              altText\n              width\n              height\n            }\n            price {\n              amount\n              currencyCode\n            }\n            selectedOptions {\n              name\n              value\n            }\n          }\n        }\n      }\n    }\n  }\n': {
-    return: CrossSellProductsQuery;
-    variables: CrossSellProductsQueryVariables;
-  };
-  '#graphql\n  query AllProducts(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, last: $last, before: $startCursor, after: $endCursor) {\n      nodes {\n        ...ProductCard\n      }\n      pageInfo {\n        hasPreviousPage\n        hasNextPage\n        startCursor\n        endCursor\n      }\n    }\n  }\n  #graphql\n  fragment ProductCard on Product {\n    id\n    title\n    publishedAt\n    handle\n    productType\n    tags\n    media(first: 8) {\n      nodes {\n        ... on MediaImage {\n          id\n          image {\n            url\n            altText\n            width\n            height\n          }\n        }\n      }\n    }\n    variants(first: 30) {\n      nodes {\n        id\n        sku\n        availableForSale\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n        weight\n        weightUnit\n      }\n    }\n    chain_construction: metafield(namespace: "chain", key: "construction") {\n      value\n    }\n  }\n\n': {
+  '#graphql\n  query AllProducts(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, last: $last, before: $startCursor, after: $endCursor) {\n      nodes {\n        ...ProductCard\n      }\n      pageInfo {\n        hasPreviousPage\n        hasNextPage\n        startCursor\n        endCursor\n      }\n    }\n  }\n  #graphql\n  fragment ProductCard on Product {\n    id\n    title\n    publishedAt\n    handle\n    productType\n    tags\n    media(first: 8) {\n      nodes {\n        ... on MediaImage {\n          id\n          image {\n            url\n            altText\n            width\n            height\n          }\n        }\n      }\n    }\n    variants(first: 30) {\n      nodes {\n        id\n        sku\n        availableForSale\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n        weight\n        weightUnit\n      }\n    }\n    chain_construction: metafield(namespace: "chain", key: "construction") {\n      value\n    }\n    chain_thickness: metafield(namespace: "chain", key: "thickness") {\n      value\n    }\n    spec_style: metafield(namespace: "custom", key: "spec_style") {\n      value\n    }\n  }\n\n': {
     return: AllProductsQuery;
     variables: AllProductsQueryVariables;
   };
-  '#graphql\n  query PaginatedProductsSearch(\n    $country: CountryCode\n    $endCursor: String\n    $first: Int\n    $language: LanguageCode\n    $last: Int\n    $searchTerm: String\n    $startCursor: String\n  ) @inContext(country: $country, language: $language) {\n    products(\n      first: $first,\n      last: $last,\n      before: $startCursor,\n      after: $endCursor,\n      sortKey: RELEVANCE,\n      query: $searchTerm\n    ) {\n      nodes {\n        ...ProductCard\n      }\n      pageInfo {\n        startCursor\n        endCursor\n        hasNextPage\n        hasPreviousPage\n      }\n    }\n  }\n\n  #graphql\n  fragment ProductCard on Product {\n    id\n    title\n    publishedAt\n    handle\n    productType\n    tags\n    media(first: 8) {\n      nodes {\n        ... on MediaImage {\n          id\n          image {\n            url\n            altText\n            width\n            height\n          }\n        }\n      }\n    }\n    variants(first: 30) {\n      nodes {\n        id\n        sku\n        availableForSale\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n        weight\n        weightUnit\n      }\n    }\n    chain_construction: metafield(namespace: "chain", key: "construction") {\n      value\n    }\n  }\n\n': {
+  '#graphql\n  query PaginatedProductsSearch(\n    $country: CountryCode\n    $endCursor: String\n    $first: Int\n    $language: LanguageCode\n    $last: Int\n    $searchTerm: String\n    $startCursor: String\n  ) @inContext(country: $country, language: $language) {\n    products(\n      first: $first,\n      last: $last,\n      before: $startCursor,\n      after: $endCursor,\n      sortKey: RELEVANCE,\n      query: $searchTerm\n    ) {\n      nodes {\n        ...ProductCard\n      }\n      pageInfo {\n        startCursor\n        endCursor\n        hasNextPage\n        hasPreviousPage\n      }\n    }\n  }\n\n  #graphql\n  fragment ProductCard on Product {\n    id\n    title\n    publishedAt\n    handle\n    productType\n    tags\n    media(first: 8) {\n      nodes {\n        ... on MediaImage {\n          id\n          image {\n            url\n            altText\n            width\n            height\n          }\n        }\n      }\n    }\n    variants(first: 30) {\n      nodes {\n        id\n        sku\n        availableForSale\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n        weight\n        weightUnit\n      }\n    }\n    chain_construction: metafield(namespace: "chain", key: "construction") {\n      value\n    }\n    chain_thickness: metafield(namespace: "chain", key: "thickness") {\n      value\n    }\n    spec_style: metafield(namespace: "custom", key: "spec_style") {\n      value\n    }\n  }\n\n': {
     return: PaginatedProductsSearchQuery;
     variables: PaginatedProductsSearchQueryVariables;
   };

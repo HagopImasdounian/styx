@@ -8,7 +8,7 @@ import {data, useLoaderData} from 'react-router';
 import {seoPayload} from '~/lib/seo.server';
 import {getStyxSeoMeta} from '~/lib/seo-meta';
 import {CACHE_SHORT, routeHeaders} from '~/data/cache';
-import {CHAIN_FAMILIES, styleToSlug} from '~/lib/chains';
+import {CATEGORY_FAMILIES, categoryToSlug, styleToSlug} from '~/lib/chains';
 import {
   HIDDEN_ARTICLE_HANDLES,
   PLACEHOLDER_ARTICLES,
@@ -145,7 +145,7 @@ function minVariantPrice(
 /**
  * Category tiles for "The chains". Driven by the live collections list:
  * any collection whose handle or title names a chain family becomes a tile,
- * in CHAIN_FAMILIES order, with the collection's own lowest in-stock price.
+ * in CATEGORY_FAMILIES order, with the collection's own lowest in-stock price.
  * Falls back to the all-products scan when the collection carries no price.
  */
 function buildChainTiles(
@@ -155,13 +155,13 @@ function buildChainTiles(
   const byFamily = new Map<string, ChainTile>();
 
   for (const c of collectionList) {
-    const family = styleToSlug(c.handle, c.title);
+    const family = categoryToSlug(c.handle, c.title);
     if (!family || byFamily.has(family)) continue;
 
     let from = minVariantPrice(c.products?.nodes || []);
     if (!from) {
       from = minVariantPrice(
-        productList.filter((p) => styleToSlug(p.title) === family),
+        productList.filter((p) => categoryToSlug(null, p.title) === family),
       );
     }
 
@@ -175,7 +175,7 @@ function buildChainTiles(
     });
   }
 
-  return CHAIN_FAMILIES.map((f) => byFamily.get(f))
+  return CATEGORY_FAMILIES.map((f) => byFamily.get(f))
     .filter((t): t is ChainTile => Boolean(t))
     .slice(0, 9);
 }

@@ -94,6 +94,12 @@ export const PRODUCT_CARD_FRAGMENT = `#graphql
     chain_construction: metafield(namespace: "chain", key: "construction") {
       value
     }
+    chain_thickness: metafield(namespace: "chain", key: "thickness") {
+      value
+    }
+    spec_style: metafield(namespace: "custom", key: "spec_style") {
+      value
+    }
   }
 `;
 

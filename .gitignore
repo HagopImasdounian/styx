@@ -15,6 +15,7 @@ node_modules
 *.xlsx
 *.log
 *.py
+!/tools/reprice/*.py
 /scripts/
 /delete-all-products.mjs
 /fetch-chains.mjs

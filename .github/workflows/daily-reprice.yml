@@ -1,0 +1,65 @@
+# Daily gold reprice — runs tools/reprice/reprice.py against the live store.
+#
+# Safety: DRY RUN unless the repository variable REPRICE_APPLY is "1".
+# The dry-run CSV + summary are uploaded as a workflow artifact every day, so
+# the diff can be reviewed before apply is switched on.
+#
+# Secrets / variables (Settings → Secrets and variables → Actions):
+#   secret   SHOPIFY_ADMIN_TOKEN      Admin API token (write_products)
+#   variable REPRICE_APPLY            "1" to write prices; anything else = dry run
+#   variable REPRICE_TRACK_SPOT       "1" to scale rates by the live gold spot
+#   variable REPRICE_BASE_SPOT_USD    spot the frozen rates were quoted at (default 4200)
+name: Daily reprice
+
+on:
+  schedule:
+    - cron: '0 10 * * *'   # 06:00 America/New_York (EDT); 05:00 in winter
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: 'Write prices to Shopify (otherwise dry run)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: reprice
+  cancel-in-progress: false
+
+jobs:
+  reprice:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Reprice
+        env:
+          SHOPIFY_ADMIN_TOKEN: ${{ secrets.SHOPIFY_ADMIN_TOKEN }}
+          PUBLIC_STORE_DOMAIN: styxgold.myshopify.com
+          REPRICE_OUT: ${{ github.workspace }}/reprice-out
+          REPRICE_BASE_SPOT_USD: ${{ vars.REPRICE_BASE_SPOT_USD || '4200' }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$REPRICE_OUT"
+          ARGS=""
+          if [ "${{ vars.REPRICE_TRACK_SPOT }}" = "1" ]; then ARGS="$ARGS --track-spot"; fi
+          if [ "${{ vars.REPRICE_APPLY }}" = "1" ] || [ "${{ github.event.inputs.apply }}" = "true" ]; then
+            ARGS="$ARGS --apply"
+          fi
+          echo "running: reprice.py $ARGS"
+          python3 tools/reprice/reprice.py $ARGS | tee "$REPRICE_OUT/summary.txt"
+
+      - name: Upload run artefacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reprice-${{ github.run_id }}
+          path: reprice-out/
+          retention-days: 30

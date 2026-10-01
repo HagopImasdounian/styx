@@ -1,7 +1,4 @@
-import {
-    type MetaArgs,
-  type LoaderFunctionArgs,
-} from 'react-router';
+import {type MetaArgs, type LoaderFunctionArgs} from 'react-router';
 import {data, useLoaderData} from 'react-router';
 import invariant from 'tiny-invariant';
 import {
@@ -104,12 +101,14 @@ export default function AllProducts() {
                   </PreviousLink>
                 </div>
                 <div
-                  className={`styx-plp-grid ${gridDensityClass(density)}`.trim()}
+                  className={`styx-plp-grid ${gridDensityClass(
+                    density,
+                  )}`.trim()}
                   data-test="product-grid"
                   style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(3, 1fr)',
-                    gap: 48,
+                    gridTemplateColumns: 'repeat(4, 1fr)',
+                    gap: '40px 32px',
                   }}
                   // GridDensityScript may add the density classes pre-hydration
                   suppressHydrationWarning
