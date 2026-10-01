@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useRef, useState} from 'react';
 import {Image} from '@shopify/hydrogen';
 import {Link} from 'react-router';
 import {STYX, FONT} from './constants';
@@ -157,6 +157,7 @@ export function StyxProductCard({
     product.variants.nodes[variantIndex] ?? product.variants.nodes[0];
   const [isHovered, setIsHovered] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
+  const stripRef = useRef<HTMLDivElement>(null);
   if (!variant) return null;
 
   // First 4 cards are above the fold on collection grids, load them eagerly,
@@ -185,7 +186,9 @@ export function StyxProductCard({
   );
   const colorLabel = colorOpt?.value || null;
   const swatchHex = colorLabel ? COLOR_HEX[colorLabel] : null;
-  const altBase = colorLabel ? `${product.title} · ${colorLabel}` : product.title;
+  const altBase = colorLabel
+    ? `${product.title} · ${colorLabel}`
+    : product.title;
 
   // Weight, use displayed variant's weight, or fall back to any variant with weight
   const rawWeight =
@@ -261,6 +264,7 @@ export function StyxProductCard({
       >
         {slides.length ? (
           <div
+            ref={stripRef}
             className="styx-card-strip"
             data-slides={slides.length}
             style={{
@@ -308,6 +312,71 @@ export function StyxProductCard({
           </div>
         ) : (
           <PlaceholderImage aspect="4/5" label={altBase} />
+        )}
+
+        {/* Prev / next arrows, desktop hover only (app.css). Inside the card
+            link, so stop the click from navigating. */}
+        {hasStrip && (
+          <>
+            <button
+              type="button"
+              className="styx-card-arrow"
+              data-dir="prev"
+              aria-label="Previous photo"
+              disabled={activeSlide === 0}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const el = stripRef.current;
+                if (el) el.scrollTo({left: (activeSlide - 1) * el.clientWidth});
+              }}
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M15 5l-7 7 7 7"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+            <button
+              type="button"
+              className="styx-card-arrow"
+              data-dir="next"
+              aria-label="Next photo"
+              disabled={activeSlide >= slides.length - 1}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const el = stripRef.current;
+                if (el) el.scrollTo({left: (activeSlide + 1) * el.clientWidth});
+              }}
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M9 5l7 7-7 7"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          </>
         )}
 
         {/* Swipe dots, mobile only (plp.css) */}

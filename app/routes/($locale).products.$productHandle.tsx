@@ -2946,9 +2946,9 @@ function AutoplayVideo({media}: {media: any}) {
 }
 
 /**
- * Mobile gallery: one full-width scroll-snap carousel. Swipe left/right is
- * native touch scrolling (works pre-hydration); JS only adds the counter,
- * tappable dots, and pausing off-screen videos.
+ * Media gallery carousel (every viewport). Swipe left/right is native touch
+ * scrolling (works pre-hydration); JS adds the counter, prev/next arrows,
+ * tappable dots, desktop thumbnails and keyboard arrows.
  */
 function MobileMediaCarousel({
   slides,
@@ -3011,14 +3011,25 @@ function MobileMediaCarousel({
     );
   }
 
+  const canPrev = index > 0;
+  const canNext = index < slides.length - 1;
+
   return (
-    <div style={{position: 'relative'}}>
+    <div
+      className="styx-carousel"
+      style={{position: 'relative'}}
+      onKeyDown={(e) => {
+        if (e.key === 'ArrowRight' && canNext) scrollToSlide(index + 1);
+        if (e.key === 'ArrowLeft' && canPrev) scrollToSlide(index - 1);
+      }}
+    >
       <div
         ref={trackRef}
         className="styx-carousel-track"
         onScroll={onScroll}
         aria-label={`${title} media gallery, ${slides.length} items`}
         aria-roledescription="carousel"
+        tabIndex={0}
       >
         {slides.map((slide, i) => (
           <div key={slide.key} className="styx-carousel-slide">
@@ -3042,6 +3053,88 @@ function MobileMediaCarousel({
 
       {slides.length > 1 && (
         <>
+          {/* Prev / next arrows (desktop; phones swipe) */}
+          <button
+            type="button"
+            className="styx-carousel-arrow"
+            data-dir="prev"
+            aria-label="Previous image"
+            disabled={!canPrev}
+            onClick={() => scrollToSlide(index - 1)}
+          >
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M15 5l-7 7 7 7"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+          <button
+            type="button"
+            className="styx-carousel-arrow"
+            data-dir="next"
+            aria-label="Next image"
+            disabled={!canNext}
+            onClick={() => scrollToSlide(index + 1)}
+          >
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M9 5l7 7-7 7"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+
+          {/* Thumbnails (desktop only, see app.css) */}
+          <div className="styx-carousel-thumbs" aria-label="Gallery thumbnails">
+            {slides.map((slide, i) => (
+              <button
+                key={`thumb-${slide.key}`}
+                type="button"
+                className="styx-carousel-thumb"
+                data-active={i === index ? '' : undefined}
+                aria-label={`Show image ${i + 1} of ${slides.length}`}
+                aria-current={i === index}
+                onClick={() => scrollToSlide(i)}
+              >
+                {slide.kind === 'video' ? (
+                  <span className="styx-carousel-thumb-video">▶</span>
+                ) : (
+                  <Image
+                    data={slide.media}
+                    alt=""
+                    sizes="80px"
+                    loading="lazy"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      display: 'block',
+                    }}
+                  />
+                )}
+              </button>
+            ))}
+          </div>
+
           {/* Counter, top right, ledger style */}
           <div
             style={{
@@ -3118,24 +3211,14 @@ function ZoomableImage({
   alt?: string;
   loading?: 'eager' | 'lazy';
 }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [zoomed, setZoomed] = useState(false);
-  const [origin, setOrigin] = useState('50% 50%');
+  // Click (or Enter/Space) opens the full-screen lightbox, which has pinch,
+  // wheel and double-tap zoom. No hover zoom: Baba found it confusing.
   const [lightboxOpen, setLightboxOpen] = useState(false);
-
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    setOrigin(`${x}% ${y}%`);
-  }, []);
-
   const resolvedAlt = data?.altText ?? alt ?? '';
 
   return (
     <>
       <div
-        ref={containerRef}
         role="button"
         tabIndex={0}
         aria-label={`View ${resolvedAlt || 'image'} full screen`}
@@ -3146,13 +3229,7 @@ function ZoomableImage({
             setLightboxOpen(true);
           }
         }}
-        onMouseEnter={() => setZoomed(true)}
-        onMouseLeave={() => setZoomed(false)}
-        onMouseMove={handleMouseMove}
-        style={{
-          overflow: 'hidden',
-          cursor: zoomed ? 'zoom-out' : 'zoom-in',
-        }}
+        style={{overflow: 'hidden', cursor: 'zoom-in'}}
       >
         <Image
           data={data}
@@ -3164,11 +3241,6 @@ function ZoomableImage({
             height: 'auto',
             objectFit: 'contain',
             display: 'block',
-            transform: zoomed ? 'scale(2)' : 'scale(1)',
-            transformOrigin: origin,
-            transition: zoomed
-              ? 'transform 0.1s ease-out'
-              : 'transform 0.3s ease',
           }}
         />
       </div>
