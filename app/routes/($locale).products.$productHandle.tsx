@@ -179,7 +179,12 @@ export default function Product() {
   const wishlist = useWishlist();
   // Actual-size swaps the LEAD IMAGE in place (Alex Moss pattern), no strip
   // in the spec column, no scrolling. Off (or unparseable width) → photo.
-  const {actualSizeOn, pxPerMm} = useScaleCalibration();
+  const {actualSizeOn, pxPerMm, setActualSizeOn} = useScaleCalibration();
+  // Every product page starts on the photo; actual size never carries over
+  // from another product or a previous visit (Hagop, 2026-10-01).
+  useEffect(() => {
+    setActualSizeOn(false);
+  }, [product.handle, setActualSizeOn]);
   const wished = wishlist.has(product.handle);
   // Watched by the mobile sticky buy bar: bar shows when this scrolls away.
   const atcRef = useRef<HTMLDivElement>(null);
@@ -415,7 +420,12 @@ export default function Product() {
   const remainingMedia = remainingGalleryMedia(
     colorFilteredMedia,
     leadImage,
-  ).slice(0, 7);
+  ).slice(0, 8);
+  // Viewer set for the desktop gallery: hero first, then the grid in order.
+  const desktopGalleryImages = [
+    leadImage,
+    ...remainingMedia.map((m: any) => m.image || m.previewImage),
+  ].filter((im: any) => im?.url);
 
   // Mobile swipe-carousel slides: the color-checked lead image first (same
   // `leadImage` the desktop gallery uses, so a stale cross-color variant
@@ -586,6 +596,7 @@ export default function Product() {
                       alt={title}
                       sizes="(min-width: 1200px) 55vw, 90vw"
                       loading="eager"
+                      gallery={{images: desktopGalleryImages, index: 0}}
                     />
                   ) : (
                     <div
@@ -690,8 +701,9 @@ export default function Product() {
                 <ZoomableImage
                   data={img}
                   alt={title}
-                  sizes="(min-width: 1200px) 55vw, 90vw"
+                  sizes="(min-width: 1200px) 28vw, 45vw"
                   loading="lazy"
+                  gallery={{images: desktopGalleryImages, index: i + 1}}
                 />
               </div>
             );
@@ -3013,6 +3025,7 @@ function MobileMediaCarousel({
 
   const canPrev = index > 0;
   const canNext = index < slides.length - 1;
+  const imageSlides = slides.filter((s) => s.kind === 'image' && s.media?.url);
 
   return (
     <div
@@ -3044,6 +3057,10 @@ function MobileMediaCarousel({
                 // even though both galleries render it).
                 sizes="(min-width: 1200px) 55vw, 90vw"
                 loading={i === 0 ? 'eager' : 'lazy'}
+                gallery={{
+                  images: imageSlides.map((s) => s.media),
+                  index: imageSlides.findIndex((s) => s.key === slide.key),
+                }}
               />
             )}
             {i === 0 ? firstSlideOverlay : null}
@@ -3205,11 +3222,14 @@ function ZoomableImage({
   sizes,
   alt,
   loading,
+  gallery,
 }: {
   data: any;
   sizes: string;
   alt?: string;
   loading?: 'eager' | 'lazy';
+  /** Every image in the gallery + this one's index, so the viewer can step through. */
+  gallery?: {images: any[]; index: number};
 }) {
   // Click (or Enter/Space) opens the full-screen lightbox, which has pinch,
   // wheel and double-tap zoom. No hover zoom: Baba found it confusing.
@@ -3219,6 +3239,7 @@ function ZoomableImage({
   return (
     <>
       <div
+        className="styx-zoomable"
         role="button"
         tabIndex={0}
         aria-label={`View ${resolvedAlt || 'image'} full screen`}
@@ -3255,6 +3276,13 @@ function ZoomableImage({
               }
             : null
         }
+        images={gallery?.images.map((g) => ({
+          url: g.url,
+          altText: g.altText ?? alt ?? '',
+          width: g.width,
+          height: g.height,
+        }))}
+        startIndex={gallery?.index ?? 0}
         onClose={() => setLightboxOpen(false)}
       />
     </>

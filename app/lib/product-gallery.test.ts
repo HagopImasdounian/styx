@@ -167,12 +167,12 @@ describe('selectedGalleryMedia', () => {
         [selected, yellow],
         ['White Gold', 'Yellow Gold'],
       ),
-    ).toEqual([cover, scale18, clasp18, hung]);
+    ).toEqual([cover, scale18, clasp18]);
   });
 
   it('keeps shared views when the selected length has no photos of its own', () => {
     const cover = {...image('white.jpg'), alt: 'Chain, White Gold, main'};
-    const hung = {...image('hung.jpg'), alt: 'Chain, White Gold, hanging'};
+    const hung = {...image('flat.jpg'), alt: 'Chain, White Gold, laid flat'};
     const scale16 = {
       ...image('w16.jpg'),
       alt: 'Chain, White Gold, 16 in, on the scale',
@@ -193,5 +193,25 @@ describe('selectedGalleryMedia', () => {
     ).toBeNull();
     expect(altLength('chain, yellow gold, 22 in, on the scale')).toBe(22);
     expect(altLength('chain 20" hanging')).toBe(20);
+  });
+
+  it('shows one view per kind: no hanging when a cover exists, one clasp per colour', () => {
+    const cover = {...image('white.jpg'), alt: 'Chain, White Gold, main'};
+    const hung = {...image('hung.jpg'), alt: 'Chain, White Gold, hanging'};
+    const flat = {...image('flat.jpg'), alt: 'Chain, White Gold, laid flat'};
+    const clasp1 = {...image('c1.jpg'), alt: 'Chain, White Gold, clasp detail'};
+    const clasp2 = {...image('c2.jpg'), alt: 'Chain, White Gold, clasp detail'};
+    const scale18 = {
+      ...image('w18.jpg'),
+      alt: 'Chain, White Gold, 18 in, on the scale',
+    };
+    expect(
+      selectedGalleryMedia(
+        [cover, hung, flat, clasp1, clasp2, scale18],
+        selected,
+        [selected, yellow],
+        ['White Gold', 'Yellow Gold'],
+      ),
+    ).toEqual([cover, scale18, flat, clasp1]);
   });
 });

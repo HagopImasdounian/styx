@@ -33,6 +33,7 @@ export function ActualSizeImagePanel({
     openCalibration,
     adjustScale,
     clearCalibration,
+    setActualSizeOn,
   } = useScaleCalibration();
   const mm = parseMm(thickness, title);
   const slug = styleToSlug(chainStyle, title);
@@ -59,6 +60,44 @@ export function ActualSizeImagePanel({
         overflow: 'hidden',
       }}
     >
+      {/* Close, top right inside the image: back to the photo */}
+      <button
+        type="button"
+        aria-label="Close actual size and show the photo"
+        onClick={() => setActualSizeOn(false)}
+        style={{
+          position: 'absolute',
+          top: 12,
+          right: 12,
+          width: 40,
+          height: 40,
+          borderRadius: '50%',
+          border: `1px solid ${STYX.line}`,
+          background: 'rgba(255,255,255,0.95)',
+          color: STYX.ink,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+          zIndex: 3,
+          boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
+        }}
+      >
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M6 6l12 12M18 6L6 18"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+          />
+        </svg>
+      </button>
       <div style={{textAlign: 'center'}}>
         <div
           style={{

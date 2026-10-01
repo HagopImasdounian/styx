@@ -94,14 +94,23 @@ const ScaleCalibrationContext = createContext<Ctx>({
   clearCalibration: noop,
 });
 
-export function ScaleCalibrationProvider({children}: {children: React.ReactNode}) {
+export function ScaleCalibrationProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   // The shopper's own scale, persisted: matched to a card or nudged by eye.
   // Null until they do either; takes precedence over the estimate.
-  const [calibratedPxPerMm, setCalibratedPxPerMm] = useState<number | null>(null);
+  const [calibratedPxPerMm, setCalibratedPxPerMm] = useState<number | null>(
+    null,
+  );
   const [calibSource, setCalibSource] = useState<CalibSource | null>(null);
   // Auto-estimate from device metrics (computed each load, never persisted).
-  const [estimatePxPerMmVal, setEstimatePxPerMmVal] = useState<number | null>(null);
-  const [estimateConfidence, setEstimateConfidence] = useState<ScaleConfidence | null>(null);
+  const [estimatePxPerMmVal, setEstimatePxPerMmVal] = useState<number | null>(
+    null,
+  );
+  const [estimateConfidence, setEstimateConfidence] =
+    useState<ScaleConfidence | null>(null);
   const [dpr, setDpr] = useState<number | null>(null);
   const [staleZoom, setStaleZoom] = useState(false);
   const [actualSizeOn, setActualSizeOnState] = useState(false);
@@ -110,11 +119,12 @@ export function ScaleCalibrationProvider({children}: {children: React.ReactNode}
 
   // The value consumers use: the shopper's own scale wins, else the estimate.
   const pxPerMm = calibratedPxPerMm ?? estimatePxPerMmVal;
-  const source: ScaleSource = calibratedPxPerMm != null
-    ? calibSource === 'manual'
-      ? 'manual'
-      : 'calibration'
-    : estimatePxPerMmVal != null
+  const source: ScaleSource =
+    calibratedPxPerMm != null
+      ? calibSource === 'manual'
+        ? 'manual'
+        : 'calibration'
+      : estimatePxPerMmVal != null
       ? 'estimate'
       : null;
 
@@ -130,16 +140,19 @@ export function ScaleCalibrationProvider({children}: {children: React.ReactNode}
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored) as Stored;
-        if (parsed && typeof parsed.pxPerMm === 'number' && parsed.pxPerMm > 0) {
+        if (
+          parsed &&
+          typeof parsed.pxPerMm === 'number' &&
+          parsed.pxPerMm > 0
+        ) {
           setCalibratedPxPerMm(parsed.pxPerMm);
           setCalibSource(parsed.source === 'manual' ? 'manual' : 'card');
           setDpr(typeof parsed.dpr === 'number' ? parsed.dpr : null);
         }
       }
-      // Restore the on/off preference, once on, stays on across pages/visits.
-      // No longer gated on a stored calibration, since the estimate alone is
-      // enough to render at (close to) true size.
-      if (localStorage.getItem(PREF_KEY) === '1') setActualSizeOnState(true);
+      // The on/off state is deliberately NOT restored: actual size is a
+      // per-visit look, the photo is the default on every page load (Hagop,
+      // 2026-10-01). Only the screen calibration above persists.
     } catch {}
   }, []);
 
@@ -153,13 +166,10 @@ export function ScaleCalibrationProvider({children}: {children: React.ReactNode}
     return () => window.removeEventListener('resize', check);
   }, [dpr]);
 
-  // Set the on/off preference AND persist it, so it survives reloads and
-  // carries to every page once the shopper has switched it on.
+  // On/off lives in memory only: leaving the page or opening another product
+  // always comes back to the photo.
   const applyActualSizeOn = useCallback((on: boolean) => {
     setActualSizeOnState(on);
-    try {
-      localStorage.setItem(PREF_KEY, on ? '1' : '0');
-    } catch {}
   }, []);
 
   // Persist a user-set scale (from the card overlay or a nudge) and record how
@@ -171,7 +181,10 @@ export function ScaleCalibrationProvider({children}: {children: React.ReactNode}
     setDpr(d);
     setStaleZoom(false);
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({pxPerMm: value, dpr: d, source: src}));
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({pxPerMm: value, dpr: d, source: src}),
+      );
     } catch {}
   }, []);
 

@@ -254,18 +254,47 @@ shop-pay-button {
   display: none;
 }
 
-/* Gallery carousel on every viewport (Apic/Baba 2026-09-30: swipe on phones,
-   arrows on desktop, no stacked column). The old stacked lead/rest blocks stay
-   in the DOM for layout fallbacks but are hidden everywhere. */
+/* Product gallery (Hagop 2026-10-01): desktop/tablet = one full-width hero that
+   fits the visible window, then the other views in two columns underneath;
+   phones = one swipe carousel. Click any photo → viewer with zoom. */
 .styx-gallery-carousel {
-  display: block;
-  grid-column: 1 / 2;
-  grid-row: 1 / 3;
-  min-width: 0;
+  display: none;
+}
+.styx-gallery-lead .styx-zoomable {
+  width: 100%;
+  height: clamp(380px, calc(100vh - 230px), 900px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* matches the grey studio backdrop of the bust renders so the side bands
+     of a portrait photo read as part of the image */
+  background: linear-gradient(180deg, #ebe9e6 0%, #dcd9d5 100%);
 }
 .styx-gallery-lead,
+.styx-pdp-refined .styx-gallery-lead {
+  background: transparent !important;
+}
+.styx-gallery-lead .styx-zoomable img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+}
 .styx-gallery-rest {
-  display: none !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+}
+.styx-gallery-rest > div {
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border: 1px solid #e9e5dc;
+  border-radius: 4px;
+}
+.styx-gallery-rest .styx-zoomable,
+.styx-gallery-rest .styx-zoomable img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
 }
 .styx-carousel-arrow {
   position: absolute;

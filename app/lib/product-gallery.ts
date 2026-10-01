@@ -110,8 +110,6 @@ export function selectedGalleryMedia<T extends ColorMedia>(
     // Explicitly shared detail/packaging photos can be marked in Shopify alt text.
     return !multiColor || alt.includes('[shared]');
   });
-  if (selectedLength === null) return kept;
-  // Cover first, then this length's own photos, then the shared views.
   const isCover = (item: T) => {
     const url = item.image?.url || item.previewImage?.url || '';
     return (
@@ -119,10 +117,39 @@ export function selectedGalleryMedia<T extends ColorMedia>(
       altOf(item).endsWith(', main')
     );
   };
+  // One view per kind (Hagop, 2026-10-01: "one main photo, then all the photos
+  // underneath should be different"). The AI cover already shows the chain
+  // hanging on the bust, so the photographed "hanging" shot is dropped when a
+  // cover exists; a second clasp/flat photo of the same colour is dropped too.
+  const hasCover = kept.some(isCover);
+  const seenKinds = new Set<string>();
+  const distinct = kept.filter((item) => {
+    if (isCover(item)) return true;
+    const alt = altOf(item);
+    const kind = alt.includes('hanging')
+      ? 'hanging'
+      : alt.includes('laid flat')
+      ? 'flat'
+      : alt.includes('clasp')
+      ? 'clasp'
+      : alt.includes('scale')
+      ? `scale-${altLength(alt) ?? ''}`
+      : `other-${galleryImageKey(
+          item.image?.url || item.previewImage?.url || '',
+        )}`;
+    if (kind === 'hanging' && hasCover) return false;
+    const colour = colorNames.find((c) => alt.includes(c)) ?? '';
+    const key = `${kind}|${colour}`;
+    if (seenKinds.has(key)) return false;
+    seenKinds.add(key);
+    return true;
+  });
+  if (selectedLength === null) return distinct;
+  // Cover first, then this length's own photos, then the shared views.
   const forLength = (item: T) => altLength(altOf(item)) === selectedLength;
   return [
-    ...kept.filter(isCover),
-    ...kept.filter((item) => !isCover(item) && forLength(item)),
-    ...kept.filter((item) => !isCover(item) && !forLength(item)),
+    ...distinct.filter(isCover),
+    ...distinct.filter((item) => !isCover(item) && forLength(item)),
+    ...distinct.filter((item) => !isCover(item) && !forLength(item)),
   ];
 }
