@@ -416,7 +416,7 @@ export default function WishlistPage() {
                         height: 34,
                         borderRadius: '50%',
                         border: `1px solid ${STYX.gold}`,
-                        background: 'rgba(245,242,234,0.9)',
+                        background: 'rgba(244,244,242,0.9)',
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',

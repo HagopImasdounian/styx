@@ -131,7 +131,7 @@ function CategoryCard({
         const arrow = e.currentTarget.querySelector('[data-arrow]') as HTMLElement;
         if (slats) slats.style.opacity = '0';
         if (arrow) {
-          arrow.style.borderColor = 'rgba(239,234,224,0.6)';
+          arrow.style.borderColor = 'rgba(235,235,232,0.6)';
           arrow.style.background = 'transparent';
         }
       }}
@@ -172,7 +172,7 @@ function CategoryCard({
             inset: 0,
             pointerEvents: 'none',
             backgroundImage:
-              'repeating-linear-gradient(90deg, transparent 0 39px, rgba(26,24,21,0.08) 39px 40px)',
+              'repeating-linear-gradient(90deg, transparent 0 39px, rgba(26,27,28,0.08) 39px 40px)',
             opacity: 0,
             transition: 'opacity 0.35s',
           }}
@@ -186,7 +186,7 @@ function CategoryCard({
             left: 0,
             right: 0,
             padding: 28,
-            background: 'linear-gradient(transparent, rgba(26,24,21,0.65))',
+            background: 'linear-gradient(transparent, rgba(26,27,28,0.65))',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'flex-end',
@@ -211,7 +211,7 @@ function CategoryCard({
                 style={{
                   fontFamily: FONT.inter,
                   fontSize: 11,
-                  color: 'rgba(239,234,224,0.75)',
+                  color: 'rgba(235,235,232,0.75)',
                   letterSpacing: '0.2em',
                   textTransform: 'uppercase',
                 }}
@@ -226,7 +226,7 @@ function CategoryCard({
               width: 56,
               height: 56,
               borderRadius: '50%',
-              border: '1px solid rgba(239,234,224,0.6)',
+              border: '1px solid rgba(235,235,232,0.6)',
               background: 'transparent',
               display: 'flex',
               alignItems: 'center',

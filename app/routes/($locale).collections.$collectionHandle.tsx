@@ -393,7 +393,7 @@ function FilterPill({
             height: 12,
             borderRadius: '50%',
             background: swatch,
-            boxShadow: 'inset 0 0 0 1px rgba(26,24,21,0.12)',
+            boxShadow: 'inset 0 0 0 1px rgba(26,27,28,0.12)',
             flexShrink: 0,
           }}
         />
@@ -951,7 +951,7 @@ export default function Collection() {
         <section
           className="styx-collection-story"
           style={{
-            background: '#ede9df',
+            background: '#ebebe8',
             borderTop: '1px solid var(--styx-border)',
             padding: '96px var(--styx-page-gutter)',
             position: 'relative',
@@ -963,8 +963,8 @@ export default function Collection() {
               inset: 0,
               pointerEvents: 'none',
               background: `
-                radial-gradient(ellipse 60% 40% at 20% 20%, rgba(255,250,238,0.4), transparent 60%),
-                radial-gradient(ellipse 50% 50% at 85% 80%, rgba(62,48,28,0.06), transparent 60%)`,
+                radial-gradient(ellipse 60% 40% at 20% 20%, rgba(255,255,255,0.4), transparent 60%),
+                radial-gradient(ellipse 50% 50% at 85% 80%, rgba(40,41,42,0.06), transparent 60%)`,
             }}
           />
           <div style={{maxWidth: 1080, margin: '0 auto', position: 'relative'}}>
@@ -1031,7 +1031,7 @@ export default function Collection() {
                     fontWeight: 400,
                     letterSpacing: '-0.03em',
                     lineHeight: 1,
-                    color: '#1a1815',
+                    color: '#1a1b1c',
                   }}
                 >
                   {storyHeading || `On the`}
@@ -1183,7 +1183,7 @@ function ProductsLoadedOnScroll({
             fontFamily: FONT.cormorant,
             fontSize: 32,
             fontWeight: 500,
-            color: '#1a1815',
+            color: '#1a1b1c',
             letterSpacing: '-0.02em',
             marginBottom: 10,
           }}

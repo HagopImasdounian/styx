@@ -58,7 +58,7 @@ export function HomeLore() {
             fontStyle: 'italic',
             fontSize: 21,
             lineHeight: 1.5,
-            color: 'rgba(239,234,224,0.72)',
+            color: 'rgba(235,235,232,0.72)',
             maxWidth: 560,
             margin: '22px auto 0',
           }}
@@ -78,8 +78,8 @@ export function HomeLore() {
             position: 'relative',
             background:
               `radial-gradient(ellipse at 50% 60%, ${STYX.gold}33, transparent 55%), ` +
-              'linear-gradient(160deg, #2a2622, #0f0e0c)',
-            border: '1px solid rgba(239,234,224,0.08)',
+              'linear-gradient(160deg, #28292a, #0f1011)',
+            border: '1px solid rgba(235,235,232,0.08)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -96,7 +96,7 @@ export function HomeLore() {
               fontSize: 10,
               letterSpacing: '0.14em',
               textTransform: 'uppercase',
-              color: 'rgba(239,234,224,0.4)',
+              color: 'rgba(235,235,232,0.4)',
               textAlign: 'left',
             }}
           >

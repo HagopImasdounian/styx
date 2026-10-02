@@ -145,7 +145,7 @@ export function Lookbook({collections = []}: {collections?: CollectionNode[]}) {
                 style={{
                   position: 'absolute',
                   inset: 0,
-                  background: 'linear-gradient(transparent 50%, rgba(26,24,21,0.75))',
+                  background: 'linear-gradient(transparent 50%, rgba(26,27,28,0.75))',
                   opacity: 0.7,
                   transition: 'opacity 0.3s',
                   pointerEvents: 'none',

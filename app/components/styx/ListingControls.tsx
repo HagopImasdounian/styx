@@ -161,8 +161,8 @@ function SlidersIcon() {
     >
       <line x1="1" y1="3.5" x2="13" y2="3.5" />
       <line x1="1" y1="10.5" x2="13" y2="10.5" />
-      <circle cx="5" cy="3.5" r="1.8" fill="var(--styx-slider-knob, #f7f5f0)" />
-      <circle cx="9.5" cy="10.5" r="1.8" fill="var(--styx-slider-knob, #f7f5f0)" />
+      <circle cx="5" cy="3.5" r="1.8" fill="var(--styx-slider-knob, #f4f4f2)" />
+      <circle cx="9.5" cy="10.5" r="1.8" fill="var(--styx-slider-knob, #f4f4f2)" />
     </svg>
   );
 }

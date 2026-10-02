@@ -125,14 +125,14 @@ export function DeliveryReturns() {
             appearance: 'none',
             background: 'transparent',
             border: 'none',
-            borderBottom: '1px solid #bcb5a6',
+            borderBottom: '1px solid #b9b9b4',
             padding: '0 0 4px',
             cursor: 'pointer',
             fontFamily: FONT.inter,
             fontSize: 12,
             fontWeight: 500,
             letterSpacing: '0.01em',
-            color: '#1a1815',
+            color: '#1a1b1c',
           }}
         >
           Delivery &amp; returns
@@ -146,7 +146,7 @@ export function DeliveryReturns() {
         style={{
           position: 'fixed',
           inset: 0,
-          background: 'rgba(26,24,21,0.5)',
+          background: 'rgba(26,27,28,0.5)',
           backdropFilter: 'blur(2px)',
           zIndex: 60,
           opacity: open ? 1 : 0,
@@ -168,7 +168,7 @@ export function DeliveryReturns() {
         style={{
           background: 'var(--styx-surface)',
           borderLeft: '1px solid var(--styx-border)',
-          boxShadow: '-24px 0 60px rgba(26,24,21,0.12)',
+          boxShadow: '-24px 0 60px rgba(26,27,28,0.12)',
           display: 'flex',
           flexDirection: 'column',
         }}
@@ -191,7 +191,7 @@ export function DeliveryReturns() {
                 fontSize: 10,
                 letterSpacing: '0.13em',
                 textTransform: 'uppercase',
-                color: '#7a5c28',
+                color: '#7d6a3f',
                 marginBottom: 6,
               }}
             >
@@ -205,7 +205,7 @@ export function DeliveryReturns() {
                 fontWeight: 500,
                 lineHeight: 1.1,
                 letterSpacing: '-0.02em',
-                color: '#1a1815',
+                color: '#1a1b1c',
               }}
             >
               Delivery &amp; returns
@@ -257,7 +257,7 @@ export function DeliveryReturns() {
                   fontFamily: FONT.inter,
                   fontSize: 12,
                   fontWeight: 500,
-                  color: '#242a24',
+                  color: '#1e2021',
                   marginBottom: 6,
                 }}
               >
@@ -300,16 +300,16 @@ export function DeliveryReturns() {
                   textDecoration: 'none',
                   fontFamily: FONT.inter,
                   fontSize: 12,
-                  color: '#1a1815',
+                  color: '#1a1b1c',
                   border: '1px solid var(--styx-border)',
                   borderRadius: 3,
-                  background: '#fffefa',
+                  background: '#ffffff',
                   padding: '14px 16px',
                   minHeight: 48,
                 }}
               >
                 <span>{label}</span>
-                <span aria-hidden="true" style={{color: '#9a7942'}}>
+                <span aria-hidden="true" style={{color: '#8c7a4b'}}>
                   ↗
                 </span>
               </Link>

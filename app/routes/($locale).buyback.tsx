@@ -126,8 +126,8 @@ function ReceiptRow({
         alignItems: 'baseline',
         gap: 16,
         padding: '12px 0',
-        borderBottom: '1px solid rgba(239,234,224,0.12)',
-        color: highlight ? STYX.goldLight : 'rgba(239,234,224,0.75)',
+        borderBottom: '1px solid rgba(235,235,232,0.12)',
+        color: highlight ? STYX.goldLight : 'rgba(235,235,232,0.75)',
       }}
     >
       <span style={{flex: 1, minWidth: 0}}>{label}</span>
@@ -344,7 +344,7 @@ export default function Buyback() {
                 gap: 8,
                 paddingBottom: 16,
                 marginBottom: 8,
-                borderBottom: '1px solid rgba(239,234,224,0.2)',
+                borderBottom: '1px solid rgba(235,235,232,0.2)',
               }}
             >
               <span
@@ -358,7 +358,7 @@ export default function Buyback() {
               >
                 Worked example
               </span>
-              <span style={{fontSize: 11, letterSpacing: '0.08em', color: 'rgba(239,234,224,0.45)'}}>
+              <span style={{fontSize: 11, letterSpacing: '0.08em', color: 'rgba(235,235,232,0.45)'}}>
                 Illustrative &middot; spot {formatUSD(ex.spotPerOz)}/oz
               </span>
             </div>
@@ -368,7 +368,7 @@ export default function Buyback() {
                 fontSize: 10,
                 letterSpacing: '0.2em',
                 textTransform: 'uppercase',
-                color: 'rgba(239,234,224,0.45)',
+                color: 'rgba(235,235,232,0.45)',
                 padding: '12px 0 4px',
               }}
             >
@@ -386,7 +386,7 @@ export default function Buyback() {
                 fontSize: 10,
                 letterSpacing: '0.2em',
                 textTransform: 'uppercase',
-                color: 'rgba(239,234,224,0.45)',
+                color: 'rgba(235,235,232,0.45)',
                 padding: '20px 0 4px',
               }}
             >
@@ -605,7 +605,7 @@ export default function Buyback() {
                 color: STYX.bone,
                 textDecoration: 'none',
                 padding: '18px 32px',
-                border: '1px solid rgba(239,234,224,0.3)',
+                border: '1px solid rgba(235,235,232,0.3)',
                 transition: 'all 0.2s',
               }}
             >

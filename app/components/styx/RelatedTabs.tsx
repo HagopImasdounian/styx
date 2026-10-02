@@ -121,7 +121,7 @@ export function RelatedTabs({
           fontSize: 'clamp(36px, 3.6vw, 54px)',
           fontWeight: 400,
           lineHeight: 1,
-          color: '#1a1815',
+          color: '#1a1b1c',
           margin: tabs.length > 1 ? '0 0 24px' : '0 0 40px',
           letterSpacing: '-0.03em',
         }}
@@ -170,9 +170,9 @@ export function RelatedTabs({
                   fontSize: 13,
                   fontWeight: selected ? 500 : 400,
                   letterSpacing: '0.005em',
-                  color: selected ? '#1a1815' : 'var(--styx-muted)',
+                  color: selected ? '#1a1b1c' : 'var(--styx-muted)',
                   borderBottom: `1px solid ${
-                    selected ? '#1a1815' : 'transparent'
+                    selected ? '#1a1b1c' : 'transparent'
                   }`,
                   transition: 'color 0.2s ease, border-color 0.2s ease',
                 }}

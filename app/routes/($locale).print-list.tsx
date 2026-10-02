@@ -222,7 +222,7 @@ export default function PrintListPage() {
             borderTop: 'none',
             maxHeight: 320,
             overflowY: 'auto',
-            boxShadow: '0 12px 28px -16px rgba(26,24,21,0.35)',
+            boxShadow: '0 12px 28px -16px rgba(26,27,28,0.35)',
           }}
         >
           {searching && results.length === 0 && (
@@ -335,7 +335,7 @@ export default function PrintListPage() {
         </div>
 
         {/* Calibration instructions */}
-        <div className="pl-no-print" style={{maxWidth: 640, margin: '0 auto 24px', padding: '16px 20px', border: `1px solid ${STYX.gold}`, background: 'rgba(184,146,74,0.06)'}}>
+        <div className="pl-no-print" style={{maxWidth: 640, margin: '0 auto 24px', padding: '16px 20px', border: `1px solid ${STYX.gold}`, background: 'rgba(168,146,92,0.06)'}}>
           <div style={{fontFamily: FONT.mono, fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase', color: STYX.goldDeep, marginBottom: 8}}>
             For an accurate print
           </div>
@@ -671,27 +671,27 @@ function ReorderBtn({label, disabled, onClick}: {label: string; disabled: boolea
 const PRINT_CSS = `
 .pl-sheet {
   background: #fff;
-  color: #1a1815;
+  color: #1a1b1c;
   max-width: 186mm; /* A4 portrait printable width */
   margin: 0 auto;
   padding: 10mm 12mm;
-  border: 1px solid rgba(26,24,21,0.15);
-  box-shadow: 0 20px 50px -30px rgba(26,24,21,0.4);
+  border: 1px solid rgba(26,27,28,0.15);
+  box-shadow: 0 20px 50px -30px rgba(26,27,28,0.4);
 }
 .pl-head {
   display: flex; align-items: center; justify-content: space-between;
-  border-bottom: 1px solid #1a1815; padding-bottom: 4mm;
+  border-bottom: 1px solid #1a1b1c; padding-bottom: 4mm;
 }
 .pl-logo { height: 11mm; width: auto; object-fit: contain; }
 .pl-head-right { text-align: right; }
 .pl-brand { font-family: 'Cinzel', serif; font-size: 11pt; letter-spacing: 0.1em; }
-.pl-url { font-family: 'JetBrains Mono', monospace; font-size: 8pt; color: #8A6A32; letter-spacing: 0.08em; }
+.pl-url { font-family: 'JetBrains Mono', monospace; font-size: 8pt; color: #7D6A3F; letter-spacing: 0.08em; }
 .pl-subhead {
   display: flex; align-items: baseline; justify-content: space-between;
   margin: 3mm 0 9mm;
 }
-.pl-subhead-title { font-family: 'Cormorant Garamond', serif; font-size: 13pt; color: #4A443B; }
-.pl-subhead-note { font-family: 'JetBrains Mono', monospace; font-size: 7.5pt; color: #6B6459; text-transform: uppercase; letter-spacing: 0.1em; }
+.pl-subhead-title { font-family: 'Cormorant Garamond', serif; font-size: 13pt; color: #46484A; }
+.pl-subhead-note { font-family: 'JetBrains Mono', monospace; font-size: 7.5pt; color: #66686A; text-transform: uppercase; letter-spacing: 0.1em; }
 
 .pl-row { display: flex; align-items: flex-end; gap: 9mm; flex-wrap: wrap; margin-bottom: 10mm; }
 .pl-col { display: flex; flex-direction: column; align-items: center; width: 33mm; }
@@ -701,8 +701,8 @@ const PRINT_CSS = `
 .pl-visual { display: flex; align-items: flex-end; justify-content: center; height: 90mm; margin-bottom: 3mm; overflow: hidden; }
 .pl-bar {
   height: 86mm;
-  background: linear-gradient(90deg, #b8924a, #d4b478 50%, #8a6a32);
-  border: 0.2mm solid #8a6a32;
+  background: linear-gradient(90deg, #a8925c, #cdb77f 50%, #7d6a3f);
+  border: 0.2mm solid #7d6a3f;
   -webkit-print-color-adjust: exact; print-color-adjust: exact;
 }
 /* Width is set inline to the true mm; a single seamless link tile is repeated
@@ -715,18 +715,18 @@ const PRINT_CSS = `
   -webkit-print-color-adjust: exact; print-color-adjust: exact;
 }
 .pl-unknown {
-  font-family: 'JetBrains Mono', monospace; font-size: 7pt; color: #6B6459;
-  border: 0.2mm dashed #6B6459; padding: 4mm;
+  font-family: 'JetBrains Mono', monospace; font-size: 7pt; color: #66686A;
+  border: 0.2mm dashed #66686A; padding: 4mm;
 }
 .pl-col-meta { text-align: center; }
 .pl-mm { font-family: 'Cinzel', serif; font-size: 13pt; font-weight: 600; }
 .pl-style { font-family: 'Inter', sans-serif; font-size: 8pt; }
-.pl-sub { font-family: 'JetBrains Mono', monospace; font-size: 7pt; color: #4A443B; }
-.pl-model { font-family: 'JetBrains Mono', monospace; font-size: 6.5pt; color: #6B6459; margin-top: 1mm; }
+.pl-sub { font-family: 'JetBrains Mono', monospace; font-size: 7pt; color: #46484A; }
+.pl-model { font-family: 'JetBrains Mono', monospace; font-size: 6.5pt; color: #66686A; margin-top: 1mm; }
 
 .pl-approx {
   font-family: 'Cormorant Garamond', serif; font-style: italic;
-  font-size: 9pt; color: #6B6459; line-height: 1.5;
+  font-size: 9pt; color: #66686A; line-height: 1.5;
   text-align: center; max-width: 150mm; margin: 0 auto 8mm;
 }
 /* ── Scale check: thin dual-unit ruler + true-size card cutout ── */
@@ -737,8 +737,8 @@ const PRINT_CSS = `
 
 /* One hairline, ticks above (inches) and below (cm). 63.5mm = 2.5in = 6.35cm. */
 .pl-ruler2 { position: relative; width: 63.5mm; height: 12mm; flex-shrink: 0; }
-.pl-ruler2-line { position: absolute; top: 50%; left: 0; right: 0; height: 0.25mm; background: #1a1815; transform: translateY(-50%); }
-.pl-t-up, .pl-t-dn { position: absolute; left: 0; width: 0.2mm; background: #1a1815; }
+.pl-ruler2-line { position: absolute; top: 50%; left: 0; right: 0; height: 0.25mm; background: #1a1b1c; transform: translateY(-50%); }
+.pl-t-up, .pl-t-dn { position: absolute; left: 0; width: 0.2mm; background: #1a1b1c; }
 .pl-t-up { bottom: 50%; height: 1.3mm; }
 .pl-t-up-md { height: 2.1mm; }
 .pl-t-up-lg { height: 3mm; width: 0.35mm; }
@@ -747,32 +747,32 @@ const PRINT_CSS = `
 .pl-t-dn-lg { height: 3mm; width: 0.35mm; }
 .pl-l-up, .pl-l-dn {
   position: absolute; transform: translateX(-50%);
-  font-family: 'JetBrains Mono', monospace; font-size: 6pt; color: #4A443B;
+  font-family: 'JetBrains Mono', monospace; font-size: 6pt; color: #46484A;
 }
 .pl-l-up { bottom: 50%; margin-bottom: 3.2mm; }
 .pl-l-dn { top: 50%; margin-top: 3.2mm; }
-.pl-u-up, .pl-u-dn { position: absolute; right: -5.5mm; font-family: 'JetBrains Mono', monospace; font-size: 6pt; color: #6B6459; }
+.pl-u-up, .pl-u-dn { position: absolute; right: -5.5mm; font-family: 'JetBrains Mono', monospace; font-size: 6pt; color: #66686A; }
 .pl-u-up { bottom: 50%; margin-bottom: 0.4mm; }
 .pl-u-dn { top: 50%; margin-top: 0.4mm; }
 
 .pl-card { display: flex; flex-direction: column; align-items: flex-start; gap: 2.5mm; }
 .pl-card-box {
   width: 85.6mm; height: 53.98mm; box-sizing: border-box;
-  border: 0.3mm dashed #8a6a32; border-radius: 3.18mm;
+  border: 0.3mm dashed #7d6a3f; border-radius: 3.18mm;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5mm;
   -webkit-print-color-adjust: exact; print-color-adjust: exact;
 }
-.pl-card-title { font-family: 'Cinzel', serif; font-size: 10pt; letter-spacing: 0.08em; color: #4A443B; }
-.pl-card-dims { font-family: 'JetBrains Mono', monospace; font-size: 7pt; letter-spacing: 0.08em; color: #8A6A32; text-transform: uppercase; }
+.pl-card-title { font-family: 'Cinzel', serif; font-size: 10pt; letter-spacing: 0.08em; color: #46484A; }
+.pl-card-dims { font-family: 'JetBrains Mono', monospace; font-size: 7pt; letter-spacing: 0.08em; color: #7D6A3F; text-transform: uppercase; }
 .pl-card-cap {
   font-family: 'Cormorant Garamond', serif; font-style: italic;
-  font-size: 9pt; color: #6B6459; line-height: 1.4; max-width: 85.6mm;
+  font-size: 9pt; color: #66686A; line-height: 1.4; max-width: 85.6mm;
 }
 
 .pl-foot {
   display: flex; justify-content: space-between; align-items: baseline;
-  margin-top: 10mm; padding-top: 3mm; border-top: 1px solid rgba(26,24,21,0.2);
-  font-family: 'JetBrains Mono', monospace; font-size: 7pt; color: #6B6459;
+  margin-top: 10mm; padding-top: 3mm; border-top: 1px solid rgba(26,27,28,0.2);
+  font-family: 'JetBrains Mono', monospace; font-size: 7pt; color: #66686A;
   letter-spacing: 0.08em;
 }
 

@@ -20,7 +20,7 @@ export function CompareBar() {
         right: 0,
         zIndex: 9999,
         background: STYX.ink,
-        borderTop: `1px solid rgba(184,146,74,0.3)`,
+        borderTop: `1px solid rgba(168,146,92,0.3)`,
         padding: '14px 24px',
         display: 'flex',
         alignItems: 'center',

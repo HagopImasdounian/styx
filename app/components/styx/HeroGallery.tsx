@@ -54,9 +54,9 @@ export function HeroGallery() {
           inset: 0,
           background: `linear-gradient(
             105deg,
-            rgba(26,24,21,0.88) 0%,
-            rgba(26,24,21,0.72) 35%,
-            rgba(26,24,21,0.25) 65%,
+            rgba(26,27,28,0.88) 0%,
+            rgba(26,27,28,0.72) 35%,
+            rgba(26,27,28,0.25) 65%,
             transparent 100%
           )`,
           zIndex: 1,
@@ -69,7 +69,7 @@ export function HeroGallery() {
           position: 'absolute',
           inset: 0,
           background:
-            'linear-gradient(to top, rgba(26,24,21,0.5) 0%, transparent 30%)',
+            'linear-gradient(to top, rgba(26,27,28,0.5) 0%, transparent 30%)',
           zIndex: 1,
         }}
       />
@@ -136,7 +136,7 @@ export function HeroGallery() {
           style={{
             fontFamily: FONT.cormorant,
             fontSize: 20,
-            color: 'rgba(239,234,224,0.8)',
+            color: 'rgba(235,235,232,0.8)',
             maxWidth: 470,
             lineHeight: 1.7,
             margin: '28px 0 40px',
@@ -167,7 +167,7 @@ export function HeroGallery() {
             href="#how-we-price"
             style={{
               color: STYX.bone,
-              borderColor: 'rgba(239,234,224,0.45)',
+              borderColor: 'rgba(235,235,232,0.45)',
             }}
           >
             How we price

@@ -179,7 +179,7 @@ export function ownerRows(rows: Array<[label: string, html: string]>): string {
 export function wrapOwnerEmail(friendlyFormName: string, rowsHtml: string): string {
   return `
     <div style="font-family:Helvetica,Arial,sans-serif;max-width:640px;margin:0 auto">
-      <h2 style="color:#1a1a1a;border-bottom:2px solid #c9a84c;padding-bottom:8px;margin-bottom:4px">New ${escapeHtml(
+      <h2 style="color:#1a1a1a;border-bottom:2px solid #b8a26a;padding-bottom:8px;margin-bottom:4px">New ${escapeHtml(
         friendlyFormName,
       )} Submission</h2>
       <p style="color:#888;font-size:13px;margin:0 0 16px">A customer just submitted the ${escapeHtml(
@@ -200,28 +200,28 @@ export function wrapBrandedEmail(heading: string, innerHtml: string): string {
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0d0d0c;padding:40px 16px">
       <tr>
         <td align="center">
-          <table role="presentation" width="520" cellpadding="0" cellspacing="0" style="max-width:520px;width:100%;background:#15140f;border:1px solid #2a271d">
+          <table role="presentation" width="520" cellpadding="0" cellspacing="0" style="max-width:520px;width:100%;background:#141516;border:1px solid #28292a">
             <tr>
-              <td style="padding:36px 40px 28px;text-align:center;border-bottom:1px solid #2a271d">
-                <div style="font-family:Georgia,'Times New Roman',serif;font-size:24px;letter-spacing:0.32em;text-transform:uppercase;color:#c9a84c;font-weight:400">STYX</div>
-                <div style="font-family:Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:#7a7568;margin-top:8px">Gold &middot; Worn for the Crossing</div>
+              <td style="padding:36px 40px 28px;text-align:center;border-bottom:1px solid #28292a">
+                <div style="font-family:Georgia,'Times New Roman',serif;font-size:24px;letter-spacing:0.32em;text-transform:uppercase;color:#b8a26a;font-weight:400">STYX</div>
+                <div style="font-family:Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:#76787a;margin-top:8px">Gold &middot; Worn for the Crossing</div>
               </td>
             </tr>
             <tr>
               <td style="padding:36px 40px 40px">
-                <h1 style="font-family:Georgia,'Times New Roman',serif;font-weight:400;font-size:22px;letter-spacing:0.04em;color:#f3eee2;margin:0 0 20px">${escapeHtml(
+                <h1 style="font-family:Georgia,'Times New Roman',serif;font-weight:400;font-size:22px;letter-spacing:0.04em;color:#f1f1ef;margin:0 0 20px">${escapeHtml(
                   heading,
                 )}</h1>
-                <div style="font-family:Helvetica,Arial,sans-serif;font-size:15px;line-height:1.7;color:#cfc8b8">
+                <div style="font-family:Helvetica,Arial,sans-serif;font-size:15px;line-height:1.7;color:#cfcfcb">
                   ${innerHtml}
-                  <p style="margin:24px 0 0;color:#cfc8b8">The STYX Gold Team</p>
+                  <p style="margin:24px 0 0;color:#cfcfcb">The STYX Gold Team</p>
                 </div>
               </td>
             </tr>
             <tr>
-              <td style="padding:22px 40px;border-top:1px solid #2a271d;text-align:center">
-                <div style="font-family:Helvetica,Arial,sans-serif;font-size:11px;color:#6b665a;line-height:1.6">
-                  STYX Gold &middot; <a href="https://styxgold.com" style="color:#c9a84c;text-decoration:none">styxgold.com</a><br/>
+              <td style="padding:22px 40px;border-top:1px solid #28292a;text-align:center">
+                <div style="font-family:Helvetica,Arial,sans-serif;font-size:11px;color:#66686a;line-height:1.6">
+                  STYX Gold &middot; <a href="https://styxgold.com" style="color:#b8a26a;text-decoration:none">styxgold.com</a><br/>
                   This message confirms we received your inquiry. No reply is needed.
                 </div>
               </td>

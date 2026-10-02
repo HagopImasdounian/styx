@@ -24,10 +24,10 @@ const CTRL: React.CSSProperties = {
   alignItems: 'center',
   justifyContent: 'center',
   background: 'rgba(255,255,255,0.9)',
-  border: '1px solid rgba(26,24,21,0.14)',
+  border: '1px solid rgba(26,27,28,0.14)',
   boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
   cursor: 'pointer',
-  color: '#1A1815',
+  color: '#1A1B1C',
   zIndex: 2,
 };
 const BAR_BTN: React.CSSProperties = {
@@ -36,7 +36,7 @@ const BAR_BTN: React.CSSProperties = {
   borderRadius: 999,
   border: 'none',
   background: 'transparent',
-  color: '#1A1815',
+  color: '#1A1B1C',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -397,7 +397,7 @@ export function ImageLightbox({
         position: 'fixed',
         inset: 0,
         zIndex: 2000,
-        background: 'rgba(247,245,240,0.78)',
+        background: 'rgba(244,244,242,0.78)',
         backdropFilter: 'blur(22px) saturate(1.1)',
         WebkitBackdropFilter: 'blur(22px) saturate(1.1)',
         opacity: visible ? 1 : 0,
@@ -541,7 +541,7 @@ export function ImageLightbox({
               fontFamily: FONT.mono,
               fontSize: 11,
               letterSpacing: '0.12em',
-              color: 'rgba(26,24,21,0.7)',
+              color: 'rgba(26,27,28,0.7)',
               fontVariantNumeric: 'tabular-nums',
             }}
           >
@@ -562,8 +562,8 @@ export function ImageLightbox({
           gap: 6,
           padding: 4,
           borderRadius: 999,
-          background: 'rgba(26,24,21,0.72)',
-          border: '1px solid rgba(239,234,224,0.16)',
+          background: 'rgba(26,27,28,0.72)',
+          border: '1px solid rgba(235,235,232,0.16)',
         }}
       >
         <button
@@ -640,7 +640,7 @@ export function ImageLightbox({
             fontFamily: FONT.mono,
             fontSize: 11,
             letterSpacing: '0.08em',
-            color: 'rgba(26,24,21,0.65)',
+            color: 'rgba(26,27,28,0.65)',
             padding: '0 56px',
           }}
         >

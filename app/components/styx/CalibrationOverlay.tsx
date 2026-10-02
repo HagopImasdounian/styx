@@ -130,7 +130,7 @@ export function CalibrationOverlay() {
         justifyContent: 'center',
         gap: side ? 28 : 20,
         padding: side ? 16 : 20,
-        background: 'rgba(26,24,21,0.72)',
+        background: 'rgba(26,27,28,0.72)',
         backdropFilter: 'blur(5px)',
         WebkitBackdropFilter: 'blur(5px)',
         overflow: 'auto',
@@ -143,7 +143,7 @@ export function CalibrationOverlay() {
           height: cardH,
           borderRadius: radius,
           border: `2px dashed ${STYX.goldLight}`,
-          background: 'rgba(239,234,224,0.06)',
+          background: 'rgba(235,235,232,0.06)',
           position: 'relative',
           flexShrink: 0,
           touchAction: 'none',
@@ -184,7 +184,7 @@ export function CalibrationOverlay() {
               fontFamily: FONT.cormorant,
               fontSize: 16,
               lineHeight: 1.4,
-              color: 'rgba(239,234,224,0.9)',
+              color: 'rgba(235,235,232,0.9)',
               maxWidth: 320,
             }}
           >
@@ -305,7 +305,7 @@ export function CalibrationOverlay() {
               fontSize: 10,
               letterSpacing: '0.1em',
               textTransform: 'uppercase',
-              color: 'rgba(239,234,224,0.7)',
+              color: 'rgba(235,235,232,0.7)',
               cursor: 'pointer',
             }}
           >
@@ -318,7 +318,7 @@ export function CalibrationOverlay() {
             fontFamily: FONT.mono,
             fontSize: 9,
             letterSpacing: '0.08em',
-            color: 'rgba(239,234,224,0.5)',
+            color: 'rgba(235,235,232,0.5)',
             textAlign: 'center',
             maxWidth: 360,
           }}
@@ -344,7 +344,7 @@ function StepBtn({label, onClick}: {label: string; onClick: () => void}) {
         flexShrink: 0,
         borderRadius: '50%',
         border: `1px solid ${STYX.goldLight}`,
-        background: 'rgba(239,234,224,0.06)',
+        background: 'rgba(235,235,232,0.06)',
         color: STYX.goldLight,
         fontSize: 22,
         lineHeight: 1,

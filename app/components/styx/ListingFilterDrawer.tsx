@@ -127,7 +127,7 @@ export function ListingFilterDrawer({
         fontSize: 12,
         fontWeight: 500,
         letterSpacing: '0.01em',
-        color: '#242a24',
+        color: '#1e2021',
         margin: '26px 0 4px',
       }}
     >
@@ -166,7 +166,7 @@ export function ListingFilterDrawer({
                   padding: '11px 0',
                   background: 'none',
                   border: 'none',
-                  borderBottom: '1px solid #e9e5dc',
+                  borderBottom: '1px solid #e6e6e3',
                   cursor: disabled ? 'default' : 'pointer',
                   opacity: disabled ? 0.38 : 1,
                   textAlign: 'left',
@@ -180,8 +180,8 @@ export function ListingFilterDrawer({
                     height: 14,
                     flexShrink: 0,
                     borderRadius: 2,
-                    border: `1px solid ${selected ? '#242a24' : '#bcb5a6'}`,
-                    background: selected ? '#242a24' : '#fffefa',
+                    border: `1px solid ${selected ? '#1e2021' : '#b9b9b4'}`,
+                    background: selected ? '#1e2021' : '#ffffff',
                     display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -192,7 +192,7 @@ export function ListingFilterDrawer({
                       <path
                         d="M1 3.5 3.4 6 8 1"
                         fill="none"
-                        stroke="#f7f5f0"
+                        stroke="#f4f4f2"
                         strokeWidth="1.4"
                       />
                     </svg>
@@ -206,7 +206,7 @@ export function ListingFilterDrawer({
                       height: 12,
                       borderRadius: '50%',
                       background: o.swatch,
-                      boxShadow: 'inset 0 0 0 1px rgba(26,24,21,0.12)',
+                      boxShadow: 'inset 0 0 0 1px rgba(26,27,28,0.12)',
                       flexShrink: 0,
                     }}
                   />
@@ -253,7 +253,7 @@ export function ListingFilterDrawer({
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'rgba(26,24,21,0.42)',
+          background: 'rgba(26,27,28,0.42)',
         }}
       />
 
@@ -291,7 +291,7 @@ export function ListingFilterDrawer({
               fontWeight: 500,
               letterSpacing: '-0.02em',
               lineHeight: 1.1,
-              color: '#1a1815',
+              color: '#1a1b1c',
               margin: 0,
             }}
           >
@@ -311,7 +311,7 @@ export function ListingFilterDrawer({
               background: 'none',
               border: '1px solid var(--styx-border)',
               borderRadius: 3,
-              color: '#1a1815',
+              color: '#1a1b1c',
               cursor: 'pointer',
               fontSize: 14,
               lineHeight: 1,
@@ -347,7 +347,7 @@ export function ListingFilterDrawer({
                     padding: '11px 0',
                     background: 'none',
                     border: 'none',
-                    borderBottom: '1px solid #e9e5dc',
+                    borderBottom: '1px solid #e6e6e3',
                     cursor: 'pointer',
                     textAlign: 'left',
                     color: STYX.ink,
@@ -359,8 +359,8 @@ export function ListingFilterDrawer({
                       width: 14,
                       height: 14,
                       borderRadius: '50%',
-                      border: `1px solid ${checked ? '#887346' : '#bcb5a6'}`,
-                      background: '#fffefa',
+                      border: `1px solid ${checked ? '#7d6a3f' : '#b9b9b4'}`,
+                      background: '#ffffff',
                       display: 'inline-flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -373,7 +373,7 @@ export function ListingFilterDrawer({
                           width: 6,
                           height: 6,
                           borderRadius: '50%',
-                          background: '#887346',
+                          background: '#7d6a3f',
                         }}
                       />
                     )}
@@ -418,14 +418,14 @@ export function ListingFilterDrawer({
               fontFamily: FONT.inter,
               fontSize: 12,
               letterSpacing: '0.01em',
-              color: stagedActive === 0 ? 'var(--styx-muted)' : '#7a5c28',
+              color: stagedActive === 0 ? 'var(--styx-muted)' : '#7d6a3f',
               background: 'none',
               border: 'none',
               cursor: stagedActive === 0 ? 'default' : 'pointer',
               padding: 0,
               textDecoration: 'underline',
               textUnderlineOffset: 5,
-              textDecorationColor: '#bcb5a6',
+              textDecorationColor: '#b9b9b4',
               minHeight: 44,
               opacity: stagedActive === 0 ? 0.5 : 1,
               whiteSpace: 'nowrap',
@@ -443,9 +443,9 @@ export function ListingFilterDrawer({
               letterSpacing: '0.025em',
               padding: '16px 18px',
               borderRadius: 3,
-              background: '#242a24',
-              color: '#f7f5f0',
-              border: '1px solid #242a24',
+              background: '#1e2021',
+              color: '#f4f4f2',
+              border: '1px solid #1e2021',
               cursor: 'pointer',
             }}
           >

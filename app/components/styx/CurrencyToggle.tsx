@@ -41,7 +41,7 @@ export function CurrencyToggle() {
         display: 'flex',
         alignItems: 'center',
         flex: '0 0 auto',
-        border: '1px solid rgba(239,234,224,0.2)',
+        border: '1px solid rgba(235,235,232,0.2)',
         borderRadius: 20,
         overflow: 'hidden',
       }}
@@ -68,9 +68,9 @@ export function CurrencyToggle() {
                 padding: '4px 12px',
                 cursor: active ? 'default' : 'pointer',
                 border: 'none',
-                borderLeft: i > 0 ? '1px solid rgba(239,234,224,0.2)' : 'none',
+                borderLeft: i > 0 ? '1px solid rgba(235,235,232,0.2)' : 'none',
                 background: active ? STYX.gold : 'transparent',
-                color: active ? STYX.ink : 'rgba(239,234,224,0.6)',
+                color: active ? STYX.ink : 'rgba(235,235,232,0.6)',
                 fontWeight: active ? 600 : 400,
                 transition: 'all 0.2s ease',
               }}

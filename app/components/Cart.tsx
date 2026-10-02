@@ -26,14 +26,14 @@ import type {
 } from '~/routes/api.cross-sell';
 
 const STYX = {
-  bone: '#EFEAE0',
-  paper: '#F5F2EA',
-  ink: '#1A1815',
-  gold: '#B8924A',
-  silt: '#6B6459',
-  silt2: '#8A8279',
-  graphite: '#4A443B',
-  line: '#D4D1CA',
+  bone: '#EBEBE8',
+  paper: '#F4F4F2',
+  ink: '#1A1B1C',
+  gold: '#A8925C',
+  silt: '#66686A',
+  silt2: '#878987',
+  graphite: '#46484A',
+  line: '#D2D2CF',
 };
 
 const FONT = {
@@ -108,7 +108,7 @@ export function CartDetails({
                   height: 6,
                   borderRadius: '50%',
                   background: spotIsFallback
-                    ? 'rgba(239,234,224,0.35)'
+                    ? 'rgba(235,235,232,0.35)'
                     : '#4CAF50',
                   boxShadow: spotIsFallback ? 'none' : '0 0 6px #4CAF50',
                 }}
@@ -815,7 +815,7 @@ function GoldOfferProgress({cost}: {cost: CartCost}) {
         style={{
           height: 2,
           width: '100%',
-          background: 'rgba(26,24,21,0.1)',
+          background: 'rgba(26,27,28,0.1)',
         }}
       >
         <div

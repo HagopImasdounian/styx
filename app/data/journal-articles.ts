@@ -45,7 +45,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
       altText: 'Ancient Sumerian loop-in-loop gold chain, museum artifact photography',
     },
     content: `
-      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #4A443B; margin-bottom: 48px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">
         Hold six U.S. quarters in your palm. Feel the weight settle into the creases of your hand. That is 31 grams, one troy ounce. Now imagine that weight in pure gold, pressed flat and thin as a postage stamp. That tiny rectangle would be worth more than most people earn in a month. Now imagine it stretched into links, woven into a chain, and draped around your neck. That is the premise of everything we build at Styx.
       </p>
 
@@ -59,11 +59,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>This is the first thing to understand about gold chains: the engineering is ancient. The fundamental physics of interlocking metal loops was solved before the alphabet existed. Everything since has been refinement.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-museum-01-ur-loop-chain.jpg?v=1780543291" alt="Gold loop-in-loop strap chain, Ptolemaic Egypt, 332-30 BC, The Metropolitan Museum of Art" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           Gold loop-in-loop strap chain, Egypt, 332&ndash;30 BC. The wire-weaving technique pioneered at Ur, still flawless two millennia later. The Metropolitan Museum of Art (public domain).
         </p>
       </div>
@@ -80,11 +80,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>The word "Karat" itself comes from this world. It derives from the carob seed, a Mediterranean legume whose seeds were famously uniform in weight, which made them the trader's counterweight of choice on gold scales. The 24-part purity scale traces to the Roman <em>solidus</em> coin, reckoned at twenty-four of those seed-weights of pure gold. The carob seed became the original unit of measure for the most precious metal on Earth.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-museum-02-renaissance-merchant.jpg?v=1780543293" alt="Hans Holbein the Younger, Charles de Solier, Sieur de Morette, wearing a heavy gold chain, 1534-35" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           Portable wealth, pre-banking. Hans Holbein the Younger, <em>Charles de Solier, Sieur de Morette</em> (1534&ndash;35): the heavy gold chain worn as a balance sheet. Gem&auml;ldegalerie Alte Meister, Dresden (public domain).
         </p>
       </div>
@@ -95,29 +95,29 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <table style="width: 100%; border-collapse: collapse; margin: 40px 0; font-family: 'Cinzel', serif; font-size: 14px;">
         <thead>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Karat</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Gold Purity</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">What It Means</th>
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>24k</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">99.9%</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">Pure bullion. Beautiful to look at, too soft to wear.</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>18k</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">75.0%</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">Rich, deep color. Best for formal pieces and special occasions.</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>14k</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">58.3%</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">The Styx standard. Majority pure gold. Built to be worn every day, for life.</td>
           </tr>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>10k</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">41.7%</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">Maximum hardness. Industrial-grade durability for high-impact wear.</td>
@@ -137,11 +137,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>Everything in the Styx Journal that follows is an exploration of the specific links, weaves, and architectures that have been developed across millennia to shape this metal into something you can wear. Each entry details the history, engineering, and bullion math of a single chain style. Because we believe that if you are going to carry your wealth around your neck, you should know exactly what you are carrying.</p>
 
-      <div style="background: #F5F2EA; padding: 40px; margin: 48px 0; border-left: 3px solid #B8924A;">
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1815;">
+      <div style="background: #F4F4F2; padding: 40px; margin: 48px 0; border-left: 3px solid #A8925C;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1B1C;">
           &ldquo;A gold chain is not jewelry. It is a five-thousand-year-old financial technology that happens to look good on your neck.&rdquo;
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
+        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #66686A; text-transform: uppercase; margin-top: 20px;">
           The Ferryman
         </div>
       </div>
@@ -158,7 +158,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
     },
     content: `
 
-      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #4A443B; margin-bottom: 48px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">
         Reach behind your neck and feel for a small metal chain. If you served, you know the one. Two of them, one short and one long, held the only piece of identification that mattered when nothing else did. The ball chain was not designed in a jewelry studio. It was designed for war. And its transition from dog tags to gold necklaces is one of the strangest journeys in this entire collection.
       </p>
 
@@ -170,11 +170,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>That simplicity is what caught the attention of the United States military. During World War II, the armed forces needed a chain for identification tags that would be comfortable against skin, would not tangle in equipment, and could be produced by the millions. The ball chain was the answer. By the 1940s, the American soldier wore two stamped metal tags on ball chains, one long and one short. By long-standing practice, one tag stayed with the fallen; the other went into the record, so that no name would be lost. (The often-repeated story that the chain was designed to snap and prevent strangulation is folklore: a legend the chain earned, not a specification it was built to.)</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-museum-03-wwii-dogtags.jpg?v=1780543294" alt="WWII U.S. Army identification tag, c. 1941-44, San Diego Air and Space Museum Archives" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           The original application: a WWII U.S. Army identification tag, c. 1941&ndash;44, the kind issued by the millions on ball chains. San Diego Air &amp; Space Museum Archives (public domain).
         </p>
       </div>
@@ -198,7 +198,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <table style="width: 100%; border-collapse: collapse; margin: 40px 0; font-family: 'Cinzel', serif; font-size: 14px;">
         <thead>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Diameter</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">10k Gold (g/inch)</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">14k Gold (g/inch)</th>
@@ -206,19 +206,19 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>1.5mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.13&ndash;0.17g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.15&ndash;0.20g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~4.5&ndash;6g</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>2.2mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.25&ndash;0.35g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.30&ndash;0.40g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~9&ndash;12g</td>
           </tr>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>3.0mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.48&ndash;0.65g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.55&ndash;0.75g</td>
@@ -229,11 +229,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>A 30-inch 14k Ball Chain at 2.2mm width weighs approximately 9 to 12 grams, about the weight of two nickels. Not heavy. But then, the ball chain was never about weight. It was about identification. In gold, it still is.</p>
 
-      <div style="background: #F5F2EA; padding: 40px; margin: 48px 0; border-left: 3px solid #B8924A;">
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1815;">
+      <div style="background: #F4F4F2; padding: 40px; margin: 48px 0; border-left: 3px solid #A8925C;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1B1C;">
           &ldquo;The ball chain was built for machines and drafted into a war. It identified the people who mattered most when nothing else could. In gold, it carries a different kind of identity, but the engineering has not changed.&rdquo;
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
+        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #66686A; text-transform: uppercase; margin-top: 20px;">
           The Ferryman
         </div>
       </div>
@@ -251,7 +251,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
     },
     content: `
 
-      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #4A443B; margin-bottom: 48px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">
         Pick up a pencil. Run your finger along one edge. Feel how the flat surface gives your finger a stable, defined plane to rest on. Now imagine that pencil made of gold, miniaturized, and articulated into hundreds of tiny square segments that flex like a spine. That is a Box chain: the only chain built on four flat planes instead of curves. The form is so closely tied to Venice's goldworking tradition that its tighter sibling still carries the city's name. No one has improved on the geometry since.
       </p>
 
@@ -263,11 +263,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>The trade still honors the lineage in its naming. Strictly speaking, the "Venetian" is the tightest, most exacting version of the family: always perfectly square, links drawn close. The Box chain is its slightly more relaxed sibling, with looser, more rectangular links. By the 19th century, both had become default utility chains of the European elite, carrying lockets, pocket watches, religious medals, and anything else too precious to risk on a weaker link.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-museum-04-box-venetian.jpg?v=1780543296" alt="The goldsmith's workshop, engraving from Diderot's Encyclopedie, 1765" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           The goldsmith's workshop: forge, anvil, and bench. Engraving from Diderot &amp; d'Alembert's <em>Encyclop&eacute;die</em>, 'Orf&egrave;vre' (1765). Public domain.
         </p>
       </div>
@@ -286,11 +286,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>Because of its smooth, snag-free surface, the Box chain is the only chain that allows a pendant to slide with absolute freedom. No catching on link edges, no friction against bail openings. Hang a pendant on a Box chain and it will center itself, gliding to the lowest point of the drape with zero resistance. This is why high-end jewelers recommend it for "forever" pieces: jewelry meant to be worn 24/7, through sleep, sport, and work.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/Box-Curb-14K-510-scaled.jpg?v=1779431648" alt="Solid gold box chain from the Styx collection" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           The four-sided interlock: each square link nests precisely into the next. The smoothest, strongest pendant carrier in the collection.
         </p>
       </div>
@@ -301,7 +301,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <table style="width: 100%; border-collapse: collapse; margin: 40px 0; font-family: 'Cinzel', serif; font-size: 14px;">
         <thead>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Width</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">10k Gold (g/inch)</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">14k Gold (g/inch)</th>
@@ -309,19 +309,19 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>0.8mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.11&ndash;0.12g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.13&ndash;0.14g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~2.6&ndash;2.8g</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>1.0mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.18&ndash;0.22g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.22&ndash;0.25g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~4.4&ndash;5.0g</td>
           </tr>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>1.5mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.40&ndash;0.45g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.45&ndash;0.50g</td>
@@ -332,11 +332,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>A 20-inch 14k Box chain at 1.0mm weighs approximately 4.5 to 5 grams, about the weight of a nickel. Slender enough to disappear under a collar. Strong enough to carry your most important pendant for the rest of your life. That ratio of maximum strength and minimum profile is the Venetian promise, and it has never been broken.</p>
 
-      <div style="background: #F5F2EA; padding: 40px; margin: 48px 0; border-left: 3px solid #B8924A;">
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1815;">
+      <div style="background: #F4F4F2; padding: 40px; margin: 48px 0; border-left: 3px solid #A8925C;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1B1C;">
           &ldquo;The Box chain does not ask to be noticed. It asks to be trusted. Centuries of Venetian engineering say you can.&rdquo;
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
+        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #66686A; text-transform: uppercase; margin-top: 20px;">
           The Ferryman
         </div>
       </div>
@@ -354,7 +354,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
     },
     content: `
 
-      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #4A443B; margin-bottom: 48px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">
         Hold a section of braided rope. Now imagine each strand replaced with a ring of gold, each ring woven through four others and folded back on itself in a pattern so dense it looks organic, like a golden vine growing along a cathedral wall. That is the Byzantine chain. It is the most complex weave in this entire collection: a design so intricate the trade has never agreed on a single name for it. Some jewelers call it the Turkish weave. Most call it Byzantine, after the empire whose goldwork it evokes.
       </p>
 
@@ -368,11 +368,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>The woven gold aesthetic has been in continuous production, in one form or another, for over 1,500 years. Very few human-made objects can claim that kind of unbroken lineage.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-museum-05-byzantine-gold.jpg?v=1780543297" alt="Gold necklace with cross, Byzantine, 6th century, The Metropolitan Museum of Art" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           The real thing: gold necklace with cross, Byzantine, 6th century. Adornment and portable wealth in a single object. The Metropolitan Museum of Art (public domain).
         </p>
       </div>
@@ -396,7 +396,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <table style="width: 100%; border-collapse: collapse; margin: 40px 0; font-family: 'Cinzel', serif; font-size: 14px;">
         <thead>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Width</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">10k Gold (g/inch)</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">14k Gold (g/inch)</th>
@@ -404,19 +404,19 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>1.5mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.10&ndash;0.15g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.12&ndash;0.18g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~2.6&ndash;4g</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>2.5mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.25&ndash;0.35g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.28&ndash;0.40g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~6&ndash;9g</td>
           </tr>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>4.0mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.55&ndash;0.75g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.65&ndash;0.90g</td>
@@ -427,11 +427,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>A 22-inch 14k Byzantine at 4mm carries approximately 14 to 20 grams of solid gold. It provides maximum visual volume with a comfortable, wearable weight. An empire's worth of engineering in every link.</p>
 
-      <div style="background: #F5F2EA; padding: 40px; margin: 48px 0; border-left: 3px solid #B8924A;">
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1815;">
+      <div style="background: #F4F4F2; padding: 40px; margin: 48px 0; border-left: 3px solid #A8925C;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1B1C;">
           &ldquo;The Byzantine chain was the original wearable bank account. Cut a link, weigh it, spend it. Fifteen centuries later, the weave still holds.&rdquo;
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
+        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #66686A; text-transform: uppercase; margin-top: 20px;">
           The Ferryman
         </div>
       </div>
@@ -449,7 +449,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
     },
     content: `
 
-      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #4A443B; margin-bottom: 48px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">
         Take a paperclip. Bend it into an oval. Now hook a second oval through the first, perpendicular. Repeat this four thousand times. You have just built a cable chain: the most fundamental, most common, and most underestimated design in the history of jewelry. It takes its name from the great anchor cables of ships, and its geometry has not changed since the Bronze Age.
       </p>
 
@@ -461,11 +461,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>The cable chain is among the most produced chain styles in history. Not the flashiest, not the heaviest, not the most complex. Just the most trusted. That distinction has held for four thousand years.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-museum-06-cable-ancient.jpg?v=1780543298" alt="Gold chain, Roman, The Metropolitan Museum of Art" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           The original: a Roman gold chain. The same interlocked-loop logic is still the world's most produced chain pattern. The Metropolitan Museum of Art (public domain).
         </p>
       </div>
@@ -484,11 +484,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>The French aviator and writer Antoine de Saint-Exup&eacute;ry wrote that "perfection is achieved not when there is nothing more to add, but when there is nothing left to take away." The cable chain is perfection by that definition. It is the minimum viable chain, and the minimum, it turns out, has been enough for forty centuries.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-museum-07-livery-collar.jpg?v=1780543300" alt="Hans Holbein the Younger, Sir Thomas More wearing the Tudor Collar of Esses, 1527" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           From Mesopotamia to monarchy: Hans Holbein the Younger, <em>Sir Thomas More</em> (1527), wearing the Tudor livery Collar of Esses. The Frick Collection, New York (public domain).
         </p>
       </div>
@@ -497,7 +497,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <table style="width: 100%; border-collapse: collapse; margin: 40px 0; font-family: 'Cinzel', serif; font-size: 14px;">
         <thead>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Width</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">10k Gold (g/inch)</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">14k Gold (g/inch)</th>
@@ -505,19 +505,19 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>1.0mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.07&ndash;0.10g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.08&ndash;0.12g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~2&ndash;3g</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>2.0mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.25&ndash;0.40g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.30&ndash;0.45g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~7&ndash;11g</td>
           </tr>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>4.0mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.95&ndash;1.30g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">1.10&ndash;1.50g</td>
@@ -528,11 +528,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>A 24-inch 14k solid cable at 4mm width carries approximately 26 to 36 grams of gold: a substantial, portable asset. But even at 1mm, carrying barely 2 grams, the cable chain does its job. It holds. It has always held.</p>
 
-      <div style="background: #F5F2EA; padding: 40px; margin: 48px 0; border-left: 3px solid #B8924A;">
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1815;">
+      <div style="background: #F4F4F2; padding: 40px; margin: 48px 0; border-left: 3px solid #A8925C;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1B1C;">
           &ldquo;The cable chain is the definition of enough. Forty centuries of jewelry design, and no one has found a simpler way to connect two points with gold.&rdquo;
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
+        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #66686A; text-transform: uppercase; margin-top: 20px;">
           The Ferryman
         </div>
       </div>
@@ -549,7 +549,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
       altText: 'Gold criss-cross chain catching dramatic light on dark marble',
     },
     content: `
-      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #4A443B; margin-bottom: 48px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">
         Hold your phone’s flashlight to a sequin. Watch the room explode with scattered light. Now imagine that effect miniaturized into a chain thinner than a pencil lead. That is the Criss-Cross: a chain that weighs almost nothing and outshines pieces ten times its size. It is the youngest design in this journal: a child of the machine age, not the ancient world.
       </p>
 
@@ -583,7 +583,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <table style="width: 100%; border-collapse: collapse; margin: 40px 0; font-family: 'Cinzel', serif; font-size: 14px;">
         <thead>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Width</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">10k Gold (g/inch)</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">14k Gold (g/inch)</th>
@@ -591,19 +591,19 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>1.0mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.04&ndash;0.07g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.05&ndash;0.08g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~0.9&ndash;1.4g</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>1.2mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.07&ndash;0.10g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.08&ndash;0.12g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~1.5&ndash;2.2g</td>
           </tr>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>1.5mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.13&ndash;0.17g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.15&ndash;0.20g</td>
@@ -614,11 +614,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>An 18-inch 14k Criss-Cross at 1.2mm weighs roughly 1.5 to 2.2 grams, barely more than a paperclip. But that paperclip catches every photon in the room and throws it back at anyone looking. The weight is negligible. The effect is not.</p>
 
-      <div style="background: #F5F2EA; padding: 40px; margin: 48px 0; border-left: 3px solid #B8924A;">
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1815;">
+      <div style="background: #F4F4F2; padding: 40px; margin: 48px 0; border-left: 3px solid #A8925C;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1B1C;">
           &ldquo;The Criss-Cross proves that presence has nothing to do with weight. Two grams of gold, cut correctly, can outshine an ounce.&rdquo;
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
+        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #66686A; text-transform: uppercase; margin-top: 20px;">
           The Ferryman
         </div>
       </div>
@@ -634,7 +634,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
       altText: "Solid gold Cuban link chain.",
     },
     content: `
-      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #4A443B; margin-bottom: 48px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">
         Pick up a standard AA battery. Feel the weight in your palm, about 23 grams. Now imagine something barely heavier than that, draped around your neck, worth more than most people's first car. That is a 5mm Cuban Link in 14k solid gold. Thirty-two grams of metal that has held its value since before the Roman Empire fell.
       </p>
 
@@ -646,11 +646,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>But these Miami jewelers wanted something heavier. Something that sat flush against the collarbone like armor plating. So they took the curb link and did two things that changed jewelry forever: they made each link thicker and more rounded, and then they <strong>flat-filed</strong> both surfaces to a mirror finish. The result was a chain that looked like a solid ribbon of gold: no gaps, no rattle, no light passing between the links.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; background: #E8E1D2; overflow: hidden; border: 1px solid rgba(26,24,21,0.08); display: flex; align-items: center; justify-content: center;">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; background: #E4E4E1; overflow: hidden; border: 1px solid rgba(26,27,28,0.08); display: flex; align-items: center; justify-content: center;">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-categories-cuban-link.jpg?v=1779151358" alt="Close-up of a solid gold Cuban link chain showing flat-filed mirror surfaces" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           The flat-filed surface of a Styx Cuban Link. Each link is individually soldered closed, then filed on both sides until no light passes between them.
         </p>
       </div>
@@ -681,11 +681,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
         <li><strong>The Solder:</strong> Every single link is individually soldered closed. In a quality Cuban, no link is left open. This is what gives the chain its legendary strength: it will stretch before it breaks, and it almost never stretches.</li>
       </ol>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 4/3; background: #E8E1D2; overflow: hidden; border: 1px solid rgba(26,24,21,0.08); display: flex; align-items: center; justify-content: center;">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 4/3; background: #E4E4E1; overflow: hidden; border: 1px solid rgba(26,27,28,0.08); display: flex; align-items: center; justify-content: center;">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/ShinyChain8mmbust__05476.1495126382.1280.1280.jpg?v=1779431607" alt="Solid gold Cuban link chain from the Styx collection, flat-filed mirror finish" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           Under magnification: the flat-filed planes of a Styx Cuban. Each link is soldered closed, then filed until the surface reads as a continuous mirror. No light passes between links.
         </p>
       </div>
@@ -704,11 +704,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>Now. A 22-inch 14k Cuban Link at 5mm width weighs approximately <strong>32 to 36 grams</strong>. That is more than a full troy ounce of gold, shaped into something you wear every day. At today's spot prices, that raw metal alone is worth over $2,500, before anyone touches it with a file or a torch.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; background: #E8E1D2; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; background: #E4E4E1; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/ShinyChain13mmbust__32987.1495128942.1280.1280.jpg?v=1779431613" alt="Heavy solid gold Cuban link chain from the Styx collection" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: \x27Cormorant Garamond\x27, serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: \x27Cormorant Garamond\x27, serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           Same weight, different form. A 1 oz gold bar beside a coiled 5mm Cuban Link: both carry roughly 31 grams of precious metal. One sits in a vault. The other goes everywhere you do.
         </p>
       </div>
@@ -721,7 +721,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <table style="width: 100%; border-collapse: collapse; margin: 40px 0; font-family: 'Cinzel', serif; font-size: 14px;">
         <thead>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Width</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">10k Gold (g/inch)</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">14k Gold (g/inch)</th>
@@ -729,25 +729,25 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>3mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.55 – 0.65g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.65 – 0.75g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~14 – 17g</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>5mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">1.20 – 1.40g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">1.45 – 1.65g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~32 – 36g</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>7mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">2.10 – 2.50g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">2.50 – 2.95g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~55 – 65g</td>
           </tr>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>10mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">4.00 – 4.80g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">4.80 – 5.70g</td>
@@ -766,11 +766,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>That range is the point. The Cuban Link is not aspirational. It is not a trend piece. It is a store of value that happens to look good on every body type, with every outfit, in every decade. The jewelers on Flagler Street in 1974 probably didn't know they were designing something that would outlast most currencies. But they were.</p>
 
-      <div style="background: #F5F2EA; padding: 40px; margin: 48px 0; border-left: 3px solid #B8924A;">
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1815;">
+      <div style="background: #F4F4F2; padding: 40px; margin: 48px 0; border-left: 3px solid #A8925C;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1B1C;">
           &ldquo;The Cuban Link is not a chain. It is a financial instrument that happens to go with everything.&rdquo;
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
+        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #66686A; text-transform: uppercase; margin-top: 20px;">
           The Ferryman
         </div>
       </div>
@@ -787,7 +787,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
       altText: 'Horse bridle with gold curb chain detail in golden hour light',
     },
     content: `
-      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #4A443B; margin-bottom: 48px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">
         Put your hand under a horse’s chin. Feel the flat strap that runs beneath the jaw, holding the bit steady. That strap is called a curb. It was designed to lie flat, distribute pressure evenly, and never bunch or twist. Now replace the leather with gold. You have just invented the oldest continuously worn chain design in human history.
       </p>
 
@@ -797,11 +797,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>The lineage is ancient. The earliest gold chains we know of, from the Royal Cemetery of Ur, c. 2600 BCE, already solved the fundamental problem of interlocking links, and the flat-lying twisted link descends directly from that solution. In Rome, gold worn on the body was rank made visible: women of status wore the <em>catena</em>, woven strands of gold across the torso, while soldiers carried their decorations in precious metal that could be traded in any province. The flat link was not chosen for beauty. It was chosen because flat links do not snag, do not tangle, and distribute weight across the maximum possible skin surface. The Curb is a solution to a problem. The fact that it also happens to be beautiful is incidental.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/2121H-1-scaled.jpg?v=1779431629" alt="Solid gold curb chain from the Styx collection" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           The namesake link: flattened, twisted, and lying perfectly flat, the same geometry that once steadied a horse's bit.
         </p>
       </div>
@@ -828,11 +828,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>In the 1970s, UK punks adopted heavy steel curb chains as a deliberate provocation: industrial hardware worn as jewelry, a rejection of everything precious. A decade later, the pioneers of hip-hop reclaimed the same form in solid gold, transforming it into the foundational "Cuban" link. The Cuban is technically a rounded, tightly packed curb. Strip it down to its skeleton and you are looking at the same design that hung across Prince Albert's waistcoat in the mid-19th century.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-museum-08-albert-watch-chain.jpg?v=1780543301" alt="Victorian gold watch chain and chatelaine, c. 1875, The Metropolitan Museum of Art" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           The Albert era: Victorian gold watch chain and chatelaine, c. 1875. If you could afford a gold watch, you could afford a gold chain to carry it. The Metropolitan Museum of Art (public domain).
         </p>
       </div>
@@ -845,7 +845,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <table style="width: 100%; border-collapse: collapse; margin: 40px 0; font-family: 'Cinzel', serif; font-size: 14px;">
         <thead>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Width</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">10k Gold (g/inch)</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">14k Gold (g/inch)</th>
@@ -853,25 +853,25 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>3mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.35&ndash;0.45g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.40&ndash;0.55g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~10&ndash;13g</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>5.5mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.85&ndash;1.05g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">1.00&ndash;1.25g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~24&ndash;30g</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>8mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">1.35&ndash;1.55g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">1.55&ndash;1.85g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~37&ndash;44g</td>
           </tr>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>10mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">2.10&ndash;2.40g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">2.50&ndash;2.80g</td>
@@ -884,11 +884,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <div data-styx-widget="gold-weight-visual" data-chain="curb" data-width="8" data-length="24" data-karat="14" data-weight="40"></div>
 
-      <div style="background: #F5F2EA; padding: 40px; margin: 48px 0; border-left: 3px solid #B8924A;">
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1815;">
+      <div style="background: #F4F4F2; padding: 40px; margin: 48px 0; border-left: 3px solid #A8925C;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1B1C;">
           &ldquo;The Curb is not a style. It is a species. Every other chain is a mutation of this one idea: flat links, interlocked, lying against skin. Four thousand years and counting.&rdquo;
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
+        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #66686A; text-transform: uppercase; margin-top: 20px;">
           The Ferryman
         </div>
       </div>
@@ -904,7 +904,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
       altText: "Solid gold Figaro chain.",
     },
     content: `
-      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #4A443B; margin-bottom: 48px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">
         Tap your finger on a table. One-two-three, pause. One-two-three, pause. You just played the rhythm of the Figaro chain. Three short links, one long. Three short, one long. It is the only chain in existence that was named not for what it looks like, but for how it moves: a rhythm that shares its name with the most famous barber in opera.
       </p>
 
@@ -933,11 +933,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>In the trade, jewelers sometimes call the Figaro the "mutant chain": half curb, half cable, wholly its own thing. That hybrid identity is exactly what makes it interesting.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 4/3; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 4/3; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/bellaroma-2811y-2.jpg?v=1779431765" alt="Gold Figaro chain from the Styx collection showing the 3+1 pattern" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           The 3+1 rhythm under magnification: three circular links, one elongated oval. A pattern that has not changed since the Enlightenment.
         </p>
       </div>
@@ -956,7 +956,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <table style="width: 100%; border-collapse: collapse; margin: 40px 0; font-family: 'Cinzel', serif; font-size: 14px;">
         <thead>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Width</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">10k Gold (g/inch)</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">14k Gold (g/inch)</th>
@@ -964,13 +964,13 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>3mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.35&ndash;0.45g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.45&ndash;0.55g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~10&ndash;12g</td>
           </tr>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>5mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.75&ndash;0.90g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.90&ndash;1.10g</td>
@@ -981,11 +981,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>A 22-inch 14k Figaro at 5mm width weighs roughly 20 to 24 grams. That is just under a troy ounce of gold, about the weight of four nickels in your pocket. Enough to be substantial on your neck. Enough to hold real value. Light enough to forget you are wearing it until someone asks where you got it.</p>
 
-      <div style="background: #F5F2EA; padding: 40px; margin: 48px 0; border-left: 3px solid #B8924A;">
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1815;">
+      <div style="background: #F4F4F2; padding: 40px; margin: 48px 0; border-left: 3px solid #A8925C;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1B1C;">
           &ldquo;Every other chain is a monotone. The Figaro is a melody. Three-one, three-one: an 18th-century rhythm hammered into gold and still playing.&rdquo;
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
+        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #66686A; text-transform: uppercase; margin-top: 20px;">
           The Ferryman
         </div>
       </div>
@@ -1001,7 +1001,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
       altText: 'Delicate gold forsantina chain on sun-warmed Italian terracotta',
     },
     content: `
-      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #4A443B; margin-bottom: 48px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">
         In Italy, there is a chain so fundamental that it does not have a dramatic origin story. No opera, no shipyard, no boxer’s ring. It is simply the chain that every Italian child receives as their first piece of gold, usually with a small cross or a <em>cornicello</em> horn hanging from it. The Forsantina (in Italian, the <em>forzatina</em>, from <em>forzato</em>: "forced," for the way each link is forced closed and soldered shut). The elevated basic. The foundation before the flourish.
       </p>
 
@@ -1033,7 +1033,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <table style="width: 100%; border-collapse: collapse; margin: 40px 0; font-family: 'Cinzel', serif; font-size: 14px;">
         <thead>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Width</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">10k Gold (g/inch)</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">14k Gold (g/inch)</th>
@@ -1041,19 +1041,19 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>1.5mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.15&ndash;0.18g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.18&ndash;0.22g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~3.6&ndash;4.4g</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>2.0mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.21&ndash;0.23g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.23&ndash;0.25g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~4.6&ndash;5.0g</td>
           </tr>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>3.0mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.45&ndash;0.55g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.55&ndash;0.65g</td>
@@ -1064,11 +1064,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>A 20-inch 14k Solid Forsantina at 2mm width weighs approximately 4.6 to 5.0 grams, about the weight of a nickel. It is not heavy. It is not supposed to be. The Forsantina is a foundation, not a fortress. It is the chain you put on first, then build from.</p>
 
-      <div style="background: #F5F2EA; padding: 40px; margin: 48px 0; border-left: 3px solid #B8924A;">
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1815;">
+      <div style="background: #F4F4F2; padding: 40px; margin: 48px 0; border-left: 3px solid #A8925C;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1B1C;">
           &ldquo;The Forsantina is not the chain you notice. It is the chain that makes everything else you are wearing look right.&rdquo;
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
+        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #66686A; text-transform: uppercase; margin-top: 20px;">
           The Ferryman
         </div>
       </div>
@@ -1084,7 +1084,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
       altText: "Solid gold Franco chain.",
     },
     content: `
-      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #4A443B; margin-bottom: 48px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">
         Hold two AA batteries side by side in your fist. That is roughly 46 grams. Now imagine that weight distributed across 22 inches of dense, four-sided gold weave draped against your chest. That is a mid-weight Franco chain. It is the densest standard chain style in existence: the closest thing to wearing a gold bar that still bends with your body.
       </p>
 
@@ -1096,11 +1096,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>What is not debated is the problem it solved. By the 1980s, hip-hop culture and high-finance swagger had created a new demand: chains that could carry enormous, custom-made pendants without stretching, kinking, or snapping. The standard Cuban was strong, but it was a flat chain. Hang a massive Jesus Piece from it, and the links would eventually oval out under the asymmetric load. The Franco was engineered to be different. It took the logic of the Italian Wheat chain (interlocking V-shaped links) and opened it into a four-sided structure: V-pattern on two faces, curb-like on the other two, more open than a Spiga but reading identically at a distance. The result was a chain that flexed in every direction, carried massive weight, and would not kink if you balled it up and threw it in a drawer.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/France10K2149__64456.1520887354.1280.1280.jpg?v=1779431743" alt="Gold Franco chain from the Styx collection" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           The V-weave under magnification. Every link is locked against its neighbors to prevent ovalling under load. This is engineering, not decoration.
         </p>
       </div>
@@ -1134,7 +1134,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <table style="width: 100%; border-collapse: collapse; margin: 40px 0; font-family: 'Cinzel', serif; font-size: 14px;">
         <thead>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Width</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">10k Gold (g/inch)</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">14k Gold (g/inch)</th>
@@ -1142,25 +1142,25 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>2.5mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.65&ndash;0.75g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.75&ndash;0.85g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~17&ndash;19g</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>3mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.90&ndash;1.10g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">1.10&ndash;1.30g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~24&ndash;29g</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>4mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">1.45&ndash;1.65g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">1.75&ndash;1.95g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~39&ndash;43g</td>
           </tr>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>5mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">2.10&ndash;2.40g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">2.50&ndash;2.80g</td>
@@ -1173,11 +1173,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <div data-styx-widget="gold-weight-visual" data-chain="franco" data-width="5" data-length="22" data-karat="14" data-weight="58"></div>
 
-      <div style="background: #F5F2EA; padding: 40px; margin: 48px 0; border-left: 3px solid #B8924A;">
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1815;">
+      <div style="background: #F4F4F2; padding: 40px; margin: 48px 0; border-left: 3px solid #A8925C;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1B1C;">
           &ldquo;The Cuban announces. The Franco carries. It is the chain for people who do not need you to notice what they are wearing. They need it to hold.&rdquo;
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
+        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #66686A; text-transform: uppercase; margin-top: 20px;">
           The Ferryman
         </div>
       </div>
@@ -1194,7 +1194,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
     },
     content: `
 
-      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #4A443B; margin-bottom: 48px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">
         Think of the most universal symbol in human history. Not a flag, not a letter, not a number. A heart. Now imagine that symbol repeated 200 times, each one interlocking with the next, forming a continuous ribbon of gold sentiment. The Heart chain takes the most recognized shape on Earth and turns it into engineering: a scalloped, zigzag drape that carries more emotional weight per gram than any other link ever made.
       </p>
 
@@ -1202,11 +1202,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>The heart shape's origins are debated, variously linked to the silphium plant, to ivy leaves, to the anatomical human heart itself. But its emergence as a symbol of romantic love is traced to 13th-century France, where it appeared in illuminated manuscripts and courtly art. To be precise about what is old and what is new: the heart <em>symbol</em> is medieval; the heart-link <em>chain</em> (in trade terms, a "fancy" chain built from heart-shaped links) is a modern manufactured form. What it inherits from the Middle Ages is not a production line but a meaning.</p><p>Heart jewelry reached its peak during the Victorian Era. Queen Victoria's well-documented love of sentimental jewelry, especially heart-shaped lockets carrying portraits and keepsakes of her children and her beloved Prince Albert, helped spark a global obsession with sentimental gold. The "Witch's Heart," an asymmetrical heart used as a protective talisman in 18th-century Scotland, added a mystical dimension. The Heart chain carries all of this history in every link.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-museum-10-heart-jewel.jpg?v=1780543304" alt="Gold Luckenbooth brooch, Scotland, 17th century, Victoria and Albert Museum" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           The heart in gold, centuries early: Luckenbooth brooch, Scotland, probably 17th century. &copy; Victoria and Albert Museum, London.
         </p>
       </div>
@@ -1224,7 +1224,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <table style="width: 100%; border-collapse: collapse; margin: 40px 0; font-family: 'Cinzel', serif; font-size: 14px;">
         <thead>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Width</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">10k Gold (g/inch)</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">14k Gold (g/inch)</th>
@@ -1232,13 +1232,13 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>3mm (Solid Wire)</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.35&ndash;0.45g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.40&ndash;0.55g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~7.2&ndash;9.9g</td>
           </tr>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>5mm (Solid Bold)</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.85&ndash;1.00g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">1.00&ndash;1.20g</td>
@@ -1249,11 +1249,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>An 18-inch 14k Heart chain in Solid Bold 5mm carries approximately 18 to 22 grams of gold. A substantial wearable asset that holds its value as well as its sentiment.</p>
 
-      <div style="background: #F5F2EA; padding: 40px; margin: 48px 0; border-left: 3px solid #B8924A;">
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1815;">
+      <div style="background: #F4F4F2; padding: 40px; margin: 48px 0; border-left: 3px solid #A8925C;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1B1C;">
           &ldquo;A single heart pendant is a statement. A heart chain is a manifesto: 200 declarations of love, interlocked in gold, with no beginning and no end.&rdquo;
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
+        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #66686A; text-transform: uppercase; margin-top: 20px;">
           The Ferryman
         </div>
       </div>
@@ -1271,7 +1271,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
     },
     content: `
 
-      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #4A443B; margin-bottom: 48px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">
         Pour honey onto a flat surface. Watch how it spreads into a thin, golden sheet that follows every contour, every dip, every curve. That is how a Herringbone chain moves on skin. It is the only chain in this collection that feels less like jewelry and more like a second skin of liquid gold. The Egyptians invented it 5,000 years ago. The power brokers of the 1980s made it a uniform. It demands more respect than any other chain you will ever own.
       </p>
 
@@ -1279,11 +1279,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>The herringbone's spiritual ancestors are Egyptian. From around 3000 BCE, Egyptian goldsmiths were working gold into supple, flat, woven forms: broad collars and flexible sheets of linked metal that moved with the body and were reserved for the highest nobility. Gold, to the Egyptians, was the flesh of the gods; to wear it flat against the skin was to wear a second, immortal skin.</p><p>The pattern itself is even older than the chain. The Romans called the V-shaped zigzag <em>opus spicatum</em>, or "spiked work," and laid it into the brick floors and walls of their buildings, where the interlocking herringbone bond distributed load in every direction. The same structural logic that held Roman floors together holds a Herringbone chain flat against your collarbone.</p><p>Italian goldsmiths later refined the ultra-flat weave into the modern Herringbone, a chain that feels less like a mechanical object and more like a silk ribbon. Then, in the 1980s, it became the power necklace of a generation.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-museum-11-egyptian-collar.jpg?v=1780543305" alt="Gold broad collar (wesekh), Egypt, 332-246 BC, The Metropolitan Museum of Art" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           The skin of gold: broad collar (<em>wesekh</em>), Egypt, 332&ndash;246 BC. Flat, supple, worn against the body like a second skin. The Metropolitan Museum of Art (public domain).
         </p>
       </div>
@@ -1296,11 +1296,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>In the 1980s, a 5mm gold Herringbone over a silk blouse became the definitive image of female executive power. It was sleek, it was minimal, it was unapologetically bold. The chain said: I am not here to be decorative. I am here to conduct business.</p><p>Today, the Herringbone has returned as a single, high-shine statement piece, often paired with a white t-shirt to create contrast between ancient luxury and modern simplicity. It is the chain for people who understand that the most sensual material on Earth is not silk, not satin. It is a flat plane of polished gold, moving with your body like it was poured there.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/9318-2-scaled-e1714578716399.jpg?v=1779431758" alt="Gold herringbone chain from the Styx collection" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           Liquid metal: the Styx Herringbone, a flat plane of polished gold that moves like fabric.
         </p>
       </div>
@@ -1309,7 +1309,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <table style="width: 100%; border-collapse: collapse; margin: 40px 0; font-family: 'Cinzel', serif; font-size: 14px;">
         <thead>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Width</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">10k Gold (g/inch)</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">14k Gold (g/inch)</th>
@@ -1317,19 +1317,19 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>3.0mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.30&ndash;0.40g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.35&ndash;0.45g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~6.3&ndash;8.1g</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>4.0mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.45&ndash;0.55g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.50&ndash;0.65g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~9&ndash;11.7g</td>
           </tr>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>5.0mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.65&ndash;0.75g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.75&ndash;0.85g</td>
@@ -1340,11 +1340,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>An 18-inch 14k Herringbone at 4mm carries approximately 9 to 11.7 grams. Its broad surface makes it appear twice as heavy as it is. The most visual impact per gram of any flat chain.</p>
 
-      <div style="background: #F5F2EA; padding: 40px; margin: 48px 0; border-left: 3px solid #B8924A;">
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1815;">
+      <div style="background: #F4F4F2; padding: 40px; margin: 48px 0; border-left: 3px solid #A8925C;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1B1C;">
           &ldquo;The Herringbone is the only chain that moves like liquid. It is also the only one that can be destroyed by a careless fold. That is the price of perfection.&rdquo;
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
+        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #66686A; text-transform: uppercase; margin-top: 20px;">
           The Ferryman
         </div>
       </div>
@@ -1361,7 +1361,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
       altText: 'Gold mariner chain draped over nautical rope on a weathered ship deck',
     },
     content: `
-      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #4A443B; margin-bottom: 48px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">
         Drop a Mariner chain into your pocket. Walk around for an hour. Now pull it out. It will come out straight, untangled, perfectly aligned. Try that with any other chain in existence. The bar across each link, the one borrowed from ships that weighed ten thousand tons, makes tangling a physical impossibility. That is what happens when naval architecture meets goldsmithing.
       </p>
 
@@ -1373,11 +1373,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>By the mid-1800s, sailors and fishermen along the Mediterranean coast began crafting miniature versions of these anchor chains in gold and silver. They were not making jewelry. They were making talismans. A small gold anchor chain worn around the neck was a physical connection to the ship that kept you alive, a prayer for safe passage, rendered in metal. Sailors believed that wearing the chain of the anchor meant you would always find your way home.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-museum-12-anchor-chain.jpg?v=1780543307" alt="Stud-link anchor chain from the battleship Tirpitz, Marinemuseet, Horten, Norway" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           The ancestor: stud-link anchor chain from the battleship <em>Tirpitz</em>, Marinemuseet, Horten. The bar across each link is the whole idea. Photo: Wolfmann (CC BY-SA 4.0).
         </p>
       </div>
@@ -1405,7 +1405,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <table style="width: 100%; border-collapse: collapse; margin: 40px 0; font-family: 'Cinzel', serif; font-size: 14px;">
         <thead>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Width</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">10k Gold (g/inch)</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">14k Gold (g/inch)</th>
@@ -1413,25 +1413,25 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>3mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.30&ndash;0.40g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.35&ndash;0.45g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~8&ndash;10g</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>5mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.80&ndash;1.00g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.95&ndash;1.15g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~21&ndash;25g</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>7mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">1.40&ndash;1.70g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">1.65&ndash;1.95g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~36&ndash;43g</td>
           </tr>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>9mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">2.20&ndash;2.50g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">2.60&ndash;2.90g</td>
@@ -1444,11 +1444,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <div data-styx-widget="gold-weight-visual" data-chain="mariner" data-width="5" data-length="22" data-karat="14" data-weight="23"></div>
 
-      <div style="background: #F5F2EA; padding: 40px; margin: 48px 0; border-left: 3px solid #B8924A;">
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1815;">
+      <div style="background: #F4F4F2; padding: 40px; margin: 48px 0; border-left: 3px solid #A8925C;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1B1C;">
           &ldquo;The bar across the center of each link is not decoration. It is the reason ten-ton ships do not drift into the Atlantic. Miniaturized in gold, it is the reason this chain never tangles.&rdquo;
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
+        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #66686A; text-transform: uppercase; margin-top: 20px;">
           The Ferryman
         </div>
       </div>
@@ -1465,7 +1465,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
     },
     content: `
 
-      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #4A443B; margin-bottom: 48px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">
         In 1940, in Nazi-occupied Oslo, wearing a paperclip on your collar could get you arrested. The humble office supply had become a symbol of silent resistance, a way for Norwegians to say "we are bound together" without speaking a word. Eight decades later, the same elongated rectangle is the most sought-after chain silhouette in modern fashion. The Paperclip chain carries a legacy that most people who wear it never learn.
       </p>
 
@@ -1473,11 +1473,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>During the Nazi occupation of Norway, the paperclip became a symbol of national unity. "We are bound together." Citizens wore them on their lapels and fashioned them into makeshift necklaces. To wear a paperclip was to signal an unbreakable bond, silently, and at real personal risk, as the occupiers came to treat unity symbols as punishable defiance. The crackdown only made the practice more widespread.</p><p>The jewelry trade eventually formalized what the resistance had improvised. Technically, the paperclip chain is an anchor/cable chain with very long, open links (that is the actual catalog definition), and that elongated rectangular geometry turned out to be perfect for bold, layered, modern styling. Today, the Paperclip chain bridges Scandinavian minimalism and contemporary luxury: industrial heritage and modern elegance, in a single link.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-museum-13-norwegian-paperclip.jpg?v=1780543308" alt="The Binders paperclip monument honoring Johan Vaaler, Sandvika, Norway" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           The 'Binders' monument at Sandvika, Norway, a giant paperclip honoring inventor Johan Vaaler and the symbol Norwegians wore under occupation. Photo: Lars Roede (CC BY-SA 4.0).
         </p>
       </div>
@@ -1490,11 +1490,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>The Paperclip has replaced the traditional cable chain as the preferred base for "buildable" charm necklaces. Its large, open links make clipping and unclipping charms effortless. It is the "Model Off-Duty" chain, the piece worn between shows, between meetings, between lives. It says: I chose this because it is smart, not because it is heavy.</p><p>In modern Norway, Paperclip jewelry is still sometimes worn as a quiet tribute to the <em>Hjemmefronten</em>, the Home Front. Most people do not know the history. But the history is there, in every rectangle of gold.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/9320-5-scaled-e1714575421300.jpg?v=1779431762" alt="Gold paperclip chain from the Styx collection" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           The Styx Paperclip: elongated open links, technically an anchor chain, stretched to its most graphic form.
         </p>
       </div>
@@ -1503,7 +1503,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <table style="width: 100%; border-collapse: collapse; margin: 40px 0; font-family: 'Cinzel', serif; font-size: 14px;">
         <thead>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Width</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">10k Gold (g/inch)</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">14k Gold (g/inch)</th>
@@ -1511,19 +1511,19 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>3.0mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.25&ndash;0.32g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.30&ndash;0.40g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~5.4&ndash;7.2g</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>4.0mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.45&ndash;0.55g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.55&ndash;0.70g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~9.9&ndash;12.6g</td>
           </tr>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>5.5mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.90&ndash;1.05g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">1.10&ndash;1.30g</td>
@@ -1534,11 +1534,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>An 18-inch 14k Paperclip at 3mm weighs approximately 5.4 to 7.2 grams, maximizing visual volume while maintaining an airy, effortless drape. The most look per gram in the collection.</p>
 
-      <div style="background: #F5F2EA; padding: 40px; margin: 48px 0; border-left: 3px solid #B8924A;">
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1815;">
+      <div style="background: #F4F4F2; padding: 40px; margin: 48px 0; border-left: 3px solid #A8925C;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1B1C;">
           &ldquo;The Paperclip chain was a weapon before it was fashion. In Oslo, it meant unity. In Paris, it meant rebellion. In gold, it means both.&rdquo;
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
+        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #66686A; text-transform: uppercase; margin-top: 20px;">
           The Ferryman
         </div>
       </div>
@@ -1556,7 +1556,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
     },
     content: `
 
-      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #4A443B; margin-bottom: 48px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">
         Roll a peanut between your fingers. Feel the three bumps, the organic asymmetry, the texture that is deliberately imperfect. Now imagine that shape in 14k gold, crimped into links so tight they scatter light like a disco ball. The Peanut chain, a cousin of the textured "Krinkle" family, is the most tactile chain in this collection. It feels different. It moves different. It sparkles with a frequency that smooth chains cannot match.
       </p>
 
@@ -1564,11 +1564,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>Crimping and texturing gold wire is a technique as old as goldsmithing itself. But the peanut shape holds its deepest cultural roots in East Asia. In Chinese culture, the peanut (<em>hu&#257;sh&#275;ng</em>) is an auspicious symbol of fertility, prosperity, and long life: its nickname is the "longevity fruit," and its name echoes the words for bearing children, making gold peanut charms a traditional wedding and new-baby gift.</p><p>Modern designers adopted the crimped "krinkle" texture to create organic, whimsical pieces that broke away from rigid geometric styling. The Peanut chain was playful where everything else was serious. That was its revolution.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-museum-14-chinese-gold.jpg?v=1780543309" alt="Pair of gold phoenixes, China, Tang dynasty, c. 700s, Cleveland Museum of Art" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           Auspicious gold, worked thin as paper: pair of gold phoenixes, China, Tang dynasty, c. 700s. Cleveland Museum of Art (CC0).
         </p>
       </div>
@@ -1586,7 +1586,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <table style="width: 100%; border-collapse: collapse; margin: 40px 0; font-family: 'Cinzel', serif; font-size: 14px;">
         <thead>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Width</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">10k Gold (g/inch)</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">14k Gold (g/inch)</th>
@@ -1594,13 +1594,13 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>2.5mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.38&ndash;0.42g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.45&ndash;0.50g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~9&ndash;10g</td>
           </tr>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>4.0mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.75&ndash;0.85g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.90&ndash;1.05g</td>
@@ -1611,11 +1611,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>A 20-inch 14k Peanut at 4mm carries approximately 18 to 21 grams of solid gold. Because the links are work-hardened during manufacturing, it is one of the most durable fancy styles for daily wear: the crimping that creates its texture also creates its strength.</p>
 
-      <div style="background: #F5F2EA; padding: 40px; margin: 48px 0; border-left: 3px solid #B8924A;">
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1815;">
+      <div style="background: #F4F4F2; padding: 40px; margin: 48px 0; border-left: 3px solid #A8925C;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1B1C;">
           &ldquo;The Peanut chain proves that imperfection can be engineered. Each crimp is deliberate. Each bump scatters light. The most textured chain in the collection is also one of the toughest.&rdquo;
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
+        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #66686A; text-transform: uppercase; margin-top: 20px;">
           The Ferryman
         </div>
       </div>
@@ -1633,7 +1633,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
     },
     content: `
 
-      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #4A443B; margin-bottom: 48px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">
         Close your eyes and picture a gear: a perfect circle of teeth, meshing with the next. Now shrink those gears to the width of a matchstick, cast them in solid gold, and link them into a chain. That is the Rolo, known in London as the Belcher, carrying the name of a Georgian bare-knuckle boxing champion. It is the chain of fighters and fashion houses, of toggle necklaces and steam-punk cuffs. Industrial geometry, rendered precious.
       </p>
 
@@ -1641,11 +1641,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>The Rolo chain owes its English name to James "Jem" Belcher (1781&ndash;1811), a legendary bare-knuckle boxing champion of Georgian England. Belcher was such a celebrity that his style spawned a whole vocabulary: the spotted "Belcher" neckerchief he wore, and by extension the bold "Belcher" rings and round-link chains that took his name. The association with toughness stuck so hard that "Belcher chain" entered the jeweler's lexicon as the standard term for a chain whose links are wider than they are thick.</p><p>What started as a byword for masculine grit in Georgian London was soon absorbed by Victorian society. By the mid-19th century, the round-link chain had been refined into a staple of high-end jewelry, the perfect base for lockets, charms, and toggle closures. The name "Rolo" eventually became the global standard, but in the UK, it is still the Belcher. And it still carries the weight of the ring.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-museum-15-belcher-rolo.jpg?v=1780543311" alt="Portrait of boxer Jem Belcher, c. 1800, National Portrait Gallery, London" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           Jem Belcher, champion of England, c. 1800, the prizefighter whose name the round-link chain still carries. National Portrait Gallery, London (public domain).
         </p>
       </div>
@@ -1658,11 +1658,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>The Rolo's range is extraordinary. In heavy gauge and oxidized silver, it is the primary chain of the steam-punk and industrial jewelry movements. In fine 14k gold, it is the elegant backbone of the world's most famous charm bracelets. It bridges subcultures because it is neither decorative nor aggressive. It is mechanical. It looks like what it is: a series of perfectly formed circles, engineered to hold.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/Rolo-14K-508-scaled.jpg?v=1779431733" alt="Gold rolo chain from the Styx collection" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           The Styx Rolo: identical round links, wider than they are thick, the Belcher's geometry, polished for the modern neck.
         </p>
       </div>
@@ -1671,7 +1671,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <table style="width: 100%; border-collapse: collapse; margin: 40px 0; font-family: 'Cinzel', serif; font-size: 14px;">
         <thead>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Width</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">10k Gold (g/inch)</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">14k Gold (g/inch)</th>
@@ -1679,19 +1679,19 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>1.5mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.13&ndash;0.17g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.15&ndash;0.20g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~3&ndash;4g</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>2.5mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.35&ndash;0.45g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.40&ndash;0.55g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~8&ndash;11g</td>
           </tr>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>4.0mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.80&ndash;1.05g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.90&ndash;1.20g</td>
@@ -1702,11 +1702,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>A 20-inch 14k Solid Rolo at 2.5mm width weighs approximately 8 to 11 grams. Heavy enough to feel like gear. Light enough to forget you are wearing it until someone asks about the charm hanging from it.</p>
 
-      <div style="background: #F5F2EA; padding: 40px; margin: 48px 0; border-left: 3px solid #B8924A;">
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1815;">
+      <div style="background: #F4F4F2; padding: 40px; margin: 48px 0; border-left: 3px solid #A8925C;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1B1C;">
           &ldquo;The Rolo took its name from a prizefighter and ended up at Tiffany. That is the range of a perfect circle.&rdquo;
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
+        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #66686A; text-transform: uppercase; margin-top: 20px;">
           The Ferryman
         </div>
       </div>
@@ -1723,7 +1723,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
       altText: 'Ancient Egyptian braided gold rope chain on papyrus and sandstone',
     },
     content: `
-      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #4A443B; margin-bottom: 48px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">
         Take three pieces of string. Braid them together. Now replace the string with gold wire and scale it down until the entire braid fits on a pinhead. Congratulations: you have just described a process that the goldsmiths of the ancient Near East and Egypt mastered thousands of years ago. The rope chain is among the oldest continuously produced jewelry designs on Earth, and it has not needed a single improvement.
       </p>
 
@@ -1735,11 +1735,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>These early chains survived the collapse of the Old Kingdom, the rise and fall of Rome, and the maritime expansion of the 18th century, where the rope pattern resurfaced as a "mariner’s cord." But its most explosive cultural moment was still twenty-five centuries away.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-museum-16b-greek-three-strand-chain.jpg?v=1780543313" alt="Ancient Greek twisted gold chains, 4th century BC, The Metropolitan Museum of Art" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           Gold rope, twenty-four centuries old: twisted gold chains, Greek, 4th century BC. The helix construction is identical to designs still manufactured today. The Metropolitan Museum of Art (public domain).
         </p>
       </div>
@@ -1769,7 +1769,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <table style="width: 100%; border-collapse: collapse; margin: 40px 0; font-family: 'Cinzel', serif; font-size: 14px;">
         <thead>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Width</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">10k Gold (g/inch)</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">14k Gold (g/inch)</th>
@@ -1777,25 +1777,25 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>2mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.22&ndash;0.28g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.25&ndash;0.32g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~6&ndash;7g</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>3mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.45&ndash;0.55g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.55&ndash;0.65g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~12&ndash;14g</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>4mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.75&ndash;0.85g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.90&ndash;1.05g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~20&ndash;23g</td>
           </tr>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>5mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">1.10&ndash;1.30g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">1.35&ndash;1.55g</td>
@@ -1808,11 +1808,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <div data-styx-widget="gold-weight-visual" data-chain="rope" data-width="5" data-length="22" data-karat="14" data-weight="32"></div>
 
-      <div style="background: #F5F2EA; padding: 40px; margin: 48px 0; border-left: 3px solid #B8924A;">
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1815;">
+      <div style="background: #F4F4F2; padding: 40px; margin: 48px 0; border-left: 3px solid #A8925C;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1B1C;">
           &ldquo;The rope chain is the only design that connects an Egyptian tomb to a New York block party in a single, unbroken helix. Thousands of years. Same braid.&rdquo;
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
+        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #66686A; text-transform: uppercase; margin-top: 20px;">
           The Ferryman
         </div>
       </div>
@@ -1829,7 +1829,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
     },
     content: `
 
-      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #4A443B; margin-bottom: 48px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">
         Press your palm flat against a table. Now slide it forward slowly. Feel how the skin moves: not in segments, not in clicks, but in a single, continuous motion. That is how an S-Link chain drapes. It is the flattest, smoothest, most ribbon-like chain in this collection. The links are compressed so tightly they appear almost fused. It is not a chain of loops. It is a chain of waves.
       </p>
 
@@ -1837,11 +1837,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>The S-link descends from the strap-chain and "loop-in-loop" techniques of the ancient Near East and Egypt, where goldsmiths sought to make precious metal behave like leather: flat, supple, continuous. They came close.</p><p>The modern S-link is a product of the machine age, of industrial presses that could compress S-shaped links into a solid, flat band with mechanical precision. Technically, it belongs to the same family the trade calls Brick, Serpentine, or Cobra: "a semi-rigid chain, pressed so tightly that the links have almost fused into a solid band." In the mid-20th century, the chain found its perfect cultural moment: Mid-Century Modernism. Its clean, minimalist lines complemented the era's architecture, furniture, and fashion with seamless logic.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-museum-17-mesopotamian-gold.jpg?v=1780543315" alt="Gold and lapis lazuli necklaces from the Royal Cemetery of Ur, c. 2600 BC, British Museum" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           Gold of the first cities: necklaces from the Royal Cemetery of Ur, c. 2600 BC. British Museum. Photo: Vassil (CC BY-SA 4.0).
         </p>
       </div>
@@ -1859,7 +1859,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <table style="width: 100%; border-collapse: collapse; margin: 40px 0; font-family: 'Cinzel', serif; font-size: 14px;">
         <thead>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Width</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">10k Gold (g/inch)</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">14k Gold (g/inch)</th>
@@ -1867,19 +1867,19 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>1.5mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.18&ndash;0.25g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.20&ndash;0.30g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~4&ndash;6g</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>2.0mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.38&ndash;0.50g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.45&ndash;0.60g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~9&ndash;12g</td>
           </tr>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>3.0mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.70&ndash;0.90g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.80&ndash;1.10g</td>
@@ -1890,11 +1890,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>A 20-inch 14k S-Link at 2.0mm weighs approximately 9 to 12 grams, surprisingly dense for its ultra-thin profile. The compressed construction leaves no air inside. What looks like a ribbon weighs like a chain.</p>
 
-      <div style="background: #F5F2EA; padding: 40px; margin: 48px 0; border-left: 3px solid #B8924A;">
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1815;">
+      <div style="background: #F4F4F2; padding: 40px; margin: 48px 0; border-left: 3px solid #A8925C;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1B1C;">
           &ldquo;The S-Link does not look like a chain. It looks like someone poured gold into a ribbon mold. That is exactly the point.&rdquo;
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
+        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #66686A; text-transform: uppercase; margin-top: 20px;">
           The Ferryman
         </div>
       </div>
@@ -1912,7 +1912,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
     },
     content: `
 
-      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #4A443B; margin-bottom: 48px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">
         Unroll a piece of parchment. Watch how the edges curl back on themselves, forming natural spirals at each end. Now imagine those spirals miniaturized, cast in gold, and linked into a continuous chain. The Scroll, also called the Snail, is a descendant of the Greek Key, one of the oldest decorative patterns in human civilization. It is a chain that does not flash or sparkle. It glows. A soft, rolling luminescence that follows the curve of every link like light chasing a spiral staircase.
       </p>
 
@@ -1920,11 +1920,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>The Scroll chain is the Meander pattern made wearable. The trade's own catalog says it plainly: the Scroll is "also called Snail, S type, Meander or even Greek key chain, since its design resembles old meander ornamentation." In ancient Greece, that continuous, turning line symbolized infinity and the eternal flow of the cosmos. It appeared on pottery, architecture, and jewelry for centuries.</p><p>The chain translation of the motif delivers what the pattern promises: a flat, dense, spiral-link design that lies flush against skin and never rolls or twists, built to carry ornament while staying perfectly flat.</p><p>Among its trade names, "Snail" stuck for the way each link coils on itself like a shell. Its durability and flat profile made it a natural for pocket watch fobs and spectacle cords, the chain of people who valued geometry over glamour.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-museum-18-greek-meander.jpg?v=1780543316" alt="Attic red-figure volute-krater with Greek-key meander border, c. 450 BC, The Metropolitan Museum of Art" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           The source pattern: Attic red-figure volute-krater, c. 450 BC, bordered with the Greek-key meander. The Metropolitan Museum of Art (public domain).
         </p>
       </div>
@@ -1942,7 +1942,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <table style="width: 100%; border-collapse: collapse; margin: 40px 0; font-family: 'Cinzel', serif; font-size: 14px;">
         <thead>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Width</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">10k Gold (g/inch)</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">14k Gold (g/inch)</th>
@@ -1950,25 +1950,25 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>1.5mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.12&ndash;0.20g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.15&ndash;0.25g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~2.7&ndash;4.5g</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>2.0mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.25&ndash;0.38g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.30&ndash;0.45g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~5.4&ndash;8.1g</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>2.5mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.42&ndash;0.60g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.50&ndash;0.70g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~9&ndash;12.6g</td>
           </tr>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>3.0mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.70&ndash;0.95g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.80&ndash;1.10g</td>
@@ -1979,11 +1979,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>An 18-inch 14k Scroll at 2.5mm carries approximately 9 to 12.6 grams of solid gold. Dense, substantial, and low-profile: the chain of the classicist, glowing with the geometry of the ancient world.</p>
 
-      <div style="background: #F5F2EA; padding: 40px; margin: 48px 0; border-left: 3px solid #B8924A;">
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1815;">
+      <div style="background: #F4F4F2; padding: 40px; margin: 48px 0; border-left: 3px solid #A8925C;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1B1C;">
           &ldquo;The Scroll chain is a Greek Key rendered in gold. Every link is a spiral. Every spiral is a reference to infinity. It is the most quietly intellectual chain in the collection.&rdquo;
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
+        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #66686A; text-transform: uppercase; margin-top: 20px;">
           The Ferryman
         </div>
       </div>
@@ -2001,7 +2001,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
     },
     content: `
 
-      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #4A443B; margin-bottom: 48px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">
         Tilt a glass of water in the sunlight. Watch the surface ripple and throw fragments of light across the ceiling. That is the effect the Singapore chain achieves in gold: a constant, liquid shimmer that looks less like metal and more like captured light. The Italians perfected it, gave it the name of a city it has no documented connection to, and watched it become one of the most popular fine-gauge chains on Earth.
       </p>
 
@@ -2018,11 +2018,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>The Singapore is the "first fine jewelry" chain for millions of people worldwide. It is the most popular choice for proms, graduations, and bridal party gifts. Its high flexibility allows it to drape naturally over the curves of the neck, and its sparkle elevates even a simple gold charm into a centerpiece.</p><p>Its closest relative in the catalog is the Prince of Wales chain: similar twist, but more loosely interlocked. The Singapore is the tighter, more liquid of the two: the choice for those who want their gold to dance rather than sit.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/Singapore10K2051__27318.1528999592.1280.1280.jpg?v=1779431750" alt="Gold Singapore chain from the Styx collection" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           The Styx Singapore: a twisted curb with a permanent curve, liquid shimmer at minimal weight.
         </p>
       </div>
@@ -2031,7 +2031,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <table style="width: 100%; border-collapse: collapse; margin: 40px 0; font-family: 'Cinzel', serif; font-size: 14px;">
         <thead>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Width</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">10k Gold (g/inch)</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">14k Gold (g/inch)</th>
@@ -2039,19 +2039,19 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>1.0mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.07&ndash;0.10g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.08&ndash;0.12g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~1.4&ndash;2.2g</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>1.5mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.18&ndash;0.25g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.20&ndash;0.30g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~3.6&ndash;5.4g</td>
           </tr>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>2.0mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.35&ndash;0.48g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.40&ndash;0.55g</td>
@@ -2062,11 +2062,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>An 18-inch 14k Singapore at 1.5mm weighs approximately 3.6 to 5.4 grams, about the weight of a house key. Weightless on the neck. Impossible to ignore in the light.</p>
 
-      <div style="background: #F5F2EA; padding: 40px; margin: 48px 0; border-left: 3px solid #B8924A;">
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1815;">
+      <div style="background: #F4F4F2; padding: 40px; margin: 48px 0; border-left: 3px solid #A8925C;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1B1C;">
           &ldquo;The Singapore chain was named for a city it has never visited. But the shimmer it produces needs no passport. It is universally understood.&rdquo;
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
+        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #66686A; text-transform: uppercase; margin-top: 20px;">
           The Ferryman
         </div>
       </div>
@@ -2084,7 +2084,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
     },
     content: `
 
-      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #4A443B; margin-bottom: 48px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">
         Run your thumbnail along a zipper track. Feel how the teeth lock flush, creating a seamless, continuous surface. Now imagine that zipper made of gold, curved into a tube, and draped around your neck. That is the Snake chain: the only design that achieves the aesthetic of a solid gold cord. No visible links. No gaps. Just a smooth, mirror-finished cylinder that moves like a living thing.
       </p>
 
@@ -2092,11 +2092,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>The Snake chain owes its modern existence to a love story. In 1839, Prince Albert proposed to Queen Victoria with a ring in the shape of a serpent, set with an emerald (her birthstone), the serpent being an ancient symbol of eternal, unbroken love. Victoria treasured it for the rest of her life. The royal endorsement made snake and serpent motifs one of the defining jewellery fashions of the Victorian era. Suddenly, every woman of means wanted snake-themed jewelry.</p><p>Hand-crafted snake chains, painstakingly assembled from tiny, curved metal plates, became the height of fashion. As the century progressed, mechanization arrived, and the "snakeskin" texture could be produced with mathematical precision. The era of mass-produced serpentine elegance had begun.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-museum-19-victorian-serpent.jpg?v=1780543317" alt="Serpent necklace, English, 1835-1840, Victoria and Albert Museum" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           The height of the fashion: serpent necklace, English, 1835&ndash;1840. &copy; Victoria and Albert Museum, London.
         </p>
       </div>
@@ -2109,11 +2109,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>The Snake chain is the "invisible" chain of the fine jewelry world. Because its surface is smooth and continuous, it supports pendants without distracting from them. A diamond pendant on a Snake chain appears to float. The chain disappears, leaving only the centerpiece.</p><p>This is why high-end jewelers recommend it for statement pendants and engagement-style pieces. The Snake does not compete. It presents. A 2mm Snake chain carries the visual weight of a solid gold cord with the subtlety of a silk thread.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/bellamilano2001__57547.1518716080.1280.1280.jpg?v=1779431812" alt="Gold snake chain from the Styx collection" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           The Styx Snake: tight-linked plates in a round cross-section. Scales of gold, no kinks allowed.
         </p>
       </div>
@@ -2122,7 +2122,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <table style="width: 100%; border-collapse: collapse; margin: 40px 0; font-family: 'Cinzel', serif; font-size: 14px;">
         <thead>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Width</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">10k Gold (g/inch)</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">14k Gold (g/inch)</th>
@@ -2130,19 +2130,19 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>1.0mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.35&ndash;0.40g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.40&ndash;0.45g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~8&ndash;9g</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>1.5mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.55&ndash;0.60g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.65&ndash;0.75g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~13&ndash;15g</td>
           </tr>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>2.0mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.80&ndash;0.85g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.90&ndash;1.00g</td>
@@ -2153,11 +2153,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>A 20-inch 14k Snake at 1.5mm weighs approximately 13 to 15 grams, deceptively dense for its slender profile. The tightly packed plates leave almost no air inside the tube. What looks like a thread carries the weight of a cord.</p>
 
-      <div style="background: #F5F2EA; padding: 40px; margin: 48px 0; border-left: 3px solid #B8924A;">
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1815;">
+      <div style="background: #F4F4F2; padding: 40px; margin: 48px 0; border-left: 3px solid #A8925C;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1B1C;">
           &ldquo;The Snake chain is the only design where the metal disappears. No links, no gaps, no texture, just a continuous cylinder of gold that exists to make everything else you wear look better.&rdquo;
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
+        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #66686A; text-transform: uppercase; margin-top: 20px;">
           The Ferryman
         </div>
       </div>
@@ -2175,7 +2175,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
     },
     content: `
 
-      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #4A443B; margin-bottom: 48px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">
         Imagine the sound of a diamond bracelet hitting a clay tennis court. The snap of the clasp. The scatter of stones across red dirt. The most famous equipment malfunction in sports history happened at the U.S. Open (the story is usually dated to 1987), and it gave an entire category of jewelry its name. The Tennis chain exists because Chris Evert refused to continue a match until every diamond was found.
       </p>
 
@@ -2197,7 +2197,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <table style="width: 100%; border-collapse: collapse; margin: 40px 0; font-family: 'Cinzel', serif; font-size: 14px;">
         <thead>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Width</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">10k Gold (g/inch)</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">14k Gold (g/inch)</th>
@@ -2205,13 +2205,13 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>3mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">1.10&ndash;1.30g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">1.30&ndash;1.50g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~26&ndash;30g</td>
           </tr>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>5mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">1.80&ndash;2.10g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">2.20&ndash;2.50g</td>
@@ -2222,11 +2222,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>A 20-inch 14k Tennis chain at 5mm carries approximately 44 to 50 grams of solid gold mounting, excluding the carat weight of the stones. The gold is the skeleton. The diamonds are the skin. Together, they form the most valuable chain style per inch in this entire collection.</p>
 
-      <div style="background: #F5F2EA; padding: 40px; margin: 48px 0; border-left: 3px solid #B8924A;">
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1815;">
+      <div style="background: #F4F4F2; padding: 40px; margin: 48px 0; border-left: 3px solid #A8925C;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1B1C;">
           &ldquo;The Tennis chain was born from a mishap and perfected by engineering. Chris Evert refused to play until her diamonds were found. We refuse to sell a chain without a clasp that makes losing them impossible.&rdquo;
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
+        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #66686A; text-transform: uppercase; margin-top: 20px;">
           The Ferryman
         </div>
       </div>
@@ -2244,7 +2244,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
     },
     content: `
 
-      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #4A443B; margin-bottom: 48px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">
         Wrap a strand of holiday tinsel around your finger. Watch how it catches light from every direction at once: not a single flash, but a rapid, electric shimmer. Now imagine that effect in solid gold, thin enough to feel weightless on your wrist. The Tinsel chain is the permanent jewelry chain, the one that gets welded on and never comes off. It is the quietest chain in this collection, and arguably the most personal.
       </p>
 
@@ -2266,7 +2266,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <table style="width: 100%; border-collapse: collapse; margin: 40px 0; font-family: 'Cinzel', serif; font-size: 14px;">
         <thead>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Width</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">10k Gold (g/inch)</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">14k Gold (g/inch)</th>
@@ -2274,19 +2274,19 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>1.0mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.07&ndash;0.10g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.08&ndash;0.12g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~1.4&ndash;2.2g</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>1.5mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.13&ndash;0.17g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.15&ndash;0.20g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~2.7&ndash;3.6g</td>
           </tr>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>2.0mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.22&ndash;0.30g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.25&ndash;0.35g</td>
@@ -2297,11 +2297,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>An 18-inch 14k Tinsel at 1.5mm weighs approximately 2.7 to 3.6 grams, barely more than a paper clip. You will forget you are wearing it within minutes. Everyone else in the room will not.</p>
 
-      <div style="background: #F5F2EA; padding: 40px; margin: 48px 0; border-left: 3px solid #B8924A;">
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1815;">
+      <div style="background: #F4F4F2; padding: 40px; margin: 48px 0; border-left: 3px solid #A8925C;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1B1C;">
           &ldquo;The Tinsel chain is the only piece in this collection designed to be welded shut. No clasp, no decision, no removal. Just gold against skin, shimmering, forever.&rdquo;
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
+        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #66686A; text-transform: uppercase; margin-top: 20px;">
           The Ferryman
         </div>
       </div>
@@ -2319,7 +2319,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
     },
     content: `
 
-      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #4A443B; margin-bottom: 48px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">
         Cup your hand around a flower bud just before it opens. Feel the soft, flared edges of the petals, each one nested into the next. Now imagine that form in solid gold: three-dimensional, sculptural, repeated link after link for 22 inches. The Tulip chain is the most romantic link in this collection. It is also one of the heaviest fancy links made. A substantial UK-style Tulip necklace can carry the better part of 100 grams of solid gold.
       </p>
 
@@ -2327,11 +2327,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>The tulip, <em>lale</em> in Turkish, was the signature motif of the Ottoman Empire. During the 18th-century "Tulip Era" (<em>Lale Devri</em>, c. 1718&ndash;1730), it dominated every facet of Imperial art: the tiles of the Topkapi Palace, the robes of the Sultan's court, and the jewelry of the empire's elite.</p><p>The modern Tulip chain borrows that inheritance in name and spirit. In trade terms it is a "fancy link" (the catalog's word for any sculpted, figural link replicated and joined into a chain), and the tulip's long association with luxury is what gives this particular fancy link its romance. The flower also traveled west through the Dutch Golden Age, where "Tulip Mania" briefly made a single bulb worth, by some accounts, more than a house, embedding it in European luxury culture forever.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-museum-20-iznik-tulip.jpg?v=1780543319" alt="Iznik tile with tulips and saz leaf, Ottoman Turkey, 16th century, The Metropolitan Museum of Art" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           The signature motif: Iznik tile with tulips, hyacinths, and saz leaf, Ottoman Turkey, 16th century. The Metropolitan Museum of Art (public domain).
         </p>
       </div>
@@ -2349,7 +2349,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <table style="width: 100%; border-collapse: collapse; margin: 40px 0; font-family: 'Cinzel', serif; font-size: 14px;">
         <thead>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Width</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">10k Gold (g/inch)</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">14k Gold (g/inch)</th>
@@ -2357,13 +2357,13 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>8mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">1.30&ndash;1.60g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">1.50&ndash;2.00g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~33&ndash;44g</td>
           </tr>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>11mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">2.50&ndash;3.20g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">3.00&ndash;4.00g</td>
@@ -2374,11 +2374,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>An 11mm Tulip at 22 inches carries between 66 and 88 grams of 14k gold, well over two troy ounces. That is heavier than most men's wedding bands and engagement rings combined. A heavy-duty statement of artisanal beauty and raw bullion value.</p>
 
-      <div style="background: #F5F2EA; padding: 40px; margin: 48px 0; border-left: 3px solid #B8924A;">
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1815;">
+      <div style="background: #F4F4F2; padding: 40px; margin: 48px 0; border-left: 3px solid #A8925C;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1B1C;">
           &ldquo;The Tulip chain is among the heaviest fancy links made. Each petal is a casting. Each chain is a garden. The biggest of them carry the better part of 100 grams. That is not jewelry. That is architecture.&rdquo;
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
+        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #66686A; text-transform: uppercase; margin-top: 20px;">
           The Ferryman
         </div>
       </div>
@@ -2396,7 +2396,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
     },
     content: `
 
-      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #4A443B; margin-bottom: 48px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">
         Hold a small mirror at arm's length and tilt it toward the sun. Watch the flash it throws across the room: a broad, clean sheet of reflected light, not a sparkle but a signal. Now imagine 200 of those mirrors, miniaturized, linked together in gold, and draped against your chest. That is the Valentino chain. Every link is a flat, diamond-cut reflector, and together they throw more light than any round chain twice their weight.
       </p>
 
@@ -2418,7 +2418,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <table style="width: 100%; border-collapse: collapse; margin: 40px 0; font-family: 'Cinzel', serif; font-size: 14px;">
         <thead>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Width</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">10k Gold (g/inch)</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">14k Gold (g/inch)</th>
@@ -2426,13 +2426,13 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>3mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.25&ndash;0.32g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.30&ndash;0.40g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~7.2&ndash;9.6g</td>
           </tr>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>5mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.65&ndash;0.75g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.70&ndash;0.85g</td>
@@ -2443,11 +2443,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>A 24-inch 14k Valentino at 5mm provides a massive visual profile while maintaining a comfortable 17 to 20 gram weight. The most reflection per gram of any chain in the collection.</p>
 
-      <div style="background: #F5F2EA; padding: 40px; margin: 48px 0; border-left: 3px solid #B8924A;">
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1815;">
+      <div style="background: #F4F4F2; padding: 40px; margin: 48px 0; border-left: 3px solid #A8925C;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1B1C;">
           &ldquo;The Valentino is not a chain of weight. It is a chain of light. Every link is a mirror. Every movement is a signal.&rdquo;
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
+        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #66686A; text-transform: uppercase; margin-top: 20px;">
           The Ferryman
         </div>
       </div>
@@ -2464,7 +2464,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
       altText: 'Gold wheat chain beside stalks of golden wheat on linen cloth',
     },
     content: `
-      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #4A443B; margin-bottom: 48px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">
         Pull a stalk of wheat from a field. Turn it sideways. See how the husks overlap in tight, interlocking V-shapes, each one sheltering the grain beneath it? Now imagine that pattern rendered in 14-karat gold, small enough to drape from your collarbone, strong enough to carry a medallion heavier than a billiard ball. The Italians call it <em>Spiga</em>. It is the most indestructible fancy chain ever built.
       </p>
 
@@ -2476,11 +2476,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>The design was so effective that it became the region’s most exported chain. To this day, a true "Italian Spiga" from the Arezzo or Vicenza workshops commands a premium, not for branding, but for the engineering precision required to keep each of the four interlocking strands perfectly uniform across the entire length of the chain.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/Wheat10K2057__82573.1529002188.1280.1280.jpg?v=1779431734" alt="Gold wheat (Spiga) chain from the Styx collection" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           The Spiga: teardrop links woven like plaited wire, all pointing the same direction: nature's blueprint in solid gold.
         </p>
       </div>
@@ -2508,7 +2508,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <table style="width: 100%; border-collapse: collapse; margin: 40px 0; font-family: 'Cinzel', serif; font-size: 14px;">
         <thead>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Width</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">10k Gold (g/inch)</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">14k Gold (g/inch)</th>
@@ -2516,19 +2516,19 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>1.5mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.20&ndash;0.25g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.25&ndash;0.30g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~5&ndash;6g</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>2mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.35&ndash;0.40g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.40&ndash;0.45g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">~8&ndash;9g</td>
           </tr>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>3mm</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.65&ndash;0.75g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.75&ndash;0.85g</td>
@@ -2539,11 +2539,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>A 20-inch 14k Wheat at 2mm width carries approximately 8 to 9 grams of solid gold. That is not heavy enough to anchor a bullion portfolio. But it is more than heavy enough to carry your grandmother’s cross for the next forty years without a single moment of doubt.</p>
 
-      <div style="background: #F5F2EA; padding: 40px; margin: 48px 0; border-left: 3px solid #B8924A;">
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1815;">
+      <div style="background: #F4F4F2; padding: 40px; margin: 48px 0; border-left: 3px solid #A8925C;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1B1C;">
           &ldquo;The Wheat chain is not the flashiest link in the collection. It is the one your jeweler recommends when you ask: which chain will never let me down?&rdquo;
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
+        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #66686A; text-transform: uppercase; margin-top: 20px;">
           The Ferryman
         </div>
       </div>
@@ -2559,7 +2559,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
       altText: 'Different karat gold chains side by side showing color differences',
     },
     content: `
-      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #4A443B; margin-bottom: 48px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">
         Most jewelers want you confused about karats. The truth is simple math: karats measure purity. 24K = 100% gold. Everything else is a ratio. Here is what that means for the chain around your neck.
       </p>
 
@@ -2571,7 +2571,7 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <table style="width: 100%; border-collapse: collapse; margin: 40px 0; font-family: 'Cinzel', serif; font-size: 14px;">
         <thead>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Karat</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Purity %</th>
             <th style="padding: 14px 16px; text-align: left; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;">Gold per Gram</th>
@@ -2579,31 +2579,31 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>10K</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">41.7%</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.417g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">Copper, silver, zinc</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>14K</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">58.3%</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.583g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">Copper, silver, zinc</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>18K</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">75.0%</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.750g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">Copper, silver, palladium</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 1px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>22K</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">91.7%</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">0.917g</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">Copper, silver</td>
           </tr>
-          <tr style="border-bottom: 2px solid rgba(26,24,21,0.12);">
+          <tr style="border-bottom: 2px solid rgba(26,27,28,0.12);">
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;"><strong>24K</strong></td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">99.9%</td>
             <td style="padding: 14px 16px; font-family: 'Inter', sans-serif; font-size: 14px;">1.000g</td>
@@ -2624,11 +2624,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>This is what most of our chains are made from, and there is a reason for that. Best value per gram of wearable gold. Maximum durability. Honest metal for honest wear.</p>
 
-      <div style="margin: 48px 0; border: 1px solid #d4d1ca; padding: 12px; background: #F5F2EA;">
-        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,24,21,0.08);">
+      <div style="margin: 48px 0; border: 1px solid #d2d2cf; padding: 12px; background: #F4F4F2;">
+        <div style="aspect-ratio: 16/9; overflow: hidden; border: 1px solid rgba(26,27,28,0.08);">
           <img src="https://cdn.shopify.com/s/files/1/0754/6440/9267/files/GentleConcaveCurb10k2140__64542.1527876868.1280.1280.jpg?v=1779431624" alt="10K gold curb chain from the Styx collection" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #6B6459; margin: 12px 0 0; text-align: center;">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: #66686A; margin: 12px 0 0; text-align: center;">
           10K: 41.7% gold, 100% real. The lightest color in the karat spectrum, and the hardest to scratch.
         </p>
       </div>
@@ -2681,11 +2681,11 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
 
       <p>At Styx, we price transparently regardless of karat. You see the gold content. You see the market price. You see the markup. The karat choice becomes what it should be: a decision about color, durability, and personal preference, not a mystery shrouded in jeweler-speak.</p>
 
-      <div style="background: #F5F2EA; padding: 40px; margin: 48px 0; border-left: 3px solid #B8924A;">
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1815;">
+      <div style="background: #F4F4F2; padding: 40px; margin: 48px 0; border-left: 3px solid #A8925C;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; line-height: 1.35; color: #1A1B1C;">
           &ldquo;Karats are not a quality ranking. They are a ratio. Once you understand the math, no jeweler can confuse you again.&rdquo;
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #6B6459; text-transform: uppercase; margin-top: 20px;">
+        <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.25em; color: #66686A; text-transform: uppercase; margin-top: 20px;">
           The Ferryman
         </div>
       </div>

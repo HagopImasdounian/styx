@@ -407,7 +407,7 @@ export function StyxProductCard({
               display: 'flex',
               alignItems: 'center',
               gap: 6,
-              background: 'rgba(247,245,240,0.92)',
+              background: 'rgba(244,244,242,0.92)',
               border: '1px solid var(--styx-border)',
               padding: '4px 9px 4px 6px',
               borderRadius: 3,
@@ -420,7 +420,7 @@ export function StyxProductCard({
                 height: 12,
                 borderRadius: '50%',
                 background: swatchHex,
-                boxShadow: 'inset 0 0 0 1px rgba(26,24,21,0.1)',
+                boxShadow: 'inset 0 0 0 1px rgba(26,27,28,0.1)',
                 flexShrink: 0,
               }}
             />
@@ -448,8 +448,8 @@ export function StyxProductCard({
               bottom: 0,
               right: 0,
               padding: '5px 8px',
-              background: '#242a24',
-              color: '#f7f5f0',
+              background: '#1e2021',
+              color: '#f4f4f2',
               fontFamily: FONT.mono,
               fontSize: 9,
               letterSpacing: '0.04em',
@@ -466,7 +466,7 @@ export function StyxProductCard({
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'rgba(26,24,21,0.03)',
+            background: 'rgba(26,27,28,0.03)',
             opacity: isHovered ? 1 : 0,
             transition: 'opacity 0.3s ease',
             pointerEvents: 'none',
@@ -503,7 +503,7 @@ export function StyxProductCard({
             fontWeight: 500,
             letterSpacing: '0.005em',
             lineHeight: 1.45,
-            color: '#1a1815',
+            color: '#1a1b1c',
             marginBottom: 2,
           }}
         >
@@ -524,7 +524,7 @@ export function StyxProductCard({
             fontSize: 22,
             fontWeight: 500,
             lineHeight: 1.2,
-            color: '#1a1815',
+            color: '#1a1b1c',
             fontVariantNumeric: 'lining-nums tabular-nums',
             letterSpacing: '-0.01em',
             marginBottom: 6,
@@ -608,7 +608,7 @@ export function StyxProductCard({
                 width: 5,
                 height: 5,
                 borderRadius: '50%',
-                background: '#a98648',
+                background: '#998559',
                 flexShrink: 0,
               }}
             />

@@ -154,8 +154,8 @@ export function TrueSizeControls({
             fontFamily: FONT.inter,
             fontSize: 11,
             lineHeight: 1.4,
-            color: '#4c493f',
-            background: 'rgba(247,245,240,0.92)',
+            color: '#46484a',
+            background: 'rgba(244,244,242,0.92)',
             padding: '4px 10px',
             borderRadius: 3,
             maxWidth: '100%',
@@ -210,20 +210,20 @@ function Pill({
         minHeight: 44,
         padding: '0 16px',
         borderRadius: 3,
-        border: `1px solid ${active ? '#887346' : 'var(--styx-border)'}`,
-        boxShadow: active ? 'inset 0 0 0 1px #887346' : 'none',
-        background: active ? '#fffefa' : 'rgba(247,245,240,0.94)',
+        border: `1px solid ${active ? '#7d6a3f' : 'var(--styx-border)'}`,
+        boxShadow: active ? 'inset 0 0 0 1px #7d6a3f' : 'none',
+        background: active ? '#ffffff' : 'rgba(244,244,242,0.94)',
         cursor: disabled ? 'not-allowed' : 'pointer',
         opacity: disabled ? 0.5 : 1,
         fontFamily: FONT.inter,
         fontSize: 12,
         letterSpacing: '0.01em',
         whiteSpace: 'nowrap',
-        color: active ? '#242a24' : '#1a1815',
+        color: active ? '#1e2021' : '#1a1b1c',
         transition: 'border-color 140ms, color 140ms',
       }}
     >
-      <span style={{display: 'inline-flex', color: active ? '#887346' : '#1a1815'}}>
+      <span style={{display: 'inline-flex', color: active ? '#7d6a3f' : '#1a1b1c'}}>
         {icon}
       </span>
       {children}

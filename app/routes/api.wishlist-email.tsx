@@ -194,12 +194,12 @@ function buildWishlistEmail(
       const url = `${origin}/products/${encodeURIComponent(item.handle)}`;
       const price = formatPrice(item);
       const lengthLine = item.length
-        ? `<div style="font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.08em;color:#8A6A32;margin-top:4px;text-transform:uppercase">Length · ${esc(
+        ? `<div style="font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.08em;color:#7D6A3F;margin-top:4px;text-transform:uppercase">Length · ${esc(
             item.length,
           )}</div>`
         : '';
       const priceLine = price
-        ? `<div style="font-family:'Courier New',monospace;font-size:13px;color:#b8924a;margin-top:6px">${esc(
+        ? `<div style="font-family:'Courier New',monospace;font-size:13px;color:#a8925c;margin-top:6px">${esc(
             price,
           )}</div>`
         : '';
@@ -207,23 +207,23 @@ function buildWishlistEmail(
         ? `<td width="72" valign="top" style="padding:0 16px 0 0">
              <img src="${esc(
                item.image,
-             )}" width="72" height="90" alt="" style="display:block;width:72px;height:90px;object-fit:cover;border:1px solid #e5e0d6" />
+             )}" width="72" height="90" alt="" style="display:block;width:72px;height:90px;object-fit:cover;border:1px solid #e2e2df" />
            </td>`
         : '';
       return `
         <tr>
-          <td style="padding:18px 0;border-bottom:1px solid #e5e0d6">
+          <td style="padding:18px 0;border-bottom:1px solid #e2e2df">
             <table cellpadding="0" cellspacing="0" border="0" width="100%">
               <tr>
                 ${thumb}
                 <td valign="top">
-                  <a href="${url}" style="font-family:'Times New Roman',serif;font-size:15px;font-weight:600;letter-spacing:0.04em;color:#1a1815;text-decoration:none;text-transform:uppercase">${esc(
+                  <a href="${url}" style="font-family:'Times New Roman',serif;font-size:15px;font-weight:600;letter-spacing:0.04em;color:#1a1b1c;text-decoration:none;text-transform:uppercase">${esc(
         item.title,
       )}</a>
                   ${lengthLine}
                   ${priceLine}
                   <div style="margin-top:8px">
-                    <a href="${url}" style="font-family:'Courier New',monospace;font-size:10px;letter-spacing:0.1em;color:#6B6459;text-decoration:none;text-transform:uppercase">View piece &rarr;</a>
+                    <a href="${url}" style="font-family:'Courier New',monospace;font-size:10px;letter-spacing:0.1em;color:#66686A;text-decoration:none;text-transform:uppercase">View piece &rarr;</a>
                   </div>
                 </td>
               </tr>
@@ -235,25 +235,25 @@ function buildWishlistEmail(
 
   const noteBlock = note
     ? `<tr><td style="padding:0 0 24px">
-         <div style="font-family:'Georgia',serif;font-size:15px;font-style:italic;color:#4A443B;line-height:1.6;padding:16px 20px;background:#f5f2ea;border-left:3px solid #b8924a">${esc(
+         <div style="font-family:'Georgia',serif;font-size:15px;font-style:italic;color:#46484A;line-height:1.6;padding:16px 20px;background:#f4f4f2;border-left:3px solid #a8925c">${esc(
            note,
          )}</div>
        </td></tr>`
     : '';
 
   return `
-  <div style="background:#efeae0;padding:32px 16px;font-family:'Helvetica Neue',Arial,sans-serif">
-    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:600px;margin:0 auto;background:#ffffff;border:1px solid #e5e0d6">
+  <div style="background:#ebebe8;padding:32px 16px;font-family:'Helvetica Neue',Arial,sans-serif">
+    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:600px;margin:0 auto;background:#ffffff;border:1px solid #e2e2df">
       <tr>
         <td style="padding:32px 32px 0;text-align:center">
-          <div style="font-family:'Times New Roman',serif;font-size:22px;letter-spacing:0.2em;color:#1a1815;text-transform:uppercase">STYX</div>
-          <div style="font-family:'Courier New',monospace;font-size:9px;letter-spacing:0.18em;color:#8A6A32;text-transform:uppercase;margin-top:6px">Gold Chains</div>
+          <div style="font-family:'Times New Roman',serif;font-size:22px;letter-spacing:0.2em;color:#1a1b1c;text-transform:uppercase">STYX</div>
+          <div style="font-family:'Courier New',monospace;font-size:9px;letter-spacing:0.18em;color:#7D6A3F;text-transform:uppercase;margin-top:6px">Gold Chains</div>
         </td>
       </tr>
       <tr>
         <td style="padding:28px 32px 8px">
-          <h1 style="font-family:'Times New Roman',serif;font-size:20px;font-weight:500;letter-spacing:0.06em;color:#1a1815;margin:0 0 4px;text-align:center">A Wishlist For You</h1>
-          <p style="font-family:'Courier New',monospace;font-size:10px;letter-spacing:0.12em;color:#6B6459;text-transform:uppercase;text-align:center;margin:0 0 24px">${
+          <h1 style="font-family:'Times New Roman',serif;font-size:20px;font-weight:500;letter-spacing:0.06em;color:#1a1b1c;margin:0 0 4px;text-align:center">A Wishlist For You</h1>
+          <p style="font-family:'Courier New',monospace;font-size:10px;letter-spacing:0.12em;color:#66686A;text-transform:uppercase;text-align:center;margin:0 0 24px">${
             items.length
           } piece${items.length !== 1 ? 's' : ''} saved</p>
         </td>
@@ -266,12 +266,12 @@ function buildWishlistEmail(
       </td></tr>
       <tr>
         <td style="padding:32px;text-align:center">
-          <a href="${origin}/collections/chains" style="display:inline-block;padding:14px 28px;background:#1a1815;color:#efeae0;font-family:'Times New Roman',serif;font-size:11px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;text-decoration:none">Browse The Collection</a>
+          <a href="${origin}/collections/chains" style="display:inline-block;padding:14px 28px;background:#1a1b1c;color:#ebebe8;font-family:'Times New Roman',serif;font-size:11px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;text-decoration:none">Browse The Collection</a>
         </td>
       </tr>
       <tr>
-        <td style="padding:0 32px 32px;text-align:center;border-top:1px solid #e5e0d6">
-          <p style="font-family:'Courier New',monospace;font-size:9px;letter-spacing:0.1em;color:#8a8378;text-transform:uppercase;margin:20px 0 0">Real gold, every weight in the open, styxgold.com</p>
+        <td style="padding:0 32px 32px;text-align:center;border-top:1px solid #e2e2df">
+          <p style="font-family:'Courier New',monospace;font-size:9px;letter-spacing:0.1em;color:#878987;text-transform:uppercase;margin:20px 0 0">Real gold, every weight in the open, styxgold.com</p>
         </td>
       </tr>
     </table>

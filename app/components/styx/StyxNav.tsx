@@ -13,6 +13,7 @@ import {
   Link,
   useParams,
   useNavigation,
+  useFetcher,
   Form,
 } from 'react-router';
 import {CartForm} from '@shopify/hydrogen';
@@ -22,6 +23,8 @@ import {
   type CollectionNode,
   collectionCutoutUrl,
 } from './constants';
+import {THICKNESS_RANGES, cardMinPrice, explodeByColor} from './listingFilters';
+import type {loader as collectionLoader} from '~/routes/($locale).collections.$collectionHandle';
 import {PredictiveSearchPanel, MobileMenuSearch} from './PredictiveSearch';
 import {Cart, cartToAnalyticsPayload} from '~/components/Cart';
 import {trackCartView} from '~/components/GTMDataLayer';
@@ -477,7 +480,7 @@ function MenuLink({
             fontFamily: FONT.cinzel,
             fontSize: 9,
             letterSpacing: '0.1em',
-            color: hover ? STYX.gold : 'rgba(26,24,21,0.25)',
+            color: hover ? STYX.gold : 'rgba(26,27,28,0.25)',
             width: 12,
             transition: 'color 0.15s',
           }}
@@ -507,198 +510,195 @@ function MenuLink({
    CHAINS mega-panel, the main event
    ═══════════════════════════════════════════════════════════════ */
 
-function ChainCard({chain}: {chain: ChainItem}) {
-  const [hover, setHover] = useState(false);
-  const collectionsList = useContext(CollectionsListContext);
-  const cutoutUrl = collectionCutoutUrl(
-    collectionsList.find((c) => c.handle === chain.handle),
-  );
-  const closeMenu = useContext(CloseMenuContext);
-
-  // Strip "Chain" / "Link" suffix for cleaner label
-  const label = chain.name.replace(/\s+(Chain|Link)$/i, '');
-
-  return (
-    <Link
-      data-menu-item=""
-      to={`/collections/${chain.handle}`}
-      prefetch="intent"
-      onClick={() => closeMenu?.()}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        textDecoration: 'none',
-        gap: 0,
-        cursor: 'pointer',
-      }}
-    >
-      {cutoutUrl ? (
-        <div
-          style={{
-            width: '100%',
-            aspectRatio: '1',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            overflow: 'hidden',
-            transform: hover ? 'scale(1.06)' : 'scale(1)',
-            transition: 'transform 0.3s cubic-bezier(.2,.8,.2,1)',
-          }}
-        >
+function ChainRow({chain, eager = false}: {chain: ChainItem; eager?: boolean}) {
+  const collections = useContext(CollectionsListContext);
+  const existingHandles = useContext(ExistingHandlesContext);
+  const cutoutFor = (handle: string) =>
+    collectionCutoutUrl(
+      collections.find((c) => c.handle === handle),
+      400,
+    );
+  const cutout = cutoutFor(chain.handle);
+  const content = (
+    <>
+      <span className="styx-chain-thumb" aria-hidden="true">
+        {cutout && (
           <img
-            src={cutoutUrl}
-            alt={chain.name}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'contain',
-              filter: hover ? 'brightness(1.08)' : 'none',
-              transition: 'filter 0.3s',
-            }}
+            src={cutout}
+            alt=""
+            width={28}
+            height={28}
+            loading={eager ? 'eager' : 'lazy'}
+            decoding="async"
           />
+        )}
+      </span>
+      <span>{chain.name.replace(/\s+(Chain|Link)$/i, '')}</span>
+    </>
+  );
+  return existingHandles.has(chain.handle) ? (
+    <MegaLink className="styx-chain-row" to={`/collections/${chain.handle}`}>
+      {content}
+    </MegaLink>
+  ) : (
+    <span className="styx-chain-row is-unavailable" aria-disabled="true">
+      {content}
+    </span>
+  );
+}
+
+function ShopBy() {
+  const rows = [
+    {
+      title: 'Metal',
+      links: ['yellow-gold', 'white-gold', 'rose-gold'].map((handle) => ({
+        label: METALS.find((metal) => metal.handle === handle)!.label.replace(
+          ' Gold',
+          '',
+        ),
+        to: `/collections/${handle}`,
+      })),
+    },
+    {
+      title: 'Karat',
+      links: KARATS.slice(0, 2).map((karat) => ({
+        label: karat.handle.split('-')[0].toUpperCase(),
+        to: `/collections/${karat.handle}`,
+      })),
+    },
+    {
+      title: 'Thickness',
+      links: THICKNESS_RANGES.map(({label}) => ({
+        label,
+        to: `/collections/chains?width=${encodeURIComponent(label)}`,
+      })),
+    },
+  ];
+  return (
+    <section className="styx-shop-by" aria-label="Shop by">
+      <h3 className="styx-menu-eyebrow">Shop by</h3>
+      {rows.map((row) => (
+        <div className="styx-shop-row" key={row.title}>
+          <h4 className="styx-menu-eyebrow">{row.title}</h4>
+          <div className="styx-shop-chips">
+            {row.links.map((link) => (
+              <MegaLink key={link.to} to={link.to}>
+                {link.label}
+              </MegaLink>
+            ))}
+          </div>
         </div>
+      ))}
+    </section>
+  );
+}
+
+function FeaturedCollection() {
+  const collections = useContext(CollectionsListContext);
+  const featured =
+    collections.find((c) => c.handle === 'cuban') ??
+    collections.find((c) =>
+      CHAIN_TAXONOMY.some((g) =>
+        g.chains.some((chain) => chain.handle === c.handle),
+      ),
+    );
+  const {data, load} = useFetcher<typeof collectionLoader>();
+  const params = useParams();
+  const handle = featured?.handle;
+  useEffect(() => {
+    if (handle)
+      void load(
+        `${params.locale ? `/${params.locale}` : ''}/collections/${handle}`,
+      );
+  }, [handle, load, params.locale]);
+  if (!featured) return null;
+  const prices =
+    data && data.collection.handle === handle
+      ? explodeByColor(data.collection.products.nodes)
+          .map(cardMinPrice)
+          .filter((price): price is number => price !== null)
+      : [];
+  const currency =
+    data?.collection.products.nodes[0]?.variants?.nodes[0]?.price.currencyCode;
+  const price =
+    prices.length && currency
+      ? new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency,
+        }).format(Math.min(...prices))
+      : null;
+  const cover =
+    featured.image ??
+    (data?.collection.handle === handle
+      ? data?.collection.products.nodes[0]?.variants.nodes[0]?.image
+      : null);
+  return (
+    <MegaLink
+      className="styx-menu-feature"
+      to={`/collections/${featured.handle}`}
+    >
+      {cover ? (
+        <img
+          src={cover.url}
+          alt={cover.altText || featured.title}
+          loading="lazy"
+        />
       ) : (
-        <div
-          style={{
-            width: '100%',
-            aspectRatio: '1',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: `linear-gradient(135deg, ${STYX.parchment}, ${STYX.bone})`,
-            border: `1px solid ${STYX.lineSoft}`,
-          }}
-        >
-          <span
-            style={{
-              fontFamily: FONT.cinzel,
-              fontSize: 22,
-              color: STYX.gold,
-              opacity: 0.4,
-              letterSpacing: '0.05em',
-            }}
-          >
-            {label.charAt(0)}
-          </span>
-        </div>
+        <span className="styx-menu-feature-placeholder" aria-hidden="true" />
       )}
-      <div
-        style={{
-          fontFamily: FONT.cinzel,
-          fontSize: 12,
-          letterSpacing: '0.12em',
-          textTransform: 'uppercase',
-          color: hover ? STYX.gold : STYX.ink,
-          textAlign: 'center',
-          lineHeight: 1.2,
-          marginTop: 6,
-          transition: 'color 0.2s',
-          fontWeight: 500,
-        }}
-      >
-        {label}
-      </div>
-    </Link>
+      <span className="styx-menu-eyebrow">In focus</span>
+      <span className="styx-menu-feature-title">{featured.title}</span>
+      <span>
+        {price ? `From ${price}` : 'Explore the collection'}{' '}
+        <span aria-hidden="true">↗</span>
+      </span>
+    </MegaLink>
   );
 }
 
 function ChainsMegaPanel() {
-  const existingHandles = useContext(ExistingHandlesContext);
-
-  // Filter each taxonomy group to only show chains that exist as collections
-  const filteredGroups = CHAIN_TAXONOMY.map((group) => ({
-    ...group,
-    chains: group.chains.filter((c) => existingHandles.has(c.handle)),
-  })).filter((g) => g.chains.length > 0);
-
-  const allChains = filteredGroups.flatMap((g) => g.chains);
-
-  // If nothing exists at all, show a simple "Shop All" link
-  if (allChains.length === 0) {
-    return (
-      <div style={{padding: '44px 56px 48px'}}>
-        <MegaLink
-          to="/collections"
-          prefetch="intent"
-          style={{
-            fontFamily: FONT.cinzel,
-            fontSize: 14,
-            letterSpacing: '0.1em',
-            color: STYX.ink,
-            textDecoration: 'none',
-          }}
-        >
-          Shop All Collections →
-        </MegaLink>
-      </div>
-    );
-  }
-
+  const volume = JOURNAL_VOLUMES[0];
   return (
-    <div style={{padding: '40px 56px 44px'}}>
-      {/* Section header */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'baseline',
-          justifyContent: 'space-between',
-          marginBottom: 32,
-        }}
-      >
-        <div style={{display: 'flex', alignItems: 'baseline', gap: 16}}>
-          <span
-            style={{
-              fontFamily: FONT.mono,
-              fontSize: 9,
-              letterSpacing: '0.2em',
-              color: STYX.gold,
-              textTransform: 'uppercase',
-            }}
-          >
-            Shop by Weave
-          </span>
-          <span
-            style={{
-              fontFamily: FONT.cormorant,
-              fontSize: 15,
-              fontStyle: 'italic',
-              color: STYX.silt2,
-            }}
-          >
-            {allChains.length} styles
-          </span>
+    <div className="styx-chains-layout">
+      <section className="styx-chain-directory" aria-label="Chain types">
+        <div className="styx-menu-heading">
+          <h2 className="styx-menu-eyebrow">Find your weave</h2>
+          <MegaLink to="/collections/chains">
+            All chains <span aria-hidden="true">↗</span>
+          </MegaLink>
         </div>
-        <MegaLink
-          to="/collections/chains"
-          prefetch="intent"
-          style={{
-            fontFamily: FONT.cinzel,
-            fontSize: 10,
-            letterSpacing: '0.2em',
-            color: STYX.gold,
-            textTransform: 'uppercase',
-            textDecoration: 'none',
-          }}
-        >
-          View All →
-        </MegaLink>
-      </div>
-
-      {/* Chain grid, 9 columns for the 9 chain types */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: `repeat(${Math.min(allChains.length, 9)}, 1fr)`,
-          gap: '0 20px',
-        }}
-      >
-        {allChains.map((c) => (
-          <ChainCard key={c.handle} chain={c} />
-        ))}
-      </div>
+        <div className="styx-chain-groups">
+          {CHAIN_TAXONOMY.map((group, groupIndex) => (
+            <section key={group.group}>
+              <h3 className="styx-menu-eyebrow">{group.group}</h3>
+              <div className="styx-chain-columns">
+                {group.chains.map((chain, index) => (
+                  <ChainRow
+                    key={chain.handle}
+                    chain={chain}
+                    eager={groupIndex === 0 && index < 8}
+                  />
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      </section>
+      <aside className="styx-menu-discover">
+        <FeaturedCollection />
+        <div className="styx-menu-extras">
+          <ShopBy />
+          <MegaLink className="styx-menu-journal" to="/journal">
+            <span className="styx-menu-eyebrow">
+              Journal · Volume {volume.vol}
+            </span>
+            <span>
+              {volume.title} <span aria-hidden="true">↗</span>
+            </span>
+            <span className="styx-menu-eyebrow">{volume.kicker}</span>
+          </MegaLink>
+        </div>
+      </aside>
     </div>
   );
 }
@@ -777,7 +777,7 @@ function CollectionCategoryLink({
             height: 32,
             borderRadius: '50%',
             background: `radial-gradient(circle at 30% 30%, rgba(255,255,255,0.35) 0%, transparent 50%), ${swatch}`,
-            boxShadow: `inset 0 0 0 1px rgba(26,24,21,0.12), 0 2px 8px -2px rgba(26,24,21,0.15)`,
+            boxShadow: `inset 0 0 0 1px rgba(26,27,28,0.12), 0 2px 8px -2px rgba(26,27,28,0.15)`,
             flexShrink: 0,
           }}
         />
@@ -1080,22 +1080,23 @@ function CollectionsMegaPanel() {
    JOURNAL mega-panel
    ═══════════════════════════════════════════════════════════════ */
 
+const JOURNAL_VOLUMES = [
+  {
+    vol: 'I',
+    title: 'The Weaves',
+    kicker: 'Chain history, origin to alloy',
+    count: 9,
+  },
+  {vol: 'II', title: 'The Owners', kicker: 'Worn, in the world', count: 12},
+  {
+    vol: 'III',
+    title: 'The Almanac',
+    kicker: 'Spot, assay, context',
+    count: 24,
+  },
+];
 function JournalMegaPanel() {
-  const volumes = [
-    {
-      vol: 'I',
-      title: 'The Weaves',
-      kicker: 'Chain history, origin to alloy',
-      count: 9,
-    },
-    {vol: 'II', title: 'The Owners', kicker: 'Worn, in the world', count: 12},
-    {
-      vol: 'III',
-      title: 'The Almanac',
-      kicker: 'Spot, assay, context',
-      count: 24,
-    },
-  ];
+  const volumes = JOURNAL_VOLUMES;
   const recent = [
     {
       title: 'On the Cuban Link · Miami · 1974',
@@ -1330,8 +1331,6 @@ function MobileMenu({
   existingHandles: Set<string>;
   collections?: CollectionNode[];
 }) {
-  const cutoutFor = (handle: string) =>
-    collectionCutoutUrl(collections.find((c) => c.handle === handle));
   // Live spot for the ticker strip (was a hardcoded "XAU Spot" placeholder).
   const menuRootData = useRouteLoaderData<RootLoader>('root');
   const menuGold = (menuRootData as any)?.goldData as
@@ -1359,9 +1358,11 @@ function MobileMenu({
     const focusables = () =>
       Array.from(
         panel.querySelectorAll<HTMLElement>(
-          'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+          'a[href], summary, button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
         ),
-      ).filter((el) => !el.closest('[inert]'));
+      ).filter(
+        (el) => !el.closest('[inert]') && el.getClientRects().length > 0,
+      );
 
     const previouslyFocused = document.activeElement as HTMLElement | null;
     focusables()[0]?.focus();
@@ -1402,11 +1403,6 @@ function MobileMenu({
   // React 18 passes `inert` through as a DOM attribute when given a string.
   const inertWhen = (condition: boolean) =>
     condition ? ({inert: ''} as any) : {};
-
-  const filteredTaxonomy = CHAIN_TAXONOMY.map((group) => ({
-    ...group,
-    chains: group.chains.filter((c) => existingHandles.has(c.handle)),
-  })).filter((g) => g.chains.length > 0);
 
   const paneTransition = 'transform 0.35s cubic-bezier(.5,.1,.2,1)';
   const borderLine = `1px solid ${STYX.line}`;
@@ -1476,7 +1472,7 @@ function MobileMenu({
         style={{
           position: 'fixed',
           inset: 0,
-          background: 'rgba(26,24,21,0.6)',
+          background: 'rgba(26,27,28,0.6)',
           backdropFilter: 'blur(2px)',
           zIndex: 50,
           opacity: open ? 1 : 0,
@@ -1834,94 +1830,28 @@ function MobileMenu({
                 <span>Shop All Chains</span>
                 <span style={{fontSize: 14, lineHeight: 1}}>→</span>
               </Link>
-              {filteredTaxonomy.map((group) => (
-                <div key={group.group}>
-                  {/* Group divider */}
-                  <div
-                    style={{
-                      padding: '14px 24px 4px',
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontFamily: FONT.cinzel,
-                        fontSize: 13,
-                        letterSpacing: '0.12em',
-                        textTransform: 'uppercase',
-                        color: STYX.ink,
-                      }}
-                    >
-                      {group.group}
+              <ExistingHandlesContext.Provider value={existingHandles}>
+                <CollectionsListContext.Provider value={collections}>
+                  <CloseMenuContext.Provider value={onClose}>
+                    <div className="styx-mobile-chain-groups">
+                      {CHAIN_TAXONOMY.map((group) => (
+                        <details key={group.group}>
+                          <summary>
+                            {group.group}
+                            <span aria-hidden="true">+</span>
+                          </summary>
+                          <div>
+                            {group.chains.map((chain) => (
+                              <ChainRow key={chain.handle} chain={chain} />
+                            ))}
+                          </div>
+                        </details>
+                      ))}
+                      <ShopBy />
                     </div>
-                    <div
-                      style={{
-                        fontFamily: FONT.cormorant,
-                        fontSize: 13,
-                        fontStyle: 'italic',
-                        color: STYX.silt2,
-                        marginTop: 2,
-                      }}
-                    >
-                      {group.kicker}
-                    </div>
-                    <div
-                      style={{height: 1, background: STYX.line, marginTop: 10}}
-                    />
-                  </div>
-                  {group.chains.map((chain) => (
-                    <Link
-                      key={chain.handle}
-                      to={`/collections/${chain.handle}`}
-                      prefetch="intent"
-                      onClick={onClose}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 0,
-                        padding: '0 0 0 24px',
-                        textDecoration: 'none',
-                        borderBottom: `1px solid ${STYX.lineSoft}`,
-                        minHeight: 52,
-                        overflow: 'hidden',
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontFamily: FONT.cormorant,
-                          fontSize: 26,
-                          color: STYX.ink,
-                          flex: 1,
-                          letterSpacing: '0.01em',
-                        }}
-                      >
-                        {chain.name}
-                      </span>
-                      {cutoutFor(chain.handle) ? (
-                        <img
-                          src={cutoutFor(chain.handle)}
-                          alt={`${chain.name} chain`}
-                          // The drawer is always in the DOM (slid offscreen).
-                          // Without lazy, these 13 cutouts download on every
-                          // page load and starve the LCP image on mobile.
-                          loading="lazy"
-                          decoding="async"
-                          style={{
-                            width: 130,
-                            height: 46,
-                            objectFit: 'contain',
-                            objectPosition: 'center',
-                            flexShrink: 0,
-                            opacity: 0.85,
-                            marginRight: -8,
-                          }}
-                        />
-                      ) : (
-                        <div style={{width: 130, height: 46, flexShrink: 0}} />
-                      )}
-                    </Link>
-                  ))}
-                </div>
-              ))}
+                  </CloseMenuContext.Provider>
+                </CollectionsListContext.Provider>
+              </ExistingHandlesContext.Provider>
             </div>
           </div>
 
@@ -2097,7 +2027,7 @@ function MobileMenu({
                             borderRadius: '50%',
                             background: m.hex,
                             flexShrink: 0,
-                            border: '2px solid rgba(26,24,21,0.1)',
+                            border: '2px solid rgba(26,27,28,0.1)',
                           }}
                         />
                         <span
@@ -2311,7 +2241,7 @@ function StyxCartDrawer({open, onClose}: {open: boolean; onClose: () => void}) {
         style={{
           position: 'fixed',
           inset: 0,
-          background: 'rgba(26,24,21,0.5)',
+          background: 'rgba(26,27,28,0.5)',
           backdropFilter: 'blur(2px)',
           zIndex: 50,
           opacity: open ? 1 : 0,
@@ -2340,7 +2270,7 @@ function StyxCartDrawer({open, onClose}: {open: boolean; onClose: () => void}) {
           zIndex: 51,
           transform: open ? 'translateX(0)' : 'translateX(100%)',
           transition: 'transform 0.4s cubic-bezier(.25,.8,.25,1)',
-          boxShadow: '-24px 0 60px rgba(26,24,21,0.12)',
+          boxShadow: '-24px 0 60px rgba(26,27,28,0.12)',
           display: 'flex',
           flexDirection: 'column',
         }}
@@ -2569,6 +2499,7 @@ export function StyxNav({
   const [openMenu, setOpenMenu] = useState<MenuKey | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const openTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navigation = useNavigation();
   const headerHidden = useAutoHideHeader();
   const headerRef = useRef<HTMLDivElement>(null);
@@ -2599,7 +2530,8 @@ export function StyxNav({
 
   const scheduleClose = useCallback(() => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
-    closeTimer.current = setTimeout(() => setOpenMenu(null), 140);
+    if (openTimer.current) clearTimeout(openTimer.current);
+    closeTimer.current = setTimeout(() => setOpenMenu(null), 200);
   }, []);
 
   const cancelClose = useCallback(() => {
@@ -2607,15 +2539,40 @@ export function StyxNav({
   }, []);
 
   const closeMenuNow = useCallback(() => {
+    if (openTimer.current) clearTimeout(openTimer.current);
     if (closeTimer.current) clearTimeout(closeTimer.current);
     setOpenMenu(null);
   }, []);
+
+  useEffect(
+    () => () => {
+      if (openTimer.current) clearTimeout(openTimer.current);
+      if (closeTimer.current) clearTimeout(closeTimer.current);
+    },
+    [],
+  );
+
+  useEffect(() => {
+    const mobile = window.matchMedia('(max-width: 1200px)');
+    const onResize = () => {
+      if (mobile.matches) closeMenuNow();
+    };
+    mobile.addEventListener('change', onResize);
+    return () => mobile.removeEventListener('change', onResize);
+  }, [closeMenuNow]);
 
   // Keyboard access: Escape closes the open mega panel.
   useEffect(() => {
     if (!openMenu) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') closeMenuNow();
+      if (e.key === 'Escape') {
+        headerRef.current
+          ?.querySelector<HTMLElement>(
+            '[aria-expanded="true"][aria-controls="styx-desktop-panel"]',
+          )
+          ?.focus();
+        closeMenuNow();
+      }
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
@@ -2682,10 +2639,11 @@ export function StyxNav({
                     setHoverLink(item.label);
                     cancelClose();
                     if (item.mega) {
-                      setOpenMenu(item.mega);
-                      // Mega panel and search overlay share the same slot
-                      // under the header, never show both.
-                      setSearchOpen(false);
+                      if (openTimer.current) clearTimeout(openTimer.current);
+                      openTimer.current = setTimeout(() => {
+                        setOpenMenu(item.mega!);
+                        setSearchOpen(false);
+                      }, 120);
                     }
                   }}
                   onMouseLeave={() => {
@@ -2697,7 +2655,8 @@ export function StyxNav({
                   <Link
                     to={item.to}
                     prefetch="intent"
-                    aria-haspopup={item.mega ? 'true' : undefined}
+                    onClick={closeMenuNow}
+                    aria-controls={item.mega ? 'styx-desktop-panel' : undefined}
                     aria-expanded={
                       item.mega ? openMenu === item.mega : undefined
                     }
@@ -2707,8 +2666,26 @@ export function StyxNav({
                     onFocus={() => {
                       if (item.mega) {
                         cancelClose();
+                        if (openTimer.current) clearTimeout(openTimer.current);
                         setOpenMenu(item.mega);
                         setSearchOpen(false);
+                      }
+                    }}
+                    onKeyDown={(event) => {
+                      if (
+                        item.mega &&
+                        event.key === 'Tab' &&
+                        !event.shiftKey &&
+                        openMenu === item.mega
+                      ) {
+                        const first =
+                          headerRef.current?.querySelector<HTMLElement>(
+                            '#styx-desktop-panel a',
+                          );
+                        if (first) {
+                          event.preventDefault();
+                          first.focus();
+                        }
                       }
                     }}
                     style={{
@@ -2878,6 +2855,28 @@ export function StyxNav({
           <div
             key={openMenu}
             className="styx-mega-panel"
+            id="styx-desktop-panel"
+            role="region"
+            aria-label={`${openMenu} menu`}
+            onFocusCapture={cancelClose}
+            onKeyDown={(event) => {
+              if (
+                event.key === 'Tab' &&
+                event.shiftKey &&
+                event.target === event.currentTarget.querySelector('a')
+              ) {
+                event.preventDefault();
+                headerRef.current
+                  ?.querySelector<HTMLElement>(
+                    '[aria-expanded="true"][aria-controls="styx-desktop-panel"]',
+                  )
+                  ?.focus();
+              }
+            }}
+            onBlur={(event) => {
+              if (!event.currentTarget.contains(event.relatedTarget))
+                closeMenuNow();
+            }}
             onMouseEnter={cancelClose}
             onMouseLeave={scheduleClose}
             style={{
@@ -2888,7 +2887,7 @@ export function StyxNav({
               background: STYX.bone,
               color: STYX.ink,
               borderBottom: `1px solid ${STYX.line}`,
-              boxShadow: '0 24px 48px -24px rgba(26,24,21,0.2)',
+              boxShadow: '0 20px 50px -30px rgba(26,27,28,.35)',
               zIndex: 1,
             }}
           >
@@ -2956,6 +2955,7 @@ export function StyxNav({
               </div>
               <Link
                 to="/collections"
+                onClick={closeMenuNow}
                 style={{
                   fontFamily: FONT.cinzel,
                   fontSize: 10,
@@ -2974,14 +2974,14 @@ export function StyxNav({
         {/* ── Scrim ── */}
         {Panel && (
           <div
-            onMouseEnter={() => setOpenMenu(null)}
+            onMouseEnter={scheduleClose}
             style={{
               position: 'fixed',
               top: 120,
               left: 0,
               right: 0,
               bottom: 0,
-              background: 'rgba(26,24,21,0.25)',
+              background: 'rgba(26,27,28,0.25)',
               pointerEvents: 'auto',
               zIndex: 0,
               animation: 'styx-scrim-in 0.28s ease both',

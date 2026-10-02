@@ -936,7 +936,7 @@ function JournalCard({entry, n}: {entry: JournalEntry; n: number}) {
             letterSpacing: '0.15em',
             color: STYX.silt,
             padding: '4px 8px',
-            background: 'rgba(239,234,224,0.85)',
+            background: 'rgba(235,235,232,0.85)',
           }}
         >
           &#8470; {String(n).padStart(2, '0')}

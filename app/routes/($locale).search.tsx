@@ -105,7 +105,7 @@ export default function Search() {
             border: '1px solid var(--styx-border)',
             borderRadius: 3,
             overflow: 'hidden',
-            background: '#fffefa',
+            background: '#ffffff',
           }}
         >
           <input
@@ -132,8 +132,8 @@ export default function Search() {
             type="submit"
             style={{
               padding: '0 26px',
-              background: '#242a24',
-              color: '#f7f5f0',
+              background: '#1e2021',
+              color: '#f4f4f2',
               border: 'none',
               fontFamily: FONT.inter,
               fontSize: 13,
@@ -168,7 +168,7 @@ export default function Search() {
               fontSize: 30,
               fontWeight: 500,
               letterSpacing: '-0.02em',
-              color: '#1a1815',
+              color: '#1a1b1c',
               margin: '0 auto 10px',
               maxWidth: 520,
             }}
@@ -205,7 +205,7 @@ export default function Search() {
                   margin: '0 0 32px',
                 }}
               >
-                <span style={{fontFamily: FONT.mono, color: '#1a1815'}}>
+                <span style={{fontFamily: FONT.mono, color: '#1a1b1c'}}>
                   {nodes.length}
                   {hasNextPage ? '+' : ''}
                 </span>{' '}

@@ -104,7 +104,7 @@ function LoreVideo() {
             fontFamily: FONT.cormorant,
             fontStyle: 'italic',
             fontSize: 16,
-            color: 'rgba(239,234,224,0.7)',
+            color: 'rgba(235,235,232,0.7)',
             textAlign: 'center',
           }}
         >
@@ -417,7 +417,7 @@ export default function Lore() {
                 color: STYX.bone,
                 textDecoration: 'none',
                 padding: '18px 32px',
-                border: '1px solid rgba(239,234,224,0.3)',
+                border: '1px solid rgba(235,235,232,0.3)',
                 transition: 'all 0.2s',
               }}
             >

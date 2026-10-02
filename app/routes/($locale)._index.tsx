@@ -328,7 +328,7 @@ export default function Homepage() {
           textAlign: 'center',
           padding: '16px 0',
           background: '#111',
-          borderTop: '1px solid rgba(239,234,224,0.06)',
+          borderTop: '1px solid rgba(235,235,232,0.06)',
         }}
       >
         <a
@@ -339,7 +339,7 @@ export default function Homepage() {
             fontFamily: "'Inter', sans-serif",
             fontSize: 10,
             letterSpacing: '0.1em',
-            color: 'rgba(239,234,224,0.35)',
+            color: 'rgba(235,235,232,0.35)',
             textDecoration: 'none',
           }}
         >

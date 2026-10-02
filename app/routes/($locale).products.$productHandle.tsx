@@ -1176,7 +1176,7 @@ export default function Product() {
                                     background:
                                       colorSwatches[name] || STYX.silt2,
                                     boxShadow:
-                                      'inset 0 0 0 1px rgba(26,24,21,0.12)',
+                                      'inset 0 0 0 1px rgba(26,27,28,0.12)',
                                     flexShrink: 0,
                                   }}
                                 />
@@ -1480,7 +1480,7 @@ export default function Product() {
                       color: STYX.silt,
                       textDecoration: 'underline',
                       textUnderlineOffset: 3,
-                      textDecorationColor: 'rgba(74,68,59,0.45)',
+                      textDecorationColor: 'rgba(70,72,74,0.45)',
                     }}
                   >
                     Make an offer on this piece
@@ -1514,7 +1514,7 @@ export default function Product() {
                     padding: '8px 14px',
                     border: `1px solid ${wished ? STYX.gold : STYX.line}`,
                     background: wished
-                      ? 'rgba(184,146,74,0.08)'
+                      ? 'rgba(168,146,92,0.08)'
                       : 'transparent',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
@@ -1762,7 +1762,7 @@ export default function Product() {
                   color: STYX.silt,
                   textDecoration: 'underline',
                   textUnderlineOffset: 3,
-                  textDecorationColor: 'rgba(74,68,59,0.45)',
+                  textDecorationColor: 'rgba(70,72,74,0.45)',
                 }}
               >
                 Questions? Read the FAQ
@@ -1780,7 +1780,7 @@ export default function Product() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                background: 'rgba(26,24,21,0.6)',
+                background: 'rgba(26,27,28,0.6)',
                 backdropFilter: 'blur(4px)',
               }}
               onClick={(e) => {
@@ -2611,8 +2611,8 @@ function LivePriceReceipt({
   const goldShare = priced ? Math.min(1, Math.max(0, meltValue / ourPrice)) : 0;
   const goldPct = Math.round(goldShare * 100);
   const craftPct = 100 - goldPct;
-  const dim = 'rgba(239,234,224,0.5)';
-  const line = 'rgba(239,234,224,0.12)';
+  const dim = 'rgba(235,235,232,0.5)';
+  const line = 'rgba(235,235,232,0.12)';
 
   return (
     <div
@@ -2665,7 +2665,7 @@ function LivePriceReceipt({
             fontFamily: FONT.mono,
             fontSize: 11,
             letterSpacing: '0.08em',
-            color: 'rgba(239,234,224,0.45)',
+            color: 'rgba(235,235,232,0.45)',
             whiteSpace: 'nowrap',
           }}
         >
@@ -2714,7 +2714,7 @@ function LivePriceReceipt({
       >
         <div style={{width: `${goldPct}%`, background: STYX.gold}} />
         <div
-          style={{width: `${craftPct}%`, background: 'rgba(239,234,224,0.28)'}}
+          style={{width: `${craftPct}%`, background: 'rgba(235,235,232,0.28)'}}
         />
       </div>
       <div
@@ -2786,7 +2786,7 @@ function LivePriceReceipt({
             fontStyle: 'italic',
             fontSize: 15,
             lineHeight: 1.45,
-            color: 'rgba(239,234,224,0.6)',
+            color: 'rgba(235,235,232,0.6)',
             marginTop: 6,
           }}
         >
@@ -2797,7 +2797,7 @@ function LivePriceReceipt({
       {/* Divider */}
       <div
         style={{
-          borderTop: '1px dashed rgba(239,234,224,0.2)',
+          borderTop: '1px dashed rgba(235,235,232,0.2)',
           margin: '22px 0 18px',
         }}
       />
@@ -2869,7 +2869,7 @@ function ReceiptSection({label, greek}: {label: string; greek?: string}) {
         color: STYX.gold,
         marginBottom: 10,
         paddingBottom: 6,
-        borderBottom: '1px solid rgba(239,234,224,0.08)',
+        borderBottom: '1px solid rgba(235,235,232,0.08)',
       }}
     >
       {label}
@@ -2895,7 +2895,7 @@ function GreekSubLabel({
         fontSize: 9,
         letterSpacing: '0.32em',
         textTransform: 'uppercase',
-        color: 'rgba(184,146,74,0.85)',
+        color: 'rgba(168,146,92,0.85)',
         fontWeight: 400,
         whiteSpace: 'nowrap',
         marginLeft: inline ? 10 : 0,
@@ -2931,7 +2931,7 @@ function ReceiptRow({
           fontFamily: FONT.mono,
           fontSize: 13,
           lineHeight: 1.4,
-          color: highlight ? STYX.bone : 'rgba(239,234,224,0.5)',
+          color: highlight ? STYX.bone : 'rgba(235,235,232,0.5)',
           letterSpacing: '0.03em',
           fontWeight: highlight ? 500 : 400,
           minWidth: 0,
@@ -3202,7 +3202,7 @@ function MobileMediaCarousel({
               position: 'absolute',
               top: 12,
               right: 12,
-              background: 'rgba(26,24,21,0.72)',
+              background: 'rgba(26,27,28,0.72)',
               color: STYX.bone,
               fontFamily: FONT.mono,
               fontSize: 10,

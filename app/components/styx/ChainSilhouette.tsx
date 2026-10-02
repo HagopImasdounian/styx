@@ -64,8 +64,8 @@ export function ChainSilhouette({
         style={{
           ...base,
           background: horizontal
-            ? 'linear-gradient(180deg, #b8924a, #d4b478 50%, #8a6a32)'
-            : 'linear-gradient(90deg, #b8924a, #d4b478 50%, #8a6a32)',
+            ? 'linear-gradient(180deg, #a8925c, #cdb77f 50%, #7d6a3f)'
+            : 'linear-gradient(90deg, #a8925c, #cdb77f 50%, #7d6a3f)',
           border: `0.2mm solid ${STYX.goldDeep}`,
         }}
       />

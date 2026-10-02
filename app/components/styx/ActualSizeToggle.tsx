@@ -20,7 +20,7 @@ export function ActualSizeToggle({label = 'Actual size'}: {label?: string}) {
         gap: 8,
         padding: '8px 14px',
         border: `1px solid ${actualSizeOn ? STYX.gold : STYX.line}`,
-        background: actualSizeOn ? 'rgba(184,146,74,0.08)' : 'transparent',
+        background: actualSizeOn ? 'rgba(168,146,92,0.08)' : 'transparent',
         cursor: 'pointer',
         fontFamily: FONT.mono,
         fontSize: 10,

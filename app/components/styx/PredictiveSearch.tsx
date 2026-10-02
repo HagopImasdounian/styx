@@ -200,7 +200,7 @@ function PlaceholderStyle() {
         font-family: ${FONT.inter};
         font-size: 13px;
         letter-spacing: 0.01em;
-        color: #686257;
+        color: #66686a;
         opacity: 1;
       }
       .styx-search-chip {
@@ -247,7 +247,7 @@ function BlockLabel({
           fontSize: 12,
           fontWeight: 500,
           letterSpacing: '0.01em',
-          color: '#242a24',
+          color: '#1e2021',
         }}
       >
         {children}
@@ -379,7 +379,7 @@ function SectionLabel({children}: {children: React.ReactNode}) {
         fontFamily: FONT.inter,
         fontSize: 11,
         letterSpacing: '0.01em',
-        color: '#686257',
+        color: '#66686a',
         padding: '14px 0 6px',
       }}
     >
@@ -418,7 +418,7 @@ function ProductRow({
         padding: '9px 8px',
         margin: '0 -8px',
         textDecoration: 'none',
-        background: active ? 'rgba(184,146,74,0.12)' : 'transparent',
+        background: active ? 'rgba(168,146,92,0.12)' : 'transparent',
         transition: 'background 0.12s',
       }}
     >
@@ -510,7 +510,7 @@ function CollectionRow({
         padding: '8px 8px',
         margin: '0 -8px',
         textDecoration: 'none',
-        background: active ? 'rgba(184,146,74,0.12)' : 'transparent',
+        background: active ? 'rgba(168,146,92,0.12)' : 'transparent',
         transition: 'background 0.12s',
       }}
     >
@@ -519,7 +519,7 @@ function CollectionRow({
         style={{
           fontFamily: FONT.inter,
           fontSize: 11,
-          color: '#9a7942',
+          color: '#8c7a4b',
         }}
       >
         ↗
@@ -529,7 +529,7 @@ function CollectionRow({
           fontFamily: FONT.inter,
           fontSize: 13,
           letterSpacing: '0.005em',
-          color: '#1a1815',
+          color: '#1a1b1c',
         }}
       >
         {collection.title}
@@ -558,9 +558,9 @@ function ViewAllLink({
         fontFamily: FONT.inter,
         fontSize: 12,
         fontWeight: 500,
-        color: '#1a1815',
+        color: '#1a1b1c',
         textDecoration: 'none',
-        borderBottom: '1px solid #bcb5a6',
+        borderBottom: '1px solid #b9b9b4',
         paddingBottom: 4,
       }}
     >
@@ -685,7 +685,7 @@ export function PredictiveSearchPanel({onClose}: {onClose: () => void}) {
           left: 0,
           right: 0,
           bottom: 0,
-          background: 'rgba(26,24,21,0.25)',
+          background: 'rgba(26,27,28,0.25)',
           zIndex: 0,
           animation: 'styx-scrim-in 0.28s ease both',
         }}
@@ -700,7 +700,7 @@ export function PredictiveSearchPanel({onClose}: {onClose: () => void}) {
           right: 0,
           background: STYX.bone,
           borderBottom: `1px solid ${STYX.line}`,
-          boxShadow: '0 24px 48px -24px rgba(26,24,21,0.2)',
+          boxShadow: '0 24px 48px -24px rgba(26,27,28,0.2)',
           zIndex: 1,
           animation: 'styx-menu-in 0.28s cubic-bezier(.2,.8,.2,1) both',
         }}
@@ -772,7 +772,7 @@ export function PredictiveSearchPanel({onClose}: {onClose: () => void}) {
                 style={{
                   fontFamily: FONT.inter,
                   fontSize: 11,
-                  color: '#686257',
+                  color: '#66686a',
                   flexShrink: 0,
                 }}
               >
@@ -962,7 +962,7 @@ export function MobileMenuSearch({onClose}: {onClose: () => void}) {
             style={{
               fontFamily: FONT.inter,
               fontSize: 11,
-              color: '#686257',
+              color: '#66686a',
               flexShrink: 0,
             }}
           >

@@ -433,7 +433,7 @@ export default function ComparePage() {
                 marginTop: 18,
                 padding: '11px 22px',
                 border: `1px solid ${STYX.gold}`,
-                background: 'rgba(184,146,74,0.08)',
+                background: 'rgba(168,146,92,0.08)',
                 color: STYX.goldDeep,
                 fontFamily: FONT.cinzel,
                 fontSize: 11,
@@ -804,7 +804,7 @@ function ComparisonTable({
                   <div style={{
                     display: 'inline-block',
                     padding: '4px 10px',
-                    background: 'rgba(184,146,74,0.12)',
+                    background: 'rgba(168,146,92,0.12)',
                     border: `1px solid ${STYX.gold}`,
                     fontFamily: FONT.mono,
                     fontSize: 8,
@@ -847,7 +847,7 @@ function ComparisonTable({
 
         <tbody>
           {activeRows.map((row, i) => (
-            <tr key={row.label} style={{background: i % 2 === 0 ? 'transparent' : 'rgba(26,24,21,0.02)'}}>
+            <tr key={row.label} style={{background: i % 2 === 0 ? 'transparent' : 'rgba(26,27,28,0.02)'}}>
               <td style={{
                 padding: '12px 16px',
                 fontFamily: FONT.mono,

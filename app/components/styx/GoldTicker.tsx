@@ -31,7 +31,7 @@ export function GoldTicker() {
   };
 
   const lbl: React.CSSProperties = {
-    color: 'rgba(239,234,224,0.45)',
+    color: 'rgba(235,235,232,0.45)',
     fontSize: 11,
     letterSpacing: '0.08em',
     textTransform: 'uppercase',
@@ -56,7 +56,7 @@ export function GoldTicker() {
         fontFamily: FONT.mono,
         fontSize: 11,
         letterSpacing: '0.08em',
-        borderBottom: '1px solid rgba(239,234,224,0.08)',
+        borderBottom: '1px solid rgba(235,235,232,0.08)',
         width: '100%',
         boxSizing: 'border-box',
         overflow: 'hidden',
@@ -69,7 +69,7 @@ export function GoldTicker() {
             width: 6,
             height: 6,
             borderRadius: '50%',
-            background: isFallback ? 'rgba(239,234,224,0.35)' : '#7DB86F',
+            background: isFallback ? 'rgba(235,235,232,0.35)' : '#7DB86F',
             boxShadow: isFallback ? 'none' : '0 0 8px #7DB86F',
             display: 'inline-block',
           }}
@@ -112,7 +112,7 @@ export function GoldTicker() {
             fontFamily: FONT.cinzel,
             fontSize: 10,
             letterSpacing: '0.3em',
-            color: 'rgba(239,234,224,0.55)',
+            color: 'rgba(235,235,232,0.55)',
             textTransform: 'uppercase',
             cursor: 'pointer',
             textDecoration: 'none',

@@ -353,10 +353,10 @@ export default function Customize() {
                       style={{
                         fontFamily: FONT.cormorant,
                         fontSize: 16,
-                        color: 'rgba(239,234,224,0.75)',
+                        color: 'rgba(235,235,232,0.75)',
                         lineHeight: 1.7,
                         marginTop: 8,
-                        borderTop: '1px solid rgba(239,234,224,0.12)',
+                        borderTop: '1px solid rgba(235,235,232,0.12)',
                         paddingTop: 16,
                       }}
                     >

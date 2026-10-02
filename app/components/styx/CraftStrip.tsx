@@ -164,7 +164,7 @@ export function CraftStrip() {
                 fontFamily: FONT.cormorant,
                 fontStyle: 'italic',
                 fontSize: 22,
-                color: 'rgba(239,234,224,0.7)',
+                color: 'rgba(235,235,232,0.7)',
                 marginTop: 8,
               }}
             >
@@ -174,7 +174,7 @@ export function CraftStrip() {
               style={{
                 fontFamily: FONT.inter,
                 fontSize: 14,
-                color: 'rgba(239,234,224,0.5)',
+                color: 'rgba(235,235,232,0.5)',
                 lineHeight: 1.6,
                 marginTop: 24,
                 maxWidth: 320,

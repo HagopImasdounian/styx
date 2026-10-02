@@ -444,7 +444,7 @@ export default function About() {
               color: STYX.bone,
               textDecoration: 'none',
               padding: '18px 32px',
-              border: '1px solid rgba(239,234,224,0.3)',
+              border: '1px solid rgba(235,235,232,0.3)',
               flexShrink: 0,
               transition: 'all 0.2s',
             }}

@@ -472,7 +472,7 @@ export function WeighIn({
               fontSize: 17,
               fontStyle: 'italic',
               lineHeight: 1.55,
-              color: 'rgba(239,234,224,0.92)',
+              color: 'rgba(235,235,232,0.92)',
             }}
           >
             <VerdictText
@@ -504,7 +504,7 @@ export function WeighIn({
                     : {
                         background: 'transparent',
                         color: STYX.bone,
-                        border: `1px solid rgba(239,234,224,0.7)`,
+                        border: `1px solid rgba(235,235,232,0.7)`,
                       }),
                 }}
               >
@@ -601,7 +601,7 @@ function NumInline({children}: {children: React.ReactNode}) {
         fontSize: '0.85em',
         color: STYX.gold,
         padding: '1px 6px',
-        background: 'rgba(184,146,74,0.12)',
+        background: 'rgba(168,146,92,0.12)',
         fontStyle: 'normal',
         whiteSpace: 'nowrap',
       }}
@@ -978,7 +978,7 @@ function PureGoldBar({
               left: 0,
               width: `${purePct}%`,
               background: `linear-gradient(180deg, ${STYX.goldLight} 0%, ${STYX.gold} 50%, ${STYX.goldDeep} 100%)`,
-              boxShadow: 'inset 0 0 0 1px rgba(26,24,21,0.1)',
+              boxShadow: 'inset 0 0 0 1px rgba(26,27,28,0.1)',
             }}
           />
         </div>

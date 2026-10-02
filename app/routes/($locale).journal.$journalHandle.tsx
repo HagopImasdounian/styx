@@ -1073,27 +1073,27 @@ function processArticleHtml(html: string, spotPerOz: number): string {
           : `$${Math.round(n)}`;
 
       return `
-        <div style="background: #1A1815; color: #EFEAE0; padding: 48px; margin: 48px 0; position: relative;">
-          <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(ellipse 70% 50% at 50% 50%, rgba(184,146,74,0.08), transparent 70%); pointer-events: none;"></div>
+        <div style="background: #1A1B1C; color: #EBEBE8; padding: 48px; margin: 48px 0; position: relative;">
+          <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(ellipse 70% 50% at 50% 50%, rgba(168,146,92,0.08), transparent 70%); pointer-events: none;"></div>
           <div style="position: relative;">
-            <div style="font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.3em; color: #B8924A; text-transform: uppercase; margin-bottom: 24px;">The Weight, Visualized &middot; Live from the London Fix</div>
+            <div style="font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.3em; color: #A8925C; text-transform: uppercase; margin-bottom: 24px;">The Weight, Visualized &middot; Live from the London Fix</div>
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; text-align: center;">
               <div>
-                <div style="font-family: 'Cinzel', serif; font-size: 36px; color: #B8924A; font-weight: 500;">31.1g</div>
-                <div style="font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.2em; color: rgba(239,234,224,0.5); text-transform: uppercase; margin-top: 8px;">One Troy Ounce</div>
-                <div style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: rgba(239,234,224,0.7); margin-top: 4px;">Six quarters in your palm</div>
+                <div style="font-family: 'Cinzel', serif; font-size: 36px; color: #A8925C; font-weight: 500;">31.1g</div>
+                <div style="font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.2em; color: rgba(235,235,232,0.5); text-transform: uppercase; margin-top: 8px;">One Troy Ounce</div>
+                <div style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: rgba(235,235,232,0.7); margin-top: 4px;">Six quarters in your palm</div>
               </div>
               <div>
-                <div style="font-family: 'Cinzel', serif; font-size: 36px; color: #EFEAE0; font-weight: 500;">~${weight}g</div>
-                <div style="font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.2em; color: rgba(239,234,224,0.5); text-transform: uppercase; margin-top: 8px;">${length}&Prime; Cuban &middot; ${width}mm &middot; ${karat}k</div>
-                <div style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: rgba(239,234,224,0.7); margin-top: 4px;">More than a full troy ounce</div>
+                <div style="font-family: 'Cinzel', serif; font-size: 36px; color: #EBEBE8; font-weight: 500;">~${weight}g</div>
+                <div style="font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.2em; color: rgba(235,235,232,0.5); text-transform: uppercase; margin-top: 8px;">${length}&Prime; Cuban &middot; ${width}mm &middot; ${karat}k</div>
+                <div style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: rgba(235,235,232,0.7); margin-top: 4px;">More than a full troy ounce</div>
               </div>
               <div>
-                <div style="font-family: 'Cinzel', serif; font-size: 36px; color: #B8924A; font-weight: 500;">${fmt(
+                <div style="font-family: 'Cinzel', serif; font-size: 36px; color: #A8925C; font-weight: 500;">${fmt(
                   rawMaterialValue,
                 )}</div>
-                <div style="font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.2em; color: rgba(239,234,224,0.5); text-transform: uppercase; margin-top: 8px;">Raw Material Value</div>
-                <div style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: rgba(239,234,224,0.7); margin-top: 4px;">At today&rsquo;s ${fmt(
+                <div style="font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.2em; color: rgba(235,235,232,0.5); text-transform: uppercase; margin-top: 8px;">Raw Material Value</div>
+                <div style="font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: rgba(235,235,232,0.7); margin-top: 4px;">At today&rsquo;s ${fmt(
                   spotPerOz,
                 )}/oz spot</div>
               </div>

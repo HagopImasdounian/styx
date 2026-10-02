@@ -75,7 +75,7 @@ export function NotFound({type = 'page'}: {type?: string}) {
             // On short viewports this line lands on the chain image
             // a bone glow keeps the dark italic legible either way.
             textShadow:
-              '0 1px 20px rgba(239,234,224,0.95), 0 0 8px rgba(239,234,224,0.85)',
+              '0 1px 20px rgba(235,235,232,0.95), 0 0 8px rgba(235,235,232,0.85)',
           }}
         >
           This chain doesn&apos;t lead anywhere.
