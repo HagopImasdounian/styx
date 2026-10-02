@@ -3965,3 +3965,5 @@ div:has(> #mainContent > .styx-catalog-chrome) {
   margin: 0;
   max-width: 28ch;
 }
+
+.styx-menu-heading-links { display: flex; gap: 20px; font-size: 13px; }

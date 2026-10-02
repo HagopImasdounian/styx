@@ -694,9 +694,14 @@ function ChainsMegaPanel() {
       <section className="styx-chain-directory" aria-label="Chain types">
         <div className="styx-menu-heading">
           <h2 className="styx-menu-eyebrow">Find your weave</h2>
-          <MegaLink to="/collections/chains">
-            All chains <span aria-hidden="true">↗</span>
-          </MegaLink>
+          <div className="styx-menu-heading-links">
+            <MegaLink to="/collections/chains">
+              All chains <span aria-hidden="true">↗</span>
+            </MegaLink>
+            <MegaLink to="/collections">
+              All collections <span aria-hidden="true">↗</span>
+            </MegaLink>
+          </div>
         </div>
         {/* One flat list: only weaves that are live, photographed and not
             hidden in admin (custom.nav_hidden). Groups come back only if the
