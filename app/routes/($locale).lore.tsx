@@ -8,7 +8,6 @@ import {
   StyxFooter,
   StyxLabel,
   Obol,
-  PlaceholderImage,
 } from '~/components/styx';
 import {getStyxSeoMeta} from '~/lib/seo-meta';
 import {validateLocale} from '~/lib/utils';
@@ -37,25 +36,27 @@ export const meta = ({data}: MetaArgs<typeof loader>) => {
 /* Gutter collapses to 16px at phone width, 56px on desktop. */
 const GUTTER = 'clamp(16px, 4vw, 56px)';
 
-/* ── Video slot ──
-   Drop a Shopify CDN mp4 URL into LORE_VIDEO_URL (and a poster JPG into
-   LORE_VIDEO_POSTER). While the URL is empty the page renders a styled
-   placeholder panel instead of an empty <video>. */
-// TODO(hagop): add the lore film URL (Shopify CDN mp4) and poster image.
-const LORE_VIDEO_URL = '';
-const LORE_VIDEO_POSTER = '';
+/* ── Lore image ──
+   One generated still of the crossing (Nano Banana Pro, 2026-10-02): a
+   ferryman on black water in a marble hall, cool palette, a single gold coin
+   on the near shore. Hosted on Shopify Files. */
+const LORE_IMAGE = {
+  src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-lore-hero.jpg?v=1790902484',
+  alt: 'A hooded ferryman poling a wooden boat across still black water in a marble hall; a single gold coin rests on the near shore',
+  width: 2400,
+  height: 1029,
+};
 
 /* ── Relics gallery ──
-   Six slots. Fill `src` with a Shopify CDN image URL; empty `src` renders a
-   placeholder panel with the caption so the layout holds. */
-// TODO(hagop): add the six relic images (Shopify CDN URLs) and confirm captions.
+   Six stills from the same series (dark basalt, one raking light, cool greys,
+   gold the only colour). Hosted on Shopify Files. */
 const RELICS: Array<{src: string; alt: string; caption: string}> = [
-  {src: '', alt: 'A single gold obol resting on dark stone', caption: 'The Obol'},
-  {src: '', alt: 'The ferryman’s pole cutting still black water', caption: 'The Ferry'},
-  {src: '', alt: 'Mist over the river at the near shore', caption: 'The River'},
-  {src: '', alt: 'A gold chain coiled where a coin would be placed', caption: 'The Fare'},
-  {src: '', alt: 'Light on the far bank', caption: 'The Far Shore'},
-  {src: '', alt: 'A chain draped over the edge of a scale', caption: 'The Crossing'},
+  {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-relic-obol.jpg?v=1790902498', alt: 'A single gold obol resting on dark stone', caption: 'The Obol'},
+  {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-relic-ferry.jpg?v=1790902495', alt: 'The ferryman’s pole cutting still black water', caption: 'The Ferry'},
+  {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-relic-river.jpg?v=1790902500', alt: 'Mist over the river at the near shore', caption: 'The River'},
+  {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-relic-fare.jpg?v=1790902492', alt: 'A gold chain coiled where a coin would be placed', caption: 'The Fare'},
+  {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-relic-far-shore.jpg?v=1790902489', alt: 'Light on the far bank', caption: 'The Far Shore'},
+  {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-relic-crossing.jpg?v=1790902486', alt: 'A chain draped over the edge of a scale', caption: 'The Crossing'},
 ];
 
 const STORY: string[] = [
@@ -86,50 +87,6 @@ function SectionHeading({kicker, title}: {kicker: string; title: string}) {
         {title}
       </h2>
     </div>
-  );
-}
-
-function LoreVideo() {
-  if (!LORE_VIDEO_URL) {
-    return (
-      <div style={{position: 'relative'}}>
-        <PlaceholderImage aspect="16/9" tone="dark" label="The Crossing · Film" />
-        <div
-          style={{
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            bottom: 0,
-            padding: '16px clamp(16px, 2vw, 24px)',
-            fontFamily: FONT.cormorant,
-            fontStyle: 'italic',
-            fontSize: 16,
-            color: 'rgba(235,235,232,0.7)',
-            textAlign: 'center',
-          }}
-        >
-          The film is on its way across.
-        </div>
-      </div>
-    );
-  }
-  return (
-    <video
-      controls
-      playsInline
-      preload="none"
-      poster={LORE_VIDEO_POSTER || undefined}
-      style={{
-        display: 'block',
-        width: '100%',
-        aspectRatio: '16 / 9',
-        background: STYX.ink,
-        objectFit: 'cover',
-      }}
-    >
-      <source src={LORE_VIDEO_URL} type="video/mp4" />
-      Your browser does not support the video tag.
-    </video>
   );
 }
 
@@ -198,18 +155,32 @@ export default function Lore() {
         </div>
       </section>
 
-      {/* Video slot */}
+      {/* The crossing, pictured */}
       <section style={{background: STYX.paper}}>
         <div
           style={{
-            maxWidth: 1100,
+            maxWidth: 1440,
             margin: '0 auto',
-            padding: `clamp(40px, 5vw, 72px) ${GUTTER}`,
+            padding: `clamp(32px, 4vw, 56px) ${GUTTER}`,
           }}
         >
-          <div data-reveal="" style={{border: `1px solid ${STYX.line}`, background: STYX.ink}}>
-            <LoreVideo />
-          </div>
+          <img
+            data-reveal=""
+            src={LORE_IMAGE.src}
+            alt={LORE_IMAGE.alt}
+            width={LORE_IMAGE.width}
+            height={LORE_IMAGE.height}
+            decoding="async"
+            fetchPriority="high"
+            style={{
+              display: 'block',
+              width: '100%',
+              height: 'auto',
+              aspectRatio: '21 / 9',
+              objectFit: 'cover',
+              border: `1px solid ${STYX.line}`,
+            }}
+          />
         </div>
       </section>
 
@@ -285,33 +256,25 @@ export default function Lore() {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 340px), 1fr))',
               gap: 'clamp(16px, 2vw, 28px)',
             }}
           >
             {RELICS.map((relic, i) => (
               <figure key={`${relic.caption}-${i}`} data-reveal="" style={{margin: 0, minWidth: 0}}>
                 <div style={{border: `1px solid ${STYX.line}`, overflow: 'hidden'}}>
-                  {relic.src ? (
-                    <img
-                      src={relic.src}
-                      alt={relic.alt}
-                      loading="lazy"
-                      decoding="async"
-                      style={{
-                        display: 'block',
-                        width: '100%',
-                        aspectRatio: '4 / 5',
-                        objectFit: 'cover',
-                      }}
-                    />
-                  ) : (
-                    <PlaceholderImage
-                      aspect="4/5"
-                      tone={i % 3 === 1 ? 'stone' : i % 3 === 2 ? 'silt' : 'warm'}
-                      label={relic.caption}
-                    />
-                  )}
+                  <img
+                    src={relic.src}
+                    alt={relic.alt}
+                    loading="lazy"
+                    decoding="async"
+                    style={{
+                      display: 'block',
+                      width: '100%',
+                      aspectRatio: '4 / 5',
+                      objectFit: 'cover',
+                    }}
+                  />
                 </div>
                 <figcaption
                   style={{

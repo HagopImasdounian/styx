@@ -33,7 +33,17 @@ export type CollectionNode = {
       image?: {url: string} | null;
     } | null;
   } | null;
+  /** custom.nav_hidden (boolean metafield): true hides the weave from the mega menu. Manual switch in Shopify admin. */
+  navHidden?: {value?: string | null} | null;
 };
+
+/** A chain family shows in the mega menu only when it is live (has stock),
+ *  has a cutout image, and is not switched off in admin. */
+export function isNavVisibleCollection(c: CollectionNode | undefined): boolean {
+  if (!c) return false;
+  if (c.navHidden?.value === 'true') return false;
+  return Boolean(c.cutout?.reference?.image?.url);
+}
 
 /** Cutout PNG URL for a collection, if set in Shopify (custom.cutout_image).
  * Always request a resized variant, the originals are 100–300 KB PNGs, and

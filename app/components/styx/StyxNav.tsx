@@ -6,6 +6,7 @@ import {
   useCallback,
   createContext,
   useContext,
+  useMemo,
 } from 'react';
 import {
   Await,
@@ -22,6 +23,7 @@ import {
   FONT,
   type CollectionNode,
   collectionCutoutUrl,
+  isNavVisibleCollection,
 } from './constants';
 import {THICKNESS_RANGES, cardMinPrice, explodeByColor} from './listingFilters';
 import type {loader as collectionLoader} from '~/routes/($locale).collections.$collectionHandle';
@@ -526,8 +528,8 @@ function ChainRow({chain, eager = false}: {chain: ChainItem; eager?: boolean}) {
           <img
             src={cutout}
             alt=""
-            width={28}
-            height={28}
+            width={56}
+            height={36}
             loading={eager ? 'eager' : 'lazy'}
             decoding="async"
           />
@@ -656,8 +658,30 @@ function FeaturedCollection() {
   );
 }
 
+/** Taxonomy groups reduced to the chains that are live, have a cutout and are
+ *  not hidden in admin (custom.nav_hidden). Empty groups disappear. */
+function useVisibleTaxonomy(): ChainGroup[] {
+  const collections = useContext(CollectionsListContext);
+  const existingHandles = useContext(ExistingHandlesContext);
+  return useMemo(
+    () =>
+      CHAIN_TAXONOMY.map((group) => ({
+        ...group,
+        chains: group.chains.filter(
+          (chain) =>
+            existingHandles.has(chain.handle) &&
+            isNavVisibleCollection(
+              collections.find((c) => c.handle === chain.handle),
+            ),
+        ),
+      })).filter((group) => group.chains.length > 0),
+    [collections, existingHandles],
+  );
+}
+
 function ChainsMegaPanel() {
   const volume = JOURNAL_VOLUMES[0];
+  const groups = useVisibleTaxonomy();
   return (
     <div className="styx-chains-layout">
       <section className="styx-chain-directory" aria-label="Chain types">
@@ -667,21 +691,15 @@ function ChainsMegaPanel() {
             All chains <span aria-hidden="true">↗</span>
           </MegaLink>
         </div>
-        <div className="styx-chain-groups">
-          {CHAIN_TAXONOMY.map((group, groupIndex) => (
-            <section key={group.group}>
-              <h3 className="styx-menu-eyebrow">{group.group}</h3>
-              <div className="styx-chain-columns">
-                {group.chains.map((chain, index) => (
-                  <ChainRow
-                    key={chain.handle}
-                    chain={chain}
-                    eager={groupIndex === 0 && index < 8}
-                  />
-                ))}
-              </div>
-            </section>
-          ))}
+        {/* One flat list: only weaves that are live, photographed and not
+            hidden in admin (custom.nav_hidden). Groups come back only if the
+            catalogue grows past a dozen weaves. */}
+        <div className="styx-chain-list">
+          {groups
+            .flatMap((group) => group.chains)
+            .map((chain, index) => (
+              <ChainRow key={chain.handle} chain={chain} eager={index < 10} />
+            ))}
         </div>
       </section>
       <aside className="styx-menu-discover">
@@ -1405,6 +1423,21 @@ function MobileMenu({
     condition ? ({inert: ''} as any) : {};
 
   const paneTransition = 'transform 0.35s cubic-bezier(.5,.1,.2,1)';
+  // Same visibility rule as the desktop panel (live + cutout + not hidden).
+  const mobileGroups = useMemo(
+    () =>
+      CHAIN_TAXONOMY.map((group) => ({
+        ...group,
+        chains: group.chains.filter(
+          (chain) =>
+            existingHandles.has(chain.handle) &&
+            isNavVisibleCollection(
+              collections.find((c) => c.handle === chain.handle),
+            ),
+        ),
+      })).filter((group) => group.chains.length > 0),
+    [collections, existingHandles],
+  );
   const borderLine = `1px solid ${STYX.line}`;
 
   const ROOT_LINKS: {
@@ -1834,19 +1867,13 @@ function MobileMenu({
                 <CollectionsListContext.Provider value={collections}>
                   <CloseMenuContext.Provider value={onClose}>
                     <div className="styx-mobile-chain-groups">
-                      {CHAIN_TAXONOMY.map((group) => (
-                        <details key={group.group}>
-                          <summary>
-                            {group.group}
-                            <span aria-hidden="true">+</span>
-                          </summary>
-                          <div>
-                            {group.chains.map((chain) => (
-                              <ChainRow key={chain.handle} chain={chain} />
-                            ))}
-                          </div>
-                        </details>
-                      ))}
+                      <div className="styx-chain-list">
+                        {mobileGroups
+                          .flatMap((group) => group.chains)
+                          .map((chain) => (
+                            <ChainRow key={chain.handle} chain={chain} />
+                          ))}
+                      </div>
                       <ShopBy />
                     </div>
                   </CloseMenuContext.Provider>

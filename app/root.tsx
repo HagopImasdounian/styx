@@ -461,6 +461,9 @@ const ROOT_COLLECTIONS_QUERY = `#graphql
             }
           }
         }
+        navHidden: metafield(namespace: "custom", key: "nav_hidden") {
+          value
+        }
         products(first: 1) {
           nodes {
             id
