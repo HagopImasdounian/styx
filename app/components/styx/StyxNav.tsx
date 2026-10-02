@@ -552,6 +552,13 @@ function ChainRow({chain, eager = false}: {chain: ChainItem; eager?: boolean}) {
 function ShopBy() {
   const rows = [
     {
+      title: 'Type',
+      links: [
+        {label: 'Necklaces', to: '/collections/necklaces'},
+        {label: 'Bracelets', to: '/collections/bracelets'},
+      ],
+    },
+    {
       title: 'Metal',
       links: ['yellow-gold', 'white-gold', 'rose-gold'].map((handle) => ({
         label: METALS.find((metal) => metal.handle === handle)!.label.replace(
@@ -1305,7 +1312,6 @@ type NavItem = {
 
 const NAV_ITEMS: NavItem[] = [
   {label: 'Chains', to: '/collections/chains', mega: 'Chains'},
-  {label: 'Collections', to: '/collections', mega: 'Collections'},
   {label: 'Customize', to: '/customize'},
   {label: 'The Lore', to: '/lore'},
   {label: 'About', to: '/about'},
@@ -1447,7 +1453,7 @@ function MobileMenu({
     to?: string;
   }[] = [
     {numeral: 'I', label: 'Gold Chains', drillTo: 'Chains'},
-    {numeral: 'II', label: 'Collections', drillTo: 'Collections'},
+    {numeral: 'II', label: 'Collections', to: '/collections'},
     {numeral: 'III', label: 'Customize', to: '/customize'},
     {numeral: 'IV', label: 'The Lore', to: '/lore'},
     {numeral: 'V', label: 'About', to: '/about'},

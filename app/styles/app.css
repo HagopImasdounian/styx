@@ -3664,17 +3664,28 @@ div:has(> #mainContent > .styx-catalog-chrome) {
   gap: 6px 24px;
 }
 .styx-chain-list .styx-chain-row {
-  height: 60px;
+  height: 72px;
   padding: 0 10px 0 6px;
   border-bottom: 1px solid var(--styx-border);
   border-radius: 0;
 }
-.styx-chain-list .styx-chain-thumb,
-.styx-chain-list .styx-chain-thumb img {
-  width: 84px;
-  height: 44px;
-  flex-basis: 84px;
+.styx-chain-list .styx-chain-thumb {
+  width: 112px;
+  height: 56px;
+  flex-basis: 112px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, #f1f1ef 0%, #e2e2df 100%);
+  border: 1px solid rgba(26, 27, 28, 0.08);
+  border-radius: 3px;
 }
+.styx-chain-list .styx-chain-thumb img {
+  width: 96px;
+  height: 40px;
+  flex-basis: auto;
+  filter: drop-shadow(0 2px 2px rgba(26, 27, 28, 0.16));
+}
+
 .styx-chain-list .styx-chain-row span:last-child {
   font-size: 16px;
 }
@@ -3868,4 +3879,89 @@ div:has(> #mainContent > .styx-catalog-chrome) {
 .styx-mega-panel [style*='Cinzel'] {
   font-family: 'JetBrains Mono', monospace !important;
   font-size: 11px !important;
+}
+
+/* About: obol photo beside the legacy text; stacks on phones */
+@media (max-width: 760px) {
+  .styx-about-legacy { grid-template-columns: 1fr !important; }
+  .styx-about-legacy img { position: static !important; max-width: 320px; }
+}
+
+/* ── Lore hero: full-bleed crossing loop ───────────────────────────────── */
+.styx-lore-hero {
+  position: relative;
+  /* fills the viewport under the ticker + nav (~136px) so the title is in the first frame */
+  min-height: clamp(540px, calc(100svh - 136px), 1040px);
+  background: #0f1011;
+  color: #ecebe7;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  isolation: isolate;
+}
+.styx-lore-hero-video,
+.styx-lore-hero-still {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 60%;
+  z-index: 0;
+}
+.styx-lore-hero-still { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .styx-lore-hero-video { display: none; }
+  .styx-lore-hero-still { display: block; }
+}
+.styx-lore-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(180deg, rgba(15, 16, 17, 0.35) 0%, rgba(15, 16, 17, 0) 30%),
+    linear-gradient(0deg, rgba(15, 16, 17, 0.72) 0%, rgba(15, 16, 17, 0) 55%);
+  pointer-events: none;
+}
+.styx-lore-hero-copy {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 var(--styx-page-gutter) clamp(48px, 7vw, 96px);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
+  gap: clamp(20px, 4vw, 64px);
+  align-items: end;
+}
+.styx-lore-hero-copy h1 {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(44px, 7vw, 88px);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 0.95;
+  margin: 12px 0 0;
+  color: #ecebe7;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.35);
+}
+.styx-lore-hero-copy h1 em {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.7em;
+  color: #cdb77f;
+}
+.styx-lore-hero-copy p {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(22px, 2.4vw, 30px);
+  line-height: 1.4;
+  color: rgba(236, 235, 231, 0.85);
+  margin: 0;
+  max-width: 28ch;
 }

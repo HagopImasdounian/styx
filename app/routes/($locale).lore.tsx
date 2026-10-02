@@ -46,17 +46,49 @@ const LORE_IMAGE = {
   width: 2400,
   height: 1029,
 };
+/* Same frame as a 20 s ping-pong loop (Seedance, mist drifting, camera locked),
+   transcoded by Shopify to 720p. Poster = first frame. Reduced-motion users get
+   the still. */
+const LORE_LOOP = {
+  mp4: 'https://cdn.shopify.com/videos/c/vp/4e4fa72ede9c456db755899feab8e28c/4e4fa72ede9c456db755899feab8e28c.HD-720p-1.6Mbps-96190684.mp4',
+  poster:
+    'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-lore-hero-poster.jpg?v=1790917824',
+};
 
 /* ── Relics gallery ──
    Six stills from the same series (dark basalt, one raking light, cool greys,
    gold the only colour). Hosted on Shopify Files. */
 const RELICS: Array<{src: string; alt: string; caption: string}> = [
-  {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-relic-obol.jpg?v=1790902498', alt: 'A single gold obol resting on dark stone', caption: 'The Obol'},
-  {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-relic-ferry.jpg?v=1790902495', alt: 'The ferryman’s pole cutting still black water', caption: 'The Ferry'},
-  {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-relic-river.jpg?v=1790902500', alt: 'Mist over the river at the near shore', caption: 'The River'},
-  {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-relic-fare.jpg?v=1790902492', alt: 'A gold chain coiled where a coin would be placed', caption: 'The Fare'},
-  {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-relic-far-shore.jpg?v=1790902489', alt: 'Light on the far bank', caption: 'The Far Shore'},
-  {src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-relic-crossing.jpg?v=1790902486', alt: 'A chain draped over the edge of a scale', caption: 'The Crossing'},
+  {
+    src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-relic-obol.jpg?v=1790902498',
+    alt: 'A single gold obol resting on dark stone',
+    caption: 'The Obol',
+  },
+  {
+    src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-relic-ferry.jpg?v=1790902495',
+    alt: 'The ferryman’s pole cutting still black water',
+    caption: 'The Ferry',
+  },
+  {
+    src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-relic-river.jpg?v=1790902500',
+    alt: 'Mist over the river at the near shore',
+    caption: 'The River',
+  },
+  {
+    src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-relic-fare.jpg?v=1790902492',
+    alt: 'A gold chain coiled where a coin would be placed',
+    caption: 'The Fare',
+  },
+  {
+    src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-relic-far-shore.jpg?v=1790902489',
+    alt: 'Light on the far bank',
+    caption: 'The Far Shore',
+  },
+  {
+    src: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-relic-crossing.jpg?v=1790902486',
+    alt: 'A chain draped over the edge of a scale',
+    caption: 'The Crossing',
+  },
 ];
 
 const STORY: string[] = [
@@ -96,91 +128,41 @@ export default function Lore() {
       <GoldTicker />
       <StyxNav />
 
-      {/* Hero */}
-      <section style={{borderBottom: `1px solid ${STYX.line}`}}>
-        <div
-          style={{
-            maxWidth: 1440,
-            margin: '0 auto',
-            padding: `clamp(56px, 7vw, 100px) ${GUTTER} clamp(48px, 6vw, 80px)`,
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 380px), 1fr))',
-            gap: 'clamp(28px, 5vw, 80px)',
-            alignItems: 'end',
-          }}
+      {/* Hero: the crossing, full bleed, mist drifting */}
+      <section className="styx-lore-hero" aria-label="The Lore">
+        <video
+          className="styx-lore-hero-video"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          poster={LORE_LOOP.poster}
+          aria-hidden="true"
         >
+          <source src={LORE_LOOP.mp4} type="video/mp4" />
+        </video>
+        <img
+          className="styx-lore-hero-still"
+          src={LORE_IMAGE.src}
+          alt={LORE_IMAGE.alt}
+          width={LORE_IMAGE.width}
+          height={LORE_IMAGE.height}
+          decoding="async"
+          fetchPriority="high"
+        />
+        <div className="styx-lore-hero-copy">
           <div>
-            <StyxLabel greek="ΜΥΘΟΣ">The Lore &middot; River Styx</StyxLabel>
-            <h1
-              data-reveal=""
-              style={{
-                fontFamily: FONT.cinzel,
-                fontSize: 'clamp(40px, 6vw, 72px)',
-                fontWeight: 400,
-                textTransform: 'uppercase',
-                letterSpacing: '0.02em',
-                color: STYX.ink,
-                lineHeight: 0.95,
-                margin: '12px 0 0',
-              }}
-            >
+            <StyxLabel greek="ΜΥΘΟΣ" light>
+              The Lore &middot; River Styx
+            </StyxLabel>
+            <h1 data-reveal="">
               The
               <br />
-              <span
-                style={{
-                  fontFamily: FONT.cormorant,
-                  fontStyle: 'italic',
-                  fontWeight: 400,
-                  textTransform: 'none',
-                  letterSpacing: 0,
-                  fontSize: '0.7em',
-                }}
-              >
-                lore.
-              </span>
+              <em>lore.</em>
             </h1>
           </div>
-          <div
-            data-reveal=""
-            style={{
-              fontFamily: FONT.cormorant,
-              fontStyle: 'italic',
-              fontSize: 'clamp(22px, 2.4vw, 28px)',
-              color: STYX.graphite,
-              lineHeight: 1.4,
-            }}
-          >
-            The only thing that crosses over.
-          </div>
-        </div>
-      </section>
-
-      {/* The crossing, pictured */}
-      <section style={{background: STYX.paper}}>
-        <div
-          style={{
-            maxWidth: 1440,
-            margin: '0 auto',
-            padding: `clamp(32px, 4vw, 56px) ${GUTTER}`,
-          }}
-        >
-          <img
-            data-reveal=""
-            src={LORE_IMAGE.src}
-            alt={LORE_IMAGE.alt}
-            width={LORE_IMAGE.width}
-            height={LORE_IMAGE.height}
-            decoding="async"
-            fetchPriority="high"
-            style={{
-              display: 'block',
-              width: '100%',
-              height: 'auto',
-              aspectRatio: '21 / 9',
-              objectFit: 'cover',
-              border: `1px solid ${STYX.line}`,
-            }}
-          />
+          <p data-reveal="">The only thing that crosses over.</p>
         </div>
       </section>
 
@@ -204,7 +186,10 @@ export default function Lore() {
           >
             <Obol size={64} color={STYX.gold} speed={6} />
             <div style={{flex: '1 1 280px', minWidth: 0}}>
-              <SectionHeading kicker="I &middot; The Story" title="Charon, the Obol, the Crossing" />
+              <SectionHeading
+                kicker="I &middot; The Story"
+                title="Charon, the Obol, the Crossing"
+              />
               <div
                 style={{
                   fontFamily: FONT.inter,
@@ -256,13 +241,20 @@ export default function Lore() {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 340px), 1fr))',
+              gridTemplateColumns:
+                'repeat(auto-fit, minmax(min(100%, 340px), 1fr))',
               gap: 'clamp(16px, 2vw, 28px)',
             }}
           >
             {RELICS.map((relic, i) => (
-              <figure key={`${relic.caption}-${i}`} data-reveal="" style={{margin: 0, minWidth: 0}}>
-                <div style={{border: `1px solid ${STYX.line}`, overflow: 'hidden'}}>
+              <figure
+                key={`${relic.caption}-${i}`}
+                data-reveal=""
+                style={{margin: 0, minWidth: 0}}
+              >
+                <div
+                  style={{border: `1px solid ${STYX.line}`, overflow: 'hidden'}}
+                >
                   <img
                     src={relic.src}
                     alt={relic.alt}
@@ -291,7 +283,9 @@ export default function Lore() {
                   }}
                 >
                   <span>{relic.caption}</span>
-                  <span style={{color: STYX.gold}}>{['I', 'II', 'III', 'IV', 'V', 'VI'][i]}</span>
+                  <span style={{color: STYX.gold}}>
+                    {['I', 'II', 'III', 'IV', 'V', 'VI'][i]}
+                  </span>
                 </figcaption>
               </figure>
             ))}

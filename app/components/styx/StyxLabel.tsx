@@ -9,9 +9,12 @@ import {STYX, FONT} from './constants';
 export function StyxLabel({
   children,
   greek,
+  light = false,
 }: {
   children: React.ReactNode;
   greek?: string;
+  /** On dark imagery: pale gold label, pale gloss. */
+  light?: boolean;
 }) {
   return (
     <div
@@ -20,7 +23,7 @@ export function StyxLabel({
         fontSize: 11,
         letterSpacing: '0.25em',
         textTransform: 'uppercase',
-        color: STYX.gold,
+        color: light ? STYX.goldLight : STYX.gold,
         marginBottom: 12,
         display: 'flex',
         alignItems: 'baseline',
@@ -29,7 +32,11 @@ export function StyxLabel({
       }}
     >
       <span>{children}</span>
-      {greek && <GreekGloss>{greek}</GreekGloss>}
+      {greek && (
+        <GreekGloss color={light ? 'rgba(236,235,231,0.6)' : undefined}>
+          {greek}
+        </GreekGloss>
+      )}
     </div>
   );
 }

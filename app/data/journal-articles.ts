@@ -2555,8 +2555,8 @@ export const PLACEHOLDER_ARTICLES: Record<string, Article> = {
     vol: 28,
     readTime: "8 min",
     image: {
-      url: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-gold-chains-history-hero.jpg?v=1779151607',
-      altText: 'Different karat gold chains side by side showing color differences',
+      url: 'https://cdn.shopify.com/s/files/1/0754/6440/9267/files/styx-journal-gold-karats-hero.jpg?v=1790917649',
+      altText: 'Five small gold ingots in a row on dark stone, the colour deepening from pale 10K to rich 24K',
     },
     content: `
       <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; line-height: 1.6; color: #46484A; margin-bottom: 48px;">

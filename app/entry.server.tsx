@@ -93,6 +93,8 @@ export default async function handleRequest(
       `https://${context.env.PUBLIC_CHECKOUT_DOMAIN}`,
       `https://${context.env.PUBLIC_STORE_DOMAIN}`,
     ],
+    // Lore hero loop (Shopify-hosted mp4)
+    mediaSrc: ["'self'", 'https://cdn.shopify.com'],
     objectSrc: ["'none'"],
   });
 
