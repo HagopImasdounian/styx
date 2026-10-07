@@ -256,7 +256,10 @@ shop-pay-button {
 
 /* Product gallery (Hagop 2026-10-01): desktop/tablet = one full-width hero that
    fits the visible window, then the other views in two columns underneath;
-   phones = one swipe carousel. Click any photo → viewer with zoom. */
+   phones = one swipe carousel. Click any photo → viewer with zoom.
+   Patil 2026-10-02 (#21): the extra views sit on the same grey studio tile as
+   the hero and white-paper shots are blended in, so a thin chain on white no
+   longer reads as an empty white card. */
 .styx-gallery-carousel {
   display: none;
 }
@@ -287,14 +290,22 @@ shop-pay-button {
 .styx-gallery-rest > div {
   aspect-ratio: 4 / 5;
   overflow: hidden;
-  border: 1px solid #e6e6e3;
   border-radius: 4px;
+  /* same grey studio backdrop as the hero tile */
+  background: linear-gradient(180deg, #e9e9e6 0%, #d9d9d5 100%);
 }
 .styx-gallery-rest .styx-zoomable,
 .styx-gallery-rest .styx-zoomable img {
+  display: block;
   width: 100% !important;
   height: 100% !important;
   object-fit: cover !important;
+}
+/* White-background shots: multiply onto the grey so the paper disappears and
+   only the chain and its shadow remain on the studio tile. */
+.styx-gallery-rest > div[data-kind='studio'] .styx-zoomable img {
+  object-fit: contain !important;
+  mix-blend-mode: multiply;
 }
 .styx-carousel-arrow {
   position: absolute;
@@ -303,7 +314,7 @@ shop-pay-button {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: 1px solid rgba(26,27,28, 0.14);
+  border: 1px solid rgba(26, 27, 28, 0.14);
   background: rgba(255, 255, 255, 0.92);
   color: #1a1b1c;
   display: flex;
@@ -624,7 +635,7 @@ shop-pay-button {
   }
   .styx-color-pills > a {
     border-right: none !important;
-    border-bottom: 1px solid rgba(26,27,28, 0.12) !important;
+    border-bottom: 1px solid rgba(26, 27, 28, 0.12) !important;
   }
   .styx-color-pills > a:last-child {
     border-bottom: none !important;
@@ -1280,7 +1291,7 @@ shop-pay-button {
   outline-offset: 5px;
 }
 .styx-mega-panel {
-  border-top: 1px solid rgba(168,146,92, 0.3);
+  border-top: 1px solid rgba(168, 146, 92, 0.3);
 }
 .styx-lookbook-grid > a:focus-visible [data-overlay] {
   opacity: 1 !important;
@@ -1398,8 +1409,8 @@ shop-pay-button {
   .styx-hero-shade {
     background: linear-gradient(
       105deg,
-      rgba(26,27,28, 0.84),
-      rgba(26,27,28, 0.48)
+      rgba(26, 27, 28, 0.84),
+      rgba(26, 27, 28, 0.48)
     ) !important;
   }
 }
@@ -1425,7 +1436,7 @@ shop-pay-button {
   overflow: hidden;
   pointer-events: none;
   z-index: 3;
-  background: rgba(168,146,92, 0.2);
+  background: rgba(168, 146, 92, 0.2);
 }
 .styx-navigation-progress::after {
   content: '';
@@ -1481,7 +1492,7 @@ shop-pay-button {
   .styx-home-pillar {
     padding: 28px 0 !important;
     border-left: none !important;
-    border-top: 1px solid rgba(26,27,28, 0.12) !important;
+    border-top: 1px solid rgba(26, 27, 28, 0.12) !important;
   }
   .styx-home-pillar:first-child {
     border-top: none !important;
@@ -1570,7 +1581,7 @@ shop-pay-button {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: rgba(26,27,28, 0.22);
+  background: rgba(26, 27, 28, 0.22);
   transition: background 0.2s ease, transform 0.2s ease;
 }
 .styx-card-dot[data-active] {
@@ -1586,7 +1597,7 @@ shop-pay-button {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  border: 1px solid rgba(26,27,28, 0.14);
+  border: 1px solid rgba(26, 27, 28, 0.14);
   background: rgba(255, 255, 255, 0.92);
   color: #1a1b1c;
   display: none;
@@ -1849,9 +1860,9 @@ shop-pay-button {
     bottom: 0;
     max-width: none;
     max-height: 85dvh;
-    border-top: 1px solid rgba(26,27,28, 0.12);
+    border-top: 1px solid rgba(26, 27, 28, 0.12);
     padding-bottom: env(safe-area-inset-bottom, 0px);
-    box-shadow: 0 -24px 60px rgba(26,27,28, 0.12) !important;
+    box-shadow: 0 -24px 60px rgba(26, 27, 28, 0.12) !important;
     transform: translateY(100%);
   }
   .styx-dr-panel[data-open='true'] {
@@ -1961,7 +1972,7 @@ shop-pay-button {
     padding: 10px 16px;
     padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
     background: #ebebe8; /* STYX.bone */
-    border-top: 1px solid rgba(26,27,28, 0.12);
+    border-top: 1px solid rgba(26, 27, 28, 0.12);
   }
   .styx-listing-bottombar-filter {
     flex: 1 1 auto;
@@ -2029,7 +2040,7 @@ shop-pay-button {
     width: auto;
     max-height: 88dvh;
     border-left: none !important;
-    border-top: 1px solid rgba(26,27,28, 0.12);
+    border-top: 1px solid rgba(26, 27, 28, 0.12);
     animation-name: styx-fsd-slide-up;
   }
 }
@@ -3087,7 +3098,7 @@ div:has(> #mainContent > .styx-catalog-chrome) {
 
 /* ── Product card chrome ───────────────────────────────────────────────── */
 .styx-card-actions > button {
-  background: rgba(244,244,242, 0.92) !important;
+  background: rgba(244, 244, 242, 0.92) !important;
   border-color: var(--styx-border) !important;
   border-radius: 3px;
   color: #2b2c2d;
@@ -3324,20 +3335,18 @@ div:has(> #mainContent > .styx-catalog-chrome) {
   gap: 10px;
   padding: 18px 10px 14px;
   background: linear-gradient(180deg, #f1f1ef 0%, #e2e2df 100%);
-  border: 1px solid rgba(26,27,28, 0.08);
+  border: 1px solid rgba(26, 27, 28, 0.08);
   border-radius: 4px;
   text-decoration: none;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
-  transition:
-    transform 0.22s ease,
-    box-shadow 0.22s ease,
+  transition: transform 0.22s ease, box-shadow 0.22s ease,
     border-color 0.22s ease;
 }
 .styx-weave-tile img {
   height: 36px;
   max-width: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 2px 2px rgba(26,27,28, 0.18));
+  filter: drop-shadow(0 2px 2px rgba(26, 27, 28, 0.18));
 }
 .styx-weave-tile span {
   font-family: 'Inter', system-ui, sans-serif;
@@ -3349,17 +3358,14 @@ div:has(> #mainContent > .styx-catalog-chrome) {
 }
 .styx-weave-tile[aria-current='page'] {
   border-color: #7d6a3f;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.7),
-    0 0 0 1px #7d6a3f;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 0 0 1px #7d6a3f;
 }
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
   .styx-weave-tile:hover {
     transform: translateY(-2px);
     border-color: #7d6a3f;
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.7),
-      0 8px 18px -10px rgba(26,27,28, 0.35);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7),
+      0 8px 18px -10px rgba(26, 27, 28, 0.35);
   }
 }
 
@@ -3371,14 +3377,18 @@ div:has(> #mainContent > .styx-catalog-chrome) {
   display: grid;
   place-items: center;
   padding: 24px;
-  background: rgba(26,27,28, 0.55);
+  background: rgba(26, 27, 28, 0.55);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   animation: styx-fade-in 0.18s ease;
 }
 @keyframes styx-fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 .styx-sizeguide-panel {
   position: relative;
@@ -3399,7 +3409,7 @@ div:has(> #mainContent > .styx-catalog-chrome) {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 1px solid rgba(26,27,28, 0.14);
+  border: 1px solid rgba(26, 27, 28, 0.14);
   background: rgba(255, 255, 255, 0.92);
   color: #1a1b1c;
   font-size: 14px;
@@ -3420,7 +3430,9 @@ div:has(> #mainContent > .styx-catalog-chrome) {
   height: 100%;
   object-fit: contain;
 }
-.styx-sizeguide-arcs path { transition: d 0.35s ease, stroke-width 0.2s ease; }
+.styx-sizeguide-arcs path {
+  transition: d 0.35s ease, stroke-width 0.2s ease;
+}
 .styx-sizeguide-side {
   padding: 36px 36px 28px;
   overflow-y: auto;
@@ -3498,8 +3510,12 @@ div:has(> #mainContent > .styx-catalog-chrome) {
   text-transform: uppercase;
   color: var(--styx-muted);
 }
-.styx-sizeguide-lengths .styx-chip small.fit-good { color: #5f7a4e; }
-.styx-sizeguide-lengths .styx-chip small.fit-snug { color: #a4553a; }
+.styx-sizeguide-lengths .styx-chip small.fit-good {
+  color: #5f7a4e;
+}
+.styx-sizeguide-lengths .styx-chip small.fit-snug {
+  color: #a4553a;
+}
 .styx-sizeguide-lengths .styx-chip.is-unavailable {
   opacity: 0.45;
   border-style: dashed;
@@ -3525,7 +3541,10 @@ div:has(> #mainContent > .styx-catalog-chrome) {
   cursor: pointer;
   transition: background-color 0.2s, color 0.2s;
 }
-.styx-sizeguide-cta:hover { background: #a8925c; border-color: #a8925c; }
+.styx-sizeguide-cta:hover {
+  background: #a8925c;
+  border-color: #a8925c;
+}
 .styx-sizeguide-table {
   width: 100%;
   border-collapse: collapse;
@@ -3558,9 +3577,13 @@ div:has(> #mainContent > .styx-catalog-chrome) {
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
-.styx-sizeguide-table tbody th { font-weight: 500; }
+.styx-sizeguide-table tbody th {
+  font-weight: 500;
+}
 .styx-sizeguide-table tr.is-active td,
-.styx-sizeguide-table tr.is-active th { background: #ffffff; }
+.styx-sizeguide-table tr.is-active th {
+  background: #ffffff;
+}
 .styx-sizeguide-hint {
   font-family: 'Inter', sans-serif;
   font-size: 11.5px;
@@ -3581,10 +3604,18 @@ div:has(> #mainContent > .styx-catalog-chrome) {
   text-underline-offset: 3px;
   cursor: pointer;
 }
-.styx-sizeguide-trigger:hover { color: #1a1b1c; }
+.styx-sizeguide-trigger:hover {
+  color: #1a1b1c;
+}
 @media (max-width: 860px) {
-  .styx-mobile-chain-groups .styx-chain-list { grid-template-columns: 1fr; gap: 0; }
-  .styx-sizeguide { padding: 0; align-items: end; }
+  .styx-mobile-chain-groups .styx-chain-list {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .styx-sizeguide {
+    padding: 0;
+    align-items: end;
+  }
   .styx-sizeguide-panel {
     grid-template-columns: 1fr;
     width: 100%;
@@ -3604,7 +3635,9 @@ div:has(> #mainContent > .styx-catalog-chrome) {
     max-height: none;
     overflow: visible;
   }
-  .styx-sizeguide-title { font-size: 28px; }
+  .styx-sizeguide-title {
+    font-size: 28px;
+  }
 }
 
 /* ── Styx navigation refresh: grouped directory + discovery, October 2026 ── */
@@ -3719,7 +3752,7 @@ div:has(> #mainContent > .styx-catalog-chrome) {
 }
 .styx-menu-discover {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   align-items: start;
   gap: 16px;
   padding-left: 32px;
@@ -3733,24 +3766,6 @@ div:has(> #mainContent > .styx-catalog-chrome) {
 .styx-chains-layout a:hover,
 .styx-shop-by a:hover {
   color: #5c4f33;
-}
-.styx-menu-feature {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.styx-menu-feature > img,
-.styx-menu-feature-placeholder {
-  width: 100%;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
-  background: var(--styx-surface);
-  margin-bottom: 8px;
-}
-.styx-menu-feature-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 13px;
-  font-weight: 600;
 }
 .styx-menu-extras {
   min-width: 0;
@@ -3777,6 +3792,38 @@ div:has(> #mainContent > .styx-catalog-chrome) {
 .styx-shop-chips a {
   line-height: 1.8;
   white-space: nowrap;
+}
+/* Metal row: swatch circle + alloy note (Patil 2026-10-02 wanted this back) */
+.styx-shop-metals {
+  display: grid;
+  gap: 6px;
+}
+.styx-shop-metal {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+}
+.styx-shop-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px rgba(26, 24, 21, 0.12),
+    0 2px 8px -2px rgba(26, 24, 21, 0.15);
+}
+.styx-shop-metal-name {
+  display: block;
+  font-weight: 500;
+  line-height: 1.3;
+}
+.styx-shop-metal-sub {
+  display: block;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: #6b6d70;
+  line-height: 1.3;
 }
 .styx-menu-journal {
   display: flex;
@@ -3853,9 +3900,6 @@ div:has(> #mainContent > .styx-catalog-chrome) {
     grid-template-columns: 1fr;
     padding-left: 16px;
   }
-  .styx-menu-feature > img {
-    max-height: 240px;
-  }
 }
 @media (max-width: 1200px) {
   .styx-mega-panel {
@@ -3883,8 +3927,13 @@ div:has(> #mainContent > .styx-catalog-chrome) {
 
 /* About: obol photo beside the legacy text; stacks on phones */
 @media (max-width: 760px) {
-  .styx-about-legacy { grid-template-columns: 1fr !important; }
-  .styx-about-legacy img { position: static !important; max-width: 320px; }
+  .styx-about-legacy {
+    grid-template-columns: 1fr !important;
+  }
+  .styx-about-legacy img {
+    position: static !important;
+    max-width: 320px;
+  }
 }
 
 /* ── Lore hero: full-bleed crossing loop ───────────────────────────────── */
@@ -3909,18 +3958,27 @@ div:has(> #mainContent > .styx-catalog-chrome) {
   object-position: center 60%;
   z-index: 0;
 }
-.styx-lore-hero-still { display: none; }
+.styx-lore-hero-still {
+  display: none;
+}
 @media (prefers-reduced-motion: reduce) {
-  .styx-lore-hero-video { display: none; }
-  .styx-lore-hero-still { display: block; }
+  .styx-lore-hero-video {
+    display: none;
+  }
+  .styx-lore-hero-still {
+    display: block;
+  }
 }
 .styx-lore-hero::after {
   content: '';
   position: absolute;
   inset: 0;
   z-index: 1;
-  background:
-    linear-gradient(180deg, rgba(15, 16, 17, 0.35) 0%, rgba(15, 16, 17, 0) 30%),
+  background: linear-gradient(
+      180deg,
+      rgba(15, 16, 17, 0.35) 0%,
+      rgba(15, 16, 17, 0) 30%
+    ),
     linear-gradient(0deg, rgba(15, 16, 17, 0.72) 0%, rgba(15, 16, 17, 0) 55%);
   pointer-events: none;
 }
@@ -3966,4 +4024,8 @@ div:has(> #mainContent > .styx-catalog-chrome) {
   max-width: 28ch;
 }
 
-.styx-menu-heading-links { display: flex; gap: 20px; font-size: 13px; }
+.styx-menu-heading-links {
+  display: flex;
+  gap: 20px;
+  font-size: 13px;
+}

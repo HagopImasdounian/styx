@@ -1,11 +1,4 @@
-import {
-  Fragment,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from 'react';
+import {useCallback, useEffect, useMemo, useState, type ReactNode} from 'react';
 import {type MetaArgs, type LoaderFunctionArgs} from 'react-router';
 import {data, useLoaderData, useNavigate, useSearchParams} from 'react-router';
 import {useInView} from 'react-intersection-observer';
@@ -43,7 +36,7 @@ import {
   emptySelection,
   explodeByColor,
   facetOptions,
-  groupCardsByThickness,
+  sortCardsByThickness,
   parseFacetSelection,
   toggleFacetValue,
   writeFacetSelection,
@@ -422,6 +415,7 @@ const WEAVES: Array<{handle: string; label: string}> = [
   {handle: 'paperclip', label: 'Paperclip'},
   {handle: 'snake', label: 'Snake'},
   {handle: 'marine', label: 'Marine'},
+  {handle: 'anchor', label: 'Anchor'},
 ];
 
 export default function Collection() {
@@ -1165,10 +1159,10 @@ function ProductsLoadedOnScroll({
   }, [inView, navigate, state, nextPageUrl, hasNextPage]);
 
   const cards = applyFacets(explodeByColor(nodes), selection);
-  // Thickness order: thin → thick, one header per mm, every colour of that
-  // thickness side by side. Headers span the grid so density classes still
-  // apply to the cards.
-  const groups = groupByThickness ? groupCardsByThickness(cards) : null;
+  // Thickness order: thin → thick, every colour of one product side by side.
+  // No header rows (Patil 2026-10-02): a lone 5.3mm card under its own
+  // heading read as a broken grid; the cards just flow.
+  const ordered = groupByThickness ? sortCardsByThickness(cards) : cards;
 
   if (cards.length === 0) {
     return (
@@ -1215,62 +1209,14 @@ function ProductsLoadedOnScroll({
       // GridDensityScript may add the density classes before hydration
       suppressHydrationWarning
     >
-      {groups
-        ? groups.map((g, gi) => (
-            <Fragment key={g.label}>
-              <div
-                className="styx-thickness-head"
-                style={{
-                  gridColumn: '1 / -1',
-                  display: 'flex',
-                  alignItems: 'baseline',
-                  gap: 14,
-                  paddingTop: gi === 0 ? 0 : 24,
-                  paddingBottom: 4,
-                  borderBottom: '1px solid var(--styx-border)',
-                }}
-              >
-                <span
-                  style={{
-                    fontFamily: FONT.cormorant,
-                    fontSize: 28,
-                    fontWeight: 500,
-                    letterSpacing: '-0.02em',
-                    color: STYX.ink,
-                    fontVariantNumeric: 'lining-nums',
-                  }}
-                >
-                  {g.label}
-                </span>
-                <span
-                  style={{
-                    fontFamily: FONT.mono,
-                    fontSize: 10,
-                    letterSpacing: '0.04em',
-                    color: 'var(--styx-muted)',
-                  }}
-                >
-                  {g.cards.length} {g.cards.length === 1 ? 'piece' : 'pieces'}
-                </span>
-              </div>
-              {g.cards.map(({product, variantIndex, key}, i) => (
-                <StyxProductCard
-                  key={key}
-                  product={product}
-                  variantIndex={variantIndex}
-                  index={i}
-                />
-              ))}
-            </Fragment>
-          ))
-        : cards.map(({product, variantIndex, key}, i) => (
-            <StyxProductCard
-              key={key}
-              product={product}
-              variantIndex={variantIndex}
-              index={i}
-            />
-          ))}
+      {ordered.map(({product, variantIndex, key}, i) => (
+        <StyxProductCard
+          key={key}
+          product={product}
+          variantIndex={variantIndex}
+          index={i}
+        />
+      ))}
     </div>
   );
 }

@@ -696,20 +696,24 @@ export default function Product() {
             display: 'flex',
             flexDirection: 'column',
             gap: 8,
-            background: '#FFFFFF',
           }}
         >
           {/* Remaining media, large, stacked; skip whichever image leads */}
           {remainingMedia.map((m: any, i: number) => {
             const img = m.image || m.previewImage;
             if (!img) return null;
+            // White-background product shots (flat / clasp / hanging) are
+            // multiplied onto the grey studio tile in CSS so the chain floats
+            // on the same backdrop as the hero (Patil #21: no white boxes);
+            // scale-readout photos are real scenes and stay as-is.
+            const alt = String(m.alt || '').toLowerCase();
+            const kind = /laid flat|clasp|hanging/.test(alt)
+              ? 'studio'
+              : /scale/.test(alt)
+              ? 'scale'
+              : 'photo';
             return (
-              <div
-                key={m.id || i}
-                style={{
-                  background: '#FFFFFF',
-                }}
-              >
+              <div key={m.id || i} data-kind={kind}>
                 <ZoomableImage
                   data={img}
                   alt={title}

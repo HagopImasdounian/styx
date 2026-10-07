@@ -27,16 +27,21 @@ export type ChainFamily = (typeof CHAIN_FAMILIES)[number];
  * have a live collection + cutout but no true-size silhouette tile yet.
  * Used for category tiles / weave strips, NOT for silhouettes.
  */
-export const CATEGORY_FAMILIES = [...CHAIN_FAMILIES, 'marine'] as const;
+export const CATEGORY_FAMILIES = [
+  ...CHAIN_FAMILIES,
+  'marine',
+  'anchor',
+] as const;
 export type CategoryFamily = (typeof CATEGORY_FAMILIES)[number];
 
-/** Collection handle/title → category family ("marine" also matches mariner/anchor). */
+/** Collection handle/title → category family ("marine" also matches mariner; anchor is its own). */
 export function categoryToSlug(
   handle: string | null | undefined,
   title = '',
 ): CategoryFamily | null {
   const hay = `${handle || ''} ${title || ''}`.toLowerCase();
-  if (/\b(marine|mariner|anchor)\b/.test(hay)) return 'marine';
+  if (/\banchor\b/.test(hay)) return 'anchor';
+  if (/\b(marine|mariner)\b/.test(hay)) return 'marine';
   return styleToSlug(handle, title);
 }
 

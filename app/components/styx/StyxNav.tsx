@@ -14,7 +14,6 @@ import {
   Link,
   useParams,
   useNavigation,
-  useFetcher,
   Form,
 } from 'react-router';
 import {CartForm} from '@shopify/hydrogen';
@@ -25,8 +24,7 @@ import {
   collectionCutoutUrl,
   isNavVisibleCollection,
 } from './constants';
-import {THICKNESS_RANGES, cardMinPrice, explodeByColor} from './listingFilters';
-import type {loader as collectionLoader} from '~/routes/($locale).collections.$collectionHandle';
+import {THICKNESS_RANGES} from './listingFilters';
 import {PredictiveSearchPanel, MobileMenuSearch} from './PredictiveSearch';
 import {Cart, cartToAnalyticsPayload} from '~/components/Cart';
 import {trackCartView} from '~/components/GTMDataLayer';
@@ -251,6 +249,7 @@ const CHAIN_TAXONOMY: ChainGroup[] = [
       {name: 'Curb Chain', handle: 'curb'},
       {name: 'Figaro Chain', handle: 'figaro'},
       {name: 'Marine Chain', handle: 'marine'},
+      {name: 'Anchor Chain', handle: 'anchor'},
       {name: 'Gucci Link', handle: 'gucci'},
       {name: 'Panther Link', handle: 'panther'},
       {name: 'Rolo Chain', handle: 'rolo'},
@@ -560,13 +559,8 @@ function ShopBy() {
     },
     {
       title: 'Metal',
-      links: ['yellow-gold', 'white-gold', 'rose-gold'].map((handle) => ({
-        label: METALS.find((metal) => metal.handle === handle)!.label.replace(
-          ' Gold',
-          '',
-        ),
-        to: `/collections/${handle}`,
-      })),
+      metals: true,
+      links: [] as Array<{label: string; to: string}>,
     },
     {
       title: 'Karat',
@@ -589,79 +583,40 @@ function ShopBy() {
       {rows.map((row) => (
         <div className="styx-shop-row" key={row.title}>
           <h4 className="styx-menu-eyebrow">{row.title}</h4>
-          <div className="styx-shop-chips">
-            {row.links.map((link) => (
-              <MegaLink key={link.to} to={link.to}>
-                {link.label}
-              </MegaLink>
-            ))}
-          </div>
+          {'metals' in row && row.metals ? (
+            <div className="styx-shop-metals">
+              {METALS.map((metal) => (
+                <MegaLink
+                  key={metal.handle}
+                  className="styx-shop-metal"
+                  to={`/collections/${metal.handle}`}
+                >
+                  <span
+                    className="styx-shop-swatch"
+                    aria-hidden="true"
+                    style={{
+                      background: `radial-gradient(circle at 30% 30%, rgba(255,255,255,0.35) 0%, transparent 50%), ${metal.hex}`,
+                    }}
+                  />
+                  <span>
+                    <span className="styx-shop-metal-name">{metal.label}</span>
+                    <span className="styx-shop-metal-sub">{metal.sub}</span>
+                  </span>
+                </MegaLink>
+              ))}
+            </div>
+          ) : (
+            <div className="styx-shop-chips">
+              {row.links.map((link) => (
+                <MegaLink key={link.to} to={link.to}>
+                  {link.label}
+                </MegaLink>
+              ))}
+            </div>
+          )}
         </div>
       ))}
     </section>
-  );
-}
-
-function FeaturedCollection() {
-  const collections = useContext(CollectionsListContext);
-  const featured =
-    collections.find((c) => c.handle === 'cuban') ??
-    collections.find((c) =>
-      CHAIN_TAXONOMY.some((g) =>
-        g.chains.some((chain) => chain.handle === c.handle),
-      ),
-    );
-  const {data, load} = useFetcher<typeof collectionLoader>();
-  const params = useParams();
-  const handle = featured?.handle;
-  useEffect(() => {
-    if (handle)
-      void load(
-        `${params.locale ? `/${params.locale}` : ''}/collections/${handle}`,
-      );
-  }, [handle, load, params.locale]);
-  if (!featured) return null;
-  const prices =
-    data && data.collection.handle === handle
-      ? explodeByColor(data.collection.products.nodes)
-          .map(cardMinPrice)
-          .filter((price): price is number => price !== null)
-      : [];
-  const currency =
-    data?.collection.products.nodes[0]?.variants?.nodes[0]?.price.currencyCode;
-  const price =
-    prices.length && currency
-      ? new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency,
-        }).format(Math.min(...prices))
-      : null;
-  const cover =
-    featured.image ??
-    (data?.collection.handle === handle
-      ? data?.collection.products.nodes[0]?.variants.nodes[0]?.image
-      : null);
-  return (
-    <MegaLink
-      className="styx-menu-feature"
-      to={`/collections/${featured.handle}`}
-    >
-      {cover ? (
-        <img
-          src={cover.url}
-          alt={cover.altText || featured.title}
-          loading="lazy"
-        />
-      ) : (
-        <span className="styx-menu-feature-placeholder" aria-hidden="true" />
-      )}
-      <span className="styx-menu-eyebrow">In focus</span>
-      <span className="styx-menu-feature-title">{featured.title}</span>
-      <span>
-        {price ? `From ${price}` : 'Explore the collection'}{' '}
-        <span aria-hidden="true">↗</span>
-      </span>
-    </MegaLink>
   );
 }
 
@@ -715,7 +670,6 @@ function ChainsMegaPanel() {
         </div>
       </section>
       <aside className="styx-menu-discover">
-        <FeaturedCollection />
         <div className="styx-menu-extras">
           <ShopBy />
           <MegaLink className="styx-menu-journal" to="/journal">
