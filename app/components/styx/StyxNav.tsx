@@ -2418,9 +2418,9 @@ function AnnouncementBar() {
     <div
       style={{
         background: STYX.ink,
-        color: STYX.gold,
+        color: STYX.bone,
         fontFamily: FONT.cinzel,
-        fontSize: 11,
+        fontSize: 12,
         letterSpacing: '0.18em',
         textTransform: 'uppercase',
         textAlign: 'center',
@@ -2430,7 +2430,7 @@ function AnnouncementBar() {
       }}
     >
       <span style={{opacity: 0.5, marginRight: 10}}>, </span>
-      Launch Offer: Free 1g of 24K Gold with Every Order Over $2,000
+      <span style={{color: STYX.gold, fontWeight: 600}}>Launch Offer:</span> Free 1g of 24K Gold with Every Order Over $2,000
       <span style={{opacity: 0.5, marginLeft: 10}}>, </span>
       <button
         onClick={dismiss}

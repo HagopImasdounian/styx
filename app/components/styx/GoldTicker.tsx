@@ -1,4 +1,4 @@
-import {useRouteLoaderData, Link} from 'react-router';
+import {useRouteLoaderData} from 'react-router';
 import {STYX, FONT} from './constants';
 import {CurrencyToggle} from './CurrencyToggle';
 import type {RootLoader} from '~/root';
@@ -99,23 +99,9 @@ export function GoldTicker() {
         </div>
       </div>
 
-      {/* Right: currency switch (shows when Shopify serves >1 currency) + link */}
+      {/* Right: country / currency switch (shows when Shopify serves >1 currency) */}
       <div style={{display: 'flex', alignItems: 'center', gap: 20, flex: '0 0 auto'}}>
         <CurrencyToggle />
-        <Link
-          to="/about"
-          style={{
-            fontFamily: FONT.cinzel,
-            fontSize: 10,
-            letterSpacing: '0.3em',
-            color: 'rgba(235,235,232,0.55)',
-            textTransform: 'uppercase',
-            cursor: 'pointer',
-            textDecoration: 'none',
-          }}
-        >
-          Why we show this
-        </Link>
       </div>
     </div>
   );
