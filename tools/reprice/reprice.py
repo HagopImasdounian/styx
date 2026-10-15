@@ -5,12 +5,10 @@ THE canonical repricer — deterministic, idempotent, vendor-SKU-keyed.
             -> per-length weight -> karat/hollow CAD rate -> tiered markup -> charm
 Pricing (2026-10-15 — store currency CAD, rates recomputed daily from live spot):
     Retail CAD = tiered_markup(weight(g) x RATE_CAD[category]), charm-rounded.
-Weight source, in order of preference:
-    1. vendor variation matching the variant's length (live API)   [vendor-exact]
-    2. Shopify variant weight (verified 2026-06-04 audit)          [shopify-stored]
-    -  mismatches between the two beyond TOLERANCE are flagged, vendor wins,
-       EXCEPT where the vendor's per-length data is flat / non-monotonic /
-       mapped to the wrong length — then the verified stored weight wins.
+Weight source, in order of preference (2026-10-15):
+    1. Shopify variant weight — Patil's scale readings, the catalog truth  [shopify-stored]
+    2. vendor variation matching the variant's length (live API)           [vendor-exact]
+    -  mismatches between the two beyond TOLERANCE are flagged, stored wins.
 Never guesses: variants with no resolvable weight, no karat, or price 0
 (vendor-discontinued, zeroed deliberately) are reported, not repriced.
 Each --apply also:
@@ -45,15 +43,23 @@ from datetime import date
 # pricing_formulas / pricing_settings (2026-09-30); re-copy if Shiny changes them.
 #   cost/g = ((spot_kilo_cad + GOLD_PREMIUM)/1000 * purity * refine + adder) * final
 SHINY_GOLD_PREMIUM = 5000      # CAD per kilo, pricing_settings.gold_premium
-SHINY_FORMULA = {              # category: (purity, refining_markup, cost_adder, final_markup)
-    '10k':    (0.417, 1.05, 3.5, 1.25),   # "10k chain"
-    '14k':    (0.585, 1.05, 4.0, 1.25),   # "14k chain"
-    '18k':    (0.750, 1.05, 4.5, 1.25),   # no 18k chain row at Shiny; 10k/14k pattern
-    'hollow': (0.417, 1.05, 4.5, 1.25),   # "hollow chain"
+SHINY_FORMULA = {              # Shiny pricing category: (purity, refining, cost_adder, final_markup)
+    '10k chain':         (0.417, 1.05, 3.5, 1.25),
+    'chain':             (0.417, 1.05, 3.5, 1.25),
+    '14k chain':         (0.585, 1.05, 4.0, 1.25),
+    'hollow chain':      (0.417, 1.05, 4.5, 1.25),
+    '10k adjustables':   (0.417, 1.05, 7.0, 1.25),
+    '10k adjustables 2': (0.417, 1.05, 7.0, 1.25),
+    '14k adjustables':   (0.585, 1.05, 7.5, 1.25),
+    'import':            (0.417, 1.00, 11.0, 1.332),
+    'all import':        (0.417, 1.00, 11.0, 1.332),
+    '18k chain':         (0.750, 1.05, 4.5, 1.25),   # not a Shiny row; 10k/14k pattern
 }
-FROZEN_RATES_CAD = {           # last-resort fallback (2026-06-05) when spot is unreachable
-    '10k': 105.96, '14k': 147.16, '18k': 187.66, 'hollow': 112.00,
-}
+# Each product is priced on the category Shiny itself tags it with
+# (pa_pricing-category). Without a vendor match, fall back by karat:
+FALLBACK_CATEGORY = {'10k': '10k chain', '14k': '14k chain', '18k': '18k chain',
+                     'hollow': 'hollow chain'}
+FROZEN_SPOT_CAD = 5600         # last-resort spot (~2026-06) when gold-api is unreachable
 TROY_OZ_G = 31.1035
 
 
@@ -78,7 +84,8 @@ try:
     SPOT_CAD = fetch_spot_cad()
     RATE_CAD, RATES_SOURCE = shiny_rates_cad(SPOT_CAD), f'live (spot C${SPOT_CAD:,.0f}/oz)'
 except Exception as e:  # importers (tracker scripts) still work; main() refuses --apply
-    RATE_CAD, RATES_SOURCE = dict(FROZEN_RATES_CAD), f'FROZEN 2026-06-05 (spot fetch failed: {e})'
+    RATE_CAD = shiny_rates_cad(FROZEN_SPOT_CAD)
+    RATES_SOURCE = f'FROZEN spot C${FROZEN_SPOT_CAD:,} (spot fetch failed: {e})'
 
 # Tiered markup (Hagop, 2026-06-26): taper the margin on high gold-value chains
 # instead of a flat 1.6x. Applied as MARGINAL brackets on gold value (weight x
@@ -112,8 +119,22 @@ def retail_from_goldvalue(gv: float) -> float:
     return total
 
 
-def price_for(weight_g: float, category: str) -> int:
-    return charm(retail_from_goldvalue(weight_g * RATE_CAD[category]))
+def shiny_category(karat_cat: str, vendor_cats=None) -> str:
+    """Shiny's own pricing category for this product, else the karat fallback.
+    Products tagged with two (e.g. 10k + 14k adjustables) take the one whose
+    purity matches the variant's karat."""
+    fallback = FALLBACK_CATEGORY[karat_cat]
+    known = [c for c in (vendor_cats or []) if c in SHINY_FORMULA]
+    if len(known) > 1:
+        want = SHINY_FORMULA[fallback][0]
+        known = [c for c in known if SHINY_FORMULA[c][0] == want] or known
+    return known[0] if known else fallback
+
+
+def price_for(weight_g: float, category: str, vendor_cats=None) -> int:
+    """`category` is our karat bucket (10k/14k/18k/hollow); `vendor_cats` the
+    product's Shiny pricing categories when known."""
+    return charm(retail_from_goldvalue(weight_g * RATE_CAD[shiny_category(category, vendor_cats)]))
 
 
 # ── env / clients ───────────────────────────────────────────────────────────
@@ -226,9 +247,9 @@ def stored_weight_g(v):
 WC_QUERY = '''query($after: String) {
   products(first: 100, after: $after, where: {category: "chains"}) {
     nodes {
-      ... on SimpleProduct { name slug sku weight }
+      ... on SimpleProduct { name slug sku weight attributes { nodes { name options } } }
       ... on VariableProduct {
-        name slug sku weight
+        name slug sku weight attributes { nodes { name options } }
         variations(first: 80) {
           nodes { name sku weight attributes { nodes { name value } } }
         }
@@ -301,7 +322,12 @@ def index_vendor(nodes):
         flat = len(weights) > 1 and len({round(w, 2) for w in weights}) == 1
         lens = sorted(by_len)
         mono = all(by_len[a] < by_len[b] for a, b in zip(lens, lens[1:])) if len(lens) > 1 else True
-        parents[psku] = {'weight': pw, 'by_length': by_len, 'flat': flat, 'mono': mono}
+        pcats = [o.replace('-', ' ').strip().lower()
+                 for a in ((n.get('attributes') or {}).get('nodes') or [])
+                 if 'pricing' in (a.get('name') or '').lower()
+                 for o in (a.get('options') or [])]
+        parents[psku] = {'weight': pw, 'by_length': by_len, 'flat': flat, 'mono': mono,
+                         'pricing_cats': pcats}
     return parents, variation_sku
 
 
@@ -312,7 +338,7 @@ def category_of(product):
         return 'hollow'
     karat = (product.get('karat') or {}).get('value') or ''
     m = re.search(r'(\d+)', str(karat)) or re.search(r'(\d+)\s*[kK]\b', title)
-    if m and f"{m.group(1)}k" in RATE_CAD:
+    if m and f"{m.group(1)}k" in FALLBACK_CATEGORY:
         return f"{m.group(1)}k"
     return None
 
@@ -337,19 +363,22 @@ def resolve_weight(vsku, L, stored, parents, variation_sku):
         vendor_w, src = var['weight'], 'vendor-exact'
     elif parent and L and L in parent['by_length']:
         vendor_w, src = parent['by_length'][L], 'vendor-length'
-    if vendor_w:
-        if stored and abs(vendor_w - stored) > TOLERANCE_G:
-            flag = f'weight drift: vendor {vendor_w:g}g vs stored {stored:g}g'
-        return vendor_w, src, flag
+    # Shopify weights are Patil's scale readings (sync-tracker-stock.py /
+    # apply-photo-truth.py), so a stored weight always wins; the vendor weight
+    # only fills gaps, and disagreements are flagged for review.
     if stored:
-        return stored, 'shopify-stored', ''
+        if vendor_w and abs(vendor_w - stored) > TOLERANCE_G:
+            flag = f'weight drift: vendor {vendor_w:g}g vs stored {stored:g}g (stored used)'
+        return stored, 'shopify-stored', flag
+    if vendor_w:
+        return vendor_w, src, flag
     return None, '', 'no weight (vendor has none, nothing stored)'
 
 
 # ── main ────────────────────────────────────────────────────────────────────
 def main():
     print(f"{'DRY RUN' if DRY else 'APPLY'} — {DOMAIN}")
-    print(f"Rates CAD/g, {RATES_SOURCE}: " +
+    print(f"Rates CAD/g (Shiny formula), {RATES_SOURCE}: " +
           " | ".join(f"{k} ${v}" for k, v in RATE_CAD.items()))
     shop_ccy = (gql('{ shop { currencyCode } }').get('data') or {}).get('shop', {}).get('currencyCode')
     print(f"Store currency: {shop_ccy}")
@@ -391,10 +420,14 @@ def main():
                 exceptions.append({'product': p['title'], 'variant_sku': v.get('sku') or '', 'vendor_sku': vsku,
                                    'length': L, 'reason': flag or 'no weight'})
                 continue
-            new = price_for(w, cat)
+            var = variation_sku.get(vsku)
+            parent = parents.get(var['parent']) if var else parents.get(vsku)
+            vcats = (parent or {}).get('pricing_cats')
+            scat = shiny_category(cat, vcats)
+            new = price_for(w, cat, vcats)
             by_src[src] = by_src.get(src, 0) + 1
             rows.append({'product': p['title'], 'variant_sku': v.get('sku') or '', 'vendor_sku': vsku,
-                         'category': cat, 'length': L, 'weight_g': w, 'weight_source': src,
+                         'category': scat, 'length': L, 'weight_g': w, 'weight_source': src,
                          'old_price': cur, 'new_price': new, 'delta': round(new - cur, 2), 'flag': flag})
             if new != cur:
                 plan.setdefault(p['id'], []).append({'id': v['id'], 'price': f"{new:.2f}"})
