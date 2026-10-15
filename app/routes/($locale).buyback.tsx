@@ -1,13 +1,12 @@
 import {data, type LoaderFunctionArgs, type MetaArgs} from 'react-router';
-import {Link} from 'react-router';
+import {Link, useRouteLoaderData} from 'react-router';
 import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel, Obol} from '~/components/styx';
-import {computeGoldPrice, formatMoney} from '~/lib/gold';
+import {computeGoldPrice} from '~/lib/gold';
+import {useMoney} from '~/lib/money';
+import type {RootLoader} from '~/root';
 import {getStyxSeoMeta} from '~/lib/seo-meta';
 import {validateLocale} from '~/lib/utils';
 import {CACHE_LONG, routeHeaders} from '~/data/cache';
-
-// Buyback example is a fixed illustration, kept in USD like its spot figure.
-const formatUSD = (n: number) => formatMoney(n, 'USD');
 
 /** This route renders its own GoldTicker + StyxNav + StyxFooter. */
 export const handle = {ownChrome: true};
@@ -32,10 +31,10 @@ export const meta = ({data}: MetaArgs<typeof loader>) => {
 /* Gutter collapses to 16px at phone width, 56px on desktop. */
 const GUTTER = 'clamp(16px, 4vw, 56px)';
 
-/* Worked example. Static and illustrative: the spot price is a stated
-   assumption, not a live quote. Labor uses the same default the PDP falls
-   back to when a product has no custom.labor_cost metafield. */
-const EXAMPLE = {spotPerOz: 3200, weight: 30, karat: 14, laborCost: 280};
+/* Worked example on the live spot (shopper's currency, from the root loader).
+   Weight and labor are illustrative; labor uses the same default the PDP
+   falls back to when a product has no custom.labor_cost metafield. */
+const EXAMPLE = {weight: 30, karat: 14, laborCost: 280};
 
 const STEPS = [
   {
@@ -143,7 +142,11 @@ function ReceiptRow({
 }
 
 export default function Buyback() {
-  const ex = computeGoldPrice(EXAMPLE);
+  const rootData = useRouteLoaderData<RootLoader>('root');
+  const spotPerOz: number = (rootData as any)?.goldData?.spotPerOz ?? 6500;
+  const fmt = useMoney();
+  const ex = computeGoldPrice({...EXAMPLE, spotPerOz});
+  const purePerGram = spotPerOz / 31.1035;
   const pureGrams = ex.weight * ex.purity;
   const payout = Math.max(0, ex.materialCost - ex.laborCost);
 
@@ -362,7 +365,7 @@ export default function Buyback() {
                 Worked example
               </span>
               <span style={{fontSize: 11, letterSpacing: '0.08em', color: 'rgba(235,235,232,0.45)'}}>
-                Illustrative &middot; spot {formatUSD(ex.spotPerOz)}/oz
+                Live &middot; spot {fmt(ex.spotPerOz)}/oz
               </span>
             </div>
 
@@ -380,9 +383,9 @@ export default function Buyback() {
             <ReceiptRow label={`${ex.weight.toFixed(1)}g total weight`} value={`${ex.karat}K gold`} />
             <ReceiptRow
               label={`${pureGrams.toFixed(2)}g pure gold (${Math.round(ex.purity * 100)}%)`}
-              value={`@ ${formatUSD(ex.goldPerGram)}/g`}
+              value={`@ ${fmt(purePerGram)}/g`}
             />
-            <ReceiptRow label="Worth today, by weight" value={formatUSD(ex.materialCost)} highlight />
+            <ReceiptRow label="Worth today, by weight" value={fmt(ex.materialCost)} highlight />
 
             <div
               style={{
@@ -395,7 +398,7 @@ export default function Buyback() {
             >
               The labor
             </div>
-            <ReceiptRow label="Original labor, as shown at purchase" value={formatUSD(ex.laborCost)} minus />
+            <ReceiptRow label="Original labor, as shown at purchase" value={fmt(ex.laborCost)} minus />
 
             <div
               style={{
@@ -412,7 +415,7 @@ export default function Buyback() {
               }}
             >
               <span>Buyback paid to you</span>
-              <span style={{whiteSpace: 'nowrap', fontSize: 18}}>{formatUSD(payout)}</span>
+              <span style={{whiteSpace: 'nowrap', fontSize: 18}}>{fmt(payout)}</span>
             </div>
           </div>
         </div>
