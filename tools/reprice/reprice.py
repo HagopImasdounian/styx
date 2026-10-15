@@ -2,9 +2,9 @@
 """
 THE canonical repricer — deterministic, idempotent, vendor-SKU-keyed.
     variant -> vendor.sku metafield -> live ShinyJewellers fetch
-            -> per-length weight -> karat/hollow USD rate -> tiered markup -> charm
-Pricing (Hagop, 2026-06-05 — USD rates direct from vendor, no CAD step):
-    Retail USD = tiered_markup(weight(g) x RATE_USD[category]), charm-rounded.
+            -> per-length weight -> karat/hollow CAD rate -> tiered markup -> charm
+Pricing (2026-10-15 — store currency CAD, rates recomputed daily from live spot):
+    Retail CAD = tiered_markup(weight(g) x RATE_CAD[category]), charm-rounded.
 Weight source, in order of preference:
     1. vendor variation matching the variant's length (live API)   [vendor-exact]
     2. Shopify variant weight (verified 2026-06-04 audit)          [shopify-stored]
@@ -19,7 +19,6 @@ Each --apply also:
 Usage:
     python3 scripts/reprice.py             # dry run: full CSV diff + summary
     python3 scripts/reprice.py --apply     # write prices + tags to Shopify
-    python3 scripts/reprice.py --track-spot [--apply]   # scale rates by live gold spot
 Lives in tools/reprice/ (committed, run daily by .github/workflows/daily-reprice.yml);
 scripts/reprice.py is a shim so the other local scripts keep importing it.
 Supersedes: apply-prices.py + the pricing parts of audit-catalog.py/full-sync.py
@@ -38,18 +37,54 @@ import urllib.request
 from datetime import date
 
 # ── Pricing config — the ONLY place rates live ─────────────────────────────
-RATES_DATE = '2026-06-05'
-RATE_USD = {            # vendor cost, USD per gram (Hagop, 2026-06-05)
-    '10k':    105.96,
-    '14k':    147.16,
-    '18k':    187.66,
-    'hollow': 112.00,   # hollow chains (10k), priced per gram of their own rate
+# Vendor cost, CAD per gram. ShinyJewellers prices in CAD: their formula runs on
+# spot_kilo_cad, and the "USD" rates this file carried until 2026-10-15
+# (10k 105.96 etc.) were that formula's CAD output frozen at 2026-06-05 spot.
+# We now recompute Shiny's formula from the live CAD spot on every run, so the
+# store tracks gold daily. Parameters copied from Shiny's Supabase
+# pricing_formulas / pricing_settings (2026-09-30); re-copy if Shiny changes them.
+#   cost/g = ((spot_kilo_cad + GOLD_PREMIUM)/1000 * purity * refine + adder) * final
+SHINY_GOLD_PREMIUM = 5000      # CAD per kilo, pricing_settings.gold_premium
+SHINY_FORMULA = {              # category: (purity, refining_markup, cost_adder, final_markup)
+    '10k':    (0.417, 1.05, 3.5, 1.25),   # "10k chain"
+    '14k':    (0.585, 1.05, 4.0, 1.25),   # "14k chain"
+    '18k':    (0.750, 1.05, 4.5, 1.25),   # no 18k chain row at Shiny; 10k/14k pattern
+    'hollow': (0.417, 1.05, 4.5, 1.25),   # "hollow chain"
 }
+FROZEN_RATES_CAD = {           # last-resort fallback (2026-06-05) when spot is unreachable
+    '10k': 105.96, '14k': 147.16, '18k': 187.66, 'hollow': 112.00,
+}
+TROY_OZ_G = 31.1035
+
+
+def shiny_rates_cad(spot_cad_oz: float) -> dict:
+    gold_per_g = (spot_cad_oz / TROY_OZ_G * 1000 + SHINY_GOLD_PREMIUM) / 1000
+    return {k: round((gold_per_g * pu * rf + add) * fin, 2)
+            for k, (pu, rf, add, fin) in SHINY_FORMULA.items()}
+
+
+def fetch_spot_cad():
+    req = urllib.request.Request('https://api.gold-api.com/price/XAU/CAD',
+                                 headers={'User-Agent': 'styx-reprice'})
+    with urllib.request.urlopen(req, timeout=10) as r:
+        price = float(json.loads(r.read())['price'])
+    if price < 1000:
+        raise ValueError(f'implausible CAD spot {price}')
+    return price
+
+
+SPOT_CAD = None
+try:
+    SPOT_CAD = fetch_spot_cad()
+    RATE_CAD, RATES_SOURCE = shiny_rates_cad(SPOT_CAD), f'live (spot C${SPOT_CAD:,.0f}/oz)'
+except Exception as e:  # importers (tracker scripts) still work; main() refuses --apply
+    RATE_CAD, RATES_SOURCE = dict(FROZEN_RATES_CAD), f'FROZEN 2026-06-05 (spot fetch failed: {e})'
+
 # Tiered markup (Hagop, 2026-06-26): taper the margin on high gold-value chains
 # instead of a flat 1.6x. Applied as MARGINAL brackets on gold value (weight x
 # rate), tax-bracket style, so retail stays strictly monotonic — a heavier chain
 # can never end up cheaper than a lighter one at a tier boundary.
-MARKUP_TIERS = [           # (upper bound of gold value USD, markup on that slice)
+MARKUP_TIERS = [           # (upper bound of gold value CAD, markup on that slice)
     (1000,          1.60),
     (3000,          1.55),
     (6000,          1.50),
@@ -78,7 +113,7 @@ def retail_from_goldvalue(gv: float) -> float:
 
 
 def price_for(weight_g: float, category: str) -> int:
-    return charm(retail_from_goldvalue(weight_g * RATE_USD[category]))
+    return charm(retail_from_goldvalue(weight_g * RATE_CAD[category]))
 
 
 # ── env / clients ───────────────────────────────────────────────────────────
@@ -106,34 +141,6 @@ if not TOKEN:
 # Run artefacts (CSV + manifest) go to scripts/ locally (gitignored) or REPRICE_OUT.
 OUT_DIR = os.environ.get('REPRICE_OUT') or (
     os.path.join(REPO_ROOT, 'scripts') if os.path.isdir(os.path.join(REPO_ROOT, 'scripts')) else SCRIPT_DIR)
-
-# ── Optional: track the live gold spot ──────────────────────────────────────
-# `--track-spot` scales every RATE_USD entry by (spot today / BASE_SPOT_USD).
-# BASE_SPOT_USD is the spot the 2026-06-05 vendor rates were quoted against
-# (Shiny's formula frozen at ~187 CAD/g pure gold ≈ US$4,200/oz).
-# TODO(Hagop): confirm BASE_SPOT_USD before enabling the daily action.
-TRACK_SPOT = '--track-spot' in sys.argv
-BASE_SPOT_USD = float(os.environ.get('REPRICE_BASE_SPOT_USD', '4200'))
-SPOT_DEADBAND = 0.01       # ignore moves under 1% so prices don't churn daily
-SPOT_USD = None
-if TRACK_SPOT:
-    try:
-        _req = urllib.request.Request('https://api.gold-api.com/price/XAU',
-                                      headers={'User-Agent': 'styx-reprice'})
-        with urllib.request.urlopen(_req, timeout=10) as _r:
-            SPOT_USD = float(json.loads(_r.read())['price'])
-    except Exception as e:  # no spot → keep frozen rates, say so loudly
-        print(f"WARNING: spot fetch failed ({e}); using frozen rates")
-    if SPOT_USD:
-        _factor = SPOT_USD / BASE_SPOT_USD
-        if abs(_factor - 1) < SPOT_DEADBAND:
-            print(f"Spot ${SPOT_USD:,.0f}/oz within {SPOT_DEADBAND:.0%} of base "
-                  f"${BASE_SPOT_USD:,.0f}; rates unchanged")
-        else:
-            RATE_USD = {k: round(v * _factor, 2) for k, v in RATE_USD.items()}
-            print(f"Spot ${SPOT_USD:,.0f}/oz vs base ${BASE_SPOT_USD:,.0f} → rates ×{_factor:.4f}: "
-                  + " | ".join(f"{k} ${v}" for k, v in RATE_USD.items()))
-
 
 def gql(query, variables=None):
     payload = {"query": query}
@@ -305,7 +312,7 @@ def category_of(product):
         return 'hollow'
     karat = (product.get('karat') or {}).get('value') or ''
     m = re.search(r'(\d+)', str(karat)) or re.search(r'(\d+)\s*[kK]\b', title)
-    if m and f"{m.group(1)}k" in RATE_USD:
+    if m and f"{m.group(1)}k" in RATE_CAD:
         return f"{m.group(1)}k"
     return None
 
@@ -342,8 +349,15 @@ def resolve_weight(vsku, L, stored, parents, variation_sku):
 # ── main ────────────────────────────────────────────────────────────────────
 def main():
     print(f"{'DRY RUN' if DRY else 'APPLY'} — {DOMAIN}")
-    print(f"Rates ({RATES_DATE}, USD/g): " +
-          " | ".join(f"{k} ${v}" for k, v in RATE_USD.items()))
+    print(f"Rates CAD/g, {RATES_SOURCE}: " +
+          " | ".join(f"{k} ${v}" for k, v in RATE_CAD.items()))
+    shop_ccy = (gql('{ shop { currencyCode } }').get('data') or {}).get('shop', {}).get('currencyCode')
+    print(f"Store currency: {shop_ccy}")
+    if not DRY and shop_ccy != 'CAD':
+        sys.exit("REFUSING --apply: rates are CAD but the store currency is "
+                 f"{shop_ccy}. Switch the store to CAD first.")
+    if not DRY and SPOT_CAD is None:
+        sys.exit("REFUSING --apply: live CAD spot unavailable, rates would be frozen.")
     print("Markup tiers: " + ", ".join(f"≤${hi:,.0f} ×{mk}" if hi != float('inf') else f">×{mk}"
                                        for hi, mk in MARKUP_TIERS))
     products = fetch_shopify()
@@ -436,8 +450,8 @@ def main():
 
     manifest = {
         'date': str(date.today()), 'tag': RUN_TAG,
-        'rates_usd_per_g': RATE_USD, 'rates_date': RATES_DATE,
-        'spot_usd_oz': SPOT_USD, 'base_spot_usd_oz': BASE_SPOT_USD if TRACK_SPOT else None,
+        'currency': 'CAD', 'rates_cad_per_g': RATE_CAD, 'rates_source': RATES_SOURCE,
+        'spot_cad_oz': SPOT_CAD, 'shiny_formula': SHINY_FORMULA, 'shiny_gold_premium': SHINY_GOLD_PREMIUM,
         'markup_tiers': [[None if hi == float('inf') else hi, mk] for hi, mk in MARKUP_TIERS],
         'variants_priced': len(rows), 'variants_changed': len(changed),
         'products_touched': len(plan), 'errors': errors, 'weight_sources': by_src,

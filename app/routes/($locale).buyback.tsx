@@ -1,10 +1,13 @@
 import {data, type LoaderFunctionArgs, type MetaArgs} from 'react-router';
 import {Link} from 'react-router';
 import {STYX, FONT, GoldTicker, StyxNav, StyxFooter, StyxLabel, Obol} from '~/components/styx';
-import {computeGoldPrice, formatUSD} from '~/lib/gold';
+import {computeGoldPrice, formatMoney} from '~/lib/gold';
 import {getStyxSeoMeta} from '~/lib/seo-meta';
 import {validateLocale} from '~/lib/utils';
 import {CACHE_LONG, routeHeaders} from '~/data/cache';
+
+// Buyback example is a fixed illustration, kept in USD like its spot figure.
+const formatUSD = (n: number) => formatMoney(n, 'USD');
 
 /** This route renders its own GoldTicker + StyxNav + StyxFooter. */
 export const handle = {ownChrome: true};

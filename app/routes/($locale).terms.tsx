@@ -161,7 +161,7 @@ export default function Terms() {
           <section>
             <SectionHeading number="4" title="Pricing & Payment" />
             <Paragraph>
-              All prices are listed in US Dollars (USD). Prices are based on the current gold spot price and may change without notice. The price at the time of checkout is the price you pay, regardless of subsequent market movements.
+              All prices are listed in Canadian dollars (CAD). If you choose another country on the site, prices and checkout are shown in that country&rsquo;s currency, converted by Shopify at the current exchange rate. Prices are based on the current gold spot price and may change without notice. The price at the time of checkout is the price you pay, regardless of subsequent market movements.
             </Paragraph>
             <Paragraph>
               <strong>Credit &amp; debit cards:</strong> We accept major credit and debit cards processed through Shopify Payments. All card transactions are subject to authorization and fraud screening. We reserve the right to hold shipment for up to five (5) business days while payment is verified and fraud review is completed. Orders over $1,000 may be subject to additional verification, including but not limited to identity confirmation (see Section 6).

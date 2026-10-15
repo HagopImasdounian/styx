@@ -1,6 +1,6 @@
 import {describe, expect, it} from 'vitest';
 
-import {KARAT_PURITY, computeGoldPrice} from '~/lib/gold';
+import {KARAT_PURITY, computeGoldPrice, formatMoney} from '~/lib/gold';
 
 // Troy ounce used by the implementation. spot = 3110.35 makes pure gold
 // exactly $100/gram, which keeps the expected values easy to verify by hand.
@@ -118,5 +118,16 @@ describe('computeGoldPrice', () => {
       22: +(100 * (22 / 24)).toFixed(2), // 91.67
       24: 100,
     });
+  });
+});
+
+describe('formatMoney', () => {
+  it('groups digits and keeps two decimals', () => {
+    expect(formatMoney(14489)).toBe('$14,489.00');
+    expect(formatMoney(14489, 'USD')).toBe('$14,489.00');
+  });
+  it('uses the local symbol for other currencies', () => {
+    expect(formatMoney(10, 'EUR')).toBe('€10.00');
+    expect(formatMoney(10, 'GBP')).toBe('£10.00');
   });
 });

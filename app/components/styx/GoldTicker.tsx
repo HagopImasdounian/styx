@@ -2,17 +2,13 @@ import {useRouteLoaderData, Link} from 'react-router';
 import {STYX, FONT} from './constants';
 import {CurrencyToggle} from './CurrencyToggle';
 import type {RootLoader} from '~/root';
-
-function fmt(n: number) {
-  return n.toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-}
+import {useGoldCurrency, useMoney} from '~/lib/money';
 
 export function GoldTicker() {
   const rootData = useRouteLoaderData<RootLoader>('root');
   const goldData = (rootData as any)?.goldData;
+  const fmt = useMoney();
+  const currency = useGoldCurrency();
 
   // No real data, don't show the ticker at all
   if (!goldData?.spotPerOz) return null;
@@ -90,20 +86,20 @@ export function GoldTicker() {
       {/* Data cells */}
       <div style={{display: 'flex', gap: 28, flex: 1, overflow: 'hidden'}}>
         <div style={cell}>
-          <span style={lbl}>Gold Spot</span>
-          <span style={val}>${fmt(spot)}/oz</span>
+          <span style={lbl}>Gold Spot {currency}</span>
+          <span style={val}>{fmt(spot)}/oz</span>
         </div>
         <div style={cell} data-cell-extra="">
           <span style={lbl}>10k / g</span>
-          <span style={val}>${fmt(per10k)}</span>
+          <span style={val}>{fmt(per10k)}</span>
         </div>
         <div style={cell} data-cell-extra="">
           <span style={lbl}>14k / g</span>
-          <span style={val}>${fmt(per14k)}</span>
+          <span style={val}>{fmt(per14k)}</span>
         </div>
       </div>
 
-      {/* Right: currency switch (auto-shows when CAD is live) + link */}
+      {/* Right: currency switch (shows when Shopify serves >1 currency) + link */}
       <div style={{display: 'flex', alignItems: 'center', gap: 20, flex: '0 0 auto'}}>
         <CurrencyToggle />
         <Link

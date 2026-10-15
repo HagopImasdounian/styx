@@ -14,7 +14,8 @@ import {
 } from '~/components/styx';
 import {CompareButton} from '~/components/styx/CompareButton';
 import {WeighIn, type WeighInChain} from '~/components/styx/WeighIn';
-import {KARAT_PURITY, formatUSD} from '~/lib/gold';
+import {KARAT_PURITY} from '~/lib/gold';
+import {useMoney} from '~/lib/money';
 import {CURATED_COMPARISONS} from '~/data/comparisons';
 import {parseCompareItems} from '~/context/CompareContext';
 import {validateLocale} from '~/lib/utils';
@@ -713,20 +714,21 @@ function ComparisonTable({
   spotPerGram: number;
   onRemoveCustom: (idx: number) => void;
 }) {
+  const fmt = useMoney();
   const ROWS: Array<{label: string; render: (s: CompareSpec) => string; alwaysShow?: boolean}> = [
     // �� Price & Value ─
-    {label: 'Price', render: (s) => s.minPrice === s.maxPrice ? formatUSD(s.minPrice) : `${formatUSD(s.minPrice)} – ${formatUSD(s.maxPrice)}`, alwaysShow: true},
+    {label: 'Price', render: (s) => s.minPrice === s.maxPrice ? fmt(s.minPrice) : `${fmt(s.minPrice)} – ${fmt(s.maxPrice)}`, alwaysShow: true},
     {label: 'Karat', render: (s) => `${s.karat}K`, alwaysShow: true},
     {label: 'Total Weight', render: (s) => s.weight ? `${s.weight}g` : '—', alwaysShow: true},
     {label: 'Pure Gold', render: (s) => s.pureGold ? `${s.pureGold.toFixed(2)}g` : '—', alwaysShow: true},
-    {label: 'Melt Value', render: (s) => s.meltValue ? formatUSD(s.meltValue) : '—', alwaysShow: true},
+    {label: 'Melt Value', render: (s) => s.meltValue ? fmt(s.meltValue) : '—', alwaysShow: true},
     {label: 'Value %', render: (s) => s.valueScore ? `${s.valueScore.toFixed(0)}%` : '—', alwaysShow: true},
     // ─ Per-Inch Metrics ─
     {label: 'Weight/Inch', render: (s) => s.weightPerInch ? `${s.weightPerInch.toFixed(3)}g` : '—', alwaysShow: true},
     {label: 'Gold/Inch', render: (s) => s.goldPerInch ? `${s.goldPerInch.toFixed(3)}g` : '—', alwaysShow: true},
     {label: 'Price/Inch', render: (s) => s.pricePerInch ? `$${s.pricePerInch.toFixed(2)}` : '—', alwaysShow: true},
     // ─ Cost Analysis ─
-    {label: 'Premium Over Melt', render: (s) => s.premiumOverMelt != null ? formatUSD(s.premiumOverMelt) : '—', alwaysShow: true},
+    {label: 'Premium Over Melt', render: (s) => s.premiumOverMelt != null ? fmt(s.premiumOverMelt) : '—', alwaysShow: true},
     {label: '$/g Pure Gold', render: (s) => s.pricePerPureGram ? `$${s.pricePerPureGram.toFixed(2)}` : '—', alwaysShow: true},
     // ─ Specs ─
     {label: 'Thickness', render: (s) => s.thickness || '—'},

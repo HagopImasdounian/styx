@@ -7,8 +7,10 @@
 # Secrets / variables (Settings → Secrets and variables → Actions):
 #   secret   SHOPIFY_ADMIN_TOKEN      Admin API token (write_products)
 #   variable REPRICE_APPLY            "1" to write prices; anything else = dry run
-#   variable REPRICE_TRACK_SPOT       "1" to scale rates by the live gold spot
-#   variable REPRICE_BASE_SPOT_USD    spot the frozen rates were quoted at (default 4200)
+#
+# Rates are recomputed every run from the live CAD gold spot with Shiny's cost
+# formula (see tools/reprice/reprice.py). --apply refuses unless the store
+# currency is CAD and the live spot was fetched.
 name: Daily reprice
 
 on:
@@ -44,12 +46,10 @@ jobs:
           SHOPIFY_ADMIN_TOKEN: ${{ secrets.SHOPIFY_ADMIN_TOKEN }}
           PUBLIC_STORE_DOMAIN: styxgold.myshopify.com
           REPRICE_OUT: ${{ github.workspace }}/reprice-out
-          REPRICE_BASE_SPOT_USD: ${{ vars.REPRICE_BASE_SPOT_USD || '4200' }}
         run: |
           set -euo pipefail
           mkdir -p "$REPRICE_OUT"
           ARGS=""
-          if [ "${{ vars.REPRICE_TRACK_SPOT }}" = "1" ]; then ARGS="$ARGS --track-spot"; fi
           if [ "${{ vars.REPRICE_APPLY }}" = "1" ] || [ "${{ github.event.inputs.apply }}" = "true" ]; then
             ARGS="$ARGS --apply"
           fi

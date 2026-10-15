@@ -12,7 +12,7 @@ export type ChainTile = {
   currencyCode?: string | null;
 };
 
-function formatFrom(n: number, currency = 'USD') {
+function formatFrom(n: number, currency = 'CAD') {
   return n.toLocaleString('en-US', {
     style: 'currency',
     currency,
@@ -88,7 +88,7 @@ export function HomeChains({tiles}: {tiles: ChainTile[]}) {
                 {tile.fromPrice
                   ? `From ${formatFrom(
                       tile.fromPrice,
-                      tile.currencyCode ?? 'USD',
+                      tile.currencyCode ?? 'CAD',
                     )}`
                   : 'Explore'}
               </span>

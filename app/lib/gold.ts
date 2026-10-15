@@ -72,10 +72,24 @@ export function computeGoldPrice({
   };
 }
 
-/** "$14,489.00", dollar amounts shown in the UI always get digit grouping. */
-export function formatUSD(n: number): string {
-  return `$${n.toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })}`;
+/**
+ * "$14,489.00", money shown in the UI always gets digit grouping. `currency`
+ * is the shopper's (root loader `currency` / goldData.currency); CAD and USD
+ * both render as "$" since the currency switcher names the currency.
+ */
+export function formatMoney(n: number, currency = 'CAD'): string {
+  try {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency,
+      currencyDisplay: 'narrowSymbol',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(n);
+  } catch {
+    return `$${n.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
+  }
 }

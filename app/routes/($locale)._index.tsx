@@ -135,7 +135,7 @@ function minVariantPrice(
       const amount = parseFloat(v?.price?.amount || '0');
       if (!(amount > 0) || v?.availableForSale === false) continue;
       if (!best || amount < best.amount) {
-        best = {amount, currencyCode: v.price.currencyCode || 'USD'};
+        best = {amount, currencyCode: v.price.currencyCode || 'CAD'};
       }
     }
   }
@@ -247,7 +247,7 @@ function pickPriceSamples(productList: any[]): PriceSample[] {
         length,
         weightGrams: Math.round(grams * 100) / 100,
         price,
-        currencyCode: v.price.currencyCode || 'USD',
+        currencyCode: v.price.currencyCode || 'CAD',
       };
     }
     if (best) candidates.push(best);

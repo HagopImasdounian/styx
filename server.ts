@@ -94,6 +94,14 @@ export default {
 
       const response = await handleRequest(request);
 
+      // Prices vary per shopper (country from the switcher cookie or geo), so
+      // no shared cache may store a page or loader response. Storefront API
+      // sub-requests are still cached server-side by Hydrogen.
+      const cacheControl = response.headers.get('Cache-Control');
+      if (cacheControl && /\bpublic\b/.test(cacheControl)) {
+        response.headers.set('Cache-Control', 'private, max-age=0, must-revalidate');
+      }
+
       if (session.isPending) {
         // append, not set — routes may already have queued a Set-Cookie
         // (e.g. cart id from cart.setCartId()) that must survive.

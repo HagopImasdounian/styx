@@ -126,7 +126,7 @@ export function trackProductView(product: {
 }) {
   push('view_item', {
     ecommerce: {
-      currency: product.currency || 'USD',
+      currency: product.currency || 'CAD',
       value: parseFloat(product.price),
       items: [
         {
@@ -178,7 +178,7 @@ export function trackAddToCart(item: {
 }) {
   push('add_to_cart', {
     ecommerce: {
-      currency: item.currency || 'USD',
+      currency: item.currency || 'CAD',
       value: parseFloat(item.price) * item.quantity,
       items: [
         {
@@ -206,7 +206,7 @@ export function trackRemoveFromCart(item: {
 }) {
   push('remove_from_cart', {
     ecommerce: {
-      currency: item.currency || 'USD',
+      currency: item.currency || 'CAD',
       value: parseFloat(item.price) * item.quantity,
       items: [
         {
@@ -237,7 +237,7 @@ export function trackCartView(cart: {
 }) {
   push('view_cart', {
     ecommerce: {
-      currency: cart.currency || 'USD',
+      currency: cart.currency || 'CAD',
       value: parseFloat(cart.totalAmount),
       items: cart.lines.map((line) => ({
         item_id: line.id,
@@ -266,7 +266,7 @@ export function trackBeginCheckout(cart: {
 }) {
   push('begin_checkout', {
     ecommerce: {
-      currency: cart.currency || 'USD',
+      currency: cart.currency || 'CAD',
       value: parseFloat(cart.totalAmount),
       items: cart.lines.map((line) => ({
         item_id: line.id,
@@ -293,7 +293,7 @@ export function trackVariantSelect(item: {
 }) {
   push('select_item', {
     ecommerce: {
-      currency: item.currency || 'USD',
+      currency: item.currency || 'CAD',
       items: [
         {
           item_id: item.id,

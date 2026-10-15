@@ -76,7 +76,7 @@ export function CartDetails({
   // Gold spot price for the drawer strip, from the root loader's goldData.
   const rootData = useRouteLoaderData<RootLoader>('root');
   const goldData = (rootData as any)?.goldData as
-    | {spotPerOz?: number; isFallback?: boolean}
+    | {spotPerOz?: number; isFallback?: boolean; currency?: string}
     | undefined;
   const spotPerOz = goldData?.spotPerOz;
   const spotIsFallback = Boolean(goldData?.isFallback);
@@ -134,8 +134,8 @@ export function CartDetails({
                 fontVariantNumeric: 'tabular-nums',
               }}
             >
-              ${spotPerOz.toLocaleString('en-US', {maximumFractionDigits: 0})}
-              /oz
+              ${spotPerOz.toLocaleString('en-US', {maximumFractionDigits: 0})}{' '}
+              {goldData?.currency || 'CAD'}/oz
             </span>
           </div>
         ) : null}
@@ -647,7 +647,7 @@ export function cartToAnalyticsPayload(cart: CartType) {
   const lines = cart.lines ? flattenConnection(cart.lines) : [];
   return {
     totalAmount: cart.cost?.subtotalAmount?.amount || '0',
-    currency: cart.cost?.subtotalAmount?.currencyCode || 'USD',
+    currency: cart.cost?.subtotalAmount?.currencyCode || 'CAD',
     lines: (lines as CartLine[]).map((line) => ({
       id: line.merchandise?.id || line.id,
       title: line.merchandise?.product?.title || '',
@@ -750,7 +750,7 @@ function GoldOfferProgress({cost}: {cost: CartCost}) {
   const progress = Math.min(withinBand / TIER, 1);
   const remaining = Math.ceil(TIER - withinBand);
 
-  const currency = cost.subtotalAmount.currencyCode || 'USD';
+  const currency = cost.subtotalAmount.currencyCode || 'CAD';
   const fmt = (n: number) => {
     try {
       return new Intl.NumberFormat('en-US', {

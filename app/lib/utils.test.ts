@@ -2,6 +2,7 @@ import {describe, expect, it} from 'vitest';
 
 import {
   getExcerpt,
+  getLocaleFromRequest,
   isLocalPath,
   missingClass,
   statusMessage,
@@ -77,5 +78,34 @@ describe('statusMessage', () => {
     expect(statusMessage('SUCCESS')).toBe('Success');
     expect(statusMessage('PENDING')).toBe('Pending');
     expect(statusMessage('CANCELLED')).toBe('Cancelled');
+  });
+});
+
+describe('getLocaleFromRequest', () => {
+  const req = (headers: Record<string, string> = {}) =>
+    new Request('https://styxgold.com/products/x', {headers});
+
+  it('defaults to Canada / CAD', () => {
+    const l = getLocaleFromRequest(req());
+    expect(l.country).toBe('CA');
+    expect(l.currency).toBe('CAD');
+    expect(l.pathPrefix).toBe('');
+  });
+
+  it('uses the visitor geo country when no choice was made', () => {
+    expect(getLocaleFromRequest(req({'oxygen-buyer-country': 'US'})).country).toBe('US');
+    expect(getLocaleFromRequest(req({'oxygen-buyer-country': 'DE'})).country).toBe('DE');
+  });
+
+  it('prefers the switcher cookie over geo', () => {
+    const l = getLocaleFromRequest(
+      req({cookie: 'a=1; styx_country=ca; b=2', 'oxygen-buyer-country': 'US'}),
+    );
+    expect(l.country).toBe('CA');
+  });
+
+  it('ignores malformed values', () => {
+    expect(getLocaleFromRequest(req({cookie: 'styx_country=USA'})).country).toBe('CA');
+    expect(getLocaleFromRequest(req({'oxygen-buyer-country': '<x>'})).country).toBe('CA');
   });
 });

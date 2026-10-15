@@ -1317,7 +1317,7 @@ function MobileMenu({
   // Live spot for the ticker strip (was a hardcoded "XAU Spot" placeholder).
   const menuRootData = useRouteLoaderData<RootLoader>('root');
   const menuGold = (menuRootData as any)?.goldData as
-    | {spotPerOz?: number; isFallback?: boolean}
+    | {spotPerOz?: number; isFallback?: boolean; currency?: string}
     | undefined;
   const [section, setSection] = useState<'Chains' | 'Collections' | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -1722,7 +1722,7 @@ function MobileMenu({
                 {menuGold?.spotPerOz
                   ? `$${menuGold.spotPerOz.toLocaleString('en-US', {
                       maximumFractionDigits: 0,
-                    })}/oz`
+                    })} ${menuGold.currency || 'CAD'}/oz`
                   : 'XAU Spot'}
               </span>
             </div>
@@ -2519,6 +2519,7 @@ export function StyxNav({
   // Gold data for footer strip
   const rootData = useRouteLoaderData<RootLoader>('root');
   const spotPerOz = (rootData as any)?.goldData?.spotPerOz;
+  const spotCurrency: string = (rootData as any)?.goldData?.currency || 'CAD';
 
   const scheduleClose = useCallback(() => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
@@ -2923,7 +2924,7 @@ export function StyxNav({
                   }}
                 >
                   {spotPerOz
-                    ? `LONDON FIX · $${spotPerOz.toFixed(0)}/oz`
+                    ? `LONDON FIX · $${spotPerOz.toFixed(0)} ${spotCurrency}/oz`
                     : 'STYX GOLD'}
                 </div>
                 <div

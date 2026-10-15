@@ -1,16 +1,20 @@
 import type {Localizations} from '~/lib/type';
 
 /**
- * Active Shopify markets only. The default ('en-us', no path prefix) is the
- * sole active market. US, USD. When additional markets are activated in
- * Shopify, add them back keyed by path prefix WITH a leading slash
- * (e.g. '/en-ca'), matching getLocaleFromRequest in ~/lib/utils.ts.
+ * Styx sells in CAD by default (store currency, Canadian business). There are
+ * no locale path prefixes: the shopper's country comes from the currency
+ * switcher cookie, else the visitor's geo (Oxygen header), else Canada. See
+ * getLocaleFromRequest in ~/lib/utils.ts. Shopify Markets then prices the
+ * storefront and checkout in that country's currency.
  */
 export const countries: Localizations = {
   default: {
-    label: 'United States (USD $)',
+    label: 'Canada (CAD $)',
     language: 'EN',
-    country: 'US',
-    currency: 'USD',
+    country: 'CA',
+    currency: 'CAD',
   },
 };
+
+/** Cookie the currency switcher writes; holds an ISO country code. */
+export const COUNTRY_COOKIE = 'styx_country';

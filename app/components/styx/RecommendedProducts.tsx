@@ -2,7 +2,7 @@ import {Image} from '@shopify/hydrogen';
 import {Link} from 'react-router';
 import {STYX, FONT} from './constants';
 import {PlaceholderImage} from './PlaceholderImage';
-import {formatUSD} from '~/lib/gold';
+import {formatMoney} from '~/lib/gold';
 
 /**
  * Cross-sell "Pairs Well With" module shown below the add-to-cart flow on the
@@ -192,7 +192,7 @@ export function RecommendedProducts({
                         from
                       </span>
                     )}
-                    {formatUSD(minPrice)}
+                    {formatMoney(minPrice, variant.price.currencyCode)}
                   </div>
                 )}
               </div>

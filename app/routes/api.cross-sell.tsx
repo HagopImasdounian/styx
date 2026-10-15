@@ -142,7 +142,7 @@ async function findCounterpart(
     price: {
       amount: top.priceRange?.minVariantPrice?.amount ?? '0',
       currencyCode: (top.priceRange?.minVariantPrice?.currencyCode ??
-        'USD') as CurrencyCode,
+        'CAD') as CurrencyCode,
     },
     available: (top.variants?.nodes ?? []).some(
       (v: any) => v.availableForSale,

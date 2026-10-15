@@ -173,7 +173,7 @@ function formatPrice(item: WishlistEmailItem): string {
   if (item.price == null || item.price === '') return '';
   const amount = Number(item.price);
   if (!Number.isFinite(amount)) return esc(String(item.price));
-  const currency = item.currency || 'USD';
+  const currency = item.currency || 'CAD';
   try {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',

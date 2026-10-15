@@ -150,45 +150,71 @@ export async function loader(args: LoaderFunctionArgs) {
  * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
  */
 async function loadCriticalData({request, context}: LoaderFunctionArgs) {
+  const {storefront, env} = context;
+
+  // Shopify's localization for the shopper's country decides the display
+  // currency; the gold spot is then fetched in that same currency so melt
+  // values and prices are always compared like for like.
+  const localizationPromise = storefront
+    .query(ROOT_LOCALIZATION_QUERY, {
+      variables: {
+        country: storefront.i18n.country,
+        language: storefront.i18n.language,
+      },
+    })
+    .catch(() => null);
+
   const [layout, goldData, collectionsData, localizationData] = await Promise.all([
     getLayoutData(context),
     // Kept critical: product/compare/journal pages and the nav read
     // goldData.spotPerOz synchronously. The external API is bounded by a
     // 1.2s timeout + last-good-price cache in gold.server.ts, so the
     // worst-case TTFB tax is small and it never throws.
-    getGoldData(),
+    localizationPromise.then((l: any) =>
+      getGoldData(l?.localization?.country?.currency?.isoCode || 'CAD'),
+    ),
     // Menu imagery is non-essential, a Storefront API blip here must not 500
     // every page. Nav renders without weave tiles when this is null.
-    context.storefront
+    storefront
       .query(ROOT_COLLECTIONS_QUERY, {
         variables: {
-          country: context.storefront.i18n.country,
-          language: context.storefront.i18n.language,
+          country: storefront.i18n.country,
+          language: storefront.i18n.language,
         },
       })
       .catch(() => null),
-    context.storefront.query(ROOT_LOCALIZATION_QUERY).catch(() => null),
+    localizationPromise,
   ]);
 
   const seo = seoPayload.root({shop: layout.shop, url: request.url});
 
-  const {storefront, env} = context;
+  const availableCountries: Array<{
+    isoCode: string;
+    name: string;
+    currency: {isoCode: string; symbol: string};
+  }> = localizationData?.localization?.availableCountries || [];
 
-  // Distinct presentment currencies Shopify can actually serve. Drives whether
-  // the USD/CAD toggle renders, it stays hidden until CAD is enabled in Markets.
+  // Distinct presentment currencies Shopify can actually serve. Drives the
+  // currency switcher, which hides itself when there is only one.
   const availableCurrencies = Array.from(
-    new Set(
-      (localizationData?.localization?.availableCountries || [])
-        .map((c: any) => c.currency?.isoCode)
-        .filter(Boolean),
-    ),
+    new Set(availableCountries.map((c) => c.currency?.isoCode).filter(Boolean)),
   ) as string[];
+
+  // The currency Shopify actually prices this shopper in.
+  const currency: string =
+    localizationData?.localization?.country?.currency?.isoCode || 'CAD';
 
   return {
     layout,
     seo,
     goldData,
+    currency,
     availableCurrencies,
+    availableCountries: availableCountries.map((c) => ({
+      isoCode: c.isoCode,
+      name: c.name,
+      currency: c.currency?.isoCode,
+    })),
     collections: (collectionsData?.collections?.nodes || []).filter(
       (c: any) => c.products?.nodes?.length > 0,
     ),
@@ -428,12 +454,21 @@ async function getLayoutData({storefront, env}: AppLoadContext) {
 }
 
 const ROOT_LOCALIZATION_QUERY = `#graphql
-  query rootLocalization {
+  query rootLocalization($country: CountryCode, $language: LanguageCode)
+  @inContext(country: $country, language: $language) {
     localization {
-      availableCountries {
+      country {
         isoCode
         currency {
           isoCode
+        }
+      }
+      availableCountries {
+        isoCode
+        name
+        currency {
+          isoCode
+          symbol
         }
       }
     }

@@ -3,7 +3,8 @@ import {STYX, FONT} from './constants';
 import {StyxLabel} from './StyxLabel';
 import {CTAButton} from './CTAButton';
 import {HomeH2, Em, HomeBody} from './HomePrimitives';
-import {KARAT_PURITY, formatUSD} from '~/lib/gold';
+import {KARAT_PURITY} from '~/lib/gold';
+import {useMoney} from '~/lib/money';
 import type {RootLoader} from '~/root';
 
 const TROY_OZ_GRAMS = 31.1035;
@@ -83,6 +84,7 @@ function split(sample: PriceSample, spotPerOz: number) {
 
 /** Paper ledger: one row per chain, gold vs craft as a bar, the fare once. */
 function Ledger({samples, spotPerOz}: {samples: PriceSample[]; spotPerOz: number}) {
+  const fmt = useMoney();
   const head: React.CSSProperties = {
     fontFamily: FONT.cinzel,
     fontSize: 10,
@@ -186,8 +188,8 @@ function Ledger({samples, spotPerOz}: {samples: PriceSample[]; spotPerOz: number
                 {Math.round(goldShare * 100)}% gold · {100 - Math.round(goldShare * 100)}% craft
               </span>
             </span>
-            <span style={{...mono, textAlign: 'right', color: STYX.goldDeep}}>{formatUSD(gold)}</span>
-            <span style={{...mono, textAlign: 'right'}}>{formatUSD(craft)}</span>
+            <span style={{...mono, textAlign: 'right', color: STYX.goldDeep}}>{fmt(gold)}</span>
+            <span style={{...mono, textAlign: 'right'}}>{fmt(craft)}</span>
             <span
               style={{
                 fontFamily: FONT.cinzel,
@@ -196,7 +198,7 @@ function Ledger({samples, spotPerOz}: {samples: PriceSample[]; spotPerOz: number
                 fontVariantNumeric: 'tabular-nums',
               }}
             >
-              {formatUSD(sample.price)}
+              {fmt(sample.price)}
             </span>
           </Link>
         );
@@ -215,7 +217,7 @@ function Ledger({samples, spotPerOz}: {samples: PriceSample[]; spotPerOz: number
           flexWrap: 'wrap',
         }}
       >
-        <span>Gold at {formatUSD(spotPerOz)}/oz, live. Weights as weighed in our vault.</span>
+        <span>Gold at {fmt(spotPerOz)}/oz, live. Weights as weighed in our vault.</span>
         <span>Every fare buys back at its gold value for five years.</span>
       </div>
     </div>

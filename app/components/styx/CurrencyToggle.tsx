@@ -1,85 +1,91 @@
-import {useLocation, useRouteLoaderData} from 'react-router';
+import {Form, useLocation, useRouteLoaderData} from 'react-router';
 import {CartForm} from '@shopify/hydrogen';
 import type {RootLoader} from '~/root';
 import {DEFAULT_LOCALE} from '~/lib/utils';
-import {STYX, FONT} from './constants';
+import {FONT} from './constants';
+
+type AvailableCountry = {isoCode: string; name: string; currency: string};
+
+// Pinned to the top of the list: where Styx sells most.
+const PINNED = ['CA', 'US'];
+
+// What CartForm would serialise; the country rides along as `styxCountry`.
+const CART_FORM_INPUT = JSON.stringify({
+  action: CartForm.ACTIONS.BuyerIdentityUpdate,
+  inputs: {},
+});
 
 /**
- * USD / CAD currency switch for the top strip.
+ * Country / currency picker for the top strip.
  *
- * Switching sets the cart's buyerIdentity.countryCode AND redirects to the
- * locale-prefixed path (''/ for US, '/en-ca' for Canada), so the @inContext
- * price context and the checkout currency stay in lock-step.
+ * Choosing a country posts to the cart route, which updates the cart's
+ * buyerIdentity.countryCode (so checkout charges in that currency) and stores
+ * the choice in the styx_country cookie. getLocaleFromRequest reads that
+ * cookie on every request, so the whole storefront prices in that currency.
  *
- * It renders ONLY when Shopify can actually present both currencies (i.e. CAD
- * has been enabled in Shopify Markets via Shopify Payments). Until then
- * `availableCurrencies` is ['USD'] and this returns null, zero impact on the
- * current USD-only store. It self-activates the moment CAD goes live.
+ * Countries come from Shopify Markets (root `availableCountries`); it renders
+ * only when Shopify serves more than one currency.
  */
-const OPTIONS = [
-  {code: 'USD', country: 'US', prefix: ''},
-  {code: 'CAD', country: 'CA', prefix: '/en-ca'},
-] as const;
-
 export function CurrencyToggle() {
   const rootData = useRouteLoaderData<RootLoader>('root');
   const available = (rootData as any)?.availableCurrencies as string[] | undefined;
+  const countries = ((rootData as any)?.availableCountries ||
+    []) as AvailableCountry[];
   const selectedLocale = rootData?.selectedLocale ?? DEFAULT_LOCALE;
   const {pathname, search} = useLocation();
 
-  const showable = OPTIONS.filter((o) => available?.includes(o.code));
-  // Best practice: only surface the switcher when there's a real choice.
-  if (showable.length < 2) return null;
+  if (!available || available.length < 2 || countries.length < 2) return null;
 
-  const current = selectedLocale.currency || 'USD';
-  const pathWithoutLocale =
-    `${pathname.replace(selectedLocale.pathPrefix, '')}${search}` || '/';
+  const current = selectedLocale.country;
+  const pinned = PINNED.map((c) => countries.find((x) => x.isoCode === c)).filter(
+    Boolean,
+  ) as AvailableCountry[];
+  const rest = countries
+    .filter((c) => !PINNED.includes(c.isoCode))
+    .sort((a, b) => a.name.localeCompare(b.name));
+  const label = (c: AvailableCountry) => `${c.currency} · ${c.name}`;
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        flex: '0 0 auto',
-        border: '1px solid rgba(235,235,232,0.2)',
-        borderRadius: 20,
-        overflow: 'hidden',
-      }}
-    >
-      {showable.map((o, i) => {
-        const active = current === o.code;
-        const redirectTo = `${o.prefix}${pathWithoutLocale}`;
-        return (
-          <CartForm
-            key={o.code}
-            route="/cart"
-            action={CartForm.ACTIONS.BuyerIdentityUpdate}
-            inputs={{buyerIdentity: {countryCode: o.country as any}}}
-          >
-            <input type="hidden" name="redirectTo" value={redirectTo} />
-            <button
-              type="submit"
-              aria-label={`Show prices in ${o.code}`}
-              aria-pressed={active}
-              style={{
-                fontFamily: FONT.mono,
-                fontSize: 10,
-                letterSpacing: '0.1em',
-                padding: '4px 12px',
-                cursor: active ? 'default' : 'pointer',
-                border: 'none',
-                borderLeft: i > 0 ? '1px solid rgba(235,235,232,0.2)' : 'none',
-                background: active ? STYX.gold : 'transparent',
-                color: active ? STYX.ink : 'rgba(235,235,232,0.6)',
-                fontWeight: active ? 600 : 400,
-                transition: 'all 0.2s ease',
-              }}
-            >
-              {o.code}
-            </button>
-          </CartForm>
-        );
-      })}
-    </div>
+    <Form method="post" action="/cart" style={{margin: 0, flex: '0 0 auto'}}>
+      <input type="hidden" name="cartFormInput" value={CART_FORM_INPUT} />
+      <input type="hidden" name="redirectTo" value={`${pathname}${search}` || '/'} />
+      <select
+        name="styxCountry"
+        aria-label="Country and currency"
+        defaultValue={current}
+        key={current}
+        onChange={(e) => e.currentTarget.form?.requestSubmit()}
+        style={{
+          fontFamily: FONT.mono,
+          fontSize: 10,
+          letterSpacing: '0.1em',
+          padding: '4px 8px',
+          maxWidth: 170,
+          border: '1px solid rgba(235,235,232,0.2)',
+          borderRadius: 20,
+          background: 'transparent',
+          color: 'rgba(235,235,232,0.85)',
+          cursor: 'pointer',
+        }}
+      >
+        {pinned.map((c) => (
+          <option key={c.isoCode} value={c.isoCode} style={{color: '#111'}}>
+            {label(c)}
+          </option>
+        ))}
+        {rest.length > 0 && (
+          <optgroup label="Other countries" style={{color: '#111'}}>
+            {rest.map((c) => (
+              <option key={c.isoCode} value={c.isoCode}>
+                {label(c)}
+              </option>
+            ))}
+          </optgroup>
+        )}
+      </select>
+      <noscript>
+        <button type="submit">Update</button>
+      </noscript>
+    </Form>
   );
 }

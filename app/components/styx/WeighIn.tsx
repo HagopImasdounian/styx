@@ -4,7 +4,8 @@ import {STYX, FONT} from './constants';
 import {Obol} from './Obol';
 import {PrintListButton} from './PrintListButton';
 import {ChainSilhouette} from './ChainSilhouette';
-import {KARAT_PURITY, formatUSD} from '~/lib/gold';
+import {KARAT_PURITY} from '~/lib/gold';
+import {useMoney} from '~/lib/money';
 import {useScaleCalibration} from '~/context/ScaleCalibrationContext';
 import {styleToSlug, parseMm} from '~/lib/chains';
 
@@ -71,6 +72,7 @@ export function WeighIn({
   spotPerOz: number;
   onRemoveCustom?: (idx: number) => void;
 }) {
+  const fmt = useMoney();
   const count = chains.length;
   if (count === 0) return null;
 
@@ -213,7 +215,7 @@ export function WeighIn({
       num: ROMAN[5],
       label: 'Melt Value',
       sub: 'gold content at spot price',
-      render: (c) => <span>{c.meltValue ? formatUSD(c.meltValue) : '—'}</span>,
+      render: (c) => <span>{c.meltValue ? fmt(c.meltValue) : '—'}</span>,
       winIdx: -1,
       winTag: '',
       alwaysShow: true,
@@ -516,7 +518,7 @@ export function WeighIn({
 
       {/* ─── FOOTNOTE ─── */}
       <div className="weighin-footnote">
-        <span>Spot {formatUSD(spotPerOz)}/oz</span>
+        <span>Spot {fmt(spotPerOz)}/oz</span>
         <span style={{color: STYX.gold}}>·</span>
         <span>London fix 15:00 GMT</span>
         <span style={{color: STYX.gold}}>·</span>

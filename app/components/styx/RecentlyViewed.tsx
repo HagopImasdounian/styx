@@ -21,7 +21,7 @@ export type RecentlyViewedEntry = {
   image?: string | null;
   /** Raw price amount, e.g. "1234.56", formatted at render time. */
   price?: string | null;
-  /** ISO currency code for the price, defaults to USD. */
+  /** ISO currency code for the price, defaults to CAD. */
   currencyCode?: string | null;
   karat?: number | null;
 };

@@ -9,7 +9,7 @@ import type {
   ParentMenuItemFragment,
 } from 'storefrontapi.generated';
 import type {RootLoader} from '~/root';
-import {countries} from '~/data/countries';
+import {countries, COUNTRY_COOKIE} from '~/data/countries';
 
 import type {I18nLocale} from './type';
 
@@ -281,20 +281,28 @@ export function validateLocale(params: {locale?: string}): void {
   }
 }
 
+/**
+ * Shopper country, in order: explicit choice from the currency switcher
+ * (cookie), then the visitor's geo country from Oxygen, then Canada. Prices,
+ * cart and checkout all follow this country via @inContext / buyerIdentity.
+ * `currency` here is a best guess; the root loader reads the real one from
+ * Shopify's localization for this country.
+ */
 export function getLocaleFromRequest(request: Request): I18nLocale {
-  const url = new URL(request.url);
-  const firstPathPart =
-    '/' + url.pathname.substring(1).split('/')[0].toLowerCase();
-
-  return countries[firstPathPart]
-    ? {
-        ...countries[firstPathPart],
-        pathPrefix: firstPathPart,
-      }
-    : {
-        ...countries['default'],
-        pathPrefix: '',
-      };
+  const cookie = request.headers.get('cookie') || '';
+  const chosen = cookie.match(
+    new RegExp(`(?:^|;\\s*)${COUNTRY_COOKIE}=([A-Za-z]{2})(?:;|$)`),
+  )?.[1];
+  const geo = request.headers.get('oxygen-buyer-country');
+  const country = (chosen || geo || '').toUpperCase();
+  const base = {...countries['default'], pathPrefix: ''};
+  if (!/^[A-Z]{2}$/.test(country) || country === base.country) return base;
+  return {
+    ...base,
+    country: country as I18nLocale['country'],
+    currency: (country === 'US' ? 'USD' : base.currency) as I18nLocale['currency'],
+    label: country,
+  };
 }
 
 export function usePrefixPathWithLocale(path: string) {

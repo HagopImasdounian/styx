@@ -37,7 +37,8 @@ import {IconClose} from '~/components/Icon';
 import {getExcerpt, validateLocale} from '~/lib/utils';
 import {seoPayload} from '~/lib/seo.server';
 import {getStyxSeoMeta} from '~/lib/seo-meta';
-import {computeGoldPrice, KARAT_PURITY, formatUSD} from '~/lib/gold';
+import {computeGoldPrice, KARAT_PURITY} from '~/lib/gold';
+import {useGoldCurrency, useMoney} from '~/lib/money';
 import type {Storefront} from '~/lib/type';
 import {trackProductView, trackVariantSelect} from '~/components/GTMDataLayer';
 import {CACHE_SHORT, routeHeaders} from '~/data/cache';
@@ -200,6 +201,8 @@ export default function Product() {
   const rootData = useRouteLoaderData<RootLoader>('root');
   const goldData = (rootData as any)?.goldData;
   const spotPerOz = goldData?.spotPerOz ?? 4700;
+  const fmt = useMoney();
+  const goldCurrency = useGoldCurrency();
 
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -1907,7 +1910,7 @@ export default function Product() {
                   ))}
                   <div style={{color: STYX.ink, fontWeight: 500, marginTop: 4}}>
                     Listed price:{' '}
-                    {formatUSD(
+                    {fmt(
                       parseFloat(selectedVariant?.price?.amount || '0'),
                     )}
                   </div>
@@ -2048,7 +2051,7 @@ export default function Product() {
                               marginBottom: 6,
                             }}
                           >
-                            Your Offer (USD)
+                            Your Offer ({goldCurrency})
                           </label>
                           <input
                             name="offer"
@@ -2327,8 +2330,8 @@ export default function Product() {
                 >
                   This piece weighs {displayWeight}g of {karat}k gold. At
                   today&rsquo;s live gold price, the gold alone is worth{' '}
-                  {formatUSD(displayWeight * perGramSelected)}. The rest,{' '}
-                  {formatUSD(
+                  {fmt(displayWeight * perGramSelected)}. The rest,{' '}
+                  {fmt(
                     Math.max(
                       0,
                       parseFloat(selectedVariant?.price?.amount ?? '0') -
@@ -2600,6 +2603,7 @@ function LivePriceReceipt({
   karat: number;
   spotPerOz: number;
 }) {
+  const fmt = useMoney();
   const ourPrice = parseFloat(price.amount);
   // Guards: a $0 variant or missing weight must never render negative or
   // broken numbers. The caller already skips those cases, but be defensive.
@@ -2688,11 +2692,11 @@ function LivePriceReceipt({
           label={`${pureGoldGrams.toFixed(2)}g pure gold (${(
             selectedPurity * 100
           ).toFixed(0)}%)`}
-          value={`@ $${perGramPure.toFixed(2)}/g`}
+          value={`@ ${fmt(perGramPure)}/g`}
         />
         <ReceiptRow
           label="Worth today, by weight"
-          value={formatUSD(meltValue)}
+          value={fmt(meltValue)}
           highlight
         />
 
@@ -2700,7 +2704,7 @@ function LivePriceReceipt({
         <ReceiptSection label="The craft" greek="ΤΕΧΝΗ" />
         <ReceiptRow
           label="Casting, finishing, testing, insured shipping & our margin"
-          value={priced ? formatUSD(craft) : '—'}
+          value={priced ? fmt(craft) : '—'}
           highlight
         />
       </div>
@@ -2852,7 +2856,7 @@ function LivePriceReceipt({
             marginTop: 4,
           }}
         >
-          {formatUSD(wirePrice)} by wire transfer
+          {fmt(wirePrice)} by wire transfer
         </div>
       )}
     </div>

@@ -208,14 +208,18 @@ export type MenuFragment = Pick<StorefrontAPI.Menu, 'id'> & {
 };
 
 export type RootLocalizationQueryVariables = StorefrontAPI.Exact<{
-  [key: string]: never;
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
 }>;
 
 export type RootLocalizationQuery = {
   localization: {
+    country: Pick<StorefrontAPI.Country, 'isoCode'> & {
+      currency: Pick<StorefrontAPI.Currency, 'isoCode'>;
+    };
     availableCountries: Array<
-      Pick<StorefrontAPI.Country, 'isoCode'> & {
-        currency: Pick<StorefrontAPI.Currency, 'isoCode'>;
+      Pick<StorefrontAPI.Country, 'isoCode' | 'name'> & {
+        currency: Pick<StorefrontAPI.Currency, 'isoCode' | 'symbol'>;
       }
     >;
   };
@@ -238,6 +242,7 @@ export type RootCollectionsQuery = {
             image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>;
           }>;
         }>;
+        navHidden?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
         products: {nodes: Array<Pick<StorefrontAPI.Product, 'id'>>};
       }
     >;
@@ -1768,11 +1773,11 @@ interface GeneratedQueryTypes {
     return: LayoutQuery;
     variables: LayoutQueryVariables;
   };
-  '#graphql\n  query rootLocalization {\n    localization {\n      availableCountries {\n        isoCode\n        currency {\n          isoCode\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  query rootLocalization($country: CountryCode, $language: LanguageCode)\n  @inContext(country: $country, language: $language) {\n    localization {\n      country {\n        isoCode\n        currency {\n          isoCode\n        }\n      }\n      availableCountries {\n        isoCode\n        name\n        currency {\n          isoCode\n          symbol\n        }\n      }\n    }\n  }\n': {
     return: RootLocalizationQuery;
     variables: RootLocalizationQueryVariables;
   };
-  '#graphql\n  query rootCollections($country: CountryCode, $language: LanguageCode)\n  @inContext(country: $country, language: $language) {\n    collections(first: 100, sortKey: TITLE) {\n      nodes {\n        id\n        title\n        handle\n        image {\n          url\n          altText\n        }\n        cutout: metafield(namespace: "custom", key: "cutout_image") {\n          reference {\n            ... on MediaImage {\n              image {\n                url\n              }\n            }\n          }\n        }\n        products(first: 1) {\n          nodes {\n            id\n          }\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  query rootCollections($country: CountryCode, $language: LanguageCode)\n  @inContext(country: $country, language: $language) {\n    collections(first: 100, sortKey: TITLE) {\n      nodes {\n        id\n        title\n        handle\n        image {\n          url\n          altText\n        }\n        cutout: metafield(namespace: "custom", key: "cutout_image") {\n          reference {\n            ... on MediaImage {\n              image {\n                url\n              }\n            }\n          }\n        }\n        navHidden: metafield(namespace: "custom", key: "nav_hidden") {\n          value\n        }\n        products(first: 1) {\n          nodes {\n            id\n          }\n        }\n      }\n    }\n  }\n': {
     return: RootCollectionsQuery;
     variables: RootCollectionsQueryVariables;
   };

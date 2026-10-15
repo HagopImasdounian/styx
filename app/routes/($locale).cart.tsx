@@ -6,8 +6,10 @@ import {
   type MetaFunction,
 } from 'react-router';
 import {CartForm, type CartQueryDataReturn, Analytics} from '@shopify/hydrogen';
+import type {CountryCode} from '@shopify/hydrogen/storefront-api-types';
 
 import {isLocalPath} from '~/lib/utils';
+import {COUNTRY_COOKIE} from '~/data/countries';
 import {Cart} from '~/components/Cart';
 
 export const meta: MetaFunction = () => {
@@ -53,6 +55,13 @@ export async function action({request, context}: ActionFunctionArgs) {
       result = await cart.updateDiscountCodes(discountCodes);
       break;
     case CartForm.ACTIONS.BuyerIdentityUpdate:
+      // The currency switcher posts its <select> as a plain `styxCountry` field.
+      if (typeof inputs.styxCountry === 'string') {
+        inputs.buyerIdentity = {
+          ...inputs.buyerIdentity,
+          countryCode: inputs.styxCountry.toUpperCase() as CountryCode,
+        };
+      }
       result = await cart.updateBuyerIdentity({
         ...inputs.buyerIdentity,
       });
@@ -66,6 +75,20 @@ export async function action({request, context}: ActionFunctionArgs) {
    */
   const cartId = result.cart.id;
   const headers = cart.setCartId(result.cart.id);
+
+  // The currency switcher changes country through here. Remember the choice so
+  // every later page renders in that country's currency (getLocaleFromRequest).
+  const chosenCountry = (inputs.buyerIdentity as any)?.countryCode;
+  if (
+    action === CartForm.ACTIONS.BuyerIdentityUpdate &&
+    typeof chosenCountry === 'string' &&
+    /^[A-Z]{2}$/.test(chosenCountry)
+  ) {
+    headers.append(
+      'Set-Cookie',
+      `${COUNTRY_COOKIE}=${chosenCountry}; Path=/; Max-Age=31536000; SameSite=Lax; Secure`,
+    );
+  }
 
   const redirectTo = formData.get('redirectTo') ?? null;
   if (typeof redirectTo === 'string' && isLocalPath(redirectTo)) {
