@@ -87,15 +87,28 @@ export function selectedGalleryMedia<T extends ColorMedia>(
     const length = altLength(alt);
     if (length !== null && selectedLength !== null && length !== selectedLength)
       return false;
+    const owners = variants.filter(
+      (variant) =>
+        variant.image?.url && galleryImageKey(variant.image.url) === key,
+    );
+    // A variant's own photo (e.g. the per-length "Hung" bust shot) belongs to
+    // that length even when its alt text doesn't name one: once every known
+    // owner is another length, it isn't this selection's photo.
+    if (
+      key !== leadKey &&
+      selectedLength !== null &&
+      owners.length &&
+      owners.every((owner) => {
+        const ownerLength = lengthOf(owner);
+        return ownerLength !== null && ownerLength !== selectedLength;
+      })
+    )
+      return false;
     const namedColors = colorNames.filter((color) => alt.includes(color));
     // Explicit finish metadata wins over stale cross-color assignments.
     if (selectedColor && namedColors.length)
       return namedColors.includes(selectedColor);
     if (key === leadKey) return true;
-    const owners = variants.filter(
-      (variant) =>
-        variant.image?.url && galleryImageKey(variant.image.url) === key,
-    );
     if (owners.length) {
       return owners.some((owner) =>
         selected.selectedOptions?.every((option) =>
@@ -152,4 +165,33 @@ export function selectedGalleryMedia<T extends ColorMedia>(
     ...distinct.filter((item) => !isCover(item) && forLength(item)),
     ...distinct.filter((item) => !isCover(item) && !forLength(item)),
   ];
+}
+
+/**
+ * The PDP hero: the selected variant's own image (e.g. the per-length "Hung"
+ * bust photo) so the lead follows Length/Color clicks, as long as that image
+ * passes the same finish/length checks as the gallery (a stale cross-colour
+ * assignment never leads). Otherwise the first photo of the filtered gallery.
+ */
+export function selectedLeadImage<T extends ColorMedia>(
+  media: T[],
+  selected: GalleryVariant,
+  variants: GalleryVariant[],
+  colors: string[],
+  filtered: T[] = selectedGalleryMedia(media, selected, variants, colors),
+): GalleryImage | null {
+  const own = selected.image;
+  if (own?.url) {
+    const ownKey = galleryImageKey(own.url);
+    const assigned =
+      media.find(
+        (item) =>
+          galleryImageKey(item.image?.url || item.previewImage?.url || '') ===
+          ownKey,
+      ) ?? ({image: own} as T);
+    if (selectedGalleryMedia([assigned], selected, variants, colors).length)
+      return own;
+  }
+  const first = filtered[0];
+  return first?.image || first?.previewImage || null;
 }

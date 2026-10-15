@@ -16,10 +16,10 @@ html,
 body {
   overflow-x: clip;
   max-width: 100%;
-  /* Slashed zero so 0 and 8 never read alike in small mono/receipt text
-     (JetBrains Mono ships a dotted zero by default). Inherited everywhere;
-     fonts without the feature ignore it. */
-  font-feature-settings: 'zero' 1;
+  /* No slashed/dotted zero: at 10-12px the inner mark makes 0 read as 8
+     (Apic, then Patil #1). Inter's default 0 is a plain oval, and the
+     self-hosted JetBrains Mono has its zero dot removed for the same reason
+     (public/fonts/jetbrains-mono-var-o.woff2). Don't turn on 'zero'. */
 }
 
 /* STYX Keyframe Animations */

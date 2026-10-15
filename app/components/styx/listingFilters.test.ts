@@ -275,4 +275,20 @@ describe('thickness ordering', () => {
       applyFacets(styled, {...emptySelection(), style: ['Concave']}).length,
     ).toBe(1);
   });
+  it('orders style options Plain, Beveled, Concave, Diamond Cut', () => {
+    const styled = explodeByColor(
+      ['Diamond Cut', 'Concave', 'Plain', 'Beveled'].map((v, i) => ({
+        ...curb10,
+        id: `gid://shopify/Product/style-${i}`,
+        handle: `style-${i}`,
+        spec_style: {value: v},
+      })),
+    );
+    expect(facetOptions(styled).style.map((o) => o.value)).toEqual([
+      'Plain',
+      'Beveled',
+      'Concave',
+      'Diamond Cut',
+    ]);
+  });
 });
