@@ -54,6 +54,7 @@ type ProductNode = {
     nodes: MediaNode[];
   } | null;
   chain_construction?: {value: string} | null;
+  spec_style?: {value: string} | null;
 };
 
 /** Mobile swipe strip cap: keeps the DOM and lazy requests bounded per card. */
@@ -212,6 +213,10 @@ export function StyxProductCard({
   const constructionMeta = product.chain_construction?.value;
   const construction =
     constructionMeta || (/hollow/i.test(product.title) ? 'Hollow' : 'Solid');
+  // Link style (custom.spec_style). Only the cut finishes are worth a label;
+  // "Plain" is the default look and would just crowd the spec line.
+  const linkStyle = product.spec_style?.value?.trim() || null;
+  const showLinkStyle = !!linkStyle && linkStyle.toLowerCase() !== 'plain';
 
   // Prices
   const sameColorVariants = colorLabel
@@ -574,6 +579,12 @@ export function StyxProductCard({
           <span>{karat}k</span>
           <span style={{margin: '0 6px', opacity: 0.35}}>·</span>
           <span>{construction}</span>
+          {showLinkStyle && (
+            <>
+              <span style={{margin: '0 6px', opacity: 0.35}}>·</span>
+              <span className="styx-card-style">{linkStyle}</span>
+            </>
+          )}
           {variant.sku && (
             <>
               <span

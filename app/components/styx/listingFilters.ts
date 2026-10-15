@@ -100,6 +100,14 @@ export function productThicknessMm(product: any): number | null {
   return mf ?? getThicknessMm(product?.title || '');
 }
 
+/** Facet order for link styles: plain first, then the cut finishes. */
+export const STYLE_ORDER = ['Plain', 'Beveled', 'Concave', 'Diamond Cut'];
+
+function styleRank(v: string): number {
+  const i = STYLE_ORDER.indexOf(v);
+  return i === -1 ? STYLE_ORDER.length : i;
+}
+
 /** Link style (Plain / Beveled / Concave / Diamond Cut) from `custom.spec_style`. */
 export function productStyle(product: any): string | null {
   const v = String(product?.spec_style?.value ?? '').trim();
@@ -436,7 +444,9 @@ export function facetOptions(cards: ListingCard[]): FacetOptions {
     width: THICKNESS_RANGES.filter((r) => present.width.has(r.label)).map((r) =>
       opt('width', r.label),
     ),
-    style: [...present.style].sort().map((v) => opt('style', v)),
+    style: [...present.style]
+      .sort((a, b) => styleRank(a) - styleRank(b) || a.localeCompare(b))
+      .map((v) => opt('style', v)),
     length: [...present.length]
       .sort((a, b) => parseFloat(a) - parseFloat(b))
       .map((v) => opt('length', v)),

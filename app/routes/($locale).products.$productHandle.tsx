@@ -2,6 +2,7 @@ import {
   galleryImageKey,
   remainingGalleryMedia,
   selectedGalleryMedia,
+  selectedLeadImage,
 } from '~/lib/product-gallery';
 import {useState, useRef, useCallback, useEffect, Suspense} from 'react';
 import {Disclosure} from '@headlessui/react';
@@ -413,25 +414,15 @@ export default function Product() {
     knownVariants,
     galleryColors,
   );
-  const firstGalleryMedia = colorFilteredMedia[0];
-  const selectedImage = (selectedVariant as any)?.image;
-  const assignedMedia = media?.nodes?.find(
-    (item: any) =>
-      selectedImage?.url &&
-      galleryImageKey(item.image?.url || item.previewImage?.url || '') ===
-        galleryImageKey(selectedImage.url),
-  ) ?? {image: selectedImage};
-  const assignedImageMatches =
-    selectedGalleryMedia(
-      [assignedMedia],
-      selectedVariant ?? {},
-      knownVariants,
-      galleryColors,
-    ).length > 0;
-  const leadImage =
-    (assignedImageMatches ? selectedImage : null) ||
-    firstGalleryMedia?.image ||
-    firstGalleryMedia?.previewImage;
+  // Lead follows the selected variant's own image (per-length bust photo),
+  // falling back to the first filtered gallery photo.
+  const leadImage: any = selectedLeadImage(
+    media?.nodes ?? [],
+    selectedVariant ?? {},
+    knownVariants,
+    galleryColors,
+    colorFilteredMedia,
+  );
   const remainingMedia = remainingGalleryMedia(
     colorFilteredMedia,
     leadImage,

@@ -50,7 +50,11 @@ describe('remainingGalleryMedia', () => {
   });
 });
 
-import {altLength, selectedGalleryMedia} from './product-gallery';
+import {
+  altLength,
+  selectedGalleryMedia,
+  selectedLeadImage,
+} from './product-gallery';
 const selected = {
   image: {url: `${base}white.jpg`},
   selectedOptions: [
@@ -213,5 +217,61 @@ describe('selectedGalleryMedia', () => {
         ['White Gold', 'Yellow Gold'],
       ),
     ).toEqual([cover, scale18, flat, clasp1]);
+  });
+});
+
+describe('selectedLeadImage (hero follows the selected length)', () => {
+  const variant = (length: string, color: string, file: string | null) => ({
+    image: file ? {url: `${base}${file}`} : null,
+    selectedOptions: [
+      {name: 'Color', value: color},
+      {name: 'Length', value: length},
+    ],
+  });
+  const colors = ['Yellow Gold', 'White Gold'];
+  const cover = {...image('bust-yg.jpg'), alt: 'Chain, Yellow Gold, main'};
+  const hung16 = {...image('hung-y16.jpg'), alt: 'Chain, Yellow Gold, hung'};
+  const hung18 = {...image('hung-y18.jpg'), alt: 'Chain, Yellow Gold, hung'};
+  const hung20 = {...image('hung-y20.jpg'), alt: 'Chain, Yellow Gold, hung'};
+  const clasp = {...image('clasp-y.jpg'), alt: 'Chain, Yellow Gold, clasp'};
+  const media = [cover, hung16, hung18, hung20, clasp];
+  const v16 = variant('16"', 'Yellow Gold', 'hung-y16.jpg');
+  const v18 = variant('18"', 'Yellow Gold', 'hung-y18.jpg');
+  const v20 = variant('20"', 'Yellow Gold', 'hung-y20.jpg');
+  const w18 = variant('18"', 'White Gold', 'bust-wg.jpg');
+
+  it("leads with the selected variant's own photo and switches per length", () => {
+    const known = [v16, v18, v20, w18];
+    expect(selectedLeadImage(media, v16, known, colors)?.url).toBe(
+      `${base}hung-y16.jpg`,
+    );
+    expect(selectedLeadImage(media, v18, known, colors)?.url).toBe(
+      `${base}hung-y18.jpg`,
+    );
+    expect(selectedLeadImage(media, v20, known, colors)?.url).toBe(
+      `${base}hung-y20.jpg`,
+    );
+  });
+
+  it("keeps other lengths' own photos out of the gallery under the hero", () => {
+    const known = [v18, v16, v20, w18];
+    const filtered = selectedGalleryMedia(media, v18, known, colors);
+    const lead = selectedLeadImage(media, v18, known, colors, filtered);
+    expect(remainingGalleryMedia(filtered, lead)).toEqual([cover, clasp]);
+  });
+
+  it('falls back to the gallery cover when the variant has no image', () => {
+    const bare = variant('18"', 'Yellow Gold', null);
+    expect(
+      selectedLeadImage(media, bare, [bare, v16, v20], colors)?.url,
+    ).toBe(`${base}bust-yg.jpg`);
+  });
+
+  it("never leads with another finish's photo from a stale assignment", () => {
+    const stale = variant('18"', 'White Gold', 'hung-y18.jpg');
+    const white = {...image('bust-wg.jpg'), alt: 'Chain, White Gold, main'};
+    expect(
+      selectedLeadImage([...media, white], stale, [stale, v18], colors)?.url,
+    ).toBe(`${base}bust-wg.jpg`);
   });
 });
