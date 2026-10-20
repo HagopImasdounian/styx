@@ -1,5 +1,3 @@
-import {Link} from 'react-router';
-
 /** Text-led until the family's own workshop photography is available. */
 export function HomeHands() {
   return (
@@ -17,13 +15,10 @@ export function HomeHands() {
           <em>An open book.</em>
         </h2>
         <p>
-          Our uncle still casts by hand, in a crucible older than most jewelers.
-          Our family has weighed, tested and traded gold for fifty years. We
-          know what it costs to make a chain properly, so we show you.
+          Our family has weighed, tested and traded gold for fifty years. Our
+          uncle still works at the bench with traditional methods. We know what
+          a chain costs to make, and we make sure you do too.
         </p>
-        <Link to="/about" prefetch="intent" className="styx-text-link">
-          Meet the family <span aria-hidden="true">↗</span>
-        </Link>
       </div>
       <p className="styx-family-aside">
         Weighed when it arrives.

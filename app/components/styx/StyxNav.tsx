@@ -2429,9 +2429,7 @@ function AnnouncementBar() {
         lineHeight: 1.4,
       }}
     >
-      <span style={{opacity: 0.5, marginRight: 10}}>, </span>
       <span style={{color: STYX.gold, fontWeight: 600}}>Launch Offer:</span> Free 1g of 24K Gold with Every Order Over $2,000
-      <span style={{opacity: 0.5, marginLeft: 10}}>, </span>
       <button
         onClick={dismiss}
         aria-label="Dismiss"

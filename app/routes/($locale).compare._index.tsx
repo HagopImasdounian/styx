@@ -737,7 +737,6 @@ function ComparisonTable({
     {label: 'Clasp', render: (s) => s.specClasp || '—'},
     {label: 'Weave', render: (s) => s.specWeave || '—'},
     {label: 'Profile', render: (s) => s.specProfile || '—'},
-    {label: 'Cast', render: (s) => s.specCast || '—'},
     {label: 'Origin', render: (s) => s.origin || '—'},
     {label: 'Lengths', render: (s) => s.lengths.length > 0 ? s.lengths.join(', ') : '—'},
     {label: 'Colors', render: (s) => s.colors.length > 0 ? s.colors.join(', ') : '—'},

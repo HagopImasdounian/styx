@@ -154,8 +154,15 @@ export function StyxProductCard({
    * keeps its images lazy so they don't compete with the page's LCP image. */
   belowFold?: boolean;
 }) {
+  // Same variant the PDP opens on: the caller's pick if it is buyable, else
+  // the first available one, else the first. A sold-out first length must not
+  // set a card price the product page then contradicts.
+  const nodes = product.variants.nodes;
+  const requested = nodes[variantIndex];
   const variant =
-    product.variants.nodes[variantIndex] ?? product.variants.nodes[0];
+    (requested && requested.availableForSale !== false ? requested : null) ??
+    nodes.find((v) => v.availableForSale !== false) ??
+    nodes[0];
   const [isHovered, setIsHovered] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const stripRef = useRef<HTMLDivElement>(null);

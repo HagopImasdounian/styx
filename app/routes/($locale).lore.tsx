@@ -95,8 +95,8 @@ const STORY: string[] = [
   'The Greeks told it plainly. When you died, a river stood between you and whatever came next. Charon kept the ferry across it, and he did not row for free.',
   'So the living placed a coin under the tongue of the dead before burial: the obol. A small disc of metal, worth almost nothing to a man with a full purse, worth everything to one standing on that bank. Without it, the story goes, you waited on the shore.',
   'Everything else stayed behind. The house, the title, the name people used for you. Cloth rots. Paper burns. Even the body is left on the near side. The coin went across, because metal was the only thing the ferryman would take, and metal was the only thing that held its worth on both sides of the water.',
-  'That is the whole idea behind the name. Gold has been the fare for three thousand years, weighed and traded across every border, and it does not care what century it is. A chain from our foundries is a row of small coins, worn where the obol was carried: at the throat.',
-  'The Ferryman’s Pact is our version of the old arrangement. Every piece carries a 5-year buyback guarantee. If you ever wish to return to shore, we buy back your gold at the prevailing market price, minus only the original labor. The style may date. The clasp may wear. The metal never loses its passage.',
+  'That is the whole idea behind the name. Gold has been the fare for three thousand years, weighed and traded across every border, and it does not care what century it is. A chain from our vault is a row of small coins, worn where the obol was carried: at the throat.',
+  'The Ferryman’s Pact is our version of the old arrangement. Every piece carries a 5-year buyback guarantee. If you ever wish to return to shore, we buy back your piece, priced on its gold at that day’s market price. The style may date. The clasp may wear. The metal never loses its passage.',
   'That is what we mean when we say gold is the only thing that crosses over. It is not a slogan. It is a property of the element.',
 ];
 

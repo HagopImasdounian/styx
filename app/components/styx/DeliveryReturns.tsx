@@ -32,7 +32,7 @@ const ROWS: Array<{label: string; body: string}> = [
   },
   {
     label: 'Buyback',
-    body: 'Every piece carries a 5-year buyback guarantee. We buy back your gold at the prevailing market price, minus only the original labor.',
+    body: 'Every piece carries a 5-year buyback guarantee. We buy back your piece, priced on its gold at that day\'s market price.',
   },
 ];
 

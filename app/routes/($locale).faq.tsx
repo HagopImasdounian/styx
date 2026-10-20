@@ -48,7 +48,7 @@ const FAQ_SECTIONS = [
       },
       {
         q: 'Is your gold plated or filled?',
-        a: 'No. Every piece is solid karat gold, cast or machine-made from real gold alloy. No plating, no gold-fill, no vermeil.',
+        a: 'No. Every piece is real karat gold, machine-made in Italy from real gold alloy. No plating, no gold-fill, no vermeil.',
       },
     ],
   },

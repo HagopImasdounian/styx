@@ -233,3 +233,19 @@ export function wrapBrandedEmail(heading: string, innerHtml: string): string {
   </div>
   `;
 }
+
+/** Shared store inbox for form notifications (Patil, 2026-10-20). */
+export const DEFAULT_NOTIFY_EMAIL = 'hello@styxgold.com';
+
+/**
+ * Who receives the owner-side notification for a form submission: the shared
+ * inbox (FORM_NOTIFY_EMAIL, default hello@styxgold.com), plus OWNER_EMAIL as a
+ * second recipient when it is set and different. Never empty.
+ */
+export function formNotifyRecipients(env: Record<string, string | undefined>): string[] {
+  const primary = (env.FORM_NOTIFY_EMAIL || '').trim() || DEFAULT_NOTIFY_EMAIL;
+  const owner = (env.OWNER_EMAIL || '').trim();
+  const out = [primary];
+  if (owner && owner.toLowerCase() !== primary.toLowerCase()) out.push(owner);
+  return out;
+}

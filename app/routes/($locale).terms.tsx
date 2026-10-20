@@ -243,7 +243,7 @@ export default function Terms() {
               <strong>Final sale items:</strong> Custom orders, personalized items, and any items marked as &ldquo;Final Sale&rdquo; at the time of purchase are not eligible for return or exchange. Final sale items will only be accepted back if they arrive with a manufacturing defect, which will be determined solely by Styx Gold upon inspection.
             </Paragraph>
             <Paragraph>
-              <strong>Return shipping:</strong> Return shipping is the buyer&rsquo;s responsibility. We strongly recommend using insured, trackable shipping (USPS Registered Mail for items over $500). Styx Gold is not responsible for items lost, stolen, or damaged during return transit.
+              <strong>Return shipping:</strong> Return shipping is the buyer&rsquo;s responsibility. Insured, tracked, signature-required shipping is required for items valued over $500. Styx Gold is not responsible for items lost, stolen, or damaged during return transit.
             </Paragraph>
           </section>
 

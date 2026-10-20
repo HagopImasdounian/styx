@@ -8,6 +8,7 @@ import {
   bytesToBase64,
   formatBytes,
   escapeHtml,
+  formNotifyRecipients,
   ownerRows,
   renderTextCell,
   safeFilename,
@@ -147,8 +148,8 @@ export async function action({request, context}: ActionFunctionArgs) {
   const env = context.env as Record<string, string>;
   const webhookUrl = env.FORM_WEBHOOK_URL;
   const resendKey = env.RESEND_API_KEY;
-  const ownerEmail =
-    env.OWNER_EMAIL || env.FORM_NOTIFY_EMAIL || 'hagop@itshco.com';
+  // Shared inbox first (FORM_NOTIFY_EMAIL, default hello@styxgold.com), owner copied.
+  const notifyRecipients = formNotifyRecipients(env);
   // Must be on a domain verified in Resend (same as api.form-submit).
   const fromAddress = 'STYX Gold <noreply@styxgold.com>';
 
@@ -227,7 +228,7 @@ export async function action({request, context}: ActionFunctionArgs) {
         },
         body: JSON.stringify({
           from: fromAddress,
-          to: [ownerEmail],
+          to: notifyRecipients,
           reply_to: email,
           subject: `[${FRIENDLY_NAME}] New submission from ${
             safeName || safeEmail

@@ -306,7 +306,6 @@ export default function Product() {
   const pullQuoteAttr = p.pull_quote_attr?.value || null;
   // spec_weave / spec_profile intentionally not shown, redundant with Chain Style
   const specClasp = p.spec_clasp?.value || null;
-  const specCast = p.spec_cast?.value || null;
   // Link style as seen in the photo (Plain / Beveled / Concave / Diamond Cut)
   const specStyle = p.spec_style?.value || null;
 
@@ -1643,7 +1642,6 @@ export default function Product() {
                 },
                 {label: 'Color', value: selectedColor || 'Yellow Gold'},
                 {label: 'Clasp', value: specClasp},
-                {label: 'Our Cast', value: specCast},
                 {label: 'Origin', value: chainOrigin},
                 {label: 'Invented', value: yearInvented},
               ]
@@ -2329,7 +2327,7 @@ export default function Product() {
                         displayWeight * perGramSelected,
                     ),
                   )}
-                  {', '}is the craft: casting, finishing, testing, insured
+                  {', '}is the craft: making, finishing, testing, insured
                   shipping, and our margin, said out loud. That is the whole
                   math. Nothing hidden in a velvet box.
                 </div>
@@ -2462,9 +2460,9 @@ export default function Product() {
               }}
             >
               Every piece carries a 5-year buyback guarantee. If you ever wish
-              to return to shore, we will buy back your gold at the prevailing
-              market price, minus only the original labor. The metal never loses
-              its passage.
+              to return to shore, we will buy back your piece, priced on its
+              gold at that day&rsquo;s market price. The metal never loses its
+              passage.
             </p>
           </div>
         </div>
@@ -2694,7 +2692,7 @@ function LivePriceReceipt({
         <div style={{height: 20}} />
         <ReceiptSection label="The craft" greek="ΤΕΧΝΗ" />
         <ReceiptRow
-          label="Casting, finishing, testing, insured shipping & our margin"
+          label="Making, finishing, testing, insured shipping & our margin"
           value={priced ? fmt(craft) : '—'}
           highlight
         />
@@ -2760,7 +2758,7 @@ function LivePriceReceipt({
               minWidth: 0,
             }}
           >
-            We&rsquo;ll buy it back for its gold value
+            We&rsquo;ll buy it back, priced on its gold
             <GreekSubLabel inline>ΝΟΣΤΟΣ</GreekSubLabel>
           </span>
           <span
@@ -2789,7 +2787,7 @@ function LivePriceReceipt({
             marginTop: 6,
           }}
         >
-          Whatever gold is worth on the day you sell it back.
+          Based on the gold price the day you sell it back.
         </div>
       </Link>
 

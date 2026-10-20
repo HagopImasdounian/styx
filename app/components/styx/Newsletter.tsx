@@ -104,7 +104,7 @@ export function Newsletter() {
           letterSpacing: '0.04em',
         }}
       >
-        Each new cast, delivered first.
+        Each new piece, delivered first.
       </h2>
 
       <p

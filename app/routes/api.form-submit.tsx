@@ -1,5 +1,6 @@
 import {type ActionFunctionArgs, data} from 'react-router';
 import {rateLimitAllow} from '~/lib/rate-limit.server';
+import {formNotifyRecipients} from '~/lib/form-submit.server';
 
 type FormPayload = {
   formId?: string;
@@ -85,9 +86,9 @@ export async function action({request, context}: ActionFunctionArgs) {
   const env = context.env as Record<string, string>;
   const webhookUrl = env.FORM_WEBHOOK_URL;
   const resendKey = env.RESEND_API_KEY;
-  // Owner notification goes to OWNER_EMAIL, then FORM_NOTIFY_EMAIL, then a hard fallback.
-  const ownerEmail =
-    env.OWNER_EMAIL || env.FORM_NOTIFY_EMAIL || 'hagop@itshco.com';
+  // Store notification goes to the shared inbox (FORM_NOTIFY_EMAIL, default
+  // hello@styxgold.com, Patil 2026-10-20); OWNER_EMAIL is copied when set.
+  const notifyRecipients = formNotifyRecipients(env);
 
   // NOTE: This from-address must be on a domain verified in the Resend dashboard,
   // otherwise sends will fail. Verify "styxgold.com" (or change to a verified domain).
@@ -140,7 +141,7 @@ export async function action({request, context}: ActionFunctionArgs) {
         },
         body: JSON.stringify({
           from: fromAddress,
-          to: [ownerEmail],
+          to: notifyRecipients,
           reply_to: email,
           subject: `[${friendlyFormName}] New submission from ${
             safeName || safeEmail

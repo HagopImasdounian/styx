@@ -27,16 +27,16 @@ export const meta = ({data}: MetaArgs<typeof loader>) => {
 
 const SHIPPING_DETAILS = [
   {
-    label: 'Domestic (US)',
+    label: 'Canada (domestic)',
     transit: '3\u20135 business days',
     cost: 'Free',
-    carrier: 'Priority courier, signature required',
+    carrier: 'Insured priority courier from Canada, signature required',
   },
   {
-    label: 'Canada',
-    transit: '5\u20137 business days',
+    label: 'United States (domestic)',
+    transit: '3\u20135 business days',
     cost: 'Free',
-    carrier: 'Insured international priority',
+    carrier: 'Insured priority courier from the US, signature required',
   },
   {
     label: 'International',
@@ -269,7 +269,7 @@ export default function ShippingReturns() {
               Return Shipping
             </p>
             <p style={{margin: 0}}>
-              Return shipping is the buyer&rsquo;s responsibility. We strongly recommend insured, trackable shipping. USPS Registered Mail is required for items valued over $500. Styx Gold is not responsible for items lost, stolen, or damaged during return transit.
+              Return shipping is the buyer&rsquo;s responsibility. Insured, tracked, signature-required shipping is required for items valued over $500. Styx Gold is not responsible for items lost, stolen, or damaged during return transit.
             </p>
           </PolicyBlock>
         </section>

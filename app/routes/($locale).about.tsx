@@ -193,6 +193,11 @@ export default function About() {
                   borders. We learned what gold costs, actually costs, before we
                   learned what retail meant.
                 </p>
+                <p data-reveal="" style={{margin: 0}}>
+                  Our chains are made by Italy&rsquo;s best machine makers. Our
+                  family&rsquo;s job is knowing gold well enough to choose them,
+                  test them, and price them straight.
+                </p>
               </div>
             </div>
           </div>
@@ -245,13 +250,13 @@ export default function About() {
             </p>
             <p data-reveal="" style={{margin: 0}}>
               We've consulted for some of the biggest names in hip-hop jewelry.
-              We've seen the invoices. We know what a Cuban link costs to cast,
+              We've seen the invoices. We know what a Cuban link costs to craft,
               finish, and ship. And we know what it sells for in a display case
               on Fifth Avenue or in a music video. The gap is obscene.
             </p>
             <p data-reveal="" style={{margin: 0}}>
               So we did something our family has never done before: we went
-              direct. Same gold. Same foundries. Same quality our wholesale
+              direct. Same gold. Same Italian makers. Same quality our wholesale
               clients demand. But sold to you at wholesale-adjacent pricing,
               with the full cost breakdown visible on every product page.
             </p>

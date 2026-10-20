@@ -235,6 +235,10 @@ function pickPriceSamples(productList: any[]): PriceSample[] {
         v?.selectedOptions?.find(
           (o: any) => o?.name?.toLowerCase() === 'length',
         )?.value ?? null;
+      const color =
+        v?.selectedOptions?.find(
+          (o: any) => o?.name?.toLowerCase() === 'color',
+        )?.value ?? null;
       const thickness =
         p?.chain_thickness?.value ||
         (title.match(/(\d+(?:\.\d+)?)\s*mm/i)?.[0] ?? null);
@@ -245,6 +249,7 @@ function pickPriceSamples(productList: any[]): PriceSample[] {
         style: family.charAt(0).toUpperCase() + family.slice(1),
         thickness,
         length,
+        color,
         weightGrams: Math.round(grams * 100) / 100,
         price,
         currencyCode: v.price.currencyCode || 'CAD',

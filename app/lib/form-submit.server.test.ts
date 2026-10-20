@@ -3,6 +3,7 @@ import {describe, expect, it} from 'vitest';
 import {
   SKETCH_MAX_FILE_BYTES,
   bytesToBase64,
+  formNotifyRecipients,
   isAllowedImageType,
   safeFilename,
   validateSketchFiles,
@@ -162,5 +163,21 @@ describe('safeFilename', () => {
 
   it('falls back when the name is empty', () => {
     expect(safeFilename('', 'sketch-1')).toBe('sketch-1');
+  });
+});
+
+describe('formNotifyRecipients', () => {
+  it('defaults to the shared inbox', () => {
+    expect(formNotifyRecipients({})).toEqual(['hello@styxgold.com']);
+  });
+  it('uses FORM_NOTIFY_EMAIL first and copies a different OWNER_EMAIL', () => {
+    expect(
+      formNotifyRecipients({FORM_NOTIFY_EMAIL: 'hello@styxgold.com', OWNER_EMAIL: 'owner@example.com'}),
+    ).toEqual(['hello@styxgold.com', 'owner@example.com']);
+  });
+  it('does not duplicate the same address', () => {
+    expect(
+      formNotifyRecipients({FORM_NOTIFY_EMAIL: 'Hello@styxgold.com', OWNER_EMAIL: 'hello@styxgold.com'}),
+    ).toEqual(['Hello@styxgold.com']);
   });
 });

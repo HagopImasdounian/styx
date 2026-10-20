@@ -1,6 +1,6 @@
 const PILLARS = [
   {title: 'Live gold pricing', body: 'The value of every gram, in the open.'},
-  {title: 'Five-year buyback', body: 'Sell it back for the value of its gold.'},
+  {title: 'Five-year buyback', body: 'Sell it back, priced on its gold.'},
   {title: 'Weighed. Tested. Verified.', body: 'Checked before it reaches you.'},
 ];
 

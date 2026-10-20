@@ -577,7 +577,7 @@ export default function PrintListPage() {
           {/* Approximation disclaimer */}
           <div className="pl-approx">
             Widths and link profiles are shown to scale as a guide. Each chain is
-            individually cast and hand-finished, so the actual piece may vary
+            individually made and finished, so the actual piece may vary
             slightly from this illustration.
           </div>
 

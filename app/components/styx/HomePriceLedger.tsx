@@ -20,6 +20,8 @@ export type PriceSample = {
   thickness: string | null;
   /** e.g. '20"' */
   length: string | null;
+  /** Variant colour option, e.g. "Yellow Gold", so the row links to this exact variant. */
+  color: string | null;
   weightGrams: number;
   price: number;
   currencyCode: string;
@@ -71,6 +73,15 @@ export function HomePriceLedger({samples}: {samples: PriceSample[]}) {
       </div>
     </section>
   );
+}
+
+/** Open the PDP on the exact variant the ledger priced, so the numbers match. */
+function variantQuery(sample: PriceSample): string {
+  const params = new URLSearchParams();
+  if (sample.color) params.set('Color', sample.color);
+  if (sample.length) params.set('Length', sample.length);
+  const q = params.toString();
+  return q ? `?${q}` : '';
 }
 
 function split(sample: PriceSample, spotPerOz: number) {
@@ -136,7 +147,7 @@ function Ledger({samples, spotPerOz}: {samples: PriceSample[]; spotPerOz: number
         return (
           <Link
             key={sample.handle + i}
-            to={`/products/${sample.handle}`}
+            to={`/products/${sample.handle}${variantQuery(sample)}`}
             prefetch="intent"
             className="styx-home-ledger-row"
             style={{
@@ -218,7 +229,7 @@ function Ledger({samples, spotPerOz}: {samples: PriceSample[]; spotPerOz: number
         }}
       >
         <span>Gold at {fmt(spotPerOz)}/oz, live. Weights as weighed in our vault.</span>
-        <span>Every fare buys back at its gold value for five years.</span>
+        <span>Every fare buys back, priced on its gold, for five years.</span>
       </div>
     </div>
   );

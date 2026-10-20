@@ -23,7 +23,7 @@ export const meta = ({data}: MetaArgs<typeof loader>) => {
     title: '5-Year Buyback Guarantee',
     titleTemplate: '%s | STYX Gold',
     description:
-      'Every STYX chain carries a 5-year buyback guarantee. We buy back your gold at the prevailing market price, minus only the original labor. How it works, what you get back, and the terms.',
+      'Every STYX chain carries a 5-year buyback guarantee, priced on its gold at that day\'s market price. How it works, what you get back, and the terms.',
     url: data?.url,
   });
 };
@@ -32,9 +32,11 @@ export const meta = ({data}: MetaArgs<typeof loader>) => {
 const GUTTER = 'clamp(16px, 4vw, 56px)';
 
 /* Worked example on the live spot (shopper's currency, from the root loader).
-   Weight and labor are illustrative; labor uses the same default the PDP
-   falls back to when a product has no custom.labor_cost metafield. */
-const EXAMPLE = {weight: 30, karat: 14, laborCost: 280};
+   The weight is illustrative. Buyback = (weight less the refining allowance)
+   x karat purity x that day's pure-gold price per gram. */
+const EXAMPLE = {weight: 20, karat: 10};
+/** Standard refining allowance deducted from the weight before pricing. */
+export const BUYBACK_REFINING_ALLOWANCE = 0.1;
 
 const STEPS = [
   {
@@ -50,7 +52,7 @@ const STEPS = [
   {
     num: 'III',
     title: 'Pay',
-    body: 'We pay you the gold value, minus only the original labor. The craft was spent when the chain was made. The metal is still metal.',
+    body: 'We pay you for the gold, less our standard refining allowance. Paid by wire or to your original payment method.',
   },
 ];
 
@@ -60,7 +62,7 @@ const TERMS = [
   'Weighed and tested on receipt. The buyback is priced on the gold content we confirm at that weighing.',
   // TODO(hagop): confirm which day sets the price (day of receipt, day of test, or day the request is opened).
   'Valued at the prevailing market price of gold on the day we price it.',
-  'Minus only the original labor: the craft portion shown on your product page and receipt. Nothing else is deducted.',
+  'Less a standard 10% refining allowance on the weight. Nothing else is deducted.',
   // TODO(hagop): confirm payout methods and whether wire is required above a threshold.
   'Paid by wire or to your original payment method.',
   // TODO(hagop): confirm who covers return shipping for a buyback and any carrier requirement (returns policy requires USPS Registered Mail over $500).
@@ -78,7 +80,7 @@ const FAQ = [
   },
   {
     q: 'How is this different from a return?',
-    a: 'A return happens within 14 days of delivery and refunds the purchase price under our return policy, with a restocking fee and a market adjustment where they apply. The buyback is for later: any time in the five years, we pay the value of the gold at that day’s price, minus the original labor.',
+    a: 'A return happens within 14 days of delivery and refunds the purchase price under our return policy, with a restocking fee and a market adjustment where they apply. The buyback is for later: any time in the five years, we pay for the gold at that day’s price, less the standard refining allowance.',
   },
   {
     q: 'What do I need to send?',
@@ -147,8 +149,9 @@ export default function Buyback() {
   const fmt = useMoney();
   const ex = computeGoldPrice({...EXAMPLE, spotPerOz});
   const purePerGram = spotPerOz / 31.1035;
-  const pureGrams = ex.weight * ex.purity;
-  const payout = Math.max(0, ex.materialCost - ex.laborCost);
+  const netWeight = ex.weight * (1 - BUYBACK_REFINING_ALLOWANCE);
+  const pureGrams = netWeight * ex.purity;
+  const payout = Math.max(0, pureGrams * purePerGram);
 
   return (
     <div style={{background: STYX.bone, minHeight: '100vh'}}>
@@ -210,9 +213,8 @@ export default function Buyback() {
             }}
           >
             Every piece carries a 5-year buyback guarantee. If you ever wish to
-            return to shore, we buy back your gold at the prevailing market
-            price, minus only the original labor. The metal never loses its
-            passage.
+            return to shore, sell it back to us and we price it on its gold, at
+            that day&rsquo;s market price. The metal never loses its passage.
           </div>
         </div>
       </section>
@@ -312,18 +314,18 @@ export default function Buyback() {
               <p data-reveal="" style={{margin: 0}}>
                 Every product page shows the price in two parts: the gold, and
                 the craft. The gold is the weight of pure metal in the chain
-                at the live market price. The craft is the casting, finishing,
+                at the live market price. The craft is the making, finishing,
                 testing, shipping and our margin. That is the labor.
               </p>
               <p data-reveal="" style={{margin: 0}}>
-                The buyback returns the first part. We weigh the piece, apply
-                the karat purity, and value the pure gold at that day&rsquo;s
-                price. Then we subtract only the original labor. What is left
-                is yours.
+                We weigh the piece, deduct our standard 10% refining allowance
+                from the weight, apply the karat purity, and value the pure
+                gold at that day&rsquo;s price. That is what we pay.
               </p>
               <p data-reveal="" style={{margin: 0}}>
-                The example uses an illustrative spot price. The real number
-                will be whatever gold is trading at when we price your piece.
+                The example uses an illustrative weight and today&rsquo;s live
+                gold price. The real number will be whatever gold is trading at
+                when we price your piece.
               </p>
             </div>
           </div>
@@ -382,23 +384,14 @@ export default function Buyback() {
             </div>
             <ReceiptRow label={`${ex.weight.toFixed(1)}g total weight`} value={`${ex.karat}K gold`} />
             <ReceiptRow
-              label={`${pureGrams.toFixed(2)}g pure gold (${Math.round(ex.purity * 100)}%)`}
-              value={`@ ${fmt(purePerGram)}/g`}
+              label={`Less ${Math.round(BUYBACK_REFINING_ALLOWANCE * 100)}% refining allowance`}
+              value={`${netWeight.toFixed(1)}g`}
             />
-            <ReceiptRow label="Worth today, by weight" value={fmt(ex.materialCost)} highlight />
-
-            <div
-              style={{
-                fontSize: 10,
-                letterSpacing: '0.2em',
-                textTransform: 'uppercase',
-                color: 'rgba(235,235,232,0.45)',
-                padding: '20px 0 4px',
-              }}
-            >
-              The labor
-            </div>
-            <ReceiptRow label="Original labor, as shown at purchase" value={fmt(ex.laborCost)} minus />
+            <ReceiptRow
+              label={`${pureGrams.toFixed(2)}g pure gold (${(ex.purity * 100).toFixed(1)}%)`}
+              value={`@ ${fmt(purePerGram)}/g`}
+              highlight
+            />
 
             <div
               style={{

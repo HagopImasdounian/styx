@@ -20,22 +20,22 @@ export const FERRYMANS_CODE = [
   {
     num: 'III',
     title: 'Wholesale Pricing',
-    body: "We price from our wholesale cost, not from retail markups. Our family buys gold at prices most brands can't access. That advantage goes directly to you.",
+    body: "Fifty years of family wholesale relationships let us buy gold at prices most brands can't access. We price from that cost, not from retail markups, and the advantage goes to you.",
   },
   {
     num: 'IV',
-    title: 'Wholesale Heritage',
-    body: 'Fifty years of wholesale relationships built on trust and volume. The same supply chain that serves retailers now serves you.',
+    title: 'Direct to You',
+    body: "No storefront. No department store. No retail chain taking its cut. From our family's supply line to your door.",
   },
   {
     num: 'V',
-    title: 'Direct to You',
-    body: "No wholesalers. No department stores. No middlemen adding their cut. From our family's network to your door.",
+    title: "The Ferryman's Pact",
+    body: "For five years, we'll buy your chain back, priced on its gold. The style may change. The gold keeps its worth.",
   },
   {
     num: 'VI',
-    title: 'Tested & Certified',
-    body: 'Every piece is weighed and tested multiple times to meet or exceed the stamped karat weight. Old-school diligence, no shortcuts.',
+    title: 'Weighed & Tested',
+    body: 'Every piece is weighed and karat-tested before it ships, and again if it ever comes back. We send you a video of your piece being packed. Old-school diligence, no shortcuts.',
   },
 ] as const;
 
