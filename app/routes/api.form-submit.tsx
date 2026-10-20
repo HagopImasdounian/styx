@@ -1,6 +1,6 @@
 import {type ActionFunctionArgs, data} from 'react-router';
 import {rateLimitAllow} from '~/lib/rate-limit.server';
-import {formNotifyRecipients} from '~/lib/form-submit.server';
+import {DEFAULT_NOTIFY_EMAIL, formNotifyRecipients} from '~/lib/form-submit.server';
 
 type FormPayload = {
   formId?: string;
@@ -92,7 +92,7 @@ export async function action({request, context}: ActionFunctionArgs) {
 
   // NOTE: This from-address must be on a domain verified in the Resend dashboard,
   // otherwise sends will fail. Verify "styxgold.com" (or change to a verified domain).
-  const fromAddress = 'STYX Gold <noreply@styxgold.com>';
+  const fromAddress = `STYX Gold <${DEFAULT_NOTIFY_EMAIL}>`;
 
   const friendlyFormName = prettyFormName(formName);
   // Subject-line hygiene: never let newlines/control chars reach the subject.
@@ -166,6 +166,7 @@ export async function action({request, context}: ActionFunctionArgs) {
         },
         body: JSON.stringify({
           from: fromAddress,
+          reply_to: DEFAULT_NOTIFY_EMAIL,
           to: [email],
           subject: getConfirmationSubject(formName),
           html: buildConfirmationEmail(formName, name),

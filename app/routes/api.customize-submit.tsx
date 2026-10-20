@@ -7,6 +7,7 @@ import {
   SKETCH_MAX_TOTAL_BYTES,
   bytesToBase64,
   formatBytes,
+  DEFAULT_NOTIFY_EMAIL,
   escapeHtml,
   formNotifyRecipients,
   ownerRows,
@@ -151,7 +152,7 @@ export async function action({request, context}: ActionFunctionArgs) {
   // Shared inbox first (FORM_NOTIFY_EMAIL, default hello@styxgold.com), owner copied.
   const notifyRecipients = formNotifyRecipients(env);
   // Must be on a domain verified in Resend (same as api.form-submit).
-  const fromAddress = 'STYX Gold <noreply@styxgold.com>';
+  const fromAddress = `STYX Gold <${DEFAULT_NOTIFY_EMAIL}>`;
 
   const safeName = sanitizeHeaderText(name).slice(0, 120);
   const safeEmail = sanitizeHeaderText(email).slice(0, 254);
@@ -257,6 +258,7 @@ export async function action({request, context}: ActionFunctionArgs) {
         },
         body: JSON.stringify({
           from: fromAddress,
+          reply_to: DEFAULT_NOTIFY_EMAIL,
           to: [email],
           subject: 'We have your commission request. STYX Gold',
           html: wrapBrandedEmail(
