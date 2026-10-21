@@ -1,4 +1,5 @@
 import {type ActionFunctionArgs, data} from 'react-router';
+import {DEFAULT_NOTIFY_EMAIL} from '~/lib/form-submit.server';
 import {rateLimitAllow} from '~/lib/rate-limit.server';
 
 /**
@@ -28,7 +29,7 @@ type WishlistEmailItem = {
   image?: string | null;
 };
 
-const FROM = 'STYX Gold <noreply@styxgold.com>';
+const FROM = `STYX Gold <${DEFAULT_NOTIFY_EMAIL}>`;
 
 const MAX_ITEMS = 8;
 const MAX_NOTE_LENGTH = 500;
@@ -137,6 +138,7 @@ export async function action({request, context}: ActionFunctionArgs) {
       },
       body: JSON.stringify({
         from: FROM,
+        reply_to: DEFAULT_NOTIFY_EMAIL,
         to: [to],
         subject: 'Your STYX Gold Wishlist',
         html: buildWishlistEmail(items, note, origin),

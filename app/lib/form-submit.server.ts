@@ -238,14 +238,10 @@ export function wrapBrandedEmail(heading: string, innerHtml: string): string {
 export const DEFAULT_NOTIFY_EMAIL = 'hello@styxgold.com';
 
 /**
- * Who receives the owner-side notification for a form submission: the shared
- * inbox (FORM_NOTIFY_EMAIL, default hello@styxgold.com), plus OWNER_EMAIL as a
- * second recipient when it is set and different. Never empty.
+ * Who receives the store-side notification for a form submission: the shared
+ * inbox only (FORM_NOTIFY_EMAIL, default hello@styxgold.com). Hagop, 2026-10-20:
+ * all form email goes to Patil's inbox, no owner copy.
  */
 export function formNotifyRecipients(env: Record<string, string | undefined>): string[] {
-  const primary = (env.FORM_NOTIFY_EMAIL || '').trim() || DEFAULT_NOTIFY_EMAIL;
-  const owner = (env.OWNER_EMAIL || '').trim();
-  const out = [primary];
-  if (owner && owner.toLowerCase() !== primary.toLowerCase()) out.push(owner);
-  return out;
+  return [(env.FORM_NOTIFY_EMAIL || '').trim() || DEFAULT_NOTIFY_EMAIL];
 }

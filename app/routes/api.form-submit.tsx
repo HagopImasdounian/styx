@@ -86,8 +86,8 @@ export async function action({request, context}: ActionFunctionArgs) {
   const env = context.env as Record<string, string>;
   const webhookUrl = env.FORM_WEBHOOK_URL;
   const resendKey = env.RESEND_API_KEY;
-  // Store notification goes to the shared inbox (FORM_NOTIFY_EMAIL, default
-  // hello@styxgold.com, Patil 2026-10-20); OWNER_EMAIL is copied when set.
+  // Store notification goes to the shared inbox only (FORM_NOTIFY_EMAIL,
+  // default hello@styxgold.com). Hagop 2026-10-20: all form email to Patil.
   const notifyRecipients = formNotifyRecipients(env);
 
   // NOTE: This from-address must be on a domain verified in the Resend dashboard,

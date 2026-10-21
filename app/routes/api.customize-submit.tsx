@@ -149,7 +149,7 @@ export async function action({request, context}: ActionFunctionArgs) {
   const env = context.env as Record<string, string>;
   const webhookUrl = env.FORM_WEBHOOK_URL;
   const resendKey = env.RESEND_API_KEY;
-  // Shared inbox first (FORM_NOTIFY_EMAIL, default hello@styxgold.com), owner copied.
+  // Shared inbox only (FORM_NOTIFY_EMAIL, default hello@styxgold.com).
   const notifyRecipients = formNotifyRecipients(env);
   // Must be on a domain verified in Resend (same as api.form-submit).
   const fromAddress = `STYX Gold <${DEFAULT_NOTIFY_EMAIL}>`;

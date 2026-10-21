@@ -170,14 +170,9 @@ describe('formNotifyRecipients', () => {
   it('defaults to the shared inbox', () => {
     expect(formNotifyRecipients({})).toEqual(['hello@styxgold.com']);
   });
-  it('uses FORM_NOTIFY_EMAIL first and copies a different OWNER_EMAIL', () => {
+  it('uses FORM_NOTIFY_EMAIL and never copies OWNER_EMAIL', () => {
     expect(
       formNotifyRecipients({FORM_NOTIFY_EMAIL: 'hello@styxgold.com', OWNER_EMAIL: 'owner@example.com'}),
-    ).toEqual(['hello@styxgold.com', 'owner@example.com']);
-  });
-  it('does not duplicate the same address', () => {
-    expect(
-      formNotifyRecipients({FORM_NOTIFY_EMAIL: 'Hello@styxgold.com', OWNER_EMAIL: 'hello@styxgold.com'}),
-    ).toEqual(['Hello@styxgold.com']);
+    ).toEqual(['hello@styxgold.com']);
   });
 });
