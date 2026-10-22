@@ -199,8 +199,8 @@ export default function Customize() {
       // No Content-Type header: the browser sets the multipart boundary.
       const res = await fetch('/api/customize-submit', {method: 'POST', body: fd});
 
-      if (!res.ok && res.status >= 400 && res.status < 500) {
-        // Validation or rate-limit problem the customer can act on.
+      if (!res.ok) {
+        // Validation, rate limit, or the store never received it.
         let message = 'Something went wrong. Please check your details and try again.';
         try {
           const json = (await res.json()) as {error?: string};
@@ -220,9 +220,7 @@ export default function Customize() {
       });
       setFormSent(true);
     } catch {
-      // Network failure or 5xx: do not block the confirmation UI on
-      // email/webhook delivery problems (matches the other forms).
-      setFormSent(true);
+      setSubmitError('Something went wrong. Please try again or email us at hello@styxgold.com.');
     } finally {
       setSubmitting(false);
     }

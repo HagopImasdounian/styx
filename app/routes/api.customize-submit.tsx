@@ -13,6 +13,7 @@ import {
   ownerRows,
   renderTextCell,
   safeFilename,
+  sendResendEmail,
   sanitizeHeaderText,
   validateSketchFiles,
   wrapBrandedEmail,
@@ -148,11 +149,8 @@ export async function action({request, context}: ActionFunctionArgs) {
 
   const env = context.env as Record<string, string>;
   const webhookUrl = env.FORM_WEBHOOK_URL;
-  const resendKey = env.RESEND_API_KEY;
   // Shared inbox only (FORM_NOTIFY_EMAIL, default hello@styxgold.com).
   const notifyRecipients = formNotifyRecipients(env);
-  // Must be on a domain verified in Resend (same as api.form-submit).
-  const fromAddress = `STYX Gold <${DEFAULT_NOTIFY_EMAIL}>`;
 
   const safeName = sanitizeHeaderText(name).slice(0, 120);
   const safeEmail = sanitizeHeaderText(email).slice(0, 254);
@@ -191,7 +189,7 @@ export async function action({request, context}: ActionFunctionArgs) {
   }
 
   // 2. Emails via Resend.
-  if (resendKey) {
+  {
     const budgetLabel = BUDGET_LABELS[budget] || budget;
     const attachmentList =
       attachmentMeta.length === 0
@@ -220,63 +218,35 @@ export async function action({request, context}: ActionFunctionArgs) {
     ]);
 
     // 2a. Owner notification with attachments.
-    try {
-      const res = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${resendKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          from: fromAddress,
-          to: notifyRecipients,
-          reply_to: email,
-          subject: `[${FRIENDLY_NAME}] New submission from ${
-            safeName || safeEmail
-          }${attachments.length ? ` (${attachments.length} image${
-            attachments.length === 1 ? '' : 's'
-          })` : ''}`,
-          html: wrapOwnerEmail(FRIENDLY_NAME, rows),
-          attachments,
-        }),
-      });
-      results.notification = res.ok ? 'sent' : `failed: ${res.status}`;
-    } catch (err) {
-      results.notification = `error: ${
-        err instanceof Error ? err.message : 'unknown'
-      }`;
-    }
+    results.notification = await sendResendEmail(env, {
+      to: notifyRecipients,
+      reply_to: email,
+      subject: `[${FRIENDLY_NAME}] New submission from ${
+        safeName || safeEmail
+      }${attachments.length ? ` (${attachments.length} image${
+        attachments.length === 1 ? '' : 's'
+      })` : ''}`,
+      html: wrapOwnerEmail(FRIENDLY_NAME, rows),
+      attachments,
+    });
 
     // 2b. Customer confirmation, short and branded.
-    try {
+    if (results.notification === 'sent') {
       const greeting = safeName ? `Hi ${escapeHtml(safeName)},` : 'Hi,';
-      const res = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${resendKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          from: fromAddress,
-          reply_to: DEFAULT_NOTIFY_EMAIL,
-          to: [email],
-          subject: 'We have your commission request. STYX Gold',
-          html: wrapBrandedEmail(
-            'Your Commission Request Is In',
-            `
-              <p style="margin:0 0 16px">${greeting}</p>
-              <p style="margin:0 0 16px">Thank you for starting a commission with us. Our team will review your request${
-                attachments.length ? ' and your reference images' : ''
-              } and get back to you within 24 to 48 hours.</p>
-            `,
-          ),
-        }),
+      results.confirmation = await sendResendEmail(env, {
+        reply_to: DEFAULT_NOTIFY_EMAIL,
+        to: [email],
+        subject: 'We have your commission request. STYX Gold',
+        html: wrapBrandedEmail(
+          'Your Commission Request Is In',
+          `
+            <p style="margin:0 0 16px">${greeting}</p>
+            <p style="margin:0 0 16px">Thank you for starting a commission with us. Our team will review your request${
+              attachments.length ? ' and your reference images' : ''
+            } and get back to you within 24 to 48 hours.</p>
+          `,
+        ),
       });
-      results.confirmation = res.ok ? 'sent' : `failed: ${res.status}`;
-    } catch (err) {
-      results.confirmation = `error: ${
-        err instanceof Error ? err.message : 'unknown'
-      }`;
     }
   }
 
@@ -287,6 +257,15 @@ export async function action({request, context}: ActionFunctionArgs) {
     console.error(
       `[customize-submit] delivery issues:`,
       JSON.stringify(results),
+    );
+  }
+
+  // The store must actually receive it (email or webhook). Never show the
+  // customer a success screen for a request nobody got.
+  if (results.notification !== 'sent' && results.webhook !== 'sent') {
+    return data(
+      {error: 'We could not send your message. Please email us at hello@styxgold.com.'},
+      {status: 502},
     );
   }
 

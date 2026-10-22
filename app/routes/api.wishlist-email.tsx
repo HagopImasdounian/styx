@@ -1,5 +1,5 @@
 import {type ActionFunctionArgs, data} from 'react-router';
-import {DEFAULT_NOTIFY_EMAIL} from '~/lib/form-submit.server';
+import {DEFAULT_NOTIFY_EMAIL, sendResendEmail} from '~/lib/form-submit.server';
 import {rateLimitAllow} from '~/lib/rate-limit.server';
 
 /**
@@ -29,7 +29,6 @@ type WishlistEmailItem = {
   image?: string | null;
 };
 
-const FROM = `STYX Gold <${DEFAULT_NOTIFY_EMAIL}>`;
 
 const MAX_ITEMS = 8;
 const MAX_NOTE_LENGTH = 500;
@@ -129,34 +128,14 @@ export async function action({request, context}: ActionFunctionArgs) {
   // SECURITY: never trust a client-supplied origin, derive it from the request.
   const origin = new URL(request.url).origin.replace(/\/$/, '');
 
-  try {
-    const res = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${resendKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: FROM,
-        reply_to: DEFAULT_NOTIFY_EMAIL,
-        to: [to],
-        subject: 'Your STYX Gold Wishlist',
-        html: buildWishlistEmail(items, note, origin),
-      }),
-    });
-
-    if (!res.ok) {
-      const detail = await res.text().catch(() => '');
-      console.error(
-        `[wishlist-email] Resend failed (${res.status}): ${detail}`,
-      );
-      return data({error: 'Failed to send email'}, {status: 502});
-    }
-  } catch (err) {
-    console.error(
-      '[wishlist-email] send error:',
-      err instanceof Error ? err.message : err,
-    );
+  const status = await sendResendEmail(env, {
+    reply_to: DEFAULT_NOTIFY_EMAIL,
+    to: [to],
+    subject: 'Your STYX Gold Wishlist',
+    html: buildWishlistEmail(items, note, origin),
+  });
+  if (status !== 'sent') {
+    console.error(`[wishlist-email] send failed: ${status}`);
     return data({error: 'Failed to send email'}, {status: 502});
   }
 

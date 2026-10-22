@@ -245,3 +245,42 @@ export const DEFAULT_NOTIFY_EMAIL = 'hello@styxgold.com';
 export function formNotifyRecipients(env: Record<string, string | undefined>): string[] {
   return [(env.FORM_NOTIFY_EMAIL || '').trim() || DEFAULT_NOTIFY_EMAIL];
 }
+
+// ── Resend ────────────────────────────────────────────────────────────────
+
+/**
+ * Sender for every site email. itshco.com is verified in the H&Co Resend
+ * account (styxgold.com is not), so mail goes out as noreply@itshco.com with
+ * hello@ or the customer as reply-to. Override with FORM_FROM.
+ */
+export const DEFAULT_FROM = 'STYX Gold <noreply@itshco.com>';
+
+export type ResendEmail = {
+  to: string[];
+  subject: string;
+  html: string;
+  reply_to?: string;
+  attachments?: {filename: string; content: string}[];
+};
+
+/** Send one email through Resend. Returns 'sent' or a short failure string for logging. */
+export async function sendResendEmail(
+  env: Record<string, string | undefined>,
+  email: ResendEmail,
+): Promise<string> {
+  const key = env.RESEND_API_KEY;
+  if (!key) return 'failed: RESEND_API_KEY missing';
+  const from = (env.FORM_FROM || '').trim() || DEFAULT_FROM;
+
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {Authorization: `Bearer ${key}`, 'Content-Type': 'application/json'},
+      body: JSON.stringify({from, ...email}),
+    });
+    if (res.ok) return 'sent';
+    return `failed: ${res.status} ${await res.text().catch(() => '')}`.trim();
+  } catch (err) {
+    return `error: ${err instanceof Error ? err.message : 'unknown'}`;
+  }
+}

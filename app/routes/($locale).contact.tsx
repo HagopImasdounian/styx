@@ -54,11 +54,16 @@ export default function Contact() {
     };
 
     try {
-      await fetch('/api/form-submit', {
+      const res = await fetch('/api/form-submit', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(data),
       });
+      if (!res.ok) {
+        const json = (await res.json().catch(() => null)) as {error?: string} | null;
+        setError(json?.error || 'Something went wrong. Please try again or email us at hello@styxgold.com.');
+        return;
+      }
 
       trackFormSubmit({
         formId: 'contact',

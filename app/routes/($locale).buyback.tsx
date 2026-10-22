@@ -315,7 +315,7 @@ export default function Buyback() {
                 Every product page shows the price in two parts: the gold, and
                 the craft. The gold is the weight of pure metal in the chain
                 at the live market price. The craft is the making, finishing,
-                testing, shipping and our margin. That is the labor.
+                testing, shipping and our margin.
               </p>
               <p data-reveal="" style={{margin: 0}}>
                 We weigh the piece, deduct our standard 10% refining allowance

@@ -1,5 +1,4 @@
 import {
-  CacheLong,
   CacheNone,
   CacheShort,
   generateCacheControlHeader,
@@ -20,5 +19,10 @@ export function routeHeaders({loaderHeaders}: {loaderHeaders: Headers}) {
 export const CACHE_SHORT = generateCacheControlHeader(
   CacheShort({maxAge: 60, staleWhileRevalidate: 3600}),
 );
-export const CACHE_LONG = generateCacheControlHeader(CacheLong());
+// Copy pages (About, Shipping, Terms, Buyback…). CacheLong() let browsers keep
+// a page for an hour and serve it stale for a day, so copy edits looked
+// undeployed (Patil, 2026-10-21). Five minutes is plenty for static copy.
+export const CACHE_LONG = generateCacheControlHeader(
+  CacheShort({maxAge: 300, staleWhileRevalidate: 3600}),
+);
 export const CACHE_NONE = generateCacheControlHeader(CacheNone());

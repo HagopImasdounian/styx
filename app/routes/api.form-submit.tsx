@@ -1,6 +1,10 @@
 import {type ActionFunctionArgs, data} from 'react-router';
 import {rateLimitAllow} from '~/lib/rate-limit.server';
-import {DEFAULT_NOTIFY_EMAIL, formNotifyRecipients} from '~/lib/form-submit.server';
+import {
+  DEFAULT_NOTIFY_EMAIL,
+  formNotifyRecipients,
+  sendResendEmail,
+} from '~/lib/form-submit.server';
 
 type FormPayload = {
   formId?: string;
@@ -85,14 +89,9 @@ export async function action({request, context}: ActionFunctionArgs) {
 
   const env = context.env as Record<string, string>;
   const webhookUrl = env.FORM_WEBHOOK_URL;
-  const resendKey = env.RESEND_API_KEY;
   // Store notification goes to the shared inbox only (FORM_NOTIFY_EMAIL,
   // default hello@styxgold.com). Hagop 2026-10-20: all form email to Patil.
   const notifyRecipients = formNotifyRecipients(env);
-
-  // NOTE: This from-address must be on a domain verified in the Resend dashboard,
-  // otherwise sends will fail. Verify "styxgold.com" (or change to a verified domain).
-  const fromAddress = `STYX Gold <${DEFAULT_NOTIFY_EMAIL}>`;
 
   const friendlyFormName = prettyFormName(formName);
   // Subject-line hygiene: never let newlines/control chars reach the subject.
@@ -129,55 +128,25 @@ export async function action({request, context}: ActionFunctionArgs) {
     }
   }
 
-  // 2. Send emails via Resend HTTP API
-  if (resendKey) {
-    // 2a. OWNER notification, every submitted field, scannable summary.
-    try {
-      const res = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${resendKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          from: fromAddress,
-          to: notifyRecipients,
-          reply_to: email,
-          subject: `[${friendlyFormName}] New submission from ${
-            safeName || safeEmail
-          }`,
-          html: buildOwnerEmail(friendlyFormName, payload),
-        }),
-      });
-      results.notification = res.ok ? 'sent' : `failed: ${res.status}`;
-    } catch (err) {
-      results.notification = `error: ${
-        err instanceof Error ? err.message : 'unknown'
-      }`;
-    }
+  // 2. Send emails via Resend.
+  // 2a. Store notification, every submitted field, scannable summary.
+  results.notification = await sendResendEmail(env, {
+    to: notifyRecipients,
+    reply_to: email,
+    subject: `[${friendlyFormName}] New submission from ${
+      safeName || safeEmail
+    }`,
+    html: buildOwnerEmail(friendlyFormName, payload),
+  });
 
-    // 2b. CUSTOMER confirmation, short, branded, no internal info.
-    try {
-      const res = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${resendKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          from: fromAddress,
-          reply_to: DEFAULT_NOTIFY_EMAIL,
-          to: [email],
-          subject: getConfirmationSubject(formName),
-          html: buildConfirmationEmail(formName, name),
-        }),
-      });
-      results.confirmation = res.ok ? 'sent' : `failed: ${res.status}`;
-    } catch (err) {
-      results.confirmation = `error: ${
-        err instanceof Error ? err.message : 'unknown'
-      }`;
-    }
+  // 2b. Customer confirmation, short, branded, no internal info.
+  if (results.notification === 'sent') {
+    results.confirmation = await sendResendEmail(env, {
+      reply_to: DEFAULT_NOTIFY_EMAIL,
+      to: [email],
+      subject: getConfirmationSubject(formName),
+      html: buildConfirmationEmail(formName, name),
+    });
   }
 
   // Keep delivery details server-side only, never leak webhook/notification
@@ -189,6 +158,15 @@ export async function action({request, context}: ActionFunctionArgs) {
     console.error(
       `[form-submit] delivery issues for "${friendlyFormName}":`,
       JSON.stringify(results),
+    );
+  }
+
+  // The store must actually receive it (email or webhook). Never show the
+  // customer a success screen for a request nobody got.
+  if (results.notification !== 'sent' && results.webhook !== 'sent') {
+    return data(
+      {error: 'We could not send your message. Please email us at hello@styxgold.com.'},
+      {status: 502},
     );
   }
 
