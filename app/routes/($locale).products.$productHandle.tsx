@@ -2318,9 +2318,9 @@ export default function Product() {
                         displayWeight * perGramSelected,
                     ),
                   )}
-                  {', '}is the craft: making, finishing, testing, insured
-                  shipping, and our margin, said out loud. That is the whole
-                  math. Nothing hidden in a velvet box.
+                  {', '}is everything else: making, marketing, rent, insurance,
+                  card fees, and our food and shelter, itemized in the receipt.
+                  That is the whole math. Nothing hidden in a velvet box.
                 </div>
               </div>
 
@@ -2588,6 +2588,41 @@ const keepsColor = (variantUriQuery: string, color: string | null) => {
     Same math as before, new framing: the non-gold portion is "the craft"
     with its contents named, the buyback floor sits inside the box, and the
     price appears exactly once. */
+/** Card processing is the Shopify Payments rate on the full price. The rest
+    of the non-gold amount is split by these fixed shares (Hagop, 2026-10-26).
+    Food & shelter takes whatever is left, so the rows always add up. */
+const CARD_PROCESSING_RATE = 0.029;
+// Segment colours: dataviz categorical dark steps, validated against the
+// receipt's ink surface (adjacent CVD ΔE >= 9.4). Yellow is skipped so no
+// segment can be mistaken for the gold.
+const CRAFT_SHARES: {label: string; share: number; color: string}[] = [
+  {label: 'Making, by our maker in Italy', share: 0.35, color: '#3987e5'},
+  {label: 'Marketing', share: 0.25, color: '#d95926'},
+  {label: 'Rent', share: 0.1, color: '#199e70'},
+  {label: 'Insurance, incl. insured shipping', share: 0.1, color: '#9085e9'},
+];
+const CARD_COLOR = '#d55181';
+const FOOD_AND_SHELTER_COLOR = '#008300';
+
+function splitCraft(craft: number, price: number) {
+  const cents = (n: number) => Math.round(n * 100) / 100;
+  const card = cents(Math.min(craft, price * CARD_PROCESSING_RATE));
+  const rest = craft - card;
+  const lines = CRAFT_SHARES.map((s) => ({
+    label: s.label,
+    amount: cents(rest * s.share),
+    color: s.color,
+  }));
+  lines.push({label: 'Card processing', amount: card, color: CARD_COLOR});
+  const used = lines.reduce((sum, l) => sum + l.amount, 0);
+  lines.push({
+    label: 'Food & shelter (that\u2019s us)',
+    amount: Math.max(0, cents(craft - used)),
+    color: FOOD_AND_SHELTER_COLOR,
+  });
+  return lines;
+}
+
 function LivePriceReceipt({
   price,
   displayWeight,
@@ -2613,6 +2648,7 @@ function LivePriceReceipt({
   // "The craft": everything that is not gold. Clamped so a price below melt
   // (a catalog error) never shows a negative line.
   const craft = priced ? Math.max(0, ourPrice - meltValue) : 0;
+  const craftLines = splitCraft(craft, ourPrice);
   const wirePrice = Math.round(ourPrice * 0.96 * 100) / 100;
   const goldShare = priced ? Math.min(1, Math.max(0, meltValue / ourPrice)) : 0;
   const goldPct = Math.round(goldShare * 100);
@@ -2700,8 +2736,16 @@ function LivePriceReceipt({
 
         <div style={{height: 20}} />
         <ReceiptSection label="The craft" greek="ΤΕΧΝΗ" />
+        {craftLines.map((l) => (
+          <ReceiptRow
+            key={l.label}
+            label={l.label}
+            swatch={l.color}
+            value={priced ? fmt(l.amount) : '—'}
+          />
+        ))}
         <ReceiptRow
-          label="Making, finishing, testing, insured shipping & our margin"
+          label="Everything that isn't gold"
           value={priced ? fmt(craft) : '—'}
           highlight
         />
@@ -2710,18 +2754,38 @@ function LivePriceReceipt({
       {/* Proportional split: GOLD | CRAFT */}
       <div
         role="img"
-        aria-label={`Gold ${goldPct}%, craft ${craftPct}%`}
+        aria-label={[
+          `Gold ${goldPct}%`,
+          ...craftLines.map(
+            (l) => `${l.label} ${Math.round((l.amount / ourPrice) * 100)}%`,
+          ),
+        ].join(', ')}
         style={{
           display: 'flex',
-          height: 6,
+          gap: 2,
+          height: 8,
           margin: '18px 0 6px',
           background: line,
+          borderRadius: 4,
+          overflow: 'hidden',
         }}
       >
-        <div style={{width: `${goldPct}%`, background: STYX.gold}} />
         <div
-          style={{width: `${craftPct}%`, background: 'rgba(235,235,232,0.28)'}}
+          title={`Gold ${goldPct}%`}
+          style={{flex: `${goldShare} 0 0`, background: STYX.gold}}
         />
+        {priced &&
+          craftLines
+            .filter((l) => l.amount > 0)
+            .map((l) => (
+              <div
+                key={l.label}
+                title={`${l.label}: ${fmt(l.amount)} (${Math.round(
+                  (l.amount / ourPrice) * 100,
+                )}%)`}
+                style={{flex: `${l.amount / ourPrice} 0 0`, background: l.color}}
+              />
+            ))}
       </div>
       <div
         style={{
@@ -2917,10 +2981,13 @@ function ReceiptRow({
   label,
   value,
   highlight,
+  swatch,
 }: {
   label: string;
   value: React.ReactNode;
   highlight?: boolean;
+  /** Colour of this row's segment in the split bar, shown as a key. */
+  swatch?: string;
 }) {
   return (
     <div
@@ -2943,6 +3010,19 @@ function ReceiptRow({
           minWidth: 0,
         }}
       >
+        {swatch && (
+          <span
+            aria-hidden
+            style={{
+              display: 'inline-block',
+              width: 8,
+              height: 8,
+              borderRadius: 2,
+              background: swatch,
+              marginRight: 10,
+            }}
+          />
+        )}
         {label}
       </span>
       <span
