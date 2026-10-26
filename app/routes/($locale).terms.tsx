@@ -125,7 +125,7 @@ export default function Terms() {
               marginTop: 20,
             }}
           >
-            Last updated: May 2026
+            Last updated: October 2026
           </p>
         </div>
       </div>
@@ -135,200 +135,236 @@ export default function Terms() {
         <div style={{display: 'flex', flexDirection: 'column', gap: 48}}>
 
           <section>
-            <SectionHeading number="1" title="Agreement to Terms" />
+            <SectionHeading number="1" title="About These Terms" />
             <Paragraph>
-              By accessing or placing an order on styxgold.com (the &ldquo;Site&rdquo;), you agree to be bound by these Terms and Conditions. If you do not agree, do not use the Site or make a purchase. We reserve the right to update these terms at any time. Continued use of the Site after changes constitutes acceptance.
+              These Terms and Conditions (the &ldquo;Terms&rdquo;) apply when you visit styxgold.com (the &ldquo;Site&rdquo;) or buy from us. By using the Site or placing an order, you agree to these Terms. If you do not agree, please do not use the Site or place an order. In these Terms, &ldquo;Styx Gold&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo; and &ldquo;our&rdquo; mean Styx Gold and, for orders delivered in the United States, our US affiliate. &ldquo;You&rdquo; means the person using the Site or placing the order.
             </Paragraph>
           </section>
 
           <section>
-            <SectionHeading number="2" title="Nature of Products" />
+            <SectionHeading number="2" title="Who We Are" />
             <Paragraph>
-              Styx Gold sells gold jewelry and accessories. Gold is a commodity whose market value fluctuates continuously. By placing an order, you acknowledge that the products you purchase contain precious metals subject to market volatility and that the price you pay reflects the gold spot price at the time of checkout. Price fluctuations after your purchase do not entitle you to a price adjustment, partial refund, or cancellation.
+              Styx Gold is based in Toronto, Ontario, Canada. We sell 10K and 14K gold chains and bracelets online. Orders delivered in Canada are sold and shipped by Styx Gold from Canada. Orders delivered in the United States are fulfilled and shipped from the United States by our US affiliate. You can reach us at{' '}
+              <a href="mailto:hello@styxgold.com" style={{color: STYX.gold, textDecoration: 'none'}}>
+                hello@styxgold.com
+              </a>.
             </Paragraph>
           </section>
 
           <section>
-            <SectionHeading number="3" title="Products & Descriptions" />
+            <SectionHeading number="3" title="Your Consumer Rights" />
             <Paragraph>
-              We make every effort to display product colors, weights, and dimensions as accurately as possible. However, actual items may vary slightly from photographs due to lighting, screen settings, and the nature of handcrafted goods. All product weights are approximate and may vary by +/- 5% from the listed weight.
-            </Paragraph>
-            <Paragraph>
-              Gold purity is stamped on each piece and meets or exceeds the stated karat. We test every piece multiple times before shipping to verify purity.
+              Nothing in these Terms limits or excludes any right you have under the consumer protection laws of the province, territory or state where you live, including the Ontario <em>Consumer Protection Act, 2002</em> and similar laws elsewhere in Canada and the United States. If any part of these Terms conflicts with those laws, those laws apply and the conflicting part of these Terms does not apply to you to the extent of the conflict.
             </Paragraph>
           </section>
 
           <section>
-            <SectionHeading number="4" title="Pricing & Payment" />
+            <SectionHeading number="4" title="Our Products" />
             <Paragraph>
-              All prices are listed in Canadian dollars (CAD). If you choose another country on the site, prices and checkout are shown in that country&rsquo;s currency, converted by Shopify at the current exchange rate. Prices are based on the current gold spot price and may change without notice. The price at the time of checkout is the price you pay, regardless of subsequent market movements.
+              Our chains are machine-made in Italy. Most are solid gold; some are hollow. Every listing states the karat and whether the piece is solid or hollow. Gold purity is stamped on each piece and meets or exceeds the stated karat. We test every piece before shipping to verify purity.
             </Paragraph>
             <Paragraph>
-              <strong>Credit &amp; debit cards:</strong> We accept major credit and debit cards processed through Shopify Payments. All card transactions are subject to authorization and fraud screening. We reserve the right to hold shipment for up to five (5) business days while payment is verified and fraud review is completed. Orders over $1,000 may be subject to additional verification, including but not limited to identity confirmation (see Section 6).
-            </Paragraph>
-            <Paragraph>
-              <strong>Wire transfers:</strong> Wire transfer orders receive a 4% discount. Orders paid by wire transfer will not ship until funds have been received and fully cleared in our bank account, which typically takes one (1) to three (3) business days. The price is locked at the time of checkout, not at the time funds clear.
-            </Paragraph>
-            <Paragraph>
-              Payment must be received in full before any order ships. We reserve the right to cancel any order where payment cannot be verified or where fraud is suspected. Wire transfer payments must be received within seven (7) calendar days of order placement; failure to remit payment within this period constitutes cancellation and may be subject to a market loss fee if the spot price of gold has declined.
+              We work to show colours, weights and dimensions as accurately as we can, but items may look slightly different from photos because of lighting and screen settings. Listed weights are approximate and may vary by up to 5% either way.
             </Paragraph>
           </section>
 
           <section>
-            <SectionHeading number="5" title="Orders & Cancellations" />
+            <SectionHeading number="5" title="Gold Pricing" />
             <Paragraph>
-              Placing an order constitutes a binding offer to purchase at the agreed-upon price. We reserve the right to refuse or cancel any order for any reason, including pricing errors, suspected fraud, or inventory issues. If we cancel your order, you will receive a full refund.
-            </Paragraph>
-            <Paragraph>
-              <strong>Customer-initiated cancellations:</strong> You may request cancellation within one (1) hour of placing your order by contacting us. After this window, your order enters processing and is subject to our return policy, including any applicable restocking fee and market loss adjustment.
+              Gold is a commodity and its market value changes constantly. Our prices are tied to the live gold spot price and may change without notice. The price shown at checkout is the price you pay. If the gold price moves after you buy, up or down, the price of your order does not change, and the movement does not entitle you to a price adjustment, partial refund or cancellation.
             </Paragraph>
           </section>
 
           <section>
-            <SectionHeading number="6" title="Identity Verification & Fraud Prevention" />
+            <SectionHeading number="6" title="Prices, Currency & Taxes" />
             <Paragraph>
-              Due to the high value and commodity nature of our products, we reserve the right to take any of the following steps before shipping an order:
+              Prices are shown in Canadian dollars (CAD) by default. If you choose another country on the Site, prices and checkout are shown in that country&rsquo;s currency, converted by Shopify at the current exchange rate. Your card issuer may charge its own conversion or foreign transaction fees.
+            </Paragraph>
+            <Paragraph>
+              Applicable sales taxes, such as GST, HST, PST or QST in Canada, or state and local sales tax in the United States, are calculated and charged at checkout where required by law. The total shown at checkout, including taxes, is the amount you pay.
+            </Paragraph>
+          </section>
+
+          <section>
+            <SectionHeading number="7" title="Payment" />
+            <Paragraph>
+              <strong>Credit &amp; debit cards:</strong> We accept major credit and debit cards through Shopify Payments. All card payments are subject to authorization and fraud review. We may hold shipment for up to five (5) business days while payment is verified. Orders over $1,000 may need extra verification, such as identity confirmation (see Section 10).
+            </Paragraph>
+            <Paragraph>
+              <strong>Wire transfers:</strong> Orders paid by wire transfer receive a 4% discount. Wire transfer orders ship once the funds have been received and fully cleared in our bank account, which usually takes one (1) to three (3) business days. Your price is locked at checkout, not when the funds clear. Payment must arrive within seven (7) calendar days of your order. If it does not, we may cancel the order. Because we commit to your price at checkout, if the gold spot price has fallen by the time the order is cancelled, we may charge a market loss fee equal to the actual decline, to the extent permitted by law.
+            </Paragraph>
+            <Paragraph>
+              Payment must be received in full before any order ships. We may cancel any order where payment cannot be verified or where we reasonably suspect fraud. If we cancel, we refund anything you have paid.
+            </Paragraph>
+          </section>
+
+          <section>
+            <SectionHeading number="8" title="Orders & Cancellations" />
+            <Paragraph>
+              When you place an order, you are offering to buy the items at the price shown at checkout. Your order is accepted when we confirm it. We may refuse or cancel an order, for example because of a pricing or listing error, suspected fraud, failed verification, an address we do not ship to, or an item being unavailable. If we cancel your order, we will tell you and give you a full refund.
+            </Paragraph>
+            <Paragraph>
+              <strong>Cancelling your order:</strong> You can ask to cancel within one (1) hour of placing your order by contacting us. After that, your order goes into processing and is handled under our return policy (Section 12), including the restocking fee and any market loss adjustment.
+            </Paragraph>
+          </section>
+
+          <section>
+            <SectionHeading number="9" title="Where We Ship" />
+            <Paragraph>
+              We ship to addresses in Canada and the United States only. We do not ship anywhere else. If an order has a shipping address outside Canada or the United States, we will cancel it and give you a full refund.
+            </Paragraph>
+          </section>
+
+          <section>
+            <SectionHeading number="10" title="Identity Verification & Fraud Prevention" />
+            <Paragraph>
+              Because our products are high-value and their price follows the gold market, we may take any of these steps before shipping an order:
             </Paragraph>
             <BulletList items={[
-              'Request a copy of a valid government-issued photo ID (driver\'s license, passport, or equivalent).',
-              'Verify that the billing name and address match the cardholder on file.',
-              'Require that the shipping address match the billing address, or request additional verification if they differ.',
-              'Place a phone call to the number on file to verbally confirm the order details.',
-              'Hold or cancel orders that fail verification or exhibit indicators of fraud.',
+              'Ask for a copy of a valid government-issued photo ID (driver\'s licence, passport or equivalent).',
+              'Check that the billing name and address match the cardholder on file.',
+              'Require that the shipping address match the billing address, or ask for more verification if they differ.',
+              'Call the phone number on file to confirm the order details.',
+              'Hold or cancel orders that fail verification or show signs of fraud.',
             ]} />
             <Paragraph>
-              Failure or refusal to comply with a verification request within forty-eight (48) hours will result in order cancellation and a full refund. We may share order and identity information with our payment processor, fraud screening services, and law enforcement as necessary to investigate suspected fraud (see our <Link to="/privacy" style={{color: STYX.gold, textDecoration: 'none'}}>Privacy Policy</Link>).
+              If you do not respond to a verification request within forty-eight (48) hours, we will cancel the order and give you a full refund. We may share order and identity information with our payment processor, fraud screening services and law enforcement where needed to investigate suspected fraud, as described in our <Link to="/privacy" style={{color: STYX.gold, textDecoration: 'none'}}>Privacy Policy</Link>.
             </Paragraph>
           </section>
 
           <section>
-            <SectionHeading number="7" title="Shipping & Delivery" />
+            <SectionHeading number="11" title="Shipping & Delivery" />
             <Paragraph>
-              We offer free insured shipping on all orders. All shipments require a signature upon delivery. Delivery times are estimates and not guarantees. Risk of loss and title transfer to the buyer upon delivery confirmation or signature by the recipient or any person at the delivery address.
+              Shipping is free on all orders. Every shipment is insured and tracked, and a signature is required on delivery. Delivery times are estimates, not guarantees. Ownership of and responsibility for the item pass to you on delivery, when the recipient or a person at the delivery address signs for it.
             </Paragraph>
             <Paragraph>
               See our{' '}
               <Link to="/shipping" style={{color: STYX.gold, textDecoration: 'none'}}>
                 Shipping &amp; Returns
               </Link>{' '}
-              page for full details including transit times and insurance coverage.
+              page for transit times and insurance details.
             </Paragraph>
           </section>
 
           <section>
-            <SectionHeading number="8" title="Returns, Restocking Fee & Market Loss" />
+            <SectionHeading number="12" title="Returns, Restocking Fee & Market Loss" />
             <Paragraph>
-              Returns are accepted within fourteen (14) days of delivery, subject to all conditions described below and on our{' '}
+              You can return an item within fourteen (14) days of delivery, subject to the conditions below and on our{' '}
               <Link to="/shipping" style={{color: STYX.gold, textDecoration: 'none'}}>
                 Shipping &amp; Returns
               </Link>{' '}
-              page.
+              page. These conditions do not affect any return or cancellation rights you have by law (see Section 3).
             </Paragraph>
             <Paragraph>
-              <strong>Return Authorization Required:</strong> No returns will be accepted without a Return Merchandise Authorization (RMA) number. Contact us to initiate a return before shipping anything back. Packages received without an RMA will be refused.
+              <strong>Return authorization required:</strong> Contact us for a Return Merchandise Authorization (RMA) number before sending anything back. Packages that arrive without an RMA number will be refused.
             </Paragraph>
             <Paragraph>
-              <strong>Condition requirements:</strong> Items must be unworn, unaltered, and in their original condition with all packaging, documentation, and tags included. All returned items will be inspected, weighed, and purity-tested upon receipt. If an item shows signs of wear, alteration, damage, or does not match its original shipped condition, the return will be refused and the item shipped back to you at your expense.
+              <strong>Condition:</strong> Items must be unworn, unaltered and in their original condition, with all packaging, documentation and tags. We inspect, weigh and purity-test every return. If an item shows wear, alteration or damage, or does not match the condition it was shipped in, we will refuse the return and send the item back to you at your cost.
             </Paragraph>
             <Paragraph>
-              <strong>Restocking fee:</strong> All approved returns are subject to a restocking fee of 10% of the original purchase price. This fee covers inspection, processing, and the costs associated with handling precious metals.
+              <strong>Restocking fee:</strong> Approved returns are subject to a restocking fee of 10% of the original purchase price. This covers inspection, testing and handling.
             </Paragraph>
             <Paragraph>
-              <strong>Market loss adjustment:</strong> If the spot price of gold has decreased between the date of your original purchase and the date your return is received and inspected by Styx Gold, a market loss adjustment will be deducted from your refund. This adjustment reflects the actual decline in the underlying gold value of the item. If the spot price has increased, no additional credit is owed to you.
+              <strong>Market loss adjustment:</strong> If the gold spot price has fallen between your purchase date and the date we receive and inspect your return, we deduct the actual decline in the item&rsquo;s gold value from your refund. If the spot price has risen, no extra credit is owed.
             </Paragraph>
             <Paragraph>
-              <strong>Refund calculation:</strong> Your refund equals the original purchase price, minus the 10% restocking fee, minus any applicable market loss adjustment. Refunds are processed within fourteen (14) to twenty-one (21) business days of our receipt and successful inspection of the returned item. Credit card refunds appear on your statement within one to two billing cycles. Wire transfer refunds are issued to the originating bank account.
+              <strong>Your refund:</strong> Your refund is the original purchase price, minus the 10% restocking fee, minus any market loss adjustment. We process refunds within fourteen (14) to twenty-one (21) business days after we receive and inspect the item. Card refunds go back to the original card and usually show within one or two billing cycles. Wire transfer refunds go back to the bank account that sent the payment.
             </Paragraph>
             <Paragraph>
-              <strong>Final sale items:</strong> Custom orders, personalized items, and any items marked as &ldquo;Final Sale&rdquo; at the time of purchase are not eligible for return or exchange. Final sale items will only be accepted back if they arrive with a manufacturing defect, which will be determined solely by Styx Gold upon inspection.
+              <strong>Custom and final sale items:</strong> Custom orders, personalized items and anything marked &ldquo;Final Sale&rdquo; at purchase cannot be returned or exchanged, except for a defect (see Section 14).
             </Paragraph>
             <Paragraph>
-              <strong>Return shipping:</strong> Return shipping is the buyer&rsquo;s responsibility. Insured, tracked, signature-required shipping is required for items valued over $500. Styx Gold is not responsible for items lost, stolen, or damaged during return transit.
-            </Paragraph>
-          </section>
-
-          <section>
-            <SectionHeading number="9" title="Exchanges" />
-            <Paragraph>
-              We offer exchanges within fourteen (14) days of delivery for a different length, karat, or style, subject to availability. The original item must meet the same return conditions above. If there is a price difference between the original and replacement item (including any change in gold spot price), we will charge or refund the difference. An RMA number is required for all exchanges.
+              <strong>Return shipping:</strong> Return shipping is at your cost. Items valued over $500 must be sent insured and tracked, with signature required. We are not responsible for items lost, stolen or damaged on the way back to us, to the extent permitted by law.
             </Paragraph>
           </section>
 
           <section>
-            <SectionHeading number="10" title="Damaged or Defective Items" />
+            <SectionHeading number="13" title="Exchanges" />
             <Paragraph>
-              If your item arrives damaged or defective, contact us within forty-eight (48) hours of delivery with clear photographs showing the issue from multiple angles, including the packaging. We will review the evidence and, at our discretion, arrange a prepaid return label for inspection. Upon confirming the defect, we will ship a replacement or issue a full refund. No restocking fee or market loss adjustment applies to verified defective items.
-            </Paragraph>
-            <Paragraph>
-              We inspect and test every piece before shipment. Styx Gold reserves the right to deny a defect claim if inspection determines the item was damaged after delivery, altered, or is not in the condition originally shipped.
+              You can exchange an item within fourteen (14) days of delivery for a different length, karat or style, subject to availability. The original item must meet the return conditions in Section 12, and an RMA number is required. If the replacement costs more or less than the original, including because the gold spot price has changed, we will charge or refund the difference.
             </Paragraph>
           </section>
 
           <section>
-            <SectionHeading number="11" title="Chargebacks & Payment Disputes" />
+            <SectionHeading number="14" title="Damaged or Defective Items" />
             <Paragraph>
-              If you have a concern about your order, we ask that you contact us directly so we can resolve it. Filing a chargeback or payment dispute with your bank or credit card company without first attempting to resolve the issue through our customer service constitutes a breach of these Terms.
+              If your item arrives damaged or defective, contact us within forty-eight (48) hours of delivery with clear photos of the issue from several angles, including the packaging. We will review them and, where needed, send you a prepaid return label so we can inspect the item. If we confirm the defect, we will send a replacement or give you a full refund. No restocking fee or market loss adjustment applies to confirmed defects.
             </Paragraph>
             <Paragraph>
-              In the event of a chargeback or payment reversal, Styx Gold reserves the right to:
+              We inspect and test every piece before it ships. We may decline a defect claim if inspection shows the item was damaged after delivery, was altered, or is not in the condition we shipped it in. This does not limit any warranty or other rights you have by law.
+            </Paragraph>
+          </section>
+
+          <section>
+            <SectionHeading number="15" title="Chargebacks & Payment Disputes" />
+            <Paragraph>
+              If something is wrong with your order, please contact us first. Most issues can be resolved quickly, and it is usually faster than a dispute with your bank. Nothing in these Terms limits any right you have by law, or under your card agreement, to dispute a charge or request a chargeback.
+            </Paragraph>
+            <Paragraph>
+              If a chargeback or payment reversal is made in bad faith, for example on an order that was delivered as described, or a wire transfer is recalled after the order has shipped, we may, to the extent permitted by law:
             </Paragraph>
             <BulletList items={[
-              'Suspend or cancel any pending or future orders associated with your account.',
-              'Pursue recovery of the full order amount, plus any fees, penalties, or costs incurred as a result of the dispute (including chargeback fees assessed by our payment processor).',
-              'Report the matter to fraud prevention databases and, where warranted, to law enforcement.',
-              'Engage a collections agency or pursue legal action to recover amounts owed.',
+              'Suspend or cancel any pending or future orders linked to you.',
+              'Contest the dispute with your bank or card issuer, using order, delivery and signature records.',
+              'Recover the order amount and the costs we incurred because of the dispute, including chargeback fees charged by our payment processor.',
+              'Report suspected fraud to fraud prevention services and, where warranted, to law enforcement.',
             ]} />
+          </section>
+
+          <section>
+            <SectionHeading number="16" title="Intellectual Property" />
             <Paragraph>
-              Retracted wire transfers, reversed ACH payments, or any attempt to reclaim funds after goods have been shipped or delivered is considered a breach of contract and will be treated accordingly.
+              All content on the Site, including text, images, logos, product descriptions, journal articles and design, belongs to Styx Gold or its licensors and is protected by copyright and trademark laws. You may not copy, distribute or create derivative works from it without our written permission.
             </Paragraph>
           </section>
 
           <section>
-            <SectionHeading number="12" title="International Orders & Customs" />
+            <SectionHeading number="17" title="Limitation of Liability" />
             <Paragraph>
-              International customers are solely responsible for all import duties, taxes, customs fees, and any other charges assessed by their country. These charges are not included in the purchase price and are not refundable by Styx Gold. Refused deliveries due to unexpected customs charges will be treated as a return and subject to the restocking fee and market loss adjustment described in Section 8, in addition to any return shipping costs.
+              To the extent permitted by law, Styx Gold is not liable for any indirect, incidental, special or consequential damages arising from your use of the Site or your purchase. To the extent permitted by law, our total liability for any claim relating to an order is limited to the amount you paid for that order. We are not responsible for delays caused by shipping carriers, payment processors, customs authorities or other third parties outside our reasonable control. None of this limits any liability that cannot be limited by law, or your rights under Section 3.
             </Paragraph>
           </section>
 
           <section>
-            <SectionHeading number="13" title="Intellectual Property" />
+            <SectionHeading number="18" title="Indemnification" />
             <Paragraph>
-              All content on this Site, including text, images, logos, product descriptions, journal articles, and design, is the property of Styx Gold and protected by applicable copyright and trademark laws. You may not reproduce, distribute, or create derivative works from any content without written permission.
+              To the extent permitted by law, you agree to indemnify Styx Gold, its owners, employees and agents against claims, losses and reasonable costs (including legal fees) arising from your breach of these Terms or from fraudulent or unauthorized use of a payment method or account by you.
             </Paragraph>
           </section>
 
           <section>
-            <SectionHeading number="14" title="Limitation of Liability" />
+            <SectionHeading number="19" title="Governing Law & Disputes" />
             <Paragraph>
-              Styx Gold is not liable for any indirect, incidental, or consequential damages arising from your use of the Site or purchase of products. Our total liability for any claim is limited to the amount you paid for the product in question. We are not liable for delays, losses, or damages caused by shipping carriers, payment processors, customs authorities, or other third parties.
+              These Terms are governed by the laws of the Province of Ontario and the federal laws of Canada that apply there. Subject to your rights under Section 3, any dispute will be heard by the courts of Ontario sitting in Toronto. If you live outside Ontario, you may also have the right to bring a claim in the courts, or under the consumer protection laws, of the place where you live. If you have a concern, please contact us first so we can try to resolve it.
             </Paragraph>
           </section>
 
           <section>
-            <SectionHeading number="15" title="Indemnification" />
+            <SectionHeading number="20" title="Changes to These Terms" />
             <Paragraph>
-              You agree to indemnify and hold harmless Styx Gold, its owners, employees, and agents from any claims, damages, losses, or expenses (including legal fees) arising from your breach of these Terms, your use of the Site, or any fraudulent or unauthorized activity associated with your account or payment method.
+              We may update these Terms from time to time. Changes take effect when posted on this page, and the &ldquo;Last updated&rdquo; date above will change. The Terms in place when you place an order apply to that order.
             </Paragraph>
           </section>
 
           <section>
-            <SectionHeading number="16" title="Governing Law & Disputes" />
+            <SectionHeading number="21" title="Severability & Entire Agreement" />
             <Paragraph>
-              These terms are governed by the laws of the State of New York, United States. Any disputes shall be resolved in the courts located in New York County, New York. You agree to submit to the personal jurisdiction of these courts and waive any objection to venue.
+              If any part of these Terms is found invalid or unenforceable, that part will be limited or removed only as much as needed, and the rest of these Terms will stay in effect. These Terms, together with our{' '}
+              <Link to="/privacy" style={{color: STYX.gold, textDecoration: 'none'}}>
+                Privacy Policy
+              </Link>{' '}
+              and{' '}
+              <Link to="/shipping" style={{color: STYX.gold, textDecoration: 'none'}}>
+                Shipping &amp; Returns
+              </Link>{' '}
+              page, are the entire agreement between you and us about your use of the Site and your purchases.
             </Paragraph>
           </section>
 
           <section>
-            <SectionHeading number="17" title="Severability" />
+            <SectionHeading number="22" title="Contact" />
             <Paragraph>
-              If any provision of these Terms is found to be unenforceable or invalid, that provision will be limited or eliminated to the minimum extent necessary, and the remaining provisions will remain in full force and effect.
-            </Paragraph>
-          </section>
-
-          <section>
-            <SectionHeading number="18" title="Contact" />
-            <Paragraph>
-              Questions about these terms? Contact us at{' '}
+              Questions about these Terms? Email us at{' '}
               <a href="mailto:hello@styxgold.com" style={{color: STYX.gold, textDecoration: 'none'}}>
                 hello@styxgold.com
               </a>{' '}

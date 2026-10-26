@@ -78,15 +78,15 @@ const FAQ_SECTIONS = [
       },
       {
         q: 'How long does delivery take?',
-        a: 'Orders ship within 1\u20132 business days. Domestic delivery is typically 3\u20135 business days. International orders may take 7\u201314 business days depending on destination and customs.',
+        a: 'Orders ship within 1\u20132 business days. Delivery in Canada and the US is typically 3\u20135 business days.',
       },
       {
         q: 'Is my shipment insured?',
         a: 'Yes. Every order is fully insured from our door to yours. If anything happens in transit, we replace it at no cost.',
       },
       {
-        q: 'Do you ship internationally?',
-        a: 'Yes. We ship worldwide. International customers are responsible for any local import duties or taxes assessed by their country.',
+        q: 'Where do you ship?',
+        a: 'Canada and the United States only. Canadian orders ship from Canada and US orders ship from the US, so there are no cross-border duties.',
       },
     ],
   },

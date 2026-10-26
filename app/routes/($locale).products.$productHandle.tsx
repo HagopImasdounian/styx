@@ -909,8 +909,7 @@ export default function Product() {
                     {displayWeight}g total
                   </span>
                   <p>
-                    Approximate weight. Each piece is hand-finished and may vary
-                    by a few percent.
+                    Approximate weight. Each chain may vary by a few percent.
                   </p>
                 </div>
               )}
@@ -1113,7 +1112,6 @@ export default function Product() {
                               variantUriQuery,
                               handle,
                               selected,
-                              available,
                             }) => (
                               <Link
                                 key={option.name + name}
@@ -1138,20 +1136,9 @@ export default function Product() {
                                   background: selected
                                     ? STYX.paper
                                     : 'transparent',
-                                  color: selected
-                                    ? STYX.ink
-                                    : available
-                                    ? STYX.silt
-                                    : STYX.silt2,
+                                  color: selected ? STYX.ink : STYX.silt,
                                   borderRight: `1px solid ${STYX.line}`,
                                   cursor: 'pointer',
-                                  opacity: available ? 1 : 0.5,
-                                  textDecoration: available
-                                    ? 'none'
-                                    : 'line-through',
-                                  textDecorationThickness: available
-                                    ? undefined
-                                    : '1.5px',
                                   transition: 'all 0.25s ease',
                                   display: 'flex',
                                   alignItems: 'center',
@@ -1159,11 +1146,6 @@ export default function Product() {
                                   gap: 8,
                                   position: 'relative',
                                 }}
-                                title={
-                                  available
-                                    ? undefined
-                                    : 'Sold out. Select to request this color'
-                                }
                               >
                                 <span
                                   style={{
@@ -1198,7 +1180,16 @@ export default function Product() {
                       ) : (
                         /* Default: outline pill buttons, gold underline when selected.
                          Length pills also show that length's price (current color). */
-                        option.optionValues.map(
+                        option.optionValues
+                          // Length pills: only the lengths this colour comes
+                          // in. A length missing from the colour would link to
+                          // the other colour's variant (Patil, 2026-10-26).
+                          .filter(
+                            (v) =>
+                              !isLengthOption(option) ||
+                              keepsColor(v.variantUriQuery, selectedColor),
+                          )
+                          .map(
                           ({
                             isDifferentProduct,
                             name,
@@ -2549,9 +2540,12 @@ export default function Product() {
         open={sizeGuideOpen}
         onClose={() => setSizeGuideOpen(false)}
         availableLengths={
-          product.options
-            ?.find((o: any) => o.name?.toLowerCase() === 'length')
-            ?.optionValues?.map((v: any) => v.name) ?? []
+          productOptions
+            .find(isLengthOption)
+            ?.optionValues.filter((v) =>
+              keepsColor(v.variantUriQuery, selectedColor),
+            )
+            .map((v) => v.name) ?? []
         }
         selectedLength={selectedLength}
         thicknessMm={parseThicknessMm(chainThickness, product.title)}
@@ -2573,6 +2567,21 @@ export default function Product() {
 }
 
 /* ─────────────────────────── Helper Components ─────────────────────────── */
+
+const isLengthOption = (option: {name: string}) =>
+  option.name.toLowerCase() === 'length';
+
+/** True when following this option value's link keeps the selected colour.
+    Hydrogen links a length the colour doesn't come in to the other colour's
+    variant, so those lengths are left off rather than shown. */
+const keepsColor = (variantUriQuery: string, color: string | null) => {
+  if (!color) return true;
+  const params = new URLSearchParams(variantUriQuery);
+  for (const [key, value] of params) {
+    if (key.toLowerCase() === 'color') return value === color;
+  }
+  return true;
+};
 
 /** Dark "The price, in full" receipt: the itemized gold vs. craft math.
     Lives in the transparency section, beside the narrative it substantiates.

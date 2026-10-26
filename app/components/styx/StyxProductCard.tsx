@@ -245,9 +245,14 @@ export function StyxProductCard({
   const inStock = sameColorVariants.some((v) => v.availableForSale);
 
   // URL
-  const variantQuery = colorLabel
-    ? `?Color=${encodeURIComponent(colorLabel)}`
-    : '';
+  // Every option of the card's variant, not just Color: a Color-only query
+  // let the PDP fall back to the first variant overall, so a yellow card
+  // opened on white (3mm Rope, Patil 2026-10-26).
+  const variantParams = new URLSearchParams();
+  for (const o of variant.selectedOptions ?? []) {
+    variantParams.set(o.name, o.value);
+  }
+  const variantQuery = colorLabel ? `?${variantParams.toString()}` : '';
 
   // Images: slide 0 is the variant image (SSR visible on every viewport);
   // slides 1+ only scroll into view on touch/narrow viewports (see plp.css).

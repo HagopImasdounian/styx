@@ -23,7 +23,7 @@ export const meta = ({data}: MetaArgs<typeof loader>) => {
     title: 'Customize Your Chain',
     titleTemplate: '%s | STYX Gold',
     description:
-      'Commission a custom gold chain. Custom clasps, diamond accents, bespoke lengths, and one-of-one pieces. Handcrafted in solid gold.',
+      'Commission a custom gold chain. Custom clasps, diamond accents, bespoke lengths, and one-of-one pieces. Made in real gold.',
     url: data?.url,
   });
 };

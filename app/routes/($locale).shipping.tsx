@@ -38,12 +38,6 @@ const SHIPPING_DETAILS = [
     cost: 'Free',
     carrier: 'Insured priority courier from the US, signature required',
   },
-  {
-    label: 'International',
-    transit: '7\u201314 business days',
-    cost: 'Free',
-    carrier: 'Insured international priority',
-  },
 ];
 
 function SectionHeading({kicker, title}: {kicker: string; title: string}) {
@@ -208,7 +202,7 @@ export default function ShippingReturns() {
               All shipments require a signature on delivery. If no one is available to sign, the carrier will leave a notice and attempt redelivery. Risk of loss transfers to you upon delivery confirmation or signature.
             </p>
             <p style={{margin: 0}}>
-              International customers are solely responsible for any import duties, taxes, or customs fees assessed by their country. These charges are not included in the purchase price and are not refundable. Refused deliveries due to customs charges will be treated as a return (see Section III).
+              We ship to Canada and the United States only. Canadian orders ship from Canada and US orders ship from the US, so there are no cross-border duties on delivery.
             </p>
           </PolicyBlock>
         </section>
